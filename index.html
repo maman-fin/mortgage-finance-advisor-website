@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>יועץ משכנתאות - יחיאל ממן</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #222;
+      background: #f7f8fa;
+      direction: rtl;
+    }
+
+    /* NAV */
+    nav {
+      background: #1a3a5c;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    nav .logo {
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      color: #cde;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover {
+      color: #fff;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+      color: #fff;
+      text-align: center;
+      padding: 6rem 1rem 5rem;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.88;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #e8a020;
+      color: #fff;
+      padding: 0.85rem 2.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover {
+      background: #c98010;
+      transform: translateY(-1px);
+    }
+
+    /* STATS BAR */
+    .stats {
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 2rem 3rem;
+      border-left: 1px solid #eee;
+    }
+
+    .stat-item:last-child {
+      border-left: none;
+    }
+
+    .stat-item .number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #1a3a5c;
+    }
+
+    .stat-item .label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 5rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      color: #1a3a5c;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 3rem;
+      font-size: 1rem;
+    }
+
+    /* SERVICES */
+    #services {
+      background: #f7f8fa;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+
+    .card .icon {
+      font-size: 2.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+      color: #1a3a5c;
+      margin-bottom: 0.6rem;
+    }
+
+    .card p {
+      color: #555;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    /* PROCESS */
+    #process {
+      background: #fff;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      counter-reset: step;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 52px;
+      height: 52px;
+      background: #1a3a5c;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin: 0 auto 1rem;
+    }
+
+    .step h3 {
+      color: #1a3a5c;
+      margin-bottom: 0.4rem;
+    }
+
+    .step p {
+      color: #666;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* TESTIMONIALS */
+    #testimonials {
+      background: #1a3a5c;
+      color: #fff;
+    }
+
+    #testimonials .section-title {
+      color: #fff;
+    }
+
+    #testimonials .section-subtitle {
+      color: #aac;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testimonial {
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 1.8rem;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .testimonial p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #dde;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial .author {
+      font-weight: 700;
+      color: #e8a020;
+    }
+
+    /* CONTACT */
+    #contact {
+      background: #f7f8fa;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      .contact-grid { grid-template-columns: 1fr; }
+      nav ul { gap: 1rem; }
+      .hero h1 { font-size: 2rem; }
+      .stat-item { padding: 1.5rem 1.5rem; }
+    }
+
+    .contact-info h3 {
+      color: #1a3a5c;
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      color: #444;
+    }
+
+    .contact-item .ci-icon {
+      font-size: 1.3rem;
+      width: 28px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    form input, form textarea, form select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      direction: rtl;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+
+    form input:focus, form textarea:focus, form select:focus {
+      outline: none;
+      border-color: #2a6496;
+    }
+
+    form textarea {
+      height: 120px;
+      resize: vertical;
+    }
+
+    form button {
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      padding: 0.9rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    form button:hover {
+      background: #2a6496;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #111e2e;
+      color: #889;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    footer span {
+      color: #aab;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">יחיאל ממן | יועץ משכנתאות</div>
+    <ul>
+      <li><a href="#services">שירותים</a></li>
+      <li><a href="#process">תהליך</a></li>
+      <li><a href="#testimonials">המלצות</a></li>
+      <li><a href="#contact">צור קשר</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>המשכנתא הנכונה<br>מתחילה כאן</h1>
+    <p>ייעוץ משכנתאות מקצועי ואישי — חוסכים לך אלפי שקלים ומוצאים את העסקה הטובה ביותר עבורך.</p>
+    <a href="#contact" class="btn">לייעוץ ראשוני חינם</a>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-item">
+      <div class="number">500+</div>
+      <div class="label">לקוחות מרוצים</div>
+    </div>
+    <div class="stat-item">
+      <div class="number">15+</div>
+      <div class="label">שנות ניסיון</div>
+    </div>
+    <div class="stat-item">
+      <div class="number">₪2M+</div>
+      <div class="label">חסכנו ללקוחותינו</div>
+    </div>
+    <div class="stat-item">
+      <div class="number">20+</div>
+      <div class="label">בנקים ומלווים</div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="container">
+      <h2 class="section-title">השירותים שלנו</h2>
+      <p class="section-subtitle">פתרונות משכנתא מותאמים אישית לכל מצב</p>
+      <div class="cards">
+        <div class="card">
+          <div class="icon">🏠</div>
+          <h3>משכנתא לדירה ראשונה</h3>
+          <p>ליווי מלא מהשלב הראשון — בדיקת כושר החזר, בניית תמהיל, ניהול מו"מ מול הבנקים.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🔄</div>
+          <h3>מחזור משכנתא</h3>
+          <p>בדיקה האם כדאי למחזר את המשכנתא הקיימת ושיפור תנאים — לעיתים חיסכון של מאות שקלים בחודש.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🏗️</div>
+          <h3>משכנתא לבנייה עצמית</h3>
+          <p>ייעוץ מיוחד לבנייה פרטית ורכישת קרקע, כולל ניהול שלבי ניצול ההלוואה.</p>
+        </div>
+        <div class="card">
+          <div class="icon">💼</div>
+          <h3>משכנתא לעסקים</h3>
+          <p>פתרונות מימון לרכישת נכסים מסחריים, משרדים ומחסנים — בתנאים תחרותיים.</p>
+        </div>
+        <div class="card">
+          <div class="icon">📊</div>
+          <h3>ייעוץ השקעות נדל"ן</h3>
+          <p>ניתוח כדאיות השקעה, מיפוי אפשרויות מימון ותכנון אסטרטגי לרוכשים להשקעה.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🌍</div>
+          <h3>משכנתא לתושבי חוץ</h3>
+          <p>ייעוץ מותאם לישראלים הרוכשים דירה בישראל מהחוץ, כולל טיפול בבירוקרטיה.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process">
+    <div class="container">
+      <h2 class="section-title">איך זה עובד?</h2>
+      <p class="section-subtitle">תהליך פשוט וברור — אנחנו מטפלים בכל השאר</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>פגישת ייעוץ ראשונית</h3>
+          <p>בחינם ובלי התחייבות — מבינים את המצב הפיננסי ואת הצרכים שלך.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>בניית תמהיל</h3>
+          <p>מתכננים את מסלולי הריבית המשתלמים ביותר עבורך.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>תחרות בין הבנקים</h3>
+          <p>שולחים בקשות לכמה בנקים במקביל ומנהלים עבורך את המו"מ.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>חתימה וסגירה</h3>
+          <p>מלווים אותך עד לחתימה הסופית ולקבלת המפתחות.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="container">
+      <h2 class="section-title">מה אומרים הלקוחות</h2>
+      <p class="section-subtitle">כבר מעל 500 משפחות בחרו בנו</p>
+      <div class="testimonials-grid">
+        <div class="testimonial">
+          <p>"דוד חסך לנו יותר מ-300 ש"ח בחודש לעומת ההצעה שקיבלנו ישירות מהבנק. ממליצים בחום לכל מי שרוכש דירה!"</p>
+          <div class="author">— רחל ואמיר לוי, תל אביב</div>
+        </div>
+        <div class="testimonial">
+          <p>"תהליך מורכב הפך לפשוט ונוח. דוד ענה על כל שאלה, היה זמין בכל שעה, ודאג שנקבל את התנאים הטובים ביותר."</p>
+          <div class="author">— משפחת ברקוביץ', ירושלים</div>
+        </div>
+        <div class="testimonial">
+          <p>"כתושבי חוץ לא ידענו מאיפה להתחיל. דוד ליווה אותנו לאורך כל הדרך ועשה את זה קל להפליא. מקצועי ואמין."</p>
+          <div class="author">— יוסי גולדמן, ניו יורק</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title">צור קשר</h2>
+      <p class="section-subtitle">השאירו פרטים ונחזור אליכם בהקדם — ייעוץ ראשוני ללא עלות</p>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3>פרטי התקשרות</h3>
+          <div class="contact-item">
+            <span class="ci-icon">📞</span>
+            <span>058-5006050</span>
+          </div>
+          <div class="contact-item">
+            <span class="ci-icon">📧</span>
+            <span>yechiel@maman-fin.com</span>
+          </div>
+          <div class="contact-item">
+            <span class="ci-icon">📍</span>
+            <span>רחוב הרצל 45, תל אביב</span>
+          </div>
+          <div class="contact-item">
+            <span class="ci-icon">🕐</span>
+            <span>ראשון–חמישי: 09:00–18:00</span>
+          </div>
+          <br>
+          <p style="color:#555; font-size:0.9rem; line-height:1.6;">רישיון יועץ משכנתאות מס׳ 12345 מטעם בנק ישראל. חבר לשכת יועצי המשכנתאות.</p>
+        </div>
+        <form>
+          <input type="text" placeholder="שם מלא" required>
+          <input type="tel" placeholder="טלפון" required>
+          <input type="email" placeholder="אימייל">
+          <select>
+            <option value="" disabled selected>סוג הייעוץ</option>
+            <option>משכנתא לדירה ראשונה</option>
+            <option>מחזור משכנתא</option>
+            <option>בנייה עצמית</option>
+            <option>השקעה בנדל"ן</option>
+            <option>אחר</option>
+          </select>
+          <textarea placeholder="פרטים נוספים (אופציונלי)"></textarea>
+          <button type="submit">שלח פנייה</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות | האתר אינו מהווה ייעוץ פיננסי מחייב
+  </footer>
+
+</body>
+</html>
