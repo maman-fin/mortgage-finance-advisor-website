@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מחשבון משכנתא | יחיאל ממן</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #222;
+      background: #f7f8fa;
+      direction: rtl;
+    }
+
+    /* NAV */
+    nav {
+      background: #1a3a5c;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+      color: #fff;
+      text-align: center;
+      padding: 3.5rem 1rem 3rem;
+    }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; }
+
+    /* LAYOUT */
+    .calc-wrapper {
+      max-width: 1100px;
+      margin: 2.5rem auto 3rem;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.8rem;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .calc-wrapper { grid-template-columns: 1fr; }
+      nav ul { gap: 1rem; }
+    }
+
+    /* CARDS */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.8rem;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+      margin-bottom: 1.5rem;
+    }
+    .card:last-child { margin-bottom: 0; }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a3a5c;
+      margin-bottom: 1.4rem;
+      padding-bottom: 0.7rem;
+      border-bottom: 2px solid #e8f0f8;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* FORM ELEMENTS */
+    .field { margin-bottom: 1.1rem; }
+    .field label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 0.35rem;
+    }
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid #d0d8e4;
+      border-radius: 7px;
+      overflow: hidden;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+    .field-row:focus-within { border-color: #2a6496; }
+
+    .field-row input[type="number"] {
+      flex: 1;
+      border: none;
+      padding: 0.7rem 0.9rem;
+      font-size: 1rem;
+      direction: rtl;
+      font-family: inherit;
+      background: transparent;
+      outline: none;
+      min-width: 0;
+    }
+    .field-unit {
+      background: #f0f4f8;
+      border-right: 1px solid #d0d8e4;
+      padding: 0.7rem 0.75rem;
+      font-size: 0.85rem;
+      color: #555;
+      white-space: nowrap;
+    }
+
+    /* TRACKS */
+    .track-block {
+      background: #f5f8fc;
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 0.9rem;
+      border: 1px solid #dde8f2;
+    }
+    .track-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .track-name { font-weight: 700; font-size: 0.95rem; color: #1a3a5c; }
+    .track-pct-badge {
+      font-size: 0.8rem;
+      background: #1a3a5c;
+      color: #fff;
+      padding: 0.15rem 0.6rem;
+      border-radius: 20px;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .track-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+
+    .track-slider-row { margin-top: 0.75rem; }
+    .track-slider-row label { font-size: 0.8rem; color: #555; display: block; margin-bottom: 0.3rem; }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #c5d8ec;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #1a3a5c;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+
+    .pct-warning {
+      font-size: 0.82rem;
+      margin-top: 0.5rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+      display: none;
+    }
+    .pct-warning.show { display: block; }
+    .pct-warning.ok { background: #e6f7ee; color: #1a7a40; }
+    .pct-warning.err { background: #fdecea; color: #c0392b; }
+
+    /* RESULTS */
+    .results-card { position: sticky; top: 80px; }
+
+    .result-main {
+      background: #1a3a5c;
+      color: #fff;
+      border-radius: 10px;
+      padding: 1.4rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .result-main .label { font-size: 0.85rem; opacity: 0.8; margin-bottom: 0.3rem; }
+    .result-main .value { font-size: 2.6rem; font-weight: 800; letter-spacing: -1px; }
+    .result-main .sub { font-size: 0.8rem; opacity: 0.7; margin-top: 0.2rem; }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 0.92rem;
+    }
+    .result-row:last-of-type { border-bottom: none; }
+    .result-row .rl { color: #555; }
+    .result-row .rv { font-weight: 700; color: #1a3a5c; }
+
+    .ltv-bar-wrap { margin-top: 0.4rem; }
+    .ltv-bar-bg {
+      height: 8px;
+      background: #e0e7ef;
+      border-radius: 4px;
+      margin-top: 0.3rem;
+      overflow: hidden;
+    }
+    .ltv-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: #27ae60;
+      transition: width 0.4s, background 0.3s;
+    }
+    .ltv-bar-fill.warn { background: #e67e22; }
+    .ltv-bar-fill.danger { background: #c0392b; }
+
+    .income-field {
+      margin-top: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .income-field label { font-size: 0.82rem; color: #555; white-space: nowrap; }
+    .income-field input {
+      flex: 1;
+      border: 1px solid #d0d8e4;
+      border-radius: 6px;
+      padding: 0.45rem 0.7rem;
+      font-size: 0.92rem;
+      direction: rtl;
+      font-family: inherit;
+      outline: none;
+      min-width: 0;
+    }
+    .income-field input:focus { border-color: #2a6496; }
+    .income-ratio {
+      font-weight: 700;
+      font-size: 0.9rem;
+      min-width: 48px;
+      text-align: center;
+    }
+    .income-ratio.ok { color: #27ae60; }
+    .income-ratio.warn { color: #e67e22; }
+    .income-ratio.danger { color: #c0392b; }
+
+    /* STRESS TEST */
+    .stress-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .stress-table th {
+      background: #eaf0f8;
+      color: #1a3a5c;
+      padding: 0.55rem 0.8rem;
+      text-align: right;
+      font-weight: 700;
+    }
+    .stress-table td {
+      padding: 0.55rem 0.8rem;
+      border-bottom: 1px solid #f0f2f5;
+      text-align: right;
+    }
+    .stress-table tr:last-child td { border-bottom: none; }
+    .stress-table .delta { color: #c0392b; font-weight: 600; }
+
+    /* CTA */
+    .cta-box {
+      background: linear-gradient(135deg, #1a3a5c, #2a6496);
+      color: #fff;
+      border-radius: 10px;
+      padding: 1.4rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .cta-box p { font-size: 0.95rem; margin-bottom: 1rem; opacity: 0.92; line-height: 1.5; }
+    .cta-box a {
+      display: inline-block;
+      background: #e8a020;
+      color: #fff;
+      padding: 0.75rem 1.8rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+    .cta-box a:hover { background: #c98010; }
+
+    /* DISCLAIMER */
+    .disclaimer {
+      max-width: 1100px;
+      margin: 0 auto 3rem;
+      padding: 0 1rem;
+    }
+    .disclaimer p {
+      background: #fff8e6;
+      border: 1px solid #f0d080;
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.82rem;
+      color: #7a5c10;
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #111e2e;
+      color: #889;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+    footer span { color: #aab; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+    <ul>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="index.html#testimonials">המלצות</a></li>
+      <li><a href="calculator.html" class="active">כלים</a></li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1>מחשבון משכנתא</h1>
+    <p>הזן את הפרטים וקבל תמונה מלאה של ההחזר החודשי, עלות הריבית ומבחני עמידות</p>
+  </div>
+
+  <div class="calc-wrapper">
+
+    <!-- LEFT: INPUTS -->
+    <div>
+
+      <!-- LOAN BASICS -->
+      <div class="card">
+        <div class="card-title">🏠 פרטי ההלוואה</div>
+
+        <div class="field">
+          <label>שווי הנכס</label>
+          <div class="field-row">
+            <input type="number" id="propertyValue" value="1500000" min="0" step="10000">
+            <div class="field-unit">₪</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>הון עצמי</label>
+          <div class="field-row">
+            <input type="number" id="downPayment" value="450000" min="0" step="10000">
+            <div class="field-unit">₪</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>סכום ההלוואה <span id="loanAmountDisplay" style="color:#2a6496;font-weight:700;"></span></label>
+          <div class="field-row">
+            <input type="number" id="loanAmount" value="1050000" min="10000" step="10000">
+            <div class="field-unit">₪</div>
+          </div>
+          <div style="font-size:0.78rem;color:#888;margin-top:0.3rem;">ניתן לערוך ישירות או שייחשב אוטומטית משווי הנכס פחות ההון העצמי</div>
+        </div>
+
+        <div class="field">
+          <label>תקופת הלוואה</label>
+          <div class="field-row">
+            <input type="number" id="loanYears" value="25" min="5" max="30" step="1">
+            <div class="field-unit">שנים</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRACKS -->
+      <div class="card">
+        <div class="card-title">📊 תמהיל מסלולים</div>
+
+        <!-- PRIME -->
+        <div class="track-block">
+          <div class="track-header">
+            <div class="track-name">מסלול פריים</div>
+            <div class="track-pct-badge" id="primePctBadge">33%</div>
+          </div>
+          <div class="track-inputs">
+            <div class="field" style="margin:0">
+              <label>ריבית פריים (%)</label>
+              <div class="field-row">
+                <input type="number" id="primeRate" value="5.5" step="0.1" min="0" max="20">
+                <div class="field-unit">%</div>
+              </div>
+            </div>
+            <div class="field" style="margin:0">
+              <label>מרווח מעל פריים (%)</label>
+              <div class="field-row">
+                <input type="number" id="primeSpread" value="-0.5" step="0.05">
+                <div class="field-unit">%</div>
+              </div>
+            </div>
+          </div>
+          <div class="track-slider-row">
+            <label>חלק מהתמהיל: <strong id="primePctLabel">33%</strong></label>
+            <input type="range" id="primePct" min="0" max="100" value="33">
+          </div>
+        </div>
+
+        <!-- FIXED -->
+        <div class="track-block">
+          <div class="track-header">
+            <div class="track-name">מסלול קבוע</div>
+            <div class="track-pct-badge" id="fixedPctBadge">34%</div>
+          </div>
+          <div class="track-inputs">
+            <div class="field" style="margin:0">
+              <label>ריבית קבועה (%)</label>
+              <div class="field-row">
+                <input type="number" id="fixedRate" value="4.2" step="0.1" min="0" max="20">
+                <div class="field-unit">%</div>
+              </div>
+            </div>
+          </div>
+          <div class="track-slider-row">
+            <label>חלק מהתמהיל: <strong id="fixedPctLabel">34%</strong></label>
+            <input type="range" id="fixedPct" min="0" max="100" value="34">
+          </div>
+        </div>
+
+        <!-- CPI -->
+        <div class="track-block">
+          <div class="track-header">
+            <div class="track-name">מסלול צמוד מדד</div>
+            <div class="track-pct-badge" id="cpiPctBadge">33%</div>
+          </div>
+          <div class="track-inputs">
+            <div class="field" style="margin:0">
+              <label>ריבית צמודה (%)</label>
+              <div class="field-row">
+                <input type="number" id="cpiRate" value="3.2" step="0.1" min="0" max="20">
+                <div class="field-unit">%</div>
+              </div>
+            </div>
+            <div class="field" style="margin:0">
+              <label>הנחת מדד שנתי (%)</label>
+              <div class="field-row">
+                <input type="number" id="cpiInflation" value="2.5" step="0.1" min="0" max="10">
+                <div class="field-unit">%</div>
+              </div>
+            </div>
+          </div>
+          <div class="track-slider-row">
+            <label>חלק מהתמהיל: <strong id="cpiPctLabel">33%</strong></label>
+            <input type="range" id="cpiPct" min="0" max="100" value="33">
+          </div>
+        </div>
+
+        <div class="pct-warning" id="pctWarning"></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div class="results-card">
+
+      <!-- MONTHLY PAYMENT -->
+      <div class="card">
+        <div class="result-main">
+          <div class="label">תשלום חודשי משוער</div>
+          <div class="value" id="resMonthly">—</div>
+          <div class="sub">₪ לחודש</div>
+        </div>
+
+        <div class="result-row">
+          <span class="rl">סה"כ תשלומים</span>
+          <span class="rv" id="resTotal">—</span>
+        </div>
+        <div class="result-row">
+          <span class="rl">סה"כ ריבית</span>
+          <span class="rv" id="resInterest">—</span>
+        </div>
+
+        <!-- LTV -->
+        <div class="result-row" style="flex-direction:column;align-items:stretch;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="rl">יחס מימון (LTV)</span>
+            <span class="rv" id="resLtv">—</span>
+          </div>
+          <div class="ltv-bar-wrap">
+            <div class="ltv-bar-bg"><div class="ltv-bar-fill" id="ltvBar" style="width:0%"></div></div>
+          </div>
+          <div id="ltvNote" style="font-size:0.78rem;margin-top:0.3rem;color:#888;"></div>
+        </div>
+
+        <!-- INCOME RATIO -->
+        <div class="result-row" style="flex-direction:column;align-items:stretch;border-bottom:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+            <span class="rl">יחס החזר להכנסה</span>
+            <span class="rv income-ratio" id="resIncomeRatio">—</span>
+          </div>
+          <div class="income-field">
+            <label>הכנסה חודשית נטו:</label>
+            <input type="number" id="incomeInput" placeholder="הכנסה נטו ₪" min="0" step="500" value="">
+            <span>₪</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STRESS TEST -->
+      <div class="card">
+        <div class="card-title">⚠️ מבחן עמידות — עליית ריבית פריים</div>
+        <table class="stress-table">
+          <thead>
+            <tr>
+              <th>תרחיש</th>
+              <th>תשלום חודשי</th>
+              <th>תוספת</th>
+            </tr>
+          </thead>
+          <tbody id="stressBody">
+            <tr><td colspan="3" style="color:#888;text-align:center;padding:1rem;">הזן נתונים לחישוב</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-box">
+        <p>רוצה לקבל ייעוץ אישי ולבנות תמהיל מותאם עבורך?</p>
+        <a href="index.html#contact">צור קשר עכשיו</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <p>⚠️ <strong>הבהרה:</strong> המחשבון מיועד לצרכי מידע בלבד. התוצאות הן הערכה ואינן מהוות ייעוץ פיננסי. הנתונים המוצגים אינם מחייבים ואינם מהווים הצעה לקבלת הלוואה. לייעוץ מקצועי ומחייב, אנא פנה ליחיאל ממן.</p>
+  </div>
+
+  <footer>
+    <span>© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות
+  </footer>
+
+  <script>
+    // ── HELPERS ──────────────────────────────────────────────────────────────
+    const fmt = n => n < 0 ? '—' : '₪ ' + Math.round(n).toLocaleString('he-IL');
+
+    function pmt(rate, nper, pv) {
+      // Standard annuity formula
+      if (rate === 0) return pv / nper;
+      return pv * rate * Math.pow(1 + rate, nper) / (Math.pow(1 + rate, nper) - 1);
+    }
+
+    function trackMonthly(principal, annualRate, months) {
+      return pmt(annualRate / 100 / 12, months, principal);
+    }
+
+    // CPI track: effective annual rate = (1+r/12)^12 * (1+inflation) - 1 annualised
+    // For simplicity we compound the rate with expected monthly inflation
+    function trackMonthlyCpi(principal, annualRate, annualInflation, months) {
+      const monthlyRate = annualRate / 100 / 12 + annualInflation / 100 / 12;
+      return pmt(monthlyRate, months, principal);
+    }
+
+    function totalAndInterest(monthly, months, principal) {
+      const total = monthly * months;
+      return { total, interest: total - principal };
+    }
+
+    // ── SLIDER SYNC ───────────────────────────────────────────────────────────
+    let adjusting = false;
+
+    function updateBadges() {
+      const p = +primePct.value, f = +fixedPct.value, c = +cpiPct.value;
+      document.getElementById('primePctLabel').textContent = p + '%';
+      document.getElementById('fixedPctLabel').textContent = f + '%';
+      document.getElementById('cpiPctLabel').textContent   = c + '%';
+      document.getElementById('primePctBadge').textContent = p + '%';
+      document.getElementById('fixedPctBadge').textContent = f + '%';
+      document.getElementById('cpiPctBadge').textContent   = c + '%';
+
+      const total = p + f + c;
+      const warn = document.getElementById('pctWarning');
+      if (total === 100) {
+        warn.className = 'pct-warning show ok';
+        warn.textContent = 'סה"כ: 100% ✓';
+      } else {
+        warn.className = 'pct-warning show err';
+        warn.textContent = `סה"כ: ${total}% — על הסכום להיות 100%`;
+      }
+    }
+
+    ['primePct','fixedPct','cpiPct'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        updateBadges();
+        calculate();
+      });
+    });
+
+    // ── LOAN AMOUNT AUTO-CALC ─────────────────────────────────────────────────
+    const propVal  = document.getElementById('propertyValue');
+    const downPay  = document.getElementById('downPayment');
+    const loanAmt  = document.getElementById('loanAmount');
+
+    function syncLoanAmount() {
+      const val = +propVal.value - +downPay.value;
+      if (val > 0) loanAmt.value = val;
+      calculate();
+    }
+    propVal.addEventListener('input', syncLoanAmount);
+    downPay.addEventListener('input', syncLoanAmount);
+    loanAmt.addEventListener('input', calculate);
+
+    // ── MAIN CALCULATE ────────────────────────────────────────────────────────
+    const primePct = document.getElementById('primePct');
+    const fixedPct = document.getElementById('fixedPct');
+    const cpiPct   = document.getElementById('cpiPct');
+
+    function calculate() {
+      const loan    = +loanAmt.value;
+      const years   = +document.getElementById('loanYears').value;
+      const months  = years * 12;
+
+      const primeFrac = +primePct.value / 100;
+      const fixedFrac = +fixedPct.value / 100;
+      const cpiFrac   = +cpiPct.value   / 100;
+
+      const primeEffRate = +document.getElementById('primeRate').value
+                         + +document.getElementById('primeSpread').value;
+      const fixedRate    = +document.getElementById('fixedRate').value;
+      const cpiRate      = +document.getElementById('cpiRate').value;
+      const cpiInflation = +document.getElementById('cpiInflation').value;
+
+      const totalFrac = primeFrac + fixedFrac + cpiFrac;
+      if (Math.abs(totalFrac - 1) > 0.01 || loan <= 0 || months <= 0) {
+        document.getElementById('resMonthly').textContent   = '—';
+        document.getElementById('resTotal').textContent     = '—';
+        document.getElementById('resInterest').textContent  = '—';
+        document.getElementById('resLtv').textContent       = '—';
+        document.getElementById('stressBody').innerHTML =
+          '<tr><td colspan="3" style="color:#888;text-align:center;padding:1rem;">יש לוודא סכום תמהיל = 100%</td></tr>';
+        return;
+      }
+
+      const primeLoan = loan * primeFrac;
+      const fixedLoan = loan * fixedFrac;
+      const cpiLoan   = loan * cpiFrac;
+
+      const m_prime = primeLoan > 0 ? trackMonthly(primeLoan, primeEffRate, months) : 0;
+      const m_fixed = fixedLoan > 0 ? trackMonthly(fixedLoan, fixedRate, months) : 0;
+      const m_cpi   = cpiLoan   > 0 ? trackMonthlyCpi(cpiLoan, cpiRate, cpiInflation, months) : 0;
+
+      const monthly = m_prime + m_fixed + m_cpi;
+      const { total, interest } = totalAndInterest(monthly, months, loan);
+
+      document.getElementById('resMonthly').textContent  = Math.round(monthly).toLocaleString('he-IL');
+      document.getElementById('resTotal').textContent    = fmt(total);
+      document.getElementById('resInterest').textContent = fmt(interest);
+
+      // LTV
+      const propValue = +propVal.value || loan;
+      const ltv = propValue > 0 ? (loan / propValue * 100) : 0;
+      const ltvEl    = document.getElementById('resLtv');
+      const ltvBar   = document.getElementById('ltvBar');
+      const ltvNote  = document.getElementById('ltvNote');
+      ltvEl.textContent = ltv.toFixed(1) + '%';
+      ltvBar.style.width = Math.min(ltv, 100) + '%';
+      ltvBar.className = 'ltv-bar-fill' + (ltv > 80 ? ' danger' : ltv > 75 ? ' warn' : '');
+      if (ltv > 80) {
+        ltvEl.style.color = '#c0392b';
+        ltvNote.textContent = 'יחס מימון גבוה מ-80% — בדרך כלל דורש ביטוח משכנתא';
+        ltvNote.style.color = '#c0392b';
+      } else if (ltv > 75) {
+        ltvEl.style.color = '#e67e22';
+        ltvNote.textContent = 'יחס מימון מעל 75% — בדוק עם הבנק';
+        ltvNote.style.color = '#e67e22';
+      } else {
+        ltvEl.style.color = '#27ae60';
+        ltvNote.textContent = 'יחס מימון תקין';
+        ltvNote.style.color = '#888';
+      }
+
+      // INCOME RATIO
+      const income = +document.getElementById('incomeInput').value;
+      const ratioEl = document.getElementById('resIncomeRatio');
+      if (income > 0) {
+        const ratio = monthly / income * 100;
+        ratioEl.textContent = ratio.toFixed(1) + '%';
+        ratioEl.className = 'rv income-ratio ' +
+          (ratio > 40 ? 'danger' : ratio > 33 ? 'warn' : 'ok');
+      } else {
+        ratioEl.textContent = '—';
+        ratioEl.className = 'rv income-ratio';
+      }
+
+      // STRESS TEST
+      const stressDeltas = [1, 2, 3];
+      let rows = '';
+      stressDeltas.forEach(d => {
+        const newPrimeRate = primeEffRate + d;
+        const sm_prime = primeLoan > 0 ? trackMonthly(primeLoan, newPrimeRate, months) : 0;
+        const stressMonthly = sm_prime + m_fixed + m_cpi;
+        const diff = stressMonthly - monthly;
+        rows += `<tr>
+          <td>פריים +${d}%</td>
+          <td style="font-weight:700;">₪ ${Math.round(stressMonthly).toLocaleString('he-IL')}</td>
+          <td class="delta">+₪ ${Math.round(diff).toLocaleString('he-IL')}</td>
+        </tr>`;
+      });
+      document.getElementById('stressBody').innerHTML = rows;
+    }
+
+    // Attach all remaining inputs
+    ['loanYears','primeRate','primeSpread','fixedRate','cpiRate','cpiInflation','incomeInput']
+      .forEach(id => document.getElementById(id).addEventListener('input', calculate));
+
+    // Init
+    updateBadges();
+    calculate();
+  </script>
+</body>
+</html>
