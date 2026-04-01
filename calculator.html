@@ -33,6 +33,18 @@
     nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
     nav ul a:hover, nav ul a.active { color: #fff; }
 
+    /* HAMBURGER TOGGLE */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 0.4rem 0.5rem;
+      line-height: 1;
+    }
+
     /* PAGE HEADER */
     .page-header {
       background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
@@ -56,7 +68,57 @@
 
     @media (max-width: 860px) {
       .calc-wrapper { grid-template-columns: 1fr; }
-      nav ul { gap: 1rem; }
+    }
+
+    @media (max-width: 768px) {
+      /* NAV: hamburger */
+      nav { padding: 0 1rem; }
+      nav .logo { font-size: 1rem; }
+      .nav-toggle { display: block; }
+      nav ul {
+        display: none;
+        position: absolute;
+        top: 64px;
+        right: 0;
+        left: 0;
+        flex-direction: column;
+        gap: 0;
+        background: #1a3a5c;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 99;
+      }
+      nav ul.open { display: flex; }
+      nav ul li a {
+        display: block;
+        padding: 0.85rem 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-size: 1rem;
+      }
+
+      /* PAGE HEADER: no extra whitespace at top */
+      .page-header { padding: 1.2rem 1rem 1rem; }
+      .page-header h1 { font-size: 1.5rem; }
+
+      /* CALC WRAPPER: tight top margin */
+      .calc-wrapper { margin: 0.8rem auto 2rem; padding: 0 1rem; }
+
+      /* RESULTS: not sticky on mobile */
+      .results-card { position: static; }
+
+      /* FORM LABELS ≥ 16px (prevents iOS auto-zoom) */
+      .field label { font-size: 1rem; }
+      .track-slider-row label { font-size: 1rem; }
+      .income-field label { font-size: 1rem; }
+      .field-row input[type="number"] { font-size: 1rem; }
+
+      /* TRACK INPUTS: stack vertically */
+      .track-inputs { grid-template-columns: 1fr; }
+
+      /* CARDS: tighter padding */
+      .card { padding: 1.2rem 1rem; }
+
+      /* CTA BUTTON FULL WIDTH */
+      .cta-box a { display: block; text-align: center; }
     }
 
     /* CARDS */
@@ -333,6 +395,7 @@
       <li><a href="calculator.html" class="active">כלים</a></li>
       <li><a href="index.html#contact">צור קשר</a></li>
     </ul>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
   </nav>
 
   <!-- HEADER -->
@@ -727,6 +790,22 @@
     // Init
     updateBadges();
     calculate();
+
+    // Hamburger menu
+    var navToggle = document.querySelector('.nav-toggle');
+    var navMenu = document.querySelector('nav ul');
+    navToggle.addEventListener('click', function() {
+      var isOpen = navMenu.classList.toggle('open');
+      navToggle.textContent = isOpen ? '✕' : '☰';
+      navToggle.setAttribute('aria-label', isOpen ? 'סגור תפריט' : 'פתח תפריט');
+    });
+    document.querySelectorAll('nav ul a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        navMenu.classList.remove('open');
+        navToggle.textContent = '☰';
+        navToggle.setAttribute('aria-label', 'פתח תפריט');
+      });
+    });
   </script>
 </body>
 </html>
