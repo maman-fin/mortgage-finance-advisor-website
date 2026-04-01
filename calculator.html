@@ -45,6 +45,69 @@
       line-height: 1;
     }
 
+    /* DROPDOWN SUBMENU */
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #142d48;
+      min-width: 200px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      border-radius: 0 0 8px 8px;
+      list-style: none;
+      padding: 0.3rem 0;
+      z-index: 200;
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li a {
+      display: block;
+      padding: 0.65rem 1.1rem;
+      color: #cde;
+      text-decoration: none;
+      font-size: 0.92rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      white-space: nowrap;
+      transition: color 0.2s, background 0.2s;
+    }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* MODE TOGGLE BAR */
+    .mode-toggle-bar {
+      max-width: 1100px;
+      margin: 1.2rem auto 0;
+      padding: 0 1rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+    #modeToggleBtn {
+      background: #fff;
+      border: 2px solid #1a3a5c;
+      color: #1a3a5c;
+      padding: 0.55rem 1.3rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, color 0.2s;
+    }
+    #modeToggleBtn:hover { background: #1a3a5c; color: #fff; }
+
+    /* CLASSIC MODE WARNINGS */
+    .warn-box {
+      border-radius: 7px;
+      padding: 0.65rem 0.9rem;
+      margin-top: 0.6rem;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    .warn-box.red { background: #fdecea; border: 1px solid #f5b7b1; color: #c0392b; font-weight: 700; }
+    .warn-box.orange { background: #fff8e6; border: 1px solid #f0d080; color: #c87f00; }
+
     /* PAGE HEADER */
     .page-header {
       background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
@@ -119,6 +182,25 @@
 
       /* CTA BUTTON FULL WIDTH */
       .cta-box a { display: block; text-align: center; }
+
+      /* DROPDOWN: always visible inline inside hamburger */
+      .dropdown > a::after { display: none; }
+      .dropdown-menu {
+        position: static;
+        display: block;
+        box-shadow: none;
+        border-radius: 0;
+        background: rgba(0,0,0,0.2);
+        min-width: unset;
+      }
+      .dropdown-menu li a {
+        padding-right: 2.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+
+      /* MODE TOGGLE BAR */
+      .mode-toggle-bar { justify-content: center; }
+      #modeToggleBtn { width: 100%; }
     }
 
     /* CARDS */
@@ -392,7 +474,20 @@
       <li><a href="index.html#services">שירותים</a></li>
       <li><a href="index.html#process">תהליך</a></li>
       <li><a href="index.html#testimonials">המלצות</a></li>
-      <li><a href="calculator.html" class="active">כלים</a></li>
+      <li class="dropdown">
+        <a href="#" class="active">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+        </ul>
+      </li>
       <li><a href="index.html#contact">צור קשר</a></li>
     </ul>
     <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
@@ -404,7 +499,93 @@
     <p>הזן את הפרטים וקבל תמונה מלאה של ההחזר החודשי, עלות הריבית ומבחני עמידות</p>
   </div>
 
-  <div class="calc-wrapper">
+  <!-- MODE TOGGLE -->
+  <div class="mode-toggle-bar">
+    <button id="modeToggleBtn" onclick="toggleCalcMode()">עבור למחשבון מתקדם</button>
+  </div>
+
+  <!-- CLASSIC CALCULATOR -->
+  <div id="classicCalcWrapper" class="calc-wrapper">
+
+    <!-- LEFT: CLASSIC INPUTS -->
+    <div>
+      <div class="card">
+        <div class="card-title">🏠 פרטי הדירה</div>
+
+        <div class="field">
+          <label>שווי הדירה</label>
+          <div class="field-row">
+            <input type="number" id="c_propertyValue" value="1500000" min="0" step="10000" oninput="calcClassic()">
+            <div class="field-unit">₪</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>הון עצמי</label>
+          <div class="field-row">
+            <input type="number" id="c_downPayment" value="450000" min="0" step="10000" oninput="calcClassic()">
+            <div class="field-unit">₪</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>הכנסה נטו חודשית</label>
+          <div class="field-row">
+            <input type="number" id="c_monthlyIncome" placeholder="הכנסה משפחתית נטו" min="0" step="500" oninput="calcClassic()">
+            <div class="field-unit">₪</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>תקופת הלוואה</label>
+          <div class="field-row">
+            <input type="number" id="c_loanYears" value="25" min="5" max="30" step="1" oninput="calcClassic()">
+            <div class="field-unit">שנים</div>
+          </div>
+        </div>
+
+        <div style="margin-top:1rem;padding:0.75rem 1rem;background:#f0f4f8;border-radius:7px;font-size:0.82rem;color:#555;line-height:1.5;">
+          <strong>ריביות שוק ממוצעות שנמצאות בשימוש:</strong><br>
+          פריים 5.5% (שליש) · קבוע 4.5% (שליש) · צמוד מדד 3.5% (שליש)
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: CLASSIC RESULTS -->
+    <div class="results-card">
+      <div class="card">
+        <div class="result-main">
+          <div class="label">תשלום חודשי משוער</div>
+          <div class="value" id="c_resMonthly">—</div>
+          <div class="sub">₪ לחודש</div>
+        </div>
+
+        <div class="result-row">
+          <span class="rl">סכום ההלוואה</span>
+          <span class="rv" id="c_resLoanAmount">—</span>
+        </div>
+        <div class="result-row">
+          <span class="rl">אחוז מימון (LTV)</span>
+          <span class="rv" id="c_resLtv">—</span>
+        </div>
+        <div class="result-row" style="border-bottom:none;">
+          <span class="rl">יחס החזר (PTI)</span>
+          <span class="rv" id="c_resPti">—</span>
+        </div>
+
+        <div id="c_warnings"></div>
+      </div>
+
+      <div class="cta-box" style="margin-top:1rem;">
+        <p>רוצה לבנות תמהיל מותאם אישית עם ריביות עדכניות?</p>
+        <a href="index.html#contact">לייעוץ אישי חינם</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ADVANCED CALCULATOR (existing, hidden by default) -->
+  <div id="advancedCalcWrapper" class="calc-wrapper" style="display:none;">
 
     <!-- LEFT: INPUTS -->
     <div>
@@ -604,6 +785,7 @@
 
     </div>
   </div>
+  <!-- END advancedCalcWrapper -->
 
   <!-- DISCLAIMER -->
   <div class="disclaimer">
@@ -615,6 +797,81 @@
   </footer>
 
   <script>
+    // ── MODE TOGGLE ───────────────────────────────────────────────────────────
+    var isAdvancedMode = false;
+    function toggleCalcMode() {
+      isAdvancedMode = !isAdvancedMode;
+      var btn      = document.getElementById('modeToggleBtn');
+      var classic  = document.getElementById('classicCalcWrapper');
+      var advanced = document.getElementById('advancedCalcWrapper');
+      if (isAdvancedMode) {
+        classic.style.display  = 'none';
+        advanced.style.display = '';
+        btn.textContent = 'עבור למחשבון קלאסי';
+      } else {
+        advanced.style.display = 'none';
+        classic.style.display  = '';
+        btn.textContent = 'עבור למחשבון מתקדם';
+        calcClassic();
+      }
+    }
+
+    // ── CLASSIC CALCULATOR ────────────────────────────────────────────────────
+    function calcClassic() {
+      var propVal = parseFloat(document.getElementById('c_propertyValue').value)  || 0;
+      var downPay = parseFloat(document.getElementById('c_downPayment').value)    || 0;
+      var income  = parseFloat(document.getElementById('c_monthlyIncome').value)  || 0;
+      var years   = parseFloat(document.getElementById('c_loanYears').value)      || 25;
+      var loan    = propVal - downPay;
+
+      if (loan <= 0 || propVal <= 0) {
+        document.getElementById('c_resMonthly').textContent   = '—';
+        document.getElementById('c_resLoanAmount').textContent = '—';
+        document.getElementById('c_resLtv').textContent       = '—';
+        document.getElementById('c_resPti').textContent       = '—';
+        document.getElementById('c_warnings').innerHTML       = '';
+        return;
+      }
+
+      var months   = years * 12;
+      // Average market rates: Prime 5.5%, Fixed 4.5%, CPI-linked 3.5% (+ 2.5% inflation), each 1/3
+      var m_prime  = pmt(5.5  / 100 / 12, months, loan / 3);
+      var m_fixed  = pmt(4.5  / 100 / 12, months, loan / 3);
+      var m_cpi    = pmt((3.5 + 2.5) / 100 / 12, months, loan / 3);
+      var monthly  = m_prime + m_fixed + m_cpi;
+      var ltv      = loan / propVal * 100;
+      var pti      = income > 0 ? monthly / income * 100 : 0;
+
+      document.getElementById('c_resMonthly').textContent    = Math.round(monthly).toLocaleString('he-IL');
+      document.getElementById('c_resLoanAmount').textContent = '₪ ' + Math.round(loan).toLocaleString('he-IL');
+
+      var ltvEl = document.getElementById('c_resLtv');
+      ltvEl.textContent  = ltv.toFixed(1) + '%';
+      ltvEl.style.color  = ltv > 75 ? '#c0392b' : '#1a3a5c';
+
+      var ptiEl = document.getElementById('c_resPti');
+      if (income > 0) {
+        ptiEl.textContent = pti.toFixed(1) + '%';
+        ptiEl.style.color = pti > 40 ? '#c0392b' : pti > 33 ? '#e67e22' : '#27ae60';
+      } else {
+        ptiEl.textContent = '—';
+        ptiEl.style.color = '#1a3a5c';
+      }
+
+      var warnings = '';
+      if (ltv > 75) {
+        warnings += '<div class="warn-box red">⚠️ אחוז המימון עולה על 75% — הבנק עלול לא לאשר את ההלוואה</div>';
+      }
+      if (income > 0 && pti > 40) {
+        warnings += '<div class="warn-box red">⚠️ יחס ההחזר עולה על 40% — ההחזר החודשי גבוה מדי ביחס להכנסה</div>';
+      } else if (income > 0 && pti > 33) {
+        warnings += '<div class="warn-box orange">שים לב: יחס ההחזר מעל 33% — מומלץ לייעץ עם מומחה</div>';
+      }
+      document.getElementById('c_warnings').innerHTML = warnings;
+    }
+
+    // Classic calc runs after all function declarations are hoisted
+
     // ── HELPERS ──────────────────────────────────────────────────────────────
     const fmt = n => n < 0 ? '—' : '₪ ' + Math.round(n).toLocaleString('he-IL');
 
@@ -788,6 +1045,7 @@
       .forEach(id => document.getElementById(id).addEventListener('input', calculate));
 
     // Init
+    calcClassic();
     updateBadges();
     calculate();
 

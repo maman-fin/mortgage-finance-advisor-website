@@ -67,6 +67,36 @@
       line-height: 1;
     }
 
+    /* DROPDOWN SUBMENU */
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #142d48;
+      min-width: 200px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      border-radius: 0 0 8px 8px;
+      list-style: none;
+      padding: 0.3rem 0;
+      z-index: 200;
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li a {
+      display: block;
+      padding: 0.65rem 1.1rem;
+      color: #cde;
+      text-decoration: none;
+      font-size: 0.92rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      white-space: nowrap;
+      transition: color 0.2s, background 0.2s;
+    }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
     /* HERO */
     .hero {
       background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
@@ -332,6 +362,21 @@
 
       /* FORM INPUTS: prevent iOS auto-zoom (min 16px) */
       form input, form textarea, form select { font-size: 1rem; }
+
+      /* DROPDOWN: always visible inline inside hamburger */
+      .dropdown > a::after { display: none; }
+      .dropdown-menu {
+        position: static;
+        display: block;
+        box-shadow: none;
+        border-radius: 0;
+        background: rgba(0,0,0,0.2);
+        min-width: unset;
+      }
+      .dropdown-menu li a {
+        padding-right: 2.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
     }
 
     .contact-info h3 {
@@ -421,7 +466,20 @@
       <li><a href="#services">שירותים</a></li>
       <li><a href="#process">תהליך</a></li>
       <li><a href="#testimonials">המלצות</a></li>
-      <li><a href="calculator.html">כלים</a></li>
+      <li class="dropdown">
+        <a href="#">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+        </ul>
+      </li>
       <li><a href="#contact">צור קשר</a></li>
     </ul>
     <button class="nav-toggle" aria-label="פתח תפריט">☰</button>

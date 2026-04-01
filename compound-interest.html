@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מחשבון ריבית דריבית | יחיאל ממן</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #222;
+      background: #f7f8fa;
+      direction: rtl;
+    }
+
+    /* NAV */
+    nav {
+      background: #1a3a5c;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+
+    /* HAMBURGER */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 0.4rem 0.5rem;
+      line-height: 1;
+    }
+
+    /* DROPDOWN */
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #142d48;
+      min-width: 200px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      border-radius: 0 0 8px 8px;
+      list-style: none;
+      padding: 0.3rem 0;
+      z-index: 200;
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li a {
+      display: block;
+      padding: 0.65rem 1.1rem;
+      color: #cde;
+      text-decoration: none;
+      font-size: 0.92rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      white-space: nowrap;
+      transition: color 0.2s, background 0.2s;
+    }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+      color: #fff;
+      text-align: center;
+      padding: 3.5rem 1rem 3rem;
+    }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; }
+
+    /* LAYOUT */
+    .calc-wrapper {
+      max-width: 1100px;
+      margin: 2.5rem auto 1rem;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1.8rem;
+      align-items: start;
+    }
+
+    /* CARDS */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.8rem;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+      margin-bottom: 1.5rem;
+    }
+    .card:last-child { margin-bottom: 0; }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a3a5c;
+      margin-bottom: 1.4rem;
+      padding-bottom: 0.7rem;
+      border-bottom: 2px solid #e8f0f8;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* FORM ELEMENTS */
+    .field { margin-bottom: 1.1rem; }
+    .field label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 0.35rem;
+    }
+    .field-row {
+      display: flex;
+      align-items: center;
+      border: 1px solid #d0d8e4;
+      border-radius: 7px;
+      overflow: hidden;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+    .field-row:focus-within { border-color: #2a6496; }
+    .field-row input[type="number"] {
+      flex: 1;
+      border: none;
+      padding: 0.7rem 0.9rem;
+      font-size: 1rem;
+      direction: rtl;
+      font-family: inherit;
+      background: transparent;
+      outline: none;
+      min-width: 0;
+    }
+    .field-unit {
+      background: #f0f4f8;
+      border-right: 1px solid #d0d8e4;
+      padding: 0.7rem 0.75rem;
+      font-size: 0.85rem;
+      color: #555;
+      white-space: nowrap;
+    }
+    .field-note {
+      font-size: 0.78rem;
+      color: #888;
+      margin-top: 0.3rem;
+    }
+
+    /* DIVIDER */
+    .field-divider {
+      border: none;
+      border-top: 1px solid #e8f0f8;
+      margin: 1.2rem 0;
+    }
+
+    /* RESULTS */
+    .results-sticky { position: sticky; top: 80px; }
+
+    .result-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .res-box {
+      background: #f5f8fc;
+      border: 1px solid #dde8f2;
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .res-box.highlight {
+      background: #1a3a5c;
+      border-color: #1a3a5c;
+      color: #fff;
+    }
+    .res-box .rb-label { font-size: 0.78rem; color: #666; margin-bottom: 0.3rem; }
+    .res-box.highlight .rb-label { color: rgba(255,255,255,0.75); }
+    .res-box .rb-value { font-size: 1.4rem; font-weight: 800; color: #1a3a5c; }
+    .res-box.highlight .rb-value { color: #fff; }
+    .res-box.gold .rb-value { color: #c87f00; }
+    .res-box.danger .rb-value { color: #c0392b; }
+
+    /* CHART */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 280px;
+      margin-bottom: 0.5rem;
+    }
+
+    /* TABLE */
+    .breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .breakdown-table thead th {
+      background: #eaf0f8;
+      color: #1a3a5c;
+      padding: 0.55rem 0.8rem;
+      text-align: right;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+    .breakdown-table td {
+      padding: 0.5rem 0.8rem;
+      border-bottom: 1px solid #f0f2f5;
+      text-align: right;
+    }
+    .breakdown-table tr:last-child td { border-bottom: none; }
+    .breakdown-table tr:nth-child(even) td { background: #fafbfd; }
+    .breakdown-table .profit-col { color: #1a7a40; font-weight: 600; }
+
+    .table-scroll { max-height: 260px; overflow-y: auto; border: 1px solid #e8f0f8; border-radius: 8px; }
+
+    /* DISCLAIMER */
+    .disclaimer {
+      max-width: 1100px;
+      margin: 0 auto 3rem;
+      padding: 0 1rem;
+    }
+    .disclaimer p {
+      background: #fff8e6;
+      border: 1px solid #f0d080;
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.82rem;
+      color: #7a5c10;
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #111e2e;
+      color: #889;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+    footer span { color: #aab; }
+
+    /* MOBILE */
+    @media (max-width: 860px) {
+      .calc-wrapper { grid-template-columns: 1fr; }
+      .result-summary { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      nav .logo { font-size: 1rem; }
+      .nav-toggle { display: block; }
+      nav ul {
+        display: none;
+        position: absolute;
+        top: 64px;
+        right: 0;
+        left: 0;
+        flex-direction: column;
+        gap: 0;
+        background: #1a3a5c;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 99;
+      }
+      nav ul.open { display: flex; }
+      nav ul li a {
+        display: block;
+        padding: 0.85rem 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        font-size: 1rem;
+      }
+      .dropdown > a::after { display: none; }
+      .dropdown-menu {
+        position: static;
+        display: block;
+        box-shadow: none;
+        border-radius: 0;
+        background: rgba(0,0,0,0.2);
+        min-width: unset;
+      }
+      .dropdown-menu li a { padding-right: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+      .page-header { padding: 1.5rem 1rem 1.2rem; }
+      .page-header h1 { font-size: 1.6rem; }
+      .calc-wrapper { margin: 1rem auto 2rem; }
+      .results-sticky { position: static; }
+      .field label { font-size: 1rem; }
+      .field-row input[type="number"] { font-size: 1rem; }
+      .result-summary { grid-template-columns: 1fr 1fr; }
+      .card { padding: 1.2rem 1rem; }
+      .chart-container { height: 220px; }
+    }
+
+    @media (max-width: 420px) {
+      .result-summary { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+    <ul>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="index.html#testimonials">המלצות</a></li>
+      <li class="dropdown">
+        <a href="#" class="active">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+        </ul>
+      </li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1>מחשבון ריבית דריבית</h1>
+    <p>גלה את כוח הריבית דריבית — ראה כיצד החיסכון שלך גדל לאורך השנים</p>
+  </div>
+
+  <div class="calc-wrapper">
+
+    <!-- LEFT: INPUTS -->
+    <div>
+      <div class="card">
+        <div class="card-title">💰 פרטי החיסכון</div>
+
+        <div class="field">
+          <label>סכום הפקדה ראשוני</label>
+          <div class="field-row">
+            <input type="number" id="initialDeposit" value="50000" min="0" step="1000" oninput="calculate()">
+            <div class="field-unit">₪</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>הפקדה חודשית</label>
+          <div class="field-row">
+            <input type="number" id="monthlyDeposit" value="2000" min="0" step="100" oninput="calculate()">
+            <div class="field-unit">₪</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>ריבית שנתית</label>
+          <div class="field-row">
+            <input type="number" id="annualRate" value="7" min="0" max="50" step="0.1" oninput="calculate()">
+            <div class="field-unit">%</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>מספר שנות חיסכון</label>
+          <div class="field-row">
+            <input type="number" id="savingYears" value="20" min="1" max="50" step="1" oninput="calculate()">
+            <div class="field-unit">שנים</div>
+          </div>
+        </div>
+
+        <hr class="field-divider">
+
+        <div class="card-title" style="margin-top:0.2rem;border-bottom:none;margin-bottom:0.8rem;padding-bottom:0;font-size:0.95rem;">
+          📋 דמי ניהול <span style="font-size:0.8rem;font-weight:400;color:#888;">(אופציונלי)</span>
+        </div>
+
+        <div class="field">
+          <label>דמי ניהול מהפקדה</label>
+          <div class="field-row">
+            <input type="number" id="mgmtFeeDeposit" value="0" min="0" max="10" step="0.1" oninput="calculate()">
+            <div class="field-unit">%</div>
+          </div>
+          <div class="field-note">נגרע מכל הפקדה לפני ההשקעה</div>
+        </div>
+
+        <div class="field">
+          <label>דמי ניהול מצבירה</label>
+          <div class="field-row">
+            <input type="number" id="mgmtFeeAccum" value="0" min="0" max="5" step="0.05" oninput="calculate()">
+            <div class="field-unit">%</div>
+          </div>
+          <div class="field-note">מנוכה מהצבירה כל שנה</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div class="results-sticky">
+
+      <!-- SUMMARY BOXES -->
+      <div class="card">
+        <div class="card-title">📊 סיכום תחזית</div>
+        <div class="result-summary">
+          <div class="res-box highlight">
+            <div class="rb-label">סכום עתידי כולל</div>
+            <div class="rb-value" id="resTotalValue">—</div>
+          </div>
+          <div class="res-box gold">
+            <div class="rb-label">רווח מריבית דריבית</div>
+            <div class="rb-value" id="resProfit">—</div>
+          </div>
+          <div class="res-box">
+            <div class="rb-label">סך הפקדות</div>
+            <div class="rb-value" id="resTotalDeposited">—</div>
+          </div>
+          <div class="res-box danger">
+            <div class="rb-label">אבדן רווח — דמי ניהול</div>
+            <div class="rb-value" id="resFeesDrain">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+      <div class="card">
+        <div class="card-title">📈 גרף צמיחת החיסכון</div>
+        <div class="chart-container">
+          <canvas id="growthChart"></canvas>
+        </div>
+        <div style="display:flex;gap:1.5rem;justify-content:center;margin-top:0.8rem;font-size:0.82rem;color:#555;">
+          <span style="display:flex;align-items:center;gap:0.4rem;">
+            <span style="display:inline-block;width:14px;height:4px;background:#2a6496;border-radius:2px;"></span>סך הפקדות
+          </span>
+          <span style="display:flex;align-items:center;gap:0.4rem;">
+            <span style="display:inline-block;width:14px;height:4px;background:#e8a020;border-radius:2px;"></span>ערך הצבירה
+          </span>
+        </div>
+      </div>
+
+      <!-- ANNUAL BREAKDOWN -->
+      <div class="card">
+        <div class="card-title">📅 פירוט שנתי</div>
+        <div class="table-scroll">
+          <table class="breakdown-table">
+            <thead>
+              <tr>
+                <th>שנה</th>
+                <th>סך הופקד</th>
+                <th>ערך הצבירה</th>
+                <th>רווח השנה</th>
+              </tr>
+            </thead>
+            <tbody id="breakdownBody">
+              <tr><td colspan="4" style="color:#888;text-align:center;padding:1rem;">הזן נתונים לחישוב</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <p>⚠️ <strong>הבהרה:</strong> המחשבון מיועד למטרות מידע בלבד ואינו מהווה ייעוץ פיננסי. התוצאות הן הערכה תיאורטית המבוססת על ריבית קבועה ואינן מבטיחות תשואה עתידית. לייעוץ פיננסי מקצועי, אנא פנה ליחיאל ממן.</p>
+  </div>
+
+  <footer>
+    <span>© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות
+  </footer>
+
+  <script>
+    // ── CHART SETUP ───────────────────────────────────────────────────────────
+    var ctx = document.getElementById('growthChart').getContext('2d');
+    var growthChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'סך הפקדות',
+            data: [],
+            borderColor: '#2a6496',
+            backgroundColor: 'rgba(42,100,150,0.15)',
+            fill: 'origin',
+            tension: 0.3,
+            pointRadius: 0,
+            borderWidth: 2
+          },
+          {
+            label: 'ערך הצבירה',
+            data: [],
+            borderColor: '#e8a020',
+            backgroundColor: 'rgba(232,160,32,0.25)',
+            fill: '-1',        // fill between this dataset and the one before it
+            tension: 0.3,
+            pointRadius: 0,
+            borderWidth: 2.5
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            rtl: true,
+            callbacks: {
+              label: function(ctx) {
+                return ctx.dataset.label + ': ₪ ' + Math.round(ctx.parsed.y).toLocaleString('he-IL');
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(0,0,0,0.04)' },
+            ticks: {
+              font: { size: 11 },
+              callback: function(val, idx) {
+                var lbl = this.getLabelForValue(val);
+                return 'שנה ' + lbl;
+              }
+            }
+          },
+          y: {
+            grid: { color: 'rgba(0,0,0,0.04)' },
+            ticks: {
+              font: { size: 11 },
+              callback: function(val) {
+                if (val >= 1000000) return '₪' + (val/1000000).toFixed(1) + 'M';
+                if (val >= 1000)    return '₪' + (val/1000).toFixed(0) + 'K';
+                return '₪' + val;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // ── HELPERS ───────────────────────────────────────────────────────────────
+    function fmtILS(n) {
+      return '₪ ' + Math.round(n).toLocaleString('he-IL');
+    }
+
+    // ── MAIN CALCULATION ──────────────────────────────────────────────────────
+    function calculate() {
+      var P0          = parseFloat(document.getElementById('initialDeposit').value) || 0;
+      var PMT         = parseFloat(document.getElementById('monthlyDeposit').value)  || 0;
+      var annualRate  = parseFloat(document.getElementById('annualRate').value)      || 0;
+      var years       = Math.max(1, Math.min(50, parseInt(document.getElementById('savingYears').value) || 20));
+      var feeDep      = parseFloat(document.getElementById('mgmtFeeDeposit').value)  || 0; // % per deposit
+      var feeAccum    = parseFloat(document.getElementById('mgmtFeeAccum').value)    || 0; // % per year on balance
+
+      var monthlyRate     = annualRate / 100 / 12;
+      var monthlyAccumFee = feeAccum   / 100 / 12;
+      var netMonthlyDep   = PMT * (1 - feeDep / 100);
+
+      // Simulate month by month
+      var balance         = P0;
+      var balanceNoFees   = P0;
+      var totalDeposited  = P0;
+
+      var yearlyDeposits  = [P0];
+      var yearlyValues    = [P0];
+      var yearlyValNF     = [P0];  // no-fees version for comparison
+      var prevBalance     = P0;
+
+      for (var yr = 1; yr <= years; yr++) {
+        for (var mo = 1; mo <= 12; mo++) {
+          // With fees
+          balance = balance * (1 + monthlyRate - monthlyAccumFee) + netMonthlyDep;
+          // No fees (for "lost profit" calc)
+          balanceNoFees = balanceNoFees * (1 + monthlyRate) + PMT;
+          totalDeposited += PMT;
+        }
+        yearlyDeposits.push(Math.round(totalDeposited));
+        yearlyValues.push(Math.round(balance));
+        yearlyValNF.push(Math.round(balanceNoFees));
+      }
+
+      var totalValue   = balance;
+      var profit       = totalValue - totalDeposited;
+      var feesDrain    = balanceNoFees - balance;
+
+      // Update summary boxes
+      document.getElementById('resTotalValue').textContent    = fmtILS(totalValue);
+      document.getElementById('resProfit').textContent        = fmtILS(profit);
+      document.getElementById('resTotalDeposited').textContent = fmtILS(totalDeposited);
+      document.getElementById('resFeesDrain').textContent     = fmtILS(Math.max(0, feesDrain));
+
+      // Update chart
+      var labels = [];
+      for (var i = 0; i <= years; i++) labels.push(i === 0 ? '0' : String(i));
+      growthChart.data.labels              = labels;
+      growthChart.data.datasets[0].data   = yearlyDeposits;
+      growthChart.data.datasets[1].data   = yearlyValues;
+      growthChart.update('none');
+
+      // Update breakdown table
+      var rows = '';
+      var prevVal = P0;
+      var cumDep  = P0;
+      for (var yr2 = 1; yr2 <= years; yr2++) {
+        cumDep   = yearlyDeposits[yr2];
+        var val  = yearlyValues[yr2];
+        var gain = val - prevVal - PMT * 12;   // interest earned this year
+        rows += '<tr>' +
+          '<td>' + yr2 + '</td>' +
+          '<td>' + fmtILS(cumDep) + '</td>' +
+          '<td>' + fmtILS(val) + '</td>' +
+          '<td class="profit-col">+' + fmtILS(Math.max(0, gain)) + '</td>' +
+          '</tr>';
+        prevVal = val;
+      }
+      document.getElementById('breakdownBody').innerHTML = rows;
+    }
+
+    // ── HAMBURGER ─────────────────────────────────────────────────────────────
+    var navToggle = document.querySelector('.nav-toggle');
+    var navMenu   = document.querySelector('nav ul');
+    navToggle.addEventListener('click', function() {
+      var isOpen = navMenu.classList.toggle('open');
+      navToggle.textContent = isOpen ? '✕' : '☰';
+      navToggle.setAttribute('aria-label', isOpen ? 'סגור תפריט' : 'פתח תפריט');
+    });
+    document.querySelectorAll('nav ul a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        navMenu.classList.remove('open');
+        navToggle.textContent = '☰';
+        navToggle.setAttribute('aria-label', 'פתח תפריט');
+      });
+    });
+
+    // Init
+    calculate();
+  </script>
+</body>
+</html>

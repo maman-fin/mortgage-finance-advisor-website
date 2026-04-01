@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מאמרים ועדכונים | יחיאל ממן</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #f7f8fa; direction: rtl; }
+
+    /* ── NAV ── */
+    nav {
+      background: #1a3a5c; padding: 0 2rem; display: flex; align-items: center;
+      justify-content: space-between; height: 64px; position: sticky; top: 0;
+      z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; }
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ── PAGE HEADER ── */
+    .page-header { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 3.5rem 1rem 3rem; }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      max-width: 1000px; margin: 2rem auto 0; padding: 0 1rem;
+      display: flex; gap: 0.6rem; flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 0.5rem 1.15rem; border-radius: 20px; border: 2px solid #d0d8e4;
+      background: #fff; color: #555; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.18s;
+    }
+    .filter-btn:hover { border-color: #2a6496; color: #2a6496; }
+    .filter-btn.active { background: #1a3a5c; border-color: #1a3a5c; color: #fff; }
+
+    /* ── ARTICLES GRID ── */
+    .articles-section { max-width: 1000px; margin: 1.8rem auto 3rem; padding: 0 1rem; }
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.6rem; }
+
+    /* ── ARTICLE CARD ── */
+    .article-card {
+      background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .article-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateY(-3px); }
+    .article-card.hidden { display: none; }
+
+    .article-img {
+      width: 100%; aspect-ratio: 16/9; display: flex; align-items: center;
+      justify-content: center; font-size: 3.2rem; flex-shrink: 0;
+    }
+    .article-img.cat-rates   { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); }
+    .article-img.cat-tips    { background: linear-gradient(135deg, #1a6040 0%, #27ae60 100%); }
+    .article-img.cat-market  { background: linear-gradient(135deg, #7a3a0a 0%, #e8a020 100%); }
+
+    .article-body { padding: 1.3rem 1.3rem 1rem; display: flex; flex-direction: column; flex: 1; }
+
+    .article-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
+    .category-badge {
+      font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem;
+      border-radius: 12px; white-space: nowrap;
+    }
+    .badge-rates  { background: #e8f0fb; color: #1a3a5c; }
+    .badge-tips   { background: #e6f7ee; color: #1a6040; }
+    .badge-market { background: #fff4e0; color: #7a5010; }
+
+    .article-date { font-size: 0.8rem; color: #888; }
+
+    .article-title { font-size: 1.1rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.65rem; line-height: 1.4; }
+
+    .article-summary { font-size: 0.91rem; color: #555; line-height: 1.65; margin-bottom: 0.8rem; }
+
+    .article-full {
+      font-size: 0.91rem; color: #444; line-height: 1.7;
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.2s;
+      padding: 0;
+    }
+    .article-full.open {
+      max-height: 1000px;
+      padding: 0.8rem 0 0.4rem;
+      border-top: 1px solid #eef2f7;
+    }
+    .article-full p { margin-bottom: 0.7rem; }
+    .article-full p:last-child { margin-bottom: 0; }
+    .article-full h4 { color: #1a3a5c; margin: 0.7rem 0 0.3rem; font-size: 0.95rem; }
+    .article-full ul { padding-right: 1.2rem; margin-bottom: 0.5rem; }
+    .article-full ul li { margin-bottom: 0.3rem; }
+
+    .read-more-btn {
+      margin-top: auto; align-self: flex-start; padding-top: 0.6rem;
+      background: none; border: none; color: #2a6496; font-size: 0.88rem;
+      font-weight: 700; cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; gap: 0.3rem; transition: color 0.2s;
+    }
+    .read-more-btn:hover { color: #1a3a5c; }
+    .read-more-btn .arrow { transition: transform 0.2s; display: inline-block; }
+    .read-more-btn.open .arrow { transform: rotate(180deg); }
+
+    /* ── CTA ── */
+    .cta-section { background: #1a3a5c; padding: 3rem 1rem; text-align: center; color: #fff; margin-top: 1rem; }
+    .cta-section h3 { font-size: 1.5rem; margin-bottom: 0.6rem; }
+    .cta-section p { opacity: 0.85; margin-bottom: 1.4rem; }
+    .btn-cta { display: inline-block; background: #e8a020; color: #fff; padding: 0.85rem 2.2rem; border-radius: 6px; text-decoration: none; font-size: 1rem; font-weight: 700; transition: background 0.2s; }
+    .btn-cta:hover { background: #c98010; }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer { max-width: 1000px; margin: 1.5rem auto 2rem; padding: 0 1rem; }
+    .disclaimer p { background: #fff8e6; border: 1px solid #f0d080; border-radius: 8px; padding: 0.85rem 1.1rem; font-size: 0.82rem; color: #7a5c10; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer { background: #111e2e; color: #889; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
+    footer span { color: #aab; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      nav .logo { font-size: 1rem; }
+      .nav-toggle { display: block; }
+      nav ul { display: none; position: absolute; top: 64px; right: 0; left: 0; flex-direction: column; gap: 0; background: #1a3a5c; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 99; }
+      nav ul.open { display: flex; }
+      nav ul li a { display: block; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 1rem; }
+      .dropdown > a::after { display: none; }
+      .dropdown-menu { position: static; display: block; box-shadow: none; border-radius: 0; background: rgba(0,0,0,0.2); min-width: unset; }
+      .dropdown-menu li a { padding-right: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+      .page-header { padding: 1.5rem 1rem 1.2rem; }
+      .page-header h1 { font-size: 1.6rem; }
+      .articles-grid { grid-template-columns: 1fr; }
+      .filter-bar { gap: 0.5rem; }
+      .filter-btn { font-size: 0.82rem; padding: 0.45rem 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+    <ul>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="index.html#testimonials">המלצות</a></li>
+      <li class="dropdown">
+        <a href="#">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="active">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+        </ul>
+      </li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>מאמרים ועדכונים</h1>
+    <p>ידע מקצועי, טיפים ועדכוני שוק — הכל במקום אחד</p>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterArticles('all', this)">הכל</button>
+    <button class="filter-btn" onclick="filterArticles('rates', this)">ריביות ועדכונים</button>
+    <button class="filter-btn" onclick="filterArticles('tips', this)">טיפים למשכנתא</button>
+    <button class="filter-btn" onclick="filterArticles('market', this)">חדשות שוק הנדל"ן</button>
+  </div>
+
+  <!-- ARTICLES -->
+  <section class="articles-section">
+    <div class="articles-grid" id="articlesGrid">
+
+      <!-- ARTICLE 1 -->
+      <div class="article-card" data-category="rates">
+        <div class="article-img cat-rates">📈</div>
+        <div class="article-body">
+          <div class="article-meta">
+            <span class="category-badge badge-rates">ריביות ועדכונים</span>
+            <span class="article-date">20 מרץ 2026</span>
+          </div>
+          <h2 class="article-title">בנק ישראל השאיר את הריבית ללא שינוי — מה זה אומר לנוטלי משכנתא?</h2>
+          <p class="article-summary">הוועדה המוניטרית של בנק ישראל החליטה להותיר את הריבית על 4.5%. מה המשמעות עבור מי שנוטל משכנתא היום, ומה כדאי לשים לב אליו בתמהיל?</p>
+          <div class="article-full" id="full-1">
+            <p>בנק ישראל הותיר את הריבית ברמה של 4.5% — ההחלטה ה-3 ברציפות ללא שינוי. המשמעות הישירה לנוטלי משכנתא היא שמסלול הפריים (ריבית הפריים = ריבית בנק ישראל + 1.5%) נותר גם הוא יציב, כיום על 6.0%.</p>
+            <h4>מה זה אומר לי בפועל?</h4>
+            <ul>
+              <li><strong>אם יש לך משכנתא קיימת:</strong> ההחזר החודשי שלך לא משתנה בשלב זה.</li>
+              <li><strong>אם אתה מתכנן לקחת משכנתא:</strong> הריביות הנוכחיות הן בסיס יציב לתכנון.</li>
+              <li><strong>מסלול קבוע לא צמוד:</strong> ריביות הבנקים עדיין נעות בין 4.0%–4.8% — כדאי לנצל יציבות זו.</li>
+            </ul>
+            <h4>מה כדאי לעשות עכשיו?</h4>
+            <p>בתקופה של ריביות יציבות, כדאי לבחון את התמהיל מחדש. אם יש לך מסלול פריים גבוה מ-40% מהמשכנתא, שקול לאזן עם מסלול קבוע. ייעוץ מקצועי יכול לחסוך אלפי שקלים לאורך חיי ההלוואה.</p>
+          </div>
+          <button class="read-more-btn" onclick="toggleArticle(1, this)">
+            קרא עוד <span class="arrow">▼</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ARTICLE 2 -->
+      <div class="article-card" data-category="tips">
+        <div class="article-img cat-tips">💡</div>
+        <div class="article-body">
+          <div class="article-meta">
+            <span class="category-badge badge-tips">טיפים למשכנתא</span>
+            <span class="article-date">5 מרץ 2026</span>
+          </div>
+          <h2 class="article-title">5 טעויות נפוצות בנטילת משכנתא — וכיצד להימנע מהן</h2>
+          <p class="article-summary">רוכשים רבים מגיעים לבנק ללא הכנה מספקת ומאבדים כסף רב. הנה 5 הטעויות הנפוצות ביותר שאנחנו רואים — ואיך להימנע מהן.</p>
+          <div class="article-full" id="full-2">
+            <h4>1. לקחת הצעה מבנק אחד בלבד</h4>
+            <p>הטעות הקלאסית. כל בנק מציע ריביות שונות, ועדיין רוכשים רבים מסתפקים בהצעה הראשונה. תחרות בין לפחות 3–4 בנקים יכולה לחסוך 0.3%–0.5% על הריבית — שהם עשרות אלפי שקלים לאורך השנים.</p>
+            <h4>2. לבחור לפי ההחזר החודשי בלבד</h4>
+            <p>תקופה ארוכה יותר = החזר נמוך יותר, אבל סה"כ ריבית גבוהה הרבה יותר. תמיד בדוק גם את "עלות הכסף הכוללת" ולא רק את ההחזר החודשי.</p>
+            <h4>3. מסלול פריים ב-100%</h4>
+            <p>מסלול פריים כולו נחשב מסוכן מאחר שהוא חשוף לעליות ריבית. בנק ישראל מחייב שלא יותר מ-⅔ מהמשכנתא יהיה במסלול משתנה.</p>
+            <h4>4. לא לבדוק כושר החזר לפני חתימת חוזה</h4>
+            <p>חתמתם על חוזה רכישה ורק אז גיליתם שהבנק מאשר סכום נמוך יותר? זו סיטואציה שאפשר למנוע לגמרי בבדיקה מקדימה.</p>
+            <h4>5. לוותר על ייעוץ מקצועי</h4>
+            <p>יועץ משכנתאות עצמאי פועל עבורך — לא עבור הבנק. העמלה שלו כמעט תמיד מחפה על עצמה בחיסכון בריביות שיושג.</p>
+          </div>
+          <button class="read-more-btn" onclick="toggleArticle(2, this)">
+            קרא עוד <span class="arrow">▼</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ARTICLE 3 -->
+      <div class="article-card" data-category="market">
+        <div class="article-img cat-market">🏘️</div>
+        <div class="article-body">
+          <div class="article-meta">
+            <span class="category-badge badge-market">חדשות שוק הנדל"ן</span>
+            <span class="article-date">1 פברואר 2026</span>
+          </div>
+          <h2 class="article-title">שוק הנדל"ן הישראלי — סקירת רבעון ראשון 2026</h2>
+          <p class="article-summary">לאחר תקופה של עלייה מתונה במחירים, מה קורה בשוק? נסקור את הנתונים העדכניים, האזורים הפעילים ביותר, ומה הם אומרים לרוכשים פוטנציאליים.</p>
+          <div class="article-full" id="full-3">
+            <p>נתוני הלמ"ס מצביעים על עלייה ממוצעת של 3.2% במחירי הדירות בשנה האחרונה, עם שונות גבוהה בין אזורים. מרכז הארץ מוביל בעליות, בעוד שהפריפריה מציגה יציבות יחסית.</p>
+            <h4>אזורים עם ביקוש גבוה</h4>
+            <ul>
+              <li><strong>גוש דן:</strong> ביקוש יציב ומחירים גבוהים — ממוצע 3.2M ₪ לדירה 4 חדרים בת"א</li>
+              <li><strong>ירושלים:</strong> שוק הנדל"ן להשקעה פעיל, בפרט בשכונות מתחדשות</li>
+              <li><strong>הצפון והדרום:</strong> מחירים נגישים יחסית + פרויקטי פינוי-בינוי מגדילים היצע</li>
+            </ul>
+            <h4>מה מומלץ לרוכשים?</h4>
+            <p>בשוק שמתייצב, יש חשיבות גדולה לתכנון פיננסי נכון. מינוף גבוה מדי בתקופת ריביות גבוהות יחסית עלול להכביד. מומלץ להישאר עם LTV מתחת ל-70% ולהשאיר כרית ביטחון.</p>
+            <p>לקבלת ניתוח אישי של כדאיות הרכישה בהתאם למצבכם הפיננסי — פנו לייעוץ.</p>
+          </div>
+          <button class="read-more-btn" onclick="toggleArticle(3, this)">
+            קרא עוד <span class="arrow">▼</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h3>יש לך שאלה? צור קשר עכשיו</h3>
+    <p>ייעוץ ראשוני חינם — ללא התחייבות</p>
+    <a href="index.html#contact" class="btn-cta">לייעוץ אישי</a>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <p>⚠️ <strong>הבהרה:</strong> המידע באתר זה מיועד לצרכי מידע כללי בלבד ואינו מהווה ייעוץ משפטי או פיננסי. הנתונים המופיעים הם להמחשה בלבד ועשויים להשתנות. לייעוץ מקצועי, פנה ליחיאל ממן.</p>
+  </div>
+
+  <footer>
+    <span>© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות
+  </footer>
+
+  <script>
+    function filterArticles(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.article-card').forEach(function(card) {
+        if (cat === 'all' || card.dataset.category === cat) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    function toggleArticle(id, btn) {
+      var full = document.getElementById('full-' + id);
+      var isOpen = full.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('.arrow').textContent = isOpen ? '▲' : '▼';
+      btn.childNodes[0].nodeValue = isOpen ? 'סגור ' : 'קרא עוד ';
+    }
+
+    // Hamburger
+    var navToggle = document.querySelector('.nav-toggle');
+    var navMenu   = document.querySelector('nav ul');
+    navToggle.addEventListener('click', function() {
+      var isOpen = navMenu.classList.toggle('open');
+      navToggle.textContent = isOpen ? '✕' : '☰';
+      navToggle.setAttribute('aria-label', isOpen ? 'סגור תפריט' : 'פתח תפריט');
+    });
+    document.querySelectorAll('nav ul a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        navMenu.classList.remove('open');
+        navToggle.textContent = '☰';
+        navToggle.setAttribute('aria-label', 'פתח תפריט');
+      });
+    });
+  </script>
+</body>
+</html>

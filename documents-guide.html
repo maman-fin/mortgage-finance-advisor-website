@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הדרכה למסמכים | יחיאל ממן</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #f7f8fa; direction: rtl; }
+
+    /* ── NAV ── */
+    nav { background: #1a3a5c; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; }
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ── PAGE HEADER ── */
+    .page-header { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 3.5rem 1rem 3rem; }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+    /* ── MAIN CONTENT ── */
+    .content-wrap { max-width: 860px; margin: 2.5rem auto 1rem; padding: 0 1rem; }
+
+    /* ── MAIN SECTION ACCORDION ── */
+    .main-section { margin-bottom: 1.2rem; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+
+    .main-section-header {
+      background: #1a3a5c; color: #fff; padding: 1.1rem 1.4rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      user-select: none; transition: background 0.2s;
+    }
+    .main-section-header:hover { background: #244e7a; }
+    .main-section-header .sec-title { font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 0.6rem; }
+    .main-section-header .sec-badge { font-size: 0.8rem; background: rgba(255,255,255,0.18); padding: 0.2rem 0.65rem; border-radius: 12px; }
+    .main-section-header .sec-arrow { font-size: 1rem; transition: transform 0.3s; }
+    .main-section-header.open .sec-arrow { transform: rotate(180deg); }
+
+    .main-section-body { background: #fff; display: none; }
+    .main-section-body.open { display: block; }
+
+    /* ── GUIDE ITEM ── */
+    .guide-item {
+      border-bottom: 1px solid #eef2f7; padding: 1.4rem 1.4rem 1.2rem;
+    }
+    .guide-item:last-child { border-bottom: none; }
+
+    .guide-item-header {
+      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      user-select: none;
+    }
+    .guide-item-header h3 { font-size: 0.98rem; font-weight: 700; color: #1a3a5c; display: flex; align-items: center; gap: 0.5rem; }
+    .guide-item-arrow { font-size: 0.85rem; color: #888; transition: transform 0.25s; }
+    .guide-item-header.open .guide-item-arrow { transform: rotate(180deg); }
+
+    .guide-item-content { display: none; padding-top: 1rem; }
+    .guide-item-content.open { display: block; }
+
+    .guide-text { font-size: 0.92rem; color: #444; line-height: 1.7; margin-bottom: 1rem; }
+    .guide-text p { margin-bottom: 0.5rem; }
+    .guide-text ul, .guide-text ol { padding-right: 1.3rem; margin-bottom: 0.5rem; }
+    .guide-text li { margin-bottom: 0.3rem; }
+    .guide-text strong { color: #1a3a5c; }
+
+    /* ── STEP LIST ── */
+    .step-list { counter-reset: step; padding: 0; list-style: none; margin-bottom: 1rem; }
+    .step-list li {
+      counter-increment: step; display: flex; gap: 0.8rem; align-items: flex-start;
+      padding: 0.55rem 0; border-bottom: 1px solid #f0f2f5; font-size: 0.91rem; color: #444;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before {
+      content: counter(step); flex-shrink: 0; width: 26px; height: 26px;
+      background: #1a3a5c; color: #fff; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;
+    }
+
+    /* ── MEDIA EMBEDS ── */
+    .embed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    .embed-block { }
+    .embed-label { font-size: 0.8rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.3rem; }
+    .embed-container {
+      width: 100%; aspect-ratio: 16/9; background: #f0f4f8; border: 2px dashed #c5d8ec;
+      border-radius: 8px; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; color: #888; font-size: 0.82rem; text-align: center;
+      gap: 0.4rem; overflow: hidden; position: relative;
+    }
+    .embed-container iframe { width: 100%; height: 100%; border: none; position: absolute; inset: 0; }
+    .embed-placeholder-icon { font-size: 2rem; opacity: 0.5; }
+    .embed-placeholder-text { font-size: 0.8rem; color: #999; }
+    .embed-soon-badge { background: #e8a020; color: #fff; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 10px; }
+
+    /* ── BANK CARD ── */
+    .bank-card {
+      border: 1px solid #dde8f2; border-radius: 10px; overflow: hidden; margin-bottom: 1.2rem;
+    }
+    .bank-card-header {
+      background: #eaf0f8; padding: 0.9rem 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between; user-select: none;
+      transition: background 0.18s;
+    }
+    .bank-card-header:hover { background: #d8e8f5; }
+    .bank-info { display: flex; align-items: center; gap: 0.9rem; }
+    .bank-logo-placeholder {
+      width: 44px; height: 44px; border-radius: 8px; background: #1a3a5c; color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; flex-shrink: 0;
+    }
+    .bank-name { font-size: 1rem; font-weight: 700; color: #1a3a5c; }
+    .bank-arrow { font-size: 0.9rem; color: #666; transition: transform 0.25s; }
+    .bank-card-header.open .bank-arrow { transform: rotate(180deg); }
+    .bank-card-body { display: none; padding: 1.2rem; }
+    .bank-card-body.open { display: block; }
+    .bank-note { background: #fff8e6; border: 1px solid #f0d080; border-radius: 7px; padding: 0.6rem 0.9rem; font-size: 0.82rem; color: #7a5010; margin-top: 0.8rem; }
+
+    /* ── TIPS SECTION ── */
+    .tip-item { padding: 0.9rem 1.2rem; border-bottom: 1px solid #f0f2f5; }
+    .tip-item:last-child { border-bottom: none; }
+    .tip-item h3 { font-size: 0.96rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.5rem; }
+    .tip-item p { font-size: 0.9rem; color: #555; line-height: 1.6; }
+
+    /* ── FULL DOCUMENT LIST ── */
+    .doc-list { list-style: none; padding: 0; }
+    .doc-list li { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.55rem 0; border-bottom: 1px solid #f0f2f5; font-size: 0.91rem; color: #444; }
+    .doc-list li:last-child { border-bottom: none; }
+    .doc-list li::before { content: '📄'; flex-shrink: 0; }
+    .doc-category { font-size: 0.78rem; font-weight: 700; color: #2a6496; background: #e8f0fb; padding: 0.15rem 0.55rem; border-radius: 10px; margin-bottom: 0.4rem; display: inline-block; }
+
+    /* ── CTA ── */
+    .cta-section { background: #1a3a5c; padding: 3rem 1rem; text-align: center; color: #fff; margin-top: 1.5rem; }
+    .cta-section h3 { font-size: 1.5rem; margin-bottom: 0.6rem; }
+    .cta-section p { opacity: 0.85; margin-bottom: 1.4rem; }
+    .btn-cta { display: inline-block; background: #e8a020; color: #fff; padding: 0.85rem 2.2rem; border-radius: 6px; text-decoration: none; font-size: 1rem; font-weight: 700; transition: background 0.2s; }
+    .btn-cta:hover { background: #c98010; }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer { max-width: 860px; margin: 1.5rem auto 2rem; padding: 0 1rem; }
+    .disclaimer p { background: #fff8e6; border: 1px solid #f0d080; border-radius: 8px; padding: 0.85rem 1.1rem; font-size: 0.82rem; color: #7a5c10; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer { background: #111e2e; color: #889; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
+    footer span { color: #aab; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      nav .logo { font-size: 1rem; }
+      .nav-toggle { display: block; }
+      nav ul { display: none; position: absolute; top: 64px; right: 0; left: 0; flex-direction: column; gap: 0; background: #1a3a5c; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 99; }
+      nav ul.open { display: flex; }
+      nav ul li a { display: block; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 1rem; }
+      .dropdown > a::after { display: none; }
+      .dropdown-menu { position: static; display: block; box-shadow: none; border-radius: 0; background: rgba(0,0,0,0.2); min-width: unset; }
+      .dropdown-menu li a { padding-right: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+      .page-header { padding: 1.5rem 1rem 1.2rem; }
+      .page-header h1 { font-size: 1.6rem; }
+      .content-wrap { margin: 1rem auto; }
+      .embed-grid { grid-template-columns: 1fr; }
+      .guide-item { padding: 1rem; }
+      .main-section-header { padding: 0.9rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+    <ul>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="index.html#testimonials">המלצות</a></li>
+      <li class="dropdown">
+        <a href="#">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="active">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+        </ul>
+      </li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>הדרכה להפקת מידע ומסמכים</h1>
+    <p>מדריכים מפורטים — צעד אחר צעד — להפקת כל מסמך שהבנק מבקש</p>
+  </div>
+
+  <div class="content-wrap">
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION A — הפקת מסמכים שוטפים
+    ═══════════════════════════════════════════════════════ -->
+    <div class="main-section">
+      <div class="main-section-header" onclick="toggleSection(this)">
+        <div class="sec-title">
+          <span>📋</span>
+          <span>א. הפקת מסמכים שוטפים</span>
+          <span class="sec-badge">5 מדריכים</span>
+        </div>
+        <span class="sec-arrow">▼</span>
+      </div>
+      <div class="main-section-body open">
+
+        <!-- 1. דוח תנועות -->
+        <div class="guide-item">
+          <div class="guide-item-header open" onclick="toggleGuideItem(this)">
+            <h3>🏦 דוח תנועות עו"ש — 3 חודשים אחרונים</h3>
+            <span class="guide-item-arrow">▲</span>
+          </div>
+          <div class="guide-item-content open">
+            <div class="guide-text">
+              <p>הבנק מבקש לראות את תנועות חשבון העו"ש שלך ב-3 החודשים האחרונים כדי לאמוד את ההכנסות וההוצאות הקבועות שלך. להלן השלבים להפקת הדוח מהאפליקציה הבנקאית:</p>
+            </div>
+            <ol class="step-list">
+              <li>היכנס לאפליקציית הבנק שלך (או לאתר הבנק המקוון)</li>
+              <li>נווט לסעיף <strong>"חשבונות"</strong> ובחר את חשבון העו"ש</li>
+              <li>לחץ על <strong>"תנועות"</strong> או <strong>"פירוט תנועות"</strong></li>
+              <li>הגדר טווח תאריכים: מ-3 חודשים אחורה עד היום</li>
+              <li>לחץ על <strong>"הפקת דוח"</strong> או <strong>"ייצוא ל-PDF"</strong></li>
+              <li>שמור את הקובץ ושלח ליועץ המשכנתאות</li>
+            </ol>
+            <div class="guide-text"><p><strong>טיפ:</strong> חשוב שהדוח יכלול את שם בעל החשבון, מספר החשבון ומספר הסניף בצורה ברורה.</p></div>
+            <div class="embed-grid">
+              <div class="embed-block">
+                <div class="embed-label">🎬 סרטון הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">▶️</div>
+                  <div class="embed-placeholder-text">סרטון הסבר</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+              <div class="embed-block">
+                <div class="embed-label">📊 מצגת הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">📑</div>
+                  <div class="embed-placeholder-text">מצגת שלבים</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. ריכוז יתרות -->
+        <div class="guide-item">
+          <div class="guide-item-header" onclick="toggleGuideItem(this)">
+            <h3>💰 ריכוז יתרות</h3>
+            <span class="guide-item-arrow">▼</span>
+          </div>
+          <div class="guide-item-content">
+            <div class="guide-text">
+              <p>ריכוז יתרות הוא מסמך המסכם את כל היתרות בחשבונות שלך — פיקדונות, קרנות השתלמות, חסכונות וכו'. הבנק מבקש אותו כדי להעריך את שוויך הכולל.</p>
+            </div>
+            <ol class="step-list">
+              <li>היכנס לאפליקציית הבנק שלך</li>
+              <li>נווט לסעיף <strong>"תיק פיננסי"</strong> או <strong>"כל החשבונות"</strong></li>
+              <li>חפש אפשרות <strong>"ריכוז יתרות"</strong> או <strong>"תמונת מצב פיננסית"</strong></li>
+              <li>בחר את כל סוגי החשבונות הרצויים</li>
+              <li>לחץ <strong>"הפקת דוח"</strong> ושמור כ-PDF</li>
+              <li>ודא שהדוח מתוארך ומציג את שם בעל החשבון</li>
+            </ol>
+            <div class="guide-text"><p><strong>חשוב:</strong> אם יש לך חסכונות בבנקים שונים, הפק ריכוז יתרות מכל אחד מהם.</p></div>
+            <div class="embed-grid">
+              <div class="embed-block">
+                <div class="embed-label">🎬 סרטון הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">▶️</div>
+                  <div class="embed-placeholder-text">סרטון הסבר</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+              <div class="embed-block">
+                <div class="embed-label">📊 מצגת הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">📑</div>
+                  <div class="embed-placeholder-text">מצגת שלבים</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. תלושי שכר -->
+        <div class="guide-item">
+          <div class="guide-item-header" onclick="toggleGuideItem(this)">
+            <h3>📄 תלושי שכר — 3 חודשים אחרונים</h3>
+            <span class="guide-item-arrow">▼</span>
+          </div>
+          <div class="guide-item-content">
+            <div class="guide-text">
+              <p>תלושי שכר הם הוכחת הכנסה. הבנק מבקש את 3 התלושים האחרונים. ישנם מספר דרכים להשיגם:</p>
+            </div>
+            <ol class="step-list">
+              <li><strong>מהמעסיק ישירות:</strong> פנה למחלקת שכר / HR ובקש תלושי שכר ל-3 החודשים האחרונים</li>
+              <li><strong>ממערכת שכר מקוונת:</strong> חברות רבות משתמשות ב-Hilan, Priority או מערכות דומות — היכנס לפורטל העובד שלך</li>
+              <li><strong>באפליקציית Hilan:</strong> התחבר ← "תלושי שכר" ← בחר חודשים ← הורד PDF</li>
+              <li>הדפס או שמור קבצים דיגיטליים</li>
+              <li>ודא שהתלוש כולל: שם עובד, ח.פ./ת.ז., חודש, ברוטו ונטו</li>
+            </ol>
+            <div class="guide-text"><p><strong>עצמאים:</strong> במקום תלושי שכר, הבנק יבקש שומת מס ודוח רואה חשבון. פנה ליועץ המשכנתאות שלך לפרטים.</p></div>
+            <div class="embed-grid">
+              <div class="embed-block">
+                <div class="embed-label">🎬 סרטון הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">▶️</div>
+                  <div class="embed-placeholder-text">סרטון הסבר</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+              <div class="embed-block">
+                <div class="embed-label">📊 מצגת הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">📑</div>
+                  <div class="embed-placeholder-text">מצגת שלבים</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. אישור יתרה -->
+        <div class="guide-item">
+          <div class="guide-item-header" onclick="toggleGuideItem(this)">
+            <h3>✅ אישור יתרה בחשבון</h3>
+            <span class="guide-item-arrow">▼</span>
+          </div>
+          <div class="guide-item-content">
+            <div class="guide-text">
+              <p>אישור יתרה הוא מסמך רשמי מהבנק המאשר את סכום הכסף בחשבון העו"ש שלך לתאריך מסוים. שונה מדוח תנועות — זהו מכתב רשמי חתום.</p>
+            </div>
+            <ol class="step-list">
+              <li>היכנס לאפליקציית הבנק</li>
+              <li>נווט לסעיף <strong>"שירותים"</strong> או <strong>"מסמכים ואישורים"</strong></li>
+              <li>בחר <strong>"אישור יתרה"</strong> או <strong>"מכתב יתרה"</strong></li>
+              <li>בחר את החשבון הרצוי ואת התאריך</li>
+              <li>לחץ <strong>"הפקה"</strong> — המסמך ייווצר באופן מיידי</li>
+              <li>שמור כ-PDF — המסמך תקף ל-30 יום בדרך כלל</li>
+            </ol>
+            <div class="guide-text"><p><strong>לא מוצא באפליקציה?</strong> ניתן לבקש אישור יתרה גם בסניף הבנק, בדרך כלל ללא עמלה.</p></div>
+            <div class="embed-grid">
+              <div class="embed-block">
+                <div class="embed-label">🎬 סרטון הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">▶️</div>
+                  <div class="embed-placeholder-text">סרטון הסבר</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+              <div class="embed-block">
+                <div class="embed-label">📊 מצגת הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">📑</div>
+                  <div class="embed-placeholder-text">מצגת שלבים</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. רשימה מלאה -->
+        <div class="guide-item">
+          <div class="guide-item-header" onclick="toggleGuideItem(this)">
+            <h3>📋 מסמכים נדרשים לבקשת משכנתא — רשימה מלאה</h3>
+            <span class="guide-item-arrow">▼</span>
+          </div>
+          <div class="guide-item-content">
+            <div class="guide-text"><p>להלן הרשימה המלאה של המסמכים הנדרשים לרוב לצורך הגשת בקשה למשכנתא. הדרישות עשויות להשתנות בין הבנקים.</p></div>
+
+            <div class="doc-category">זיהוי אישי</div>
+            <ul class="doc-list">
+              <li>תעודת זהות + ספח (של שני הלווים אם רלוונטי)</li>
+              <li>אישור תושב / ספח מעודכן</li>
+            </ul>
+
+            <div class="doc-category">הוכחת הכנסה — שכירים</div>
+            <ul class="doc-list">
+              <li>3 תלושי שכר אחרונים</li>
+              <li>אישור מעסיק על הכנסה ותנאי עסקאות (לעיתים)</li>
+            </ul>
+
+            <div class="doc-category">הוכחת הכנסה — עצמאים</div>
+            <ul class="doc-list">
+              <li>שומת מס 2 שנים אחרונות (שומה עצמית + שומה סופית)</li>
+              <li>דוח רווח והפסד + מאזן חתום ע"י רו"ח</li>
+              <li>דוח מקדמות למע"מ</li>
+            </ul>
+
+            <div class="doc-category">חשבון בנק</div>
+            <ul class="doc-list">
+              <li>דפי עו"ש — 3 חודשים אחרונים (כל הדפים)</li>
+              <li>ריכוז יתרות (פיקדונות, חסכונות, קרנות)</li>
+              <li>אישור יתרה לתאריך קרוב</li>
+            </ul>
+
+            <div class="doc-category">מסמכי הנכס</div>
+            <ul class="doc-list">
+              <li>חוזה רכישה / זכרון דברים חתום</li>
+              <li>נסח טאבו עדכני (לא יותר מ-30 יום)</li>
+              <li>אישור זכויות ממינהל מקרקעי ישראל (אם רלוונטי)</li>
+              <li>הערכת שמאי (יוזמן על ידי הבנק בדרך כלל)</li>
+            </ul>
+
+            <div class="doc-category">משכנתא קיימת (אם רלוונטי)</div>
+            <ul class="doc-list">
+              <li>יתרה לסילוק מהבנק הנוכחי</li>
+              <li>לוח סילוקין עדכני</li>
+            </ul>
+            <div class="embed-grid">
+              <div class="embed-block">
+                <div class="embed-label">🎬 סרטון הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">▶️</div>
+                  <div class="embed-placeholder-text">סרטון הסבר</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+              <div class="embed-block">
+                <div class="embed-label">📊 מצגת הסבר</div>
+                <div class="embed-container">
+                  <div class="embed-placeholder-icon">📑</div>
+                  <div class="embed-placeholder-text">מצגת שלבים</div>
+                  <span class="embed-soon-badge">בקרוב</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end body A -->
+    </div><!-- end section A -->
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION B — יתרה לסילוק
+    ═══════════════════════════════════════════════════════ -->
+    <div class="main-section">
+      <div class="main-section-header" onclick="toggleSection(this)">
+        <div class="sec-title">
+          <span>🏛️</span>
+          <span>ב. יתרה לסילוק משכנתא — לפי בנק</span>
+          <span class="sec-badge">7 בנקים</span>
+        </div>
+        <span class="sec-arrow">▼</span>
+      </div>
+      <div class="main-section-body">
+        <div style="padding: 1rem 1.4rem 0.5rem; font-size: 0.88rem; color: #555; line-height: 1.6;">
+          בחר את הבנק שלך וקבל הוראות מפורטות להפקת יתרה לסילוק המשכנתא. מסמך זה נדרש בעת מחזור משכנתא, מכירת נכס, או קבלת הצעה מבנק אחר.
+        </div>
+
+        <!-- בנק הפועלים -->
+        <div style="padding: 0.8rem 1.4rem 0;">
+          <div class="bank-card">
+            <div class="bank-card-header" onclick="toggleBank(this)">
+              <div class="bank-info">
+                <div class="bank-logo-placeholder">פו</div>
+                <div class="bank-name">בנק הפועלים</div>
+              </div>
+              <span class="bank-arrow">▼</span>
+            </div>
+            <div class="bank-card-body">
+              <ol class="step-list">
+                <li>פתח את אפליקציית <strong>הפועלים ניידת</strong> ← היכנס עם סיסמה / טביעת אצבע</li>
+                <li>בתפריט הראשי: לחץ על <strong>"משכנתאות"</strong></li>
+                <li>בחר את מספר תיק המשכנתא הרלוונטי</li>
+                <li>לחץ על <strong>"דוחות ומסמכים"</strong></li>
+                <li>בחר <strong>"יתרה לסילוק"</strong></li>
+                <li>הגדר את <strong>תאריך הסילוק המבוקש</strong> (בדרך כלל 30–60 יום קדימה)</li>
+                <li>לחץ <strong>"הפק"</strong> — קובץ PDF ייווצר ויישלח למייל הרשום</li>
+              </ol>
+              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. במידה ואינך מוצא את האפשרות — פנה לשירות לקוחות: <strong>*2407</strong></div>
+              <div class="embed-grid" style="margin-top:1rem;">
+                <div class="embed-block">
+                  <div class="embed-label">🎬 סרטון הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">▶️</div>
+                    <div class="embed-placeholder-text">סרטון הסבר — בנק הפועלים</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+                <div class="embed-block">
+                  <div class="embed-label">📊 מצגת הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">📑</div>
+                    <div class="embed-placeholder-text">מצגת שלבים</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- בנק לאומי -->
+          <div class="bank-card">
+            <div class="bank-card-header" onclick="toggleBank(this)">
+              <div class="bank-info">
+                <div class="bank-logo-placeholder">לא</div>
+                <div class="bank-name">בנק לאומי</div>
+              </div>
+              <span class="bank-arrow">▼</span>
+            </div>
+            <div class="bank-card-body">
+              <ol class="step-list">
+                <li>היכנס ל<strong>לאומי דיגיטל</strong> (אפליקציה או אתר) עם פרטי הזיהוי שלך</li>
+                <li>עבור לסעיף <strong>"הלוואות ומשכנתאות"</strong> בתפריט הראשי</li>
+                <li>בחר את תיק המשכנתא שלך מהרשימה</li>
+                <li>לחץ על <strong>"מסמכים ואישורים"</strong></li>
+                <li>בחר <strong>"יתרה לסילוק"</strong></li>
+                <li>הזן את תאריך הסילוק הרצוי</li>
+                <li>לחץ <strong>"הפקת מסמך"</strong> ← הורד PDF</li>
+              </ol>
+              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות לאומי: <strong>*5073</strong></div>
+              <div class="embed-grid" style="margin-top:1rem;">
+                <div class="embed-block">
+                  <div class="embed-label">🎬 סרטון הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">▶️</div>
+                    <div class="embed-placeholder-text">סרטון הסבר — בנק לאומי</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+                <div class="embed-block">
+                  <div class="embed-label">📊 מצגת הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">📑</div>
+                    <div class="embed-placeholder-text">מצגת שלבים</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- בנק דיסקונט -->
+          <div class="bank-card">
+            <div class="bank-card-header" onclick="toggleBank(this)">
+              <div class="bank-info">
+                <div class="bank-logo-placeholder">דס</div>
+                <div class="bank-name">בנק דיסקונט</div>
+              </div>
+              <span class="bank-arrow">▼</span>
+            </div>
+            <div class="bank-card-body">
+              <ol class="step-list">
+                <li>פתח את אפליקציית <strong>דיסקונט</strong> ← היכנס עם סיסמה / ביומטריה</li>
+                <li>בתפריט: בחר <strong>"ניהול חשבון"</strong> ← <strong>"הלוואות ומשכנתא"</strong></li>
+                <li>לחץ על תיק המשכנתא שלך</li>
+                <li>בחר <strong>"אפשרויות נוספות"</strong> ← <strong>"יתרה לסילוק"</strong></li>
+                <li>הזן את תאריך הסילוק המבוקש</li>
+                <li>אשר ולחץ <strong>"הפק מסמך"</strong></li>
+                <li>המסמך יישלח למייל הרשום בחשבון</li>
+              </ol>
+              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות: <strong>*2244</strong></div>
+              <div class="embed-grid" style="margin-top:1rem;">
+                <div class="embed-block">
+                  <div class="embed-label">🎬 סרטון הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">▶️</div>
+                    <div class="embed-placeholder-text">סרטון הסבר — דיסקונט</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+                <div class="embed-block">
+                  <div class="embed-label">📊 מצגת הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">📑</div>
+                    <div class="embed-placeholder-text">מצגת שלבים</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- בנק מזרחי טפחות -->
+          <div class="bank-card">
+            <div class="bank-card-header" onclick="toggleBank(this)">
+              <div class="bank-info">
+                <div class="bank-logo-placeholder">מז</div>
+                <div class="bank-name">בנק מזרחי טפחות</div>
+              </div>
+              <span class="bank-arrow">▼</span>
+            </div>
+            <div class="bank-card-body">
+              <ol class="step-list">
+                <li>היכנס לאפליקציית <strong>מזרחי טפחות</strong> (My Mizrahi)</li>
+                <li>בחר בתפריט <strong>"מוצרים ושירותים"</strong></li>
+                <li>לחץ על <strong>"משכנתאות"</strong></li>
+                <li>בחר את תיק המשכנתא שלך</li>
+                <li>לחץ על <strong>"מסמכים ואישורים"</strong> ← <strong>"יתרה לסילוק"</strong></li>
+                <li>הגדר תאריך ויעד סילוק</li>
+                <li>אשר ← קבל PDF במייל תוך דקות</li>
+              </ol>
+              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות: <strong>*3002</strong></div>
+              <div class="embed-grid" style="margin-top:1rem;">
+                <div class="embed-block">
+                  <div class="embed-label">🎬 סרטון הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">▶️</div>
+                    <div class="embed-placeholder-text">סרטון הסבר — מזרחי טפחות</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+                <div class="embed-block">
+                  <div class="embed-label">📊 מצגת הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">📑</div>
+                    <div class="embed-placeholder-text">מצגת שלבים</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- בנק הבינלאומי -->
+          <div class="bank-card">
+            <div class="bank-card-header" onclick="toggleBank(this)">
+              <div class="bank-info">
+                <div class="bank-logo-placeholder">בי</div>
+                <div class="bank-name">בנק הבינלאומי (FIBI)</div>
+              </div>
+              <span class="bank-arrow">▼</span>
+            </div>
+            <div class="bank-card-body">
+              <ol class="step-list">
+                <li>היכנס לאתר או לאפליקציית <strong>בנק הבינלאומי</strong></li>
+                <li>עבור לסעיף <strong>"הלוואות"</strong> ← <strong>"משכנתאות"</strong></li>
+                <li>בחר את תיק המשכנתא הרצוי</li>
+                <li>לחץ על <strong>"דוחות"</strong> ← <strong>"יתרה לסילוק"</strong></li>
+                <li>בחר תאריך סילוק מבוקש</li>
+                <li>לחץ <strong>"הפקה"</strong> ← שמור PDF</li>
+              </ol>
+              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. ניתן גם לפנות לסניף ישירות. שירות לקוחות: <strong>*2146</strong></div>
+              <div class="embed-grid" style="margin-top:1rem;">
+                <div class="embed-block">
+                  <div class="embed-label">🎬 סרטון הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">▶️</div>
+                    <div class="embed-placeholder-text">סרטון הסבר — הבינלאומי</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+                <div class="embed-block">
+                  <div class="embed-label">📊 מצגת הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">📑</div>
+                    <div class="embed-placeholder-text">מצגת שלבים</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- בנק ירושלים -->
+          <div class="bank-card">
+            <div class="bank-card-header" onclick="toggleBank(this)">
+              <div class="bank-info">
+                <div class="bank-logo-placeholder">יר</div>
+                <div class="bank-name">בנק ירושלים</div>
+              </div>
+              <span class="bank-arrow">▼</span>
+            </div>
+            <div class="bank-card-body">
+              <ol class="step-list">
+                <li>היכנס לאתר <strong>בנק ירושלים</strong> (bank.jerusalem.co.il) ← בנקאות אינטרנטית</li>
+                <li>נווט לסעיף <strong>"הלוואות"</strong> ← בחר את המשכנתא שלך</li>
+                <li>לחץ על <strong>"מסמכים"</strong> ← <strong>"יתרה לסילוק"</strong></li>
+                <li>הזן את תאריך הסילוק הרצוי</li>
+                <li>לחץ <strong>"הפקת אישור"</strong></li>
+                <li>שמור PDF שנשלח למייל הרשום</li>
+              </ol>
+              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות: <strong>02-6788555</strong></div>
+              <div class="embed-grid" style="margin-top:1rem;">
+                <div class="embed-block">
+                  <div class="embed-label">🎬 סרטון הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">▶️</div>
+                    <div class="embed-placeholder-text">סרטון הסבר — ירושלים</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+                <div class="embed-block">
+                  <div class="embed-label">📊 מצגת הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">📑</div>
+                    <div class="embed-placeholder-text">מצגת שלבים</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- בנק אוצר החייל -->
+          <div class="bank-card">
+            <div class="bank-card-header" onclick="toggleBank(this)">
+              <div class="bank-info">
+                <div class="bank-logo-placeholder">אח</div>
+                <div class="bank-name">בנק אוצר החייל</div>
+              </div>
+              <span class="bank-arrow">▼</span>
+            </div>
+            <div class="bank-card-body">
+              <ol class="step-list">
+                <li>היכנס לאפליקציית <strong>אוצר החייל</strong> ← זיהוי ביומטרי / סיסמה</li>
+                <li>בתפריט הראשי: לחץ <strong>"הלוואות ומשכנתאות"</strong></li>
+                <li>בחר את תיק המשכנתא שלך</li>
+                <li>לחץ <strong>"מסמכים"</strong> ← <strong>"יתרה לסילוק"</strong></li>
+                <li>הזן תאריך ייחוס לסילוק</li>
+                <li>לחץ <strong>"הפקה ושליחה"</strong> ← תקבל PDF במייל</li>
+              </ol>
+              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות: <strong>*2724</strong></div>
+              <div class="embed-grid" style="margin-top:1rem;">
+                <div class="embed-block">
+                  <div class="embed-label">🎬 סרטון הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">▶️</div>
+                    <div class="embed-placeholder-text">סרטון הסבר — אוצר החייל</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+                <div class="embed-block">
+                  <div class="embed-label">📊 מצגת הסבר</div>
+                  <div class="embed-container">
+                    <div class="embed-placeholder-icon">📑</div>
+                    <div class="embed-placeholder-text">מצגת שלבים</div>
+                    <span class="embed-soon-badge">בקרוב</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end bank cards padding div -->
+      </div><!-- end body B -->
+    </div><!-- end section B -->
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION C — טיפים להצלחה
+    ═══════════════════════════════════════════════════════ -->
+    <div class="main-section">
+      <div class="main-section-header" onclick="toggleSection(this)">
+        <div class="sec-title">
+          <span>💡</span>
+          <span>ג. טיפים להצלחה בתהליך</span>
+          <span class="sec-badge">6 טיפים</span>
+        </div>
+        <span class="sec-arrow">▼</span>
+      </div>
+      <div class="main-section-body">
+        <div class="tip-item">
+          <h3>✅ הכן את המסמכים מראש</h3>
+          <p>אל תמתין לבקשה מהבנק — אסוף את כל המסמכים מספר שבועות לפני הגשת הבקשה. מסמכים חסרים הם הסיבה הנפוצה ביותר לעיכובים באישור משכנתא.</p>
+        </div>
+        <div class="tip-item">
+          <h3>📁 שמור הכל בתיקייה דיגיטלית</h3>
+          <p>צור תיקייה בענן (Google Drive, Dropbox) עם כל המסמכים. כך תוכל לשלוח אותם בקלות לבנקים שונים ולייועץ המשכנתאות, ותמיד תהיה לך גישה מלאה.</p>
+        </div>
+        <div class="tip-item">
+          <h3>🔄 עדכן מסמכים תקופתית</h3>
+          <p>מסמכים רבים תקפים ל-30–90 יום בלבד. ודא שדפי הבנק, אישורי היתרה ותלושי השכר שברשותך לא פגו. הבנק לא יקבל מסמכים ישנים.</p>
+        </div>
+        <div class="tip-item">
+          <h3>📞 בקש עזרה כשצריך</h3>
+          <p>תהליך הגשת המסמכים יכול להיות מסובך. אל תהסס לפנות לשירות הלקוחות של הבנק שלך, או ליועץ המשכנתאות, כשאינך מוצא מסמך מסוים.</p>
+        </div>
+        <div class="tip-item">
+          <h3>🔍 בדוק את המסמכים לפני שליחה</h3>
+          <p>ודא שבכל מסמך מופיעים: שמך המלא, מספר תעודת זהות, מספר חשבון, וחתימה / חותמת הבנק. מסמך שנראה חלקי עלול לגרום לעיכוב.</p>
+        </div>
+        <div class="tip-item">
+          <h3>⏰ שים לב לתוקף יתרה לסילוק</h3>
+          <p>יתרה לסילוק תקפה בדרך כלל ל-30 יום בלבד מהתאריך שהגדרת. הפק אותה רק כשאתה קרוב למועד הסגירה בפועל, אחרת תצטרך לבקש מחדש.</p>
+        </div>
+
+        <div style="padding: 1.2rem 1.4rem;">
+          <div class="embed-grid">
+            <div class="embed-block">
+              <div class="embed-label">🎬 סרטון טיפים</div>
+              <div class="embed-container">
+                <div class="embed-placeholder-icon">▶️</div>
+                <div class="embed-placeholder-text">סרטון טיפים כלליים</div>
+                <span class="embed-soon-badge">בקרוב</span>
+              </div>
+            </div>
+            <div class="embed-block">
+              <div class="embed-label">📊 מצגת מדריך</div>
+              <div class="embed-container">
+                <div class="embed-placeholder-icon">📑</div>
+                <div class="embed-placeholder-text">מצגת מדריך מלא</div>
+                <span class="embed-soon-badge">בקרוב</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- end body C -->
+    </div><!-- end section C -->
+
+  </div><!-- end content-wrap -->
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h3>יש לך שאלה? צור קשר עכשיו</h3>
+    <p>נשמח לעזור — ייעוץ ראשוני חינם וללא התחייבות</p>
+    <a href="index.html#contact" class="btn-cta">לייעוץ אישי</a>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <p>⚠️ <strong>הבהרה:</strong> המידע באתר זה מיועד לצרכי מידע כללי בלבד ואינו מהווה ייעוץ משפטי או פיננסי. ההוראות עשויות להשתנות בהתאם לעדכוני הבנקים. לייעוץ מקצועי, פנה ליחיאל ממן.</p>
+  </div>
+
+  <footer>
+    <span>© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות
+  </footer>
+
+  <script>
+    // ── ACCORDION: main sections ──────────────────────────────────────────────
+    function toggleSection(header) {
+      var body = header.nextElementSibling;
+      var isOpen = body.classList.toggle('open');
+      header.classList.toggle('open', isOpen);
+    }
+
+    // ── ACCORDION: guide items within section A ───────────────────────────────
+    function toggleGuideItem(header) {
+      var content = header.nextElementSibling;
+      var isOpen = content.classList.toggle('open');
+      header.classList.toggle('open', isOpen);
+      header.querySelector('.guide-item-arrow').textContent = isOpen ? '▲' : '▼';
+    }
+
+    // ── ACCORDION: bank cards ─────────────────────────────────────────────────
+    function toggleBank(header) {
+      var body = header.nextElementSibling;
+      var isOpen = body.classList.toggle('open');
+      header.classList.toggle('open', isOpen);
+    }
+
+    // ── HAMBURGER ─────────────────────────────────────────────────────────────
+    var navToggle = document.querySelector('.nav-toggle');
+    var navMenu   = document.querySelector('nav ul');
+    navToggle.addEventListener('click', function() {
+      var isOpen = navMenu.classList.toggle('open');
+      navToggle.textContent = isOpen ? '✕' : '☰';
+      navToggle.setAttribute('aria-label', isOpen ? 'סגור תפריט' : 'פתח תפריט');
+    });
+    document.querySelectorAll('nav ul a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        navMenu.classList.remove('open');
+        navToggle.textContent = '☰';
+        navToggle.setAttribute('aria-label', 'פתח תפריט');
+      });
+    });
+  </script>
+</body>
+</html>
