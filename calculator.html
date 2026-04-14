@@ -172,7 +172,8 @@
       .field label { font-size: 1rem; }
       .track-slider-row label { font-size: 1rem; }
       .income-field label { font-size: 1rem; }
-      .field-row input[type="number"] { font-size: 1rem; }
+      .field-row input[type="number"],
+      .field-row input[type="text"] { font-size: 1rem; }
 
       /* TRACK INPUTS: stack vertically */
       .track-inputs { grid-template-columns: 1fr; }
@@ -246,7 +247,8 @@
     }
     .field-row:focus-within { border-color: #2a6496; }
 
-    .field-row input[type="number"] {
+    .field-row input[type="number"],
+    .field-row input[type="text"] {
       flex: 1;
       border: none;
       padding: 0.7rem 0.9rem;
@@ -515,7 +517,7 @@
         <div class="field">
           <label>שווי הדירה</label>
           <div class="field-row">
-            <input type="number" id="c_propertyValue" value="1500000" min="0" step="10000" oninput="calcClassic()">
+            <input type="text" inputmode="numeric" id="c_propertyValue" value="1,500,000" oninput="fmtInput(this);calcClassic()">
             <div class="field-unit">₪</div>
           </div>
         </div>
@@ -523,7 +525,7 @@
         <div class="field">
           <label>הון עצמי</label>
           <div class="field-row">
-            <input type="number" id="c_downPayment" value="450000" min="0" step="10000" oninput="calcClassic()">
+            <input type="text" inputmode="numeric" id="c_downPayment" value="450,000" oninput="fmtInput(this);calcClassic()">
             <div class="field-unit">₪</div>
           </div>
         </div>
@@ -531,7 +533,7 @@
         <div class="field">
           <label>הכנסה נטו חודשית</label>
           <div class="field-row">
-            <input type="number" id="c_monthlyIncome" placeholder="הכנסה משפחתית נטו" min="0" step="500" oninput="calcClassic()">
+            <input type="text" inputmode="numeric" id="c_monthlyIncome" placeholder="הכנסה משפחתית נטו" oninput="fmtInput(this);calcClassic()">
             <div class="field-unit">₪</div>
           </div>
         </div>
@@ -597,7 +599,7 @@
         <div class="field">
           <label>שווי הנכס</label>
           <div class="field-row">
-            <input type="number" id="propertyValue" value="1500000" min="0" step="10000">
+            <input type="text" inputmode="numeric" id="propertyValue" value="1,500,000">
             <div class="field-unit">₪</div>
           </div>
         </div>
@@ -605,7 +607,15 @@
         <div class="field">
           <label>הון עצמי</label>
           <div class="field-row">
-            <input type="number" id="downPayment" value="450000" min="0" step="10000">
+            <input type="text" inputmode="numeric" id="downPayment" value="450,000">
+            <div class="field-unit">₪</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>הכנסה חודשית נטו</label>
+          <div class="field-row">
+            <input type="text" inputmode="numeric" id="incomeInput" placeholder="הכנסה נטו ₪">
             <div class="field-unit">₪</div>
           </div>
         </div>
@@ -613,7 +623,7 @@
         <div class="field">
           <label>סכום ההלוואה <span id="loanAmountDisplay" style="color:#2a6496;font-weight:700;"></span></label>
           <div class="field-row">
-            <input type="number" id="loanAmount" value="1050000" min="10000" step="10000">
+            <input type="text" inputmode="numeric" id="loanAmount" value="1,050,000">
             <div class="field-unit">₪</div>
           </div>
           <div style="font-size:0.78rem;color:#888;margin-top:0.3rem;">ניתן לערוך ישירות או שייחשב אוטומטית משווי הנכס פחות ההון העצמי</div>
@@ -740,9 +750,6 @@
             <span class="rl">יחס מימון (LTV)</span>
             <span class="rv" id="resLtv">—</span>
           </div>
-          <div class="ltv-bar-wrap">
-            <div class="ltv-bar-bg"><div class="ltv-bar-fill" id="ltvBar" style="width:0%"></div></div>
-          </div>
           <div id="ltvNote" style="font-size:0.78rem;margin-top:0.3rem;color:#888;"></div>
         </div>
 
@@ -752,12 +759,10 @@
             <span class="rl">יחס החזר להכנסה</span>
             <span class="rv income-ratio" id="resIncomeRatio">—</span>
           </div>
-          <div class="income-field">
-            <label>הכנסה חודשית נטו:</label>
-            <input type="number" id="incomeInput" placeholder="הכנסה נטו ₪" min="0" step="500" value="">
-            <span>₪</span>
-          </div>
+          <div id="incomeNote" style="font-size:0.78rem;margin-top:0.3rem;color:#888;"></div>
         </div>
+
+        <div id="adv_warnings"></div>
       </div>
 
       <!-- STRESS TEST -->
@@ -818,10 +823,10 @@
 
     // ── CLASSIC CALCULATOR ────────────────────────────────────────────────────
     function calcClassic() {
-      var propVal = parseFloat(document.getElementById('c_propertyValue').value)  || 0;
-      var downPay = parseFloat(document.getElementById('c_downPayment').value)    || 0;
-      var income  = parseFloat(document.getElementById('c_monthlyIncome').value)  || 0;
-      var years   = parseFloat(document.getElementById('c_loanYears').value)      || 25;
+      var propVal = parseInput('c_propertyValue');
+      var downPay = parseInput('c_downPayment');
+      var income  = parseInput('c_monthlyIncome');
+      var years   = parseFloat(document.getElementById('c_loanYears').value) || 25;
       var loan    = propVal - downPay;
 
       if (loan <= 0 || propVal <= 0) {
@@ -874,6 +879,15 @@
 
     // ── HELPERS ──────────────────────────────────────────────────────────────
     const fmt = n => n < 0 ? '—' : '₪ ' + Math.round(n).toLocaleString('he-IL');
+
+    function fmtInput(el) {
+      var digits = el.value.replace(/[^\d]/g, '');
+      if (!digits) { el.value = ''; return; }
+      el.value = parseInt(digits, 10).toLocaleString('en-US');
+    }
+    function parseInput(id) {
+      return parseFloat((document.getElementById(id).value || '').replace(/,/g, '')) || 0;
+    }
 
     function pmt(rate, nper, pv) {
       // Standard annuity formula
@@ -933,8 +947,8 @@
     const loanAmt  = document.getElementById('loanAmount');
 
     function syncLoanAmount() {
-      const val = +propVal.value - +downPay.value;
-      if (val > 0) loanAmt.value = val;
+      const val = parseInput('propertyValue') - parseInput('downPayment');
+      if (val > 0) loanAmt.value = val.toLocaleString('en-US');
       calculate();
     }
     propVal.addEventListener('input', syncLoanAmount);
@@ -947,7 +961,7 @@
     const cpiPct   = document.getElementById('cpiPct');
 
     function calculate() {
-      const loan    = +loanAmt.value;
+      const loan    = parseInput('loanAmount');
       const years   = +document.getElementById('loanYears').value;
       const months  = years * 12;
 
@@ -967,6 +981,8 @@
         document.getElementById('resTotal').textContent     = '—';
         document.getElementById('resInterest').textContent  = '—';
         document.getElementById('resLtv').textContent       = '—';
+        document.getElementById('adv_warnings').innerHTML   = '';
+        document.getElementById('incomeNote').textContent   = '';
         document.getElementById('stressBody').innerHTML =
           '<tr><td colspan="3" style="color:#888;text-align:center;padding:1rem;">יש לוודא סכום תמהיל = 100%</td></tr>';
         return;
@@ -988,14 +1004,11 @@
       document.getElementById('resInterest').textContent = fmt(interest);
 
       // LTV
-      const propValue = +propVal.value || loan;
+      const propValue = parseInput('propertyValue') || loan;
       const ltv = propValue > 0 ? (loan / propValue * 100) : 0;
-      const ltvEl    = document.getElementById('resLtv');
-      const ltvBar   = document.getElementById('ltvBar');
-      const ltvNote  = document.getElementById('ltvNote');
+      const ltvEl   = document.getElementById('resLtv');
+      const ltvNote = document.getElementById('ltvNote');
       ltvEl.textContent = ltv.toFixed(1) + '%';
-      ltvBar.style.width = Math.min(ltv, 100) + '%';
-      ltvBar.className = 'ltv-bar-fill' + (ltv > 80 ? ' danger' : ltv > 75 ? ' warn' : '');
       if (ltv > 80) {
         ltvEl.style.color = '#c0392b';
         ltvNote.textContent = 'יחס מימון גבוה מ-80% — בדרך כלל דורש ביטוח משכנתא';
@@ -1011,17 +1024,43 @@
       }
 
       // INCOME RATIO
-      const income = +document.getElementById('incomeInput').value;
-      const ratioEl = document.getElementById('resIncomeRatio');
+      const income = parseInput('incomeInput');
+      const ratioEl    = document.getElementById('resIncomeRatio');
+      const incomeNote = document.getElementById('incomeNote');
+      const advWarn    = document.getElementById('adv_warnings');
+      var warnings = '';
+
       if (income > 0) {
         const ratio = monthly / income * 100;
         ratioEl.textContent = ratio.toFixed(1) + '%';
         ratioEl.className = 'rv income-ratio ' +
           (ratio > 40 ? 'danger' : ratio > 33 ? 'warn' : 'ok');
+        if (ratio > 40) {
+          incomeNote.textContent = 'יחס גבוה מדי — עלול לפגוע באישור ההלוואה';
+          incomeNote.style.color = '#c0392b';
+          warnings += '<div class="warn-box red">⚠️ יחס ההחזר עולה על 40% — ההחזר החודשי גבוה מדי ביחס להכנסה</div>';
+        } else if (ratio > 33) {
+          incomeNote.textContent = 'יחס גבוה — מומלץ לייעץ עם מומחה';
+          incomeNote.style.color = '#e67e22';
+          warnings += '<div class="warn-box orange">שים לב: יחס ההחזר מעל 33% — מומלץ לייעץ עם מומחה</div>';
+        } else {
+          incomeNote.textContent = 'יחס תקין';
+          incomeNote.style.color = '#27ae60';
+        }
       } else {
         ratioEl.textContent = '—';
         ratioEl.className = 'rv income-ratio';
+        incomeNote.textContent = '';
       }
+
+      // LTV warnings
+      if (ltv > 80) {
+        warnings = '<div class="warn-box red">⚠️ אחוז המימון עולה על 80% — דורש בדרך כלל ביטוח משכנתא</div>' + warnings;
+      } else if (ltv > 75) {
+        warnings = '<div class="warn-box orange">שים לב: אחוז המימון מעל 75% — בדוק עם הבנק</div>' + warnings;
+      }
+
+      advWarn.innerHTML = warnings;
 
       // STRESS TEST
       const stressDeltas = [1, 2, 3];
@@ -1043,6 +1082,11 @@
     // Attach all remaining inputs
     ['loanYears','primeRate','primeSpread','fixedRate','cpiRate','cpiInflation','incomeInput']
       .forEach(id => document.getElementById(id).addEventListener('input', calculate));
+
+    // Format monetary text inputs (advanced calc) as user types
+    ['propertyValue','downPayment','incomeInput','loanAmount'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function() { fmtInput(this); });
+    });
 
     // Init
     calcClassic();
