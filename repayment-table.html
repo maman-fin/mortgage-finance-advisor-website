@@ -196,13 +196,13 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.88rem;
-      min-width: 520px;
+      font-size: clamp(0.75rem, 2vw, 0.88rem);
+      min-width: 360px;
     }
     thead th {
       background: #1a3a5c;
       color: #fff;
-      padding: 0.7rem 0.9rem;
+      padding: clamp(0.4rem, 1.5vw, 0.7rem) clamp(0.35rem, 1.5vw, 0.7rem);
       text-align: right;
       font-weight: 700;
       white-space: nowrap;
@@ -210,7 +210,7 @@
     tbody tr:nth-child(even) { background: #f5f8fc; }
     tbody tr:hover { background: #e8f0f8; }
     tbody td {
-      padding: 0.55rem 0.9rem;
+      padding: clamp(0.35rem, 1.2vw, 0.55rem) clamp(0.35rem, 1.5vw, 0.7rem);
       border-bottom: 1px solid #eef2f7;
       text-align: right;
       white-space: nowrap;
@@ -226,8 +226,8 @@
       background: #e8f0f8 !important;
       font-weight: 700;
       color: #1a3a5c;
-      font-size: 0.82rem;
-      padding: 0.35rem 0.9rem;
+      font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+      padding: clamp(0.25rem, 1vw, 0.35rem) clamp(0.35rem, 1.5vw, 0.7rem);
       border-bottom: 2px solid #c5d8ec;
     }
 
