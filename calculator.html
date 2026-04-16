@@ -402,18 +402,20 @@
     .income-ratio.danger { color: #c0392b; }
 
     /* STRESS TEST */
-    .stress-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .stress-table { width: 100%; border-collapse: collapse; font-size: clamp(0.72rem, 2vw, 0.88rem); }
     .stress-table th {
       background: #eaf0f8;
       color: #1a3a5c;
       padding: 0.55rem 0.8rem;
       text-align: right;
       font-weight: 700;
+      white-space: nowrap;
     }
     .stress-table td {
-      padding: 0.55rem 0.8rem;
+      padding: 0.55rem clamp(0.35rem, 1.5vw, 0.8rem);
       border-bottom: 1px solid #f0f2f5;
       text-align: right;
+      white-space: nowrap;
     }
     .stress-table tr:last-child td { border-bottom: none; }
     .stress-table .delta { color: #c0392b; font-weight: 600; }
