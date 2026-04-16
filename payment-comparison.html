@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>טבלת השוואת החזרי משכנתא | יחיאל ממן</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #222;
+      background: #f7f8fa;
+      direction: rtl;
+    }
+
+    /* NAV */
+    nav {
+      background: #1a3a5c;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 0.4rem 0.5rem;
+      line-height: 1;
+    }
+
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #142d48;
+      min-width: 200px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      border-radius: 0 0 8px 8px;
+      list-style: none;
+      padding: 0.3rem 0;
+      z-index: 200;
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li a {
+      display: block;
+      padding: 0.65rem 1.1rem;
+      color: #cde;
+      text-decoration: none;
+      font-size: 0.92rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      white-space: nowrap;
+      transition: color 0.2s, background 0.2s;
+    }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+      color: #fff;
+      text-align: center;
+      padding: 3.5rem 1rem 3rem;
+    }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; }
+
+    /* LAYOUT */
+    .page-wrapper {
+      max-width: 960px;
+      margin: 2.5rem auto 3rem;
+      padding: 0 1rem;
+    }
+
+    /* CARD */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.8rem;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+      margin-bottom: 1.5rem;
+    }
+
+    /* RATE SELECTOR */
+    .rate-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1.6rem;
+      flex-wrap: wrap;
+    }
+    .rate-bar label {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a3a5c;
+    }
+    .rate-wrap {
+      display: flex;
+      align-items: center;
+      border: 2px solid #e8b800;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .rate-wrap input[type="number"] {
+      width: 80px;
+      border: none;
+      padding: 0.55rem 0.7rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: inherit;
+      text-align: center;
+      outline: none;
+      direction: ltr;
+      background: transparent;
+    }
+    .rate-wrap .pct {
+      background: #e8b800;
+      color: #1a2a00;
+      font-weight: 800;
+      padding: 0.55rem 0.65rem;
+      font-size: 1rem;
+    }
+    .rate-hint {
+      font-size: 0.83rem;
+      color: #888;
+    }
+
+    /* TABLE */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid #c5d8ec;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(0.78rem, 2vw, 0.92rem);
+      min-width: 420px;
+    }
+    thead th {
+      background: #1a3a5c;
+      color: #fff;
+      padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.4rem, 1.5vw, 0.8rem);
+      text-align: center;
+      font-weight: 700;
+      white-space: nowrap;
+      border-left: 1px solid #2a4e72;
+    }
+    thead th:last-child { border-left: none; }
+    thead th.col-amount {
+      text-align: right;
+      background: #142d48;
+    }
+    tbody tr:nth-child(even) { background: #f0f5fb; }
+    tbody tr:hover { background: #ddeaf8; }
+    tbody td {
+      padding: clamp(0.4rem, 1.2vw, 0.6rem) clamp(0.4rem, 1.5vw, 0.8rem);
+      border-bottom: 1px solid #e0e9f4;
+      border-left: 1px solid #e0e9f4;
+      text-align: center;
+      white-space: nowrap;
+      color: #333;
+    }
+    tbody td:last-child { border-left: none; }
+    tbody tr:last-child td { border-bottom: none; }
+    td.col-amount {
+      font-weight: 700;
+      color: #1a3a5c;
+      text-align: right;
+      background: #f7fafd;
+      border-left: 2px solid #c5d8ec;
+    }
+
+    /* DISCLAIMER */
+    .disclaimer {
+      max-width: 960px;
+      margin: 0 auto 3rem;
+      padding: 0 1rem;
+    }
+    .disclaimer p {
+      background: #f0f5fb;
+      border: 1px solid #c5d8ec;
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.82rem;
+      color: #3a5a7a;
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #111e2e;
+      color: #889;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+    footer span { color: #aab; }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      nav .logo { font-size: 1rem; }
+      .nav-toggle { display: block; }
+      nav ul {
+        display: none;
+        position: absolute;
+        top: 64px; right: 0; left: 0;
+        flex-direction: column;
+        gap: 0;
+        background: #1a3a5c;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 99;
+      }
+      nav ul.open { display: flex; }
+      nav ul li a { display: block; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 1rem; }
+
+      .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+      .dropdown-menu { position: static; display: none; box-shadow: none; border-radius: 0; background: rgba(0,0,0,0.2); min-width: unset; }
+      .dropdown-menu.open { display: block; }
+      .dropdown-menu li a { padding-right: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+      .page-header { padding: 1.2rem 1rem 1rem; }
+      .page-header h1 { font-size: 1.5rem; }
+      .page-wrapper { margin: 0.8rem auto 2rem; }
+      .card { padding: 1.2rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+    <ul>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="index.html#testimonials">המלצות</a></li>
+      <li class="dropdown">
+        <a href="#" class="active">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+          <li><a href="payment-comparison.html" class="active">טבלת השוואת החזרי משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+        </ul>
+      </li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1>טבלת השוואת החזרי משכנתא</h1>
+    <p>בחר ריבית שנתית וראה מיידית את ההחזר החודשי לכל סכום הלוואה ותקופה</p>
+  </div>
+
+  <div class="page-wrapper">
+    <div class="card">
+
+      <!-- RATE SELECTOR -->
+      <div class="rate-bar">
+        <label for="rateInput">ריבית שנתית:</label>
+        <div class="rate-wrap">
+          <input type="number" id="rateInput" value="4.9" step="0.1" min="0.1" max="20" oninput="buildTable()">
+          <div class="pct">%</div>
+        </div>
+        <span class="rate-hint">שנה את הריבית כדי לעדכן את כל הנתונים</span>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <table id="compTable">
+          <thead>
+            <tr id="headerRow"></tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <p>⚠️ <strong>הבהרה:</strong> הנתונים בטבלה מחושבים לפי שיטת שפיצר (ריבית קבועה) ומוצגים לצרכי מידע בלבד. הם אינם מהווים ייעוץ פיננסי מחייב. לייעוץ מקצועי פנה ליחיאל ממן.</p>
+  </div>
+
+  <footer>
+    <span>© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות
+  </footer>
+
+  <script>
+    var AMOUNTS = [100000, 200000, 300000, 400000, 500000, 600000, 650000, 700000, 750000, 800000, 850000, 900000, 950000, 1000000, 1200000, 1500000, 2000000];
+    var YEARS   = [5, 10, 15, 20, 25, 30];
+
+    function pmt(r, n, pv) {
+      if (r === 0) return pv / n;
+      return pv * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+    }
+
+    function fmtAmt(n) {
+      return '\u200E₪\u202f' + Math.round(n).toLocaleString('he-IL');
+    }
+
+    function fmtLoan(n) {
+      return n.toLocaleString('he-IL');
+    }
+
+    function buildTable() {
+      var rate = parseFloat(document.getElementById('rateInput').value) || 0;
+      var r    = rate / 100 / 12;
+
+      // Header
+      var hRow = document.getElementById('headerRow');
+      hRow.innerHTML = '<th class="col-amount">סכום \\ שנים</th>';
+      YEARS.forEach(function(y) {
+        hRow.innerHTML += '<th>' + y + '</th>';
+      });
+
+      // Body
+      var tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      AMOUNTS.forEach(function(loan) {
+        var tr = '<tr>';
+        tr += '<td class="col-amount">' + fmtLoan(loan) + '</td>';
+        YEARS.forEach(function(y) {
+          var monthly = pmt(r, y * 12, loan);
+          tr += '<td>' + fmtAmt(monthly) + '</td>';
+        });
+        tr += '</tr>';
+        tbody.innerHTML += tr;
+      });
+    }
+
+    buildTable();
+
+    // Hamburger
+    var navToggle = document.querySelector('.nav-toggle');
+    var navMenu   = document.querySelector('nav ul');
+
+    function closeNav() {
+      navMenu.classList.remove('open');
+      navToggle.textContent = '☰';
+      navToggle.setAttribute('aria-label', 'פתח תפריט');
+      document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); });
+    }
+
+    navToggle.addEventListener('click', function() {
+      var isOpen = navMenu.classList.toggle('open');
+      navToggle.textContent = isOpen ? '✕' : '☰';
+      navToggle.setAttribute('aria-label', isOpen ? 'סגור תפריט' : 'פתח תפריט');
+      if (!isOpen) { document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); }); }
+    });
+
+    document.querySelectorAll('.dropdown > a').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          var submenu = this.parentElement.querySelector('.dropdown-menu');
+          if (submenu) submenu.classList.toggle('open');
+        }
+      });
+    });
+
+    document.querySelectorAll('nav ul li:not(.dropdown) > a, .dropdown-menu a').forEach(function(link) {
+      link.addEventListener('click', closeNav);
+    });
+  </script>
+</body>
+</html>
