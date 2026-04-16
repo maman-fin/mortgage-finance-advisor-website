@@ -852,7 +852,7 @@
       var pti      = income > 0 ? monthly / income * 100 : 0;
 
       document.getElementById('c_resMonthly').textContent    = Math.round(monthly).toLocaleString('he-IL');
-      document.getElementById('c_resLoanAmount').textContent = '₪ ' + Math.round(loan).toLocaleString('he-IL');
+      document.getElementById('c_resLoanAmount').textContent = '\u200E₪ ' + Math.round(loan).toLocaleString('he-IL');
 
       var ltvEl = document.getElementById('c_resLtv');
       ltvEl.textContent  = ltv.toFixed(1) + '%';
@@ -882,7 +882,7 @@
     // Classic calc runs after all function declarations are hoisted
 
     // ── HELPERS ──────────────────────────────────────────────────────────────
-    const fmt = n => n < 0 ? '—' : '₪ ' + Math.round(n).toLocaleString('he-IL');
+    const fmt = n => n < 0 ? '—' : '\u200E₪ ' + Math.round(n).toLocaleString('he-IL');
 
     function fmtInput(el) {
       var digits = el.value.replace(/[^\d]/g, '');
@@ -1076,8 +1076,8 @@
         const diff = stressMonthly - monthly;
         rows += `<tr>
           <td>פריים +${d}%</td>
-          <td style="font-weight:700;">₪ ${Math.round(stressMonthly).toLocaleString('he-IL')}</td>
-          <td class="delta">+₪ ${Math.round(diff).toLocaleString('he-IL')}</td>
+          <td style="font-weight:700;">\u200E₪ ${Math.round(stressMonthly).toLocaleString('he-IL')}</td>
+          <td class="delta">+\u200E₪ ${Math.round(diff).toLocaleString('he-IL')}</td>
         </tr>`;
       });
       document.getElementById('stressBody').innerHTML = rows;
