@@ -144,6 +144,13 @@
       font-size: 0.83rem;
       color: #888;
     }
+    .click-hint {
+      text-align: center;
+      font-size: 0.82rem;
+      color: #2a6496;
+      margin-bottom: 1rem;
+      opacity: 0.85;
+    }
 
     /* TABLE */
     .table-wrap {
@@ -190,6 +197,77 @@
       background: #f7fafd;
       border-left: 2px solid #c5d8ec;
     }
+    td.pay-cell:hover { background: #c8dff5 !important; }
+    td.pay-cell.selected {
+      background: #1a3a5c !important;
+      color: #f5c200 !important;
+      font-weight: 700;
+      outline: 2px solid #f5c200;
+      outline-offset: -2px;
+    }
+
+    /* INCOME BANNER */
+    .income-banner {
+      display: none;
+      margin-bottom: 1.4rem;
+      border-radius: 10px;
+      border: 2px solid #f5c200;
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a5a8c 100%);
+      box-shadow: 0 4px 18px rgba(26,58,92,0.22), inset 0 0 0 1px rgba(245,194,0,0.2);
+      animation: fadeIn 0.22s ease;
+      overflow: hidden;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .income-banner.visible { display: block; }
+    .income-banner-inner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.3rem;
+      padding: 1rem 2.5rem 1rem 1.2rem;
+      border-right: 5px solid #f5c200;
+    }
+    .income-banner .ib-context {
+      font-size: 0.83rem;
+      color: #aac8e8;
+    }
+    .income-banner .ib-main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .income-banner .ib-label {
+      font-size: 1rem;
+      color: #ddeeff;
+      font-weight: 600;
+    }
+    .income-banner .ib-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f5c200;
+      white-space: nowrap;
+    }
+    .income-banner .ib-close {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.5rem;
+      background: none;
+      border: none;
+      color: rgba(245,194,0,0.6);
+      font-size: 0.75rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.2rem 0.3rem;
+      transition: color 0.2s;
+    }
+    .income-banner .ib-close:hover { color: #f5c200; }
 
     /* DISCLAIMER */
     .disclaimer {
@@ -295,6 +373,19 @@
         </div>
         <span class="rate-hint">שנה את הריבית כדי לעדכן את כל הנתונים</span>
       </div>
+      <div class="click-hint">לחץ על סכום ההחזר בטבלה כדי לקבל את סכום ההכנסה הנדרשת</div>
+
+      <!-- INCOME BANNER -->
+      <div class="income-banner" id="incomeBanner">
+        <div class="income-banner-inner">
+          <button class="ib-close" onclick="closeBanner()" aria-label="סגור">✕</button>
+          <div class="ib-context" id="ibContext"></div>
+          <div class="ib-main">
+            <span class="ib-label">הכנסה נטו נדרשת:</span>
+            <span class="ib-value" id="ibValue"></span>
+          </div>
+        </div>
+      </div>
 
       <!-- TABLE -->
       <div class="table-wrap">
@@ -358,11 +449,33 @@
         tr += '<td class="col-amount">' + fmtLoan(loan) + '</td>';
         YEARS.forEach(function(y) {
           var monthly = pmt(r, y * 12, loan);
-          tr += '<td>' + fmtAmt(monthly) + '</td>';
+          tr += '<td class="pay-cell" data-monthly="' + monthly.toFixed(2) + '" data-loan="' + loan + '" data-years="' + y + '" style="cursor:pointer">' + fmtAmt(monthly) + '</td>';
         });
         tr += '</tr>';
         tbody.innerHTML += tr;
       });
+
+      // Attach click listeners
+      document.querySelectorAll('.pay-cell').forEach(function(td) {
+        td.addEventListener('click', function() {
+          document.querySelectorAll('.pay-cell.selected').forEach(function(el) { el.classList.remove('selected'); });
+          td.classList.add('selected');
+          var monthly = parseFloat(td.dataset.monthly);
+          var income  = monthly / 0.4;
+          var loan    = parseInt(td.dataset.loan);
+          var years   = td.dataset.years;
+          document.getElementById('ibContext').textContent =
+            'הלוואה: ' + fmtLoan(loan) + ' ₪  |  ' + years + ' שנים  |  החזר חודשי: ' + fmtAmt(monthly);
+          document.getElementById('ibValue').textContent = fmtAmt(income);
+          document.getElementById('incomeBanner').classList.add('visible');
+          document.getElementById('incomeBanner').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      });
+    }
+
+    function closeBanner() {
+      document.getElementById('incomeBanner').classList.remove('visible');
+      document.querySelectorAll('.pay-cell.selected').forEach(function(el) { el.classList.remove('selected'); });
     }
 
     buildTable();
