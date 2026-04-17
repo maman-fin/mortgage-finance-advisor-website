@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דו"ח ריכוז נתוני אשראי | יחיאל ממן</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #f7f8fa; direction: rtl; }
+
+    /* ── NAV ── */
+    nav { background: #1a3a5c; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; }
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 220px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ── PAGE HEADER ── */
+    .page-header { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 3.5rem 1rem 3rem; }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+    /* ── MAIN CONTENT ── */
+    .content-wrap { max-width: 860px; margin: 2.5rem auto 1rem; padding: 0 1rem; }
+
+    /* ── INTRO BOX ── */
+    .intro-box { background: #fff; border-radius: 12px; padding: 1.6rem 1.8rem; margin-bottom: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-right: 5px solid #2a6496; }
+    .intro-box h2 { font-size: 1.1rem; color: #1a3a5c; margin-bottom: 0.6rem; }
+    .intro-box p { font-size: 0.93rem; color: #444; line-height: 1.7; margin-bottom: 0.4rem; }
+    .intro-box p:last-child { margin-bottom: 0; }
+    .alias-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+    .alias-tag { background: #e8f0fb; color: #1a3a5c; font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.7rem; border-radius: 20px; border: 1px solid #c5d8ec; }
+
+    /* ── SECTION LABEL ── */
+    .section-label { font-size: 1.25rem; font-weight: 800; color: #1a3a5c; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem; }
+    .section-label::after { content: ''; flex: 1; height: 2px; background: #dde8f4; border-radius: 1px; }
+
+    /* ── CARD ── */
+    .bank-card { border: 1px solid #dde8f2; border-radius: 12px; overflow: hidden; margin-bottom: 1.2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    .bank-card-header { background: #1a3a5c; padding: 1rem 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
+    .bank-info { display: flex; align-items: center; gap: 0.9rem; }
+    .bank-meta { display: flex; flex-direction: column; gap: 0.1rem; }
+    .bank-name { font-size: 1rem; font-weight: 700; color: #fff; }
+    .bank-phone { font-size: 0.82rem; color: #aad4f5; direction: ltr; text-align: right; }
+    .bank-arrow { font-size: 0.9rem; color: #fff; transition: transform 0.25s; }
+    .bank-card-header.open .bank-arrow { transform: rotate(180deg); }
+    .bank-card-body { display: none; padding: 1.4rem 1.5rem; background: #fff; }
+    .bank-card-body.open { display: block; }
+
+    /* ── CHANNEL TABS ── */
+    .channel-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+    .channel-tab { background: #f0f4f9; border: 1px solid #c8d8ec; border-radius: 20px; padding: 0.35rem 0.9rem; font-size: 0.82rem; font-weight: 700; color: #1a3a5c; cursor: pointer; transition: all 0.18s; user-select: none; }
+    .channel-tab.active, .channel-tab:hover { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
+    .channel-content { display: none; }
+    .channel-content.active { display: block; }
+
+    /* ── STEP LIST ── */
+    .step-list { counter-reset: step; padding: 0; list-style: none; margin-bottom: 0.8rem; }
+    .step-list li { counter-increment: step; display: flex; gap: 0.85rem; align-items: flex-start; padding: 0.6rem 0; border-bottom: 1px solid #f0f2f5; font-size: 0.91rem; color: #444; line-height: 1.55; }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before { content: counter(step); flex-shrink: 0; width: 26px; height: 26px; background: #1a3a5c; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; margin-top: 1px; }
+    .step-list li strong { color: #1a3a5c; }
+    .step-list a { color: #1a3a5c; font-weight: 700; text-decoration: none; border-bottom: 2px solid #1a3a5c; transition: color 0.18s, border-color 0.18s; }
+    .step-list a:hover { color: #2a6496; border-color: #2a6496; }
+
+    /* ── NOTE / PHONE BOXES ── */
+    .note-box { background: #fff8e6; border: 1px solid #f0d080; border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.85rem; color: #7a5010; margin-top: 0.9rem; line-height: 1.6; }
+    .note-box strong { color: #5a3a00; }
+    .phone-box { background: #f0f7e6; border: 1px solid #b8daa0; border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.85rem; color: #2d5a10; margin-top: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+    .phone-box .ph-icon { font-size: 1.1rem; }
+
+    /* ── INFO LIST ── */
+    .info-list { list-style: none; padding: 0; margin: 0; }
+    .info-list li { display: flex; gap: 0.7rem; padding: 0.55rem 0; border-bottom: 1px solid #f0f2f5; font-size: 0.91rem; color: #444; }
+    .info-list li:last-child { border-bottom: none; }
+    .info-list li .il-icon { flex-shrink: 0; font-size: 1rem; }
+
+    /* ── CTA ── */
+    .cta-section { background: #1a3a5c; padding: 3rem 1rem; text-align: center; color: #fff; margin-top: 1.5rem; }
+    .cta-section h3 { font-size: 1.5rem; margin-bottom: 0.6rem; }
+    .cta-section p { opacity: 0.85; margin-bottom: 1.4rem; }
+    .btn-cta { display: inline-block; background: #e8a020; color: #fff; padding: 0.85rem 2.2rem; border-radius: 6px; text-decoration: none; font-size: 1rem; font-weight: 700; transition: background 0.2s; }
+    .btn-cta:hover { background: #c98010; }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer { max-width: 860px; margin: 1.5rem auto 2rem; padding: 0 1rem; }
+    .disclaimer p { background: #fff8e6; border: 1px solid #f0d080; border-radius: 8px; padding: 0.85rem 1.1rem; font-size: 0.82rem; color: #7a5c10; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer { background: #111e2e; color: #889; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
+    footer span { color: #aab; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      nav .logo { font-size: 1rem; }
+      .nav-toggle { display: block; }
+      nav ul { display: none; position: absolute; top: 64px; right: 0; left: 0; flex-direction: column; gap: 0; background: #1a3a5c; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 99; }
+      nav ul.open { display: flex; }
+      nav ul li a { display: block; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 1rem; }
+      .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+      .dropdown-menu { position: static; display: none; box-shadow: none; border-radius: 0; background: rgba(0,0,0,0.2); min-width: unset; }
+      .dropdown-menu.open { display: block; }
+      .dropdown-menu li a { padding-right: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+      .page-header { padding: 1.5rem 1rem 1.2rem; }
+      .page-header h1 { font-size: 1.6rem; }
+      .content-wrap { margin: 1rem auto; }
+      .bank-card-body { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+    <ul>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="index.html#testimonials">המלצות</a></li>
+      <li class="dropdown">
+        <a href="#">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+          <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="active">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+          <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
+          <li><a href="credit-report.html" class="active">דו"ח ריכוז נתוני אשראי</a></li>
+        </ul>
+      </li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>דו"ח ריכוז נתוני אשראי</h1>
+    <p>כיצד להפיק את הדו"ח האישי שלכם ממערכת נתוני האשראי של בנק ישראל</p>
+  </div>
+
+  <div class="content-wrap">
+
+    <div class="intro-box">
+      <h2>מהו דו"ח ריכוז נתוני אשראי?</h2>
+      <p>דו"ח ריכוז נתוני אשראי הוא מסמך המרכז את כל הנתונים הפיננסיים שלכם — הלוואות, כרטיסי אשראי, משכנתאות, חובות וגם התנהגות תשלומים לאורך שנים. הבנקים משתמשים בו כדי להעריך את מהימנותכם האשראית לפני מתן הלוואה.</p>
+      <p>הדו"ח מופק על ידי <strong>מערכת נתוני האשראי של בנק ישראל</strong>, פעם אחת בשנה ללא עלות.</p>
+      <div class="alias-tags">
+        <span class="alias-tag">מאגר נתוני האשראי</span>
+        <span class="alias-tag">לשכת האשראי של בנק ישראל</span>
+        <span class="alias-tag">creditdata.org.il</span>
+      </div>
+    </div>
+
+    <div class="section-label">🏛️ הפקת הדו"ח</div>
+
+    <div class="bank-card">
+      <div class="bank-card-header open" style="cursor:default;">
+        <div class="bank-info">
+          <div style="width:46px;height:46px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.4rem;">🏛️</div>
+          <div class="bank-meta">
+            <div class="bank-name">מערכת נתוני האשראי — בנק ישראל</div>
+            <div class="bank-phone" style="direction:rtl;text-align:right;">טלפון: *6194 | אתר: creditdata.org.il</div>
+          </div>
+        </div>
+      </div>
+      <div class="bank-card-body open">
+        <div class="channel-tabs">
+          <div class="channel-tab active" onclick="switchTab(this, 'credit-online')">דרך האתר (מומלץ)</div>
+          <div class="channel-tab" onclick="switchTab(this, 'credit-phone')">דרך הטלפון</div>
+          <div class="channel-tab" onclick="switchTab(this, 'credit-info')">מה כולל הדו"ח?</div>
+        </div>
+
+        <div class="channel-content active" id="credit-online">
+          <ol class="step-list">
+            <li>היכנסו לאתר מערכת נתוני האשראי: <a href="https://www.creditdata.org.il" target="_blank" rel="noopener">כניסה למערכת נתוני האשראי</a></li>
+            <li>לחצו על <strong>כניסה לאזור האישי</strong> (פינה שמאלית עליונה)</li>
+            <li>למשתמשים חדשים — לחצו <strong>הרשמה</strong> ואמתו זהות באמצעות שניים מהמסמכים הבאים: תעודת זהות, דרכון, או כרטיס אשראי</li>
+            <li>לאחר הכניסה בחרו <strong>דו"ח ריכוז נתונים</strong></li>
+            <li>בחרו את <strong>תקופת הדו"ח</strong>: 3 שנים</li>
+            <li>לחצו <strong>הפק דו"ח</strong> — הדו"ח יתקבל מיידית</li>
+          </ol>
+          <div class="note-box"><strong>חינם!</strong> כל אזרח זכאי לדו"ח אחד ללא תשלום בכל שנה קלנדרית (1 בינואר – 31 בדצמבר). דו"ח נוסף באותה שנה כרוך בתשלום.</div>
+        </div>
+
+        <div class="channel-content" id="credit-phone">
+          <div class="phone-box">
+            <span class="ph-icon">📞</span>
+            <span>התקשרו למוקד מערכת נתוני האשראי בטלפון <strong>*6194</strong> ובקשו הפקת דו"ח ריכוז נתוני אשראי. הנציג ידריך אתכם בתהליך.</span>
+          </div>
+          <div class="note-box" style="margin-top:0.8rem;"><strong>שימו לב:</strong> גם בטלפון הדו"ח הראשון בשנה הוא ללא עלות.</div>
+        </div>
+
+        <div class="channel-content" id="credit-info">
+          <p style="font-size:0.91rem;color:#555;margin-bottom:0.8rem;">הדו"ח מרכז את כל המידע הקיים עליכם במאגר נתוני האשראי, ובין היתר:</p>
+          <ul class="info-list">
+            <li><span class="il-icon">💳</span><span><strong>כרטיסי אשראי</strong> — מסגרות אשראי ויתרות</span></li>
+            <li><span class="il-icon">🏠</span><span><strong>משכנתאות והלוואות</strong> — יתרות, תנאים, מועדי פירעון</span></li>
+            <li><span class="il-icon">📅</span><span><strong>היסטוריית תשלומים</strong> — עמידה בתשלומים לאורך זמן</span></li>
+            <li><span class="il-icon">🔍</span><span><strong>פניות לבדיקת אשראי</strong> — מי בדק את הנתונים שלכם ומתי</span></li>
+            <li><span class="il-icon">⚖️</span><span><strong>חובות ועיקולים</strong> — פסקי דין, הוצאה לפועל (אם קיימים)</span></li>
+          </ul>
+          <div class="note-box" style="margin-top:0.9rem;">הדו"ח זמין בעברית ובערבית, עבור תקופות של 3, 5 או 10 שנים לפי בחירתכם.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cta-section">
+    <h3>קיבלתם את הדו"ח? נשמח לנתח אותו עבורכם</h3>
+    <p>יחיאל ממן — ייעוץ משכנתאות מקצועי ואישי. שולחים את הדו"ח ומקבלים ניתוח מהיר וחינמי.</p>
+    <a href="index.html#contact" class="btn-cta">לייעוץ ראשוני חינם</a>
+  </div>
+
+  <div class="disclaimer">
+    <p>המידע המוצג בדף זה נועד לסייע בהפקת מסמכים ואינו מהווה ייעוץ פיננסי מחייב. ייתכנו שינויים בממשק האתר — במקרה של שינוי פנו למוקד *6194.</p>
+  </div>
+
+  <footer>
+    <span>© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות | האתר אינו מהווה ייעוץ פיננסי מחייב
+  </footer>
+
+  <script>
+    function toggleCard(header) {
+      var body = header.nextElementSibling;
+      var isOpen = body.classList.toggle('open');
+      header.classList.toggle('open', isOpen);
+      header.querySelector('.bank-arrow').style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    function switchTab(tab, contentId) {
+      var card = tab.closest('.bank-card-body');
+      card.querySelectorAll('.channel-tab').forEach(function(t) { t.classList.remove('active'); });
+      card.querySelectorAll('.channel-content').forEach(function(c) { c.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById(contentId).classList.add('active');
+    }
+
+    var navToggle = document.querySelector('.nav-toggle');
+    var navMenu = document.querySelector('nav ul');
+
+    function closeNav() {
+      navMenu.classList.remove('open');
+      navToggle.textContent = '☰';
+      navToggle.setAttribute('aria-label', 'פתח תפריט');
+      document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); });
+    }
+
+    navToggle.addEventListener('click', function() {
+      var isOpen = navMenu.classList.toggle('open');
+      navToggle.textContent = isOpen ? '✕' : '☰';
+      navToggle.setAttribute('aria-label', isOpen ? 'סגור תפריט' : 'פתח תפריט');
+      if (!isOpen) document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); });
+    });
+
+    document.querySelectorAll('.dropdown > a').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          var submenu = this.parentElement.querySelector('.dropdown-menu');
+          if (submenu) submenu.classList.toggle('open');
+        }
+      });
+    });
+
+    document.querySelectorAll('nav ul li:not(.dropdown) > a, .dropdown-menu a').forEach(function(link) {
+      link.addEventListener('click', closeNav);
+    });
+  </script>
+
+</body>
+</html>
