@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sed -n '1124,1140p' \"c:/Users/Yechiel/mortgage-advisor/calculator.html\")",
+      "Bash(sed -n '723,735p' \"c:/Users/Yechiel/mortgage-advisor/index.html\")",
+      "Bash(python3 -)",
+      "Bash(python -)"
+    ]
+  }
+}
