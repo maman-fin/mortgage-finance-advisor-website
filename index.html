@@ -444,6 +444,72 @@
       background: #2a6496;
     }
 
+    /* PARTNERS TICKER */
+    .partners-section {
+      background: #fff;
+      border-top: 1px solid #e0e7ef;
+      border-bottom: 1px solid #e0e7ef;
+      padding: 1.4rem 0;
+      overflow: hidden;
+    }
+    .partners-heading {
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #1a3a5c;
+      letter-spacing: 0.03em;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: ticker 45s linear infinite;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.1rem;
+      margin: 0 0.6rem;
+      border-radius: 10px;
+      border: 1px solid #dde8f4;
+      background: #f5f8fc;
+      white-space: nowrap;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #1a3a5c;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+      cursor: default;
+      min-width: 80px;
+      text-align: center;
+    }
+    .ticker-item:hover { background: #e8f0f8; border-color: #b0c8e4; box-shadow: 0 2px 8px rgba(26,58,92,0.1); }
+    .ticker-item .ti-logo {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .ticker-item .ti-fallback {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
     /* FOOTER */
     footer {
       background: #111e2e;
@@ -685,6 +751,77 @@
 
     document.querySelectorAll('nav ul li:not(.dropdown) > a, .dropdown-menu a').forEach(function(link) {
       link.addEventListener('click', closeNav);
+    });
+
+  </script>
+
+  <!-- PARTNERS TICKER -->
+  <div class="partners-section">
+    <div class="partners-heading">אנו עובדים עם כל הבנקים וחברות האשראי בישראל</div>
+    <div style="overflow:hidden;">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+  </div>
+
+  <script>
+    var PARTNERS = [
+      // בנקים
+      { name: 'בנק לאומי',            domain: 'leumi.co.il',            color: '#003f87', init: 'ל' },
+      { name: 'בנק הפועלים',          domain: 'bankhapoalim.co.il',      color: '#e8001c', init: 'פ' },
+      { name: 'בנק דיסקונט',          domain: 'discount.co.il',          color: '#00529b', init: 'ד' },
+      { name: 'מזרחי-טפחות',          domain: 'mizrahi-tefahot.co.il',   color: '#f47920', init: 'מ' },
+      { name: 'הבנק הבינלאומי',       domain: 'fibi.co.il',              color: '#005f9e', init: 'ב' },
+      { name: 'בנק ירושלים',          domain: 'bankjerusalem.co.il',     color: '#006633', init: 'י' },
+      { name: 'מרכנתיל דיסקונט',      domain: 'mercantile.co.il',        color: '#1d4fa0', init: 'מ' },
+      { name: 'אוצר החייל',           domain: 'bankotsar.co.il',         color: '#7b2d8b', init: 'א' },
+      { name: 'בנק יהב',              domain: 'bank-yahav.co.il',        color: '#005baa', init: 'י' },
+      { name: 'בנק מסד',              domain: 'bankmassad.co.il',        color: '#c8102e', init: 'מ' },
+      { name: 'בנק איגוד',            domain: 'unionbank.co.il',         color: '#2e5fa3', init: 'א' },
+      { name: 'בנק פאג"י',            domain: 'pagi.co.il',              color: '#004b93', init: 'פ' },
+      // חוץ בנקאיות
+      { name: 'הפניקס',               domain: 'phoenix.co.il',           color: '#ff6600', init: 'פ' },
+      { name: 'מגדל',                 domain: 'migdal.co.il',            color: '#003875', init: 'מ' },
+      { name: 'הראל',                 domain: 'harel-group.co.il',       color: '#c8102e', init: 'ה' },
+      { name: 'כלל ביטוח',            domain: 'clalbit.co.il',           color: '#004b93', init: 'כ' },
+      { name: 'מנורה מבטחים',         domain: 'menora.co.il',            color: '#005f9e', init: 'מ' },
+      { name: 'פסגות',                domain: 'psagot.co.il',            color: '#1a6b3a', init: 'פ' },
+      { name: 'מיטב',                 domain: 'meitav.co.il',            color: '#e63329', init: 'מ' },
+      { name: 'אי.בי.אי',             domain: 'ibi.co.il',               color: '#006f51', init: 'א' },
+      { name: 'איילון',               domain: 'ayalon.co.il',            color: '#003875', init: 'א' },
+      { name: 'מימון ישיר',           domain: 'direct.co.il',            color: '#e63329', init: 'מ' },
+      { name: 'ילין לפידות',          domain: 'yalinlapidot.co.il',      color: '#1a3a5c', init: 'י' },
+      { name: 'אנליסט',               domain: 'analyst.co.il',           color: '#2a6496', init: 'א' },
+    ];
+
+    function buildItem(p) {
+      var item = document.createElement('div');
+      item.className = 'ticker-item';
+      var img = document.createElement('img');
+      img.className = 'ti-logo';
+      img.alt = p.name;
+      img.src = 'https://logo.clearbit.com/' + p.domain;
+      var fallback = document.createElement('div');
+      fallback.className = 'ti-fallback';
+      fallback.style.background = p.color;
+      fallback.style.display = 'none';
+      fallback.textContent = p.init;
+      img.onerror = function() {
+        img.style.display = 'none';
+        fallback.style.display = 'flex';
+      };
+      var label = document.createElement('span');
+      label.textContent = p.name;
+      item.appendChild(img);
+      item.appendChild(fallback);
+      item.appendChild(label);
+      return item;
+    }
+
+    var track = document.getElementById('tickerTrack');
+    [0, 1].forEach(function() {
+      PARTNERS.forEach(function(p) {
+        track.appendChild(buildItem(p));
+      });
     });
   </script>
 
