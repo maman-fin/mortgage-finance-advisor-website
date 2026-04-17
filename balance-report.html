@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הפקת דו"ח יתרות לסילוק משכנתא | יחיאל ממן</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #f7f8fa; direction: rtl; }
+
+    /* ── NAV ── */
+    nav { background: #1a3a5c; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; }
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ── PAGE HEADER ── */
+    .page-header { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 3.5rem 1rem 3rem; }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+    /* ── MAIN CONTENT ── */
+    .content-wrap { max-width: 860px; margin: 2.5rem auto 1rem; padding: 0 1rem; }
+
+    /* ── INTRO BOX ── */
+    .intro-box {
+      background: #fff; border-radius: 12px; padding: 1.6rem 1.8rem; margin-bottom: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-right: 5px solid #1a3a5c;
+    }
+    .intro-box h2 { font-size: 1.1rem; color: #1a3a5c; margin-bottom: 0.6rem; }
+    .intro-box p { font-size: 0.93rem; color: #444; line-height: 1.7; margin-bottom: 0.4rem; }
+    .intro-box p:last-child { margin-bottom: 0; }
+    .alias-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+    .alias-tag { background: #e8f0fb; color: #1a3a5c; font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.7rem; border-radius: 20px; border: 1px solid #c5d8ec; }
+
+    /* ── SECTION LABEL ── */
+    .section-label { font-size: 1.25rem; font-weight: 800; color: #1a3a5c; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem; }
+    .section-label::after { content: ''; flex: 1; height: 2px; background: #dde8f4; border-radius: 1px; }
+
+    /* ── BANK CARD ── */
+    .bank-card {
+      border: 1px solid #dde8f2; border-radius: 12px; overflow: hidden; margin-bottom: 1.2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06); transition: box-shadow 0.2s;
+    }
+    .bank-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.1); }
+    .bank-card-header {
+      background: #eaf0f8; padding: 1rem 1.3rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between; user-select: none;
+      transition: background 0.18s;
+    }
+    .bank-card-header:hover { background: #d8e8f5; }
+    .bank-card-header.open { background: #1a3a5c; }
+    .bank-card-header.open .bank-name { color: #fff; }
+    .bank-card-header.open .bank-phone { color: #aad4f5; }
+    .bank-card-header.open .bank-arrow { color: #fff; }
+    .bank-info { display: flex; align-items: center; gap: 0.9rem; }
+    .bank-logo {
+      width: 46px; height: 46px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .bank-meta { display: flex; flex-direction: column; gap: 0.1rem; }
+    .bank-name { font-size: 1rem; font-weight: 700; color: #1a3a5c; }
+    .bank-phone { font-size: 0.82rem; color: #557; direction: ltr; text-align: right; }
+    .bank-arrow { font-size: 0.9rem; color: #666; transition: transform 0.25s; }
+    .bank-card-header.open .bank-arrow { transform: rotate(180deg); }
+
+    .bank-card-body { display: none; padding: 1.4rem 1.5rem; background: #fff; }
+    .bank-card-body.open { display: block; }
+
+    /* ── CHANNEL TABS ── */
+    .channel-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+    .channel-tab {
+      background: #f0f4f9; border: 1px solid #c8d8ec; border-radius: 20px; padding: 0.35rem 0.9rem;
+      font-size: 0.82rem; font-weight: 700; color: #1a3a5c; cursor: pointer; transition: all 0.18s;
+      user-select: none;
+    }
+    .channel-tab.active, .channel-tab:hover { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
+
+    .channel-content { display: none; }
+    .channel-content.active { display: block; }
+
+    /* ── STEP LIST ── */
+    .step-list { counter-reset: step; padding: 0; list-style: none; margin-bottom: 0.8rem; }
+    .step-list li {
+      counter-increment: step; display: flex; gap: 0.85rem; align-items: flex-start;
+      padding: 0.6rem 0; border-bottom: 1px solid #f0f2f5; font-size: 0.91rem; color: #444; line-height: 1.55;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before {
+      content: counter(step); flex-shrink: 0; width: 26px; height: 26px;
+      background: #1a3a5c; color: #fff; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; margin-top: 1px;
+    }
+    .step-list li strong { color: #1a3a5c; }
+
+    /* ── NOTE BOX ── */
+    .note-box { background: #fff8e6; border: 1px solid #f0d080; border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.85rem; color: #7a5010; margin-top: 0.9rem; line-height: 1.6; }
+    .note-box strong { color: #5a3a00; }
+
+    /* ── PHONE BOX ── */
+    .phone-box { background: #f0f7e6; border: 1px solid #b8daa0; border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.85rem; color: #2d5a10; margin-top: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+    .phone-box .ph-icon { font-size: 1.1rem; }
+
+    /* ── CTA ── */
+    .cta-section { background: #1a3a5c; padding: 3rem 1rem; text-align: center; color: #fff; margin-top: 1.5rem; }
+    .cta-section h3 { font-size: 1.5rem; margin-bottom: 0.6rem; }
+    .cta-section p { opacity: 0.85; margin-bottom: 1.4rem; }
+    .btn-cta { display: inline-block; background: #e8a020; color: #fff; padding: 0.85rem 2.2rem; border-radius: 6px; text-decoration: none; font-size: 1rem; font-weight: 700; transition: background 0.2s; }
+    .btn-cta:hover { background: #c98010; }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer { max-width: 860px; margin: 1.5rem auto 2rem; padding: 0 1rem; }
+    .disclaimer p { background: #fff8e6; border: 1px solid #f0d080; border-radius: 8px; padding: 0.85rem 1.1rem; font-size: 0.82rem; color: #7a5c10; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer { background: #111e2e; color: #889; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
+    footer span { color: #aab; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      nav .logo { font-size: 1rem; }
+      .nav-toggle { display: block; }
+      nav ul { display: none; position: absolute; top: 64px; right: 0; left: 0; flex-direction: column; gap: 0; background: #1a3a5c; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 99; }
+      nav ul.open { display: flex; }
+      nav ul li a { display: block; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 1rem; }
+      .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+      .dropdown-menu { position: static; display: none; box-shadow: none; border-radius: 0; background: rgba(0,0,0,0.2); min-width: unset; }
+      .dropdown-menu.open { display: block; }
+      .dropdown-menu li a { padding-right: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+      .page-header { padding: 1.5rem 1rem 1.2rem; }
+      .page-header h1 { font-size: 1.6rem; }
+      .content-wrap { margin: 1rem auto; }
+      .bank-card-body { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+    <ul>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="index.html#testimonials">המלצות</a></li>
+      <li class="dropdown">
+        <a href="#">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+          <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="active">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+          <li><a href="balance-report.html" class="active">הפקת דו"ח יתרות לסילוק</a></li>
+        </ul>
+      </li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>הפקת דו"ח יתרות לסילוק משכנתא</h1>
+    <p>מדריך מפורט לפי בנק — כיצד להוציא את דו"ח יתרת המשכנתא שלכם</p>
+  </div>
+
+  <div class="content-wrap">
+
+    <!-- INTRO -->
+    <div class="intro-box">
+      <h2>מהו דו"ח יתרה לסילוק?</h2>
+      <p>דו"ח יתרה לסילוק הוא מסמך המפרט את כל נתוני ההלוואה — סכום ההלוואה, תקופת ההלוואה, שיעורי הריבית, עמלות פירעון ועוד. מסמך זה נדרש לצורך בחינת מחזור המשכנתא או פירעון מוקדם שלה.</p>
+      <p>לעיתים המסמך מופיע תחת שמות אחרים:</p>
+      <div class="alias-tags">
+        <span class="alias-tag">דוח ריכוז יתרות</span>
+        <span class="alias-tag">אישור יתרות משכנתא</span>
+        <span class="alias-tag">דוח פרטי משכנתא</span>
+        <span class="alias-tag">פירוט יתרה לסילוק</span>
+      </div>
+    </div>
+
+    <div class="section-label">🏦 הוראות לפי בנק</div>
+
+    <!-- ═══════════════════════════════════
+         בנק מזרחי טפחות
+    ═══════════════════════════════════ -->
+    <div class="bank-card">
+      <div class="bank-card-header" onclick="toggleBank(this)">
+        <div class="bank-info">
+          <img src="תמונות/טפחות.png" alt="בנק מזרחי טפחות" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
+          <div class="bank-meta">
+            <div class="bank-name">בנק מזרחי טפחות</div>
+            <div class="bank-phone">מוקד משכנתאות: *8860</div>
+          </div>
+        </div>
+        <span class="bank-arrow">▼</span>
+      </div>
+      <div class="bank-card-body">
+        <div class="channel-tabs">
+          <div class="channel-tab active" onclick="switchTab(this, 'mizrahi-app')">אתר / אפליקציה — עו"ש בבנק</div>
+          <div class="channel-tab" onclick="switchTab(this, 'mizrahi-only')">משכנתא בלבד (ללא עו"ש)</div>
+          <div class="channel-tab" onclick="switchTab(this, 'mizrahi-phone')">דרך המוקד</div>
+        </div>
+
+        <div class="channel-content active" id="mizrahi-app">
+          <ol class="step-list">
+            <li>היכנסו לאפליקציית <strong>מזרחי טפחות</strong> או לאתר הבנק</li>
+            <li>הזינו פרטי כניסה לחשבון</li>
+            <li>בחרו <strong>הלוואות ומשכנתאות</strong></li>
+            <li>בחרו <strong>המשכנתא שלי</strong></li>
+            <li>בחרו <strong>בקשות וטפסים</strong></li>
+            <li>בחרו <strong>הפקת אישורים</strong></li>
+            <li>לחצו על <strong>הפקת אישור יתרות</strong></li>
+          </ol>
+        </div>
+
+        <div class="channel-content" id="mizrahi-only">
+          <ol class="step-list">
+            <li>היכנסו לקישור המצורף לכניסה לאתר הבנק: <a href="https://sc.mizrahi-tefahot.co.il/TFHLogin/index.html#/login" target="_blank" rel="noopener" style="color:#1a3a5c;font-weight:700;">כניסה לאתר טפחות</a></li>
+            <li>הזינו נתוני זיהוי — יתקבל <strong>קוד חד-פעמי</strong> לנייד</li>
+            <li>הזינו את הקוד במקום המיועד</li>
+            <li>נווטו להפקת אישור יתרות</li>
+          </ol>
+        </div>
+
+        <div class="channel-content" id="mizrahi-phone">
+          <div class="phone-box">
+            <span class="ph-icon">📞</span>
+            <span>צרו קשר עם מרכז המשכנתאות של בנק מזרחי טפחות בטלפון <strong>*8860</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         בנק לאומי
+    ═══════════════════════════════════ -->
+    <div class="bank-card">
+      <div class="bank-card-header" onclick="toggleBank(this)">
+        <div class="bank-info">
+          <img src="תמונות/לאומי.png" alt="בנק לאומי" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
+          <div class="bank-meta">
+            <div class="bank-name">בנק לאומי</div>
+            <div class="bank-phone">מוקד: *6062</div>
+          </div>
+        </div>
+        <span class="bank-arrow">▼</span>
+      </div>
+      <div class="bank-card-body">
+        <div class="channel-tabs">
+          <div class="channel-tab active" onclick="switchTab(this, 'leumi-web')">אתר הבנק</div>
+          <div class="channel-tab" onclick="switchTab(this, 'leumi-phone')">דרך המוקד</div>
+        </div>
+
+        <div class="channel-content active" id="leumi-web">
+          <ol class="step-list">
+            <li>היכנסו לאתר <strong>בנק לאומי</strong> עם שם משתמש וסיסמא</li>
+            <li>בחרו <strong>תפריט</strong></li>
+            <li>בחרו <strong>הלוואות ומשכנתאות</strong></li>
+            <li>בחרו <strong>הזמנת מסמכי משכנתאות</strong></li>
+            <li>בחרו <strong>אישור יתרות לסילוק</strong></li>
+          </ol>
+          <div class="note-box"><strong>שימו לב:</strong> המסמך יתקבל ביום המחרת בתא הדואר באתר האישי שלכם.</div>
+        </div>
+
+        <div class="channel-content" id="leumi-phone">
+          <div class="phone-box">
+            <span class="ph-icon">📞</span>
+            <span>צרו קשר עם המוקד בטלפון <strong>*6062</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         בנק הפועלים
+    ═══════════════════════════════════ -->
+    <div class="bank-card">
+      <div class="bank-card-header" onclick="toggleBank(this)">
+        <div class="bank-info">
+          <img src="תמונות/לוגו פועלים.jpg" alt="בנק הפועלים" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
+          <div class="bank-meta">
+            <div class="bank-name">בנק הפועלים</div>
+            <div class="bank-phone">מוקד: *2401</div>
+          </div>
+        </div>
+        <span class="bank-arrow">▼</span>
+      </div>
+      <div class="bank-card-body">
+        <div class="channel-tabs">
+          <div class="channel-tab active" onclick="switchTab(this, 'hapoalim-web')">לקוח עם עו"ש בבנק — אתר הבנק</div>
+          <div class="channel-tab" onclick="switchTab(this, 'hapoalim-no-account')">לקוח ללא עו"ש בבנק</div>
+          <div class="channel-tab" onclick="switchTab(this, 'hapoalim-phone')">דרך המוקד</div>
+        </div>
+
+        <div class="channel-content active" id="hapoalim-web">
+          <ol class="step-list">
+            <li>היכנסו לקישור המצורף לכניסה לאתר הבנק: <a href="https://www.bankhapoalim.co.il/" target="_blank" rel="noopener" style="color:#1a3a5c;font-weight:700;">כניסה לאתר בנק הפועלים</a></li>
+            <li>הזינו שם משתמש וסיסמא</li>
+            <li>בחרו <strong>הלוואות ומשכנתא</strong></li>
+            <li>בחרו <strong>פעולות במשכנתא</strong></li>
+            <li>בחרו <strong>הפקת דוחות</strong></li>
+            <li>בחרו <strong>דו"ח פרטי משכנתאות</strong></li>
+          </ol>
+          <div class="note-box">תקבלו את הדוח מיד בקובץ להדפסה או לשמירה במחשב.</div>
+        </div>
+
+        <div class="channel-content" id="hapoalim-no-account">
+          <div class="note-box" style="margin-top:0;">
+            <strong>לקוחות ללא חשבון עו"ש בבנק הפועלים —</strong> לא ניתן להפיק את הדו"ח דרך האתר. יש להזמין את הדו"ח <strong>דרך המוקד בלבד</strong> בטלפון <strong>*2401</strong>.
+          </div>
+        </div>
+
+        <div class="channel-content" id="hapoalim-phone">
+          <div class="phone-box">
+            <span class="ph-icon">📞</span>
+            <span>צרו קשר עם מוקד בנק הפועלים בטלפון <strong>*2401</strong> ובקשו הפקת דו"ח פרטי משכנתאות.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         בנק דיסקונט
+    ═══════════════════════════════════ -->
+    <div class="bank-card">
+      <div class="bank-card-header" onclick="toggleBank(this)">
+        <div class="bank-info">
+          <img src="תמונות/דיסקונט.jpg" alt="בנק דיסקונט" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
+          <div class="bank-meta">
+            <div class="bank-name">בנק דיסקונט</div>
+            <div class="bank-phone">מוקד: *2009</div>
+          </div>
+        </div>
+        <span class="bank-arrow">▼</span>
+      </div>
+      <div class="bank-card-body">
+        <div class="channel-tabs">
+          <div class="channel-tab active" onclick="switchTab(this, 'discount-web')">לקוח עם עו"ש בבנק — אתר הבנק או אפליקציה</div>
+          <div class="channel-tab" onclick="switchTab(this, 'discount-no-account')">לקוח ללא עו"ש בבנק</div>
+          <div class="channel-tab" onclick="switchTab(this, 'discount-phone')">דרך המוקד</div>
+        </div>
+
+        <div class="channel-content active" id="discount-web">
+          <ol class="step-list">
+            <li>היכנסו לקישור המצורף לכניסה לאתר הבנק: <a href="https://www.discountbank.co.il/" target="_blank" rel="noopener" style="color:#1a3a5c;font-weight:700;">כניסה לאתר בנק דיסקונט</a></li>
+            <li>הזינו קוד משתמש וסיסמא (<strong>כניסה לחשבון</strong>)</li>
+            <li>בחרו <strong>תפריט</strong></li>
+            <li>בחרו <strong>משכנתאות</strong></li>
+            <li>בחרו <strong>פירוט המשכנתא המלא כולל יתרה לסילוק (תדפיס)</strong></li>
+          </ol>
+          <div class="note-box">תקבלו את הדוח מיד בקובץ להדפסה או לשמירה במחשב.</div>
+        </div>
+
+        <div class="channel-content" id="discount-no-account">
+          <div class="note-box" style="margin-top:0;">
+            <strong>לקוחות ללא חשבון עו"ש בבנק דיסקונט —</strong> לא ניתן להפיק את הדו"ח דרך האתר. יש להזמין את הדו"ח <strong>דרך המוקד בלבד</strong> בטלפון <strong>*2009</strong>.
+          </div>
+        </div>
+
+        <div class="channel-content" id="discount-phone">
+          <div class="phone-box">
+            <span class="ph-icon">📞</span>
+            <span>צרו קשר עם מוקד בנק דיסקונט בטלפון <strong>*2009</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         בנק מרכנתיל
+    ═══════════════════════════════════ -->
+    <div class="bank-card">
+      <div class="bank-card-header" onclick="toggleBank(this)">
+        <div class="bank-info">
+          <img src="תמונות/מרכנתיל.png" alt="בנק מרכנתיל" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
+          <div class="bank-meta">
+            <div class="bank-name">בנק מרכנתיל</div>
+            <div class="bank-phone">מוקד: *3477</div>
+          </div>
+        </div>
+        <span class="bank-arrow">▼</span>
+      </div>
+      <div class="bank-card-body">
+        <div class="channel-tabs">
+          <div class="channel-tab active" onclick="switchTab(this, 'mercantile-web')">לקוח עם עו"ש בבנק — אתר הבנק או אפליקציה</div>
+          <div class="channel-tab" onclick="switchTab(this, 'mercantile-no-account')">לקוח ללא עו"ש בבנק</div>
+          <div class="channel-tab" onclick="switchTab(this, 'mercantile-phone')">דרך המוקד</div>
+        </div>
+
+        <div class="channel-content active" id="mercantile-web">
+          <ol class="step-list">
+            <li>היכנסו לאפליקציית <strong>מרכנתיל</strong> או לאתר הבנק</li>
+            <li>הזינו קוד משתמש וסיסמא (<strong>כניסה לחשבון</strong>)</li>
+            <li>בחרו <strong>תפריט</strong></li>
+            <li>בחרו <strong>משכנתאות</strong></li>
+            <li>בחרו <strong>פירוט המשכנתא המלא כולל יתרה לסילוק (תדפיס)</strong></li>
+          </ol>
+          <div class="note-box">תקבלו את הדוח מיד בקובץ להדפסה או לשמירה במחשב.</div>
+        </div>
+
+        <div class="channel-content" id="mercantile-no-account">
+          <div class="note-box" style="margin-top:0;">
+            <strong>לקוחות ללא חשבון עו"ש בבנק מרכנתיל —</strong> לא ניתן להפיק את הדו"ח דרך האתר. יש להזמין את הדו"ח <strong>דרך המוקד בלבד</strong> בטלפון <strong>*3477</strong>.
+          </div>
+        </div>
+
+        <div class="channel-content" id="mercantile-phone">
+          <div class="phone-box">
+            <span class="ph-icon">📞</span>
+            <span>צרו קשר עם מוקד בנק מרכנתיל בטלפון <strong>*3477</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         בנק ירושלים
+    ═══════════════════════════════════ -->
+    <div class="bank-card">
+      <div class="bank-card-header" onclick="toggleBank(this)">
+        <div class="bank-info">
+          <img src="תמונות/בנק ירושלים.jpg" alt="בנק ירושלים" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
+          <div class="bank-meta">
+            <div class="bank-name">בנק ירושלים</div>
+            <div class="bank-phone">שירות לקוחות: *5726</div>
+          </div>
+        </div>
+        <span class="bank-arrow">▼</span>
+      </div>
+      <div class="bank-card-body">
+        <div class="channel-tabs">
+          <div class="channel-tab active" onclick="switchTab(this, 'jerusalem-app')">אתר / אפליקציה</div>
+          <div class="channel-tab" onclick="switchTab(this, 'jerusalem-phone')">שירות לקוחות</div>
+        </div>
+
+        <div class="channel-content active" id="jerusalem-app">
+          <ol class="step-list">
+            <li>היכנסו לאפליקציית <strong>בנק ירושלים</strong> או לאתר הבנק</li>
+            <li>בחרו <strong>אזור אישי</strong></li>
+            <li>בחרו <strong>משכנתאות</strong></li>
+            <li>בחרו <strong>בקשות שירות</strong></li>
+            <li>בחרו <strong>בקשה לקבלת מצב חשבון משכנתא</strong></li>
+            <li>בחרו <strong>קבלת דו"ח במייל</strong></li>
+          </ol>
+        </div>
+
+        <div class="channel-content" id="jerusalem-phone">
+          <div class="phone-box">
+            <span class="ph-icon">📞</span>
+            <span>צרו קשר עם שירות הלקוחות של בנק ירושלים בטלפון <strong>*5726</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         קבוצת הבינלאומי
+    ═══════════════════════════════════ -->
+    <div class="bank-card">
+      <div class="bank-card-header" onclick="toggleBank(this)">
+        <div class="bank-info">
+          <img src="תמונות/הבנק-הבינלאומי-לוגו.webp" alt="קבוצת הבינלאומי" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
+          <div class="bank-meta">
+            <div class="bank-name">קבוצת הבינלאומי</div>
+            <div class="bank-phone">הבינלאומי / מסד / אוצר החייל / פאגי — *3533</div>
+          </div>
+        </div>
+        <span class="bank-arrow">▼</span>
+      </div>
+      <div class="bank-card-body">
+        <div class="channel-tabs">
+          <div class="channel-tab active" onclick="switchTab(this, 'fibi-app')">אתר / אפליקציה</div>
+          <div class="channel-tab" onclick="switchTab(this, 'fibi-phone')">מוקד המשכנתאות</div>
+        </div>
+
+        <div class="channel-content active" id="fibi-app">
+          <p style="font-size:0.88rem;color:#555;margin-bottom:0.9rem;">הוראות אלו חלות על כל בנקי הקבוצה. בחרו את הבנק הרלוונטי להיכנס לאתרו:</p>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.1rem;">
+            <a href="https://www.fibi.co.il/private/" target="_blank" rel="noopener" style="background:#e8f0fb;border:1px solid #c5d8ec;border-radius:20px;padding:0.3rem 0.9rem;font-size:0.83rem;font-weight:700;color:#1a3a5c;text-decoration:none;">הבינלאומי</a>
+            <a href="https://www.bankmassad.co.il/private/" target="_blank" rel="noopener" style="background:#e8f0fb;border:1px solid #c5d8ec;border-radius:20px;padding:0.3rem 0.9rem;font-size:0.83rem;font-weight:700;color:#1a3a5c;text-decoration:none;">בנק מסד</a>
+            <a href="https://www.pagi.co.il/private/" target="_blank" rel="noopener" style="background:#e8f0fb;border:1px solid #c5d8ec;border-radius:20px;padding:0.3rem 0.9rem;font-size:0.83rem;font-weight:700;color:#1a3a5c;text-decoration:none;">בנק פאג"י</a>
+            <a href="https://www.bankotsar.co.il/private/" target="_blank" rel="noopener" style="background:#e8f0fb;border:1px solid #c5d8ec;border-radius:20px;padding:0.3rem 0.9rem;font-size:0.83rem;font-weight:700;color:#1a3a5c;text-decoration:none;">בנק אוצר החייל</a>
+          </div>
+          <ol class="step-list">
+            <li>לאחר הכניסה לאתר בחרו <strong>אזור אישי</strong></li>
+            <li>בחרו <strong>הלוואות ומשכנתאות</strong></li>
+            <li>בחרו <strong>משכנתאות</strong></li>
+            <li>בחרו <strong>פירוט משכנתאות</strong></li>
+            <li>בחרו <strong>כלל ההלוואות הקיימות</strong></li>
+            <li>לחצו <strong>הדפס</strong></li>
+          </ol>
+          <div class="note-box">הדו"ח מתקבל באופן מיידי וניתן להורדה או להדפסה.</div>
+        </div>
+
+        <div class="channel-content" id="fibi-phone">
+          <div class="phone-box">
+            <span class="ph-icon">📞</span>
+            <span>צרו קשר עם מוקד המשכנתאות של קבוצת הבינלאומי בטלפון <strong>*3533</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-wrap -->
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h3>קיבלתם את הדו"ח? נשמח לנתח אותו עבורכם</h3>
+    <p>יחיאל ממן — ייעוץ משכנתאות מקצועי ואישי. שולחים את הדו"ח ומקבלים ניתוח מהיר וחינמי.</p>
+    <a href="index.html#contact" class="btn-cta">לייעוץ ראשוני חינם</a>
+  </div>
+
+  <div class="disclaimer">
+    <p>המידע המוצג בדף זה נועד לסייע בהפקת מסמכים בנקאיים ואינו מהווה ייעוץ פיננסי מחייב. ייתכנו שינויים בממשקי הבנקים — במקרה של שינוי, פנו ישירות למוקד הבנק הרלוונטי.</p>
+  </div>
+
+  <footer>
+    <span>© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות | האתר אינו מהווה ייעוץ פיננסי מחייב
+  </footer>
+
+  <script>
+    /* ── Bank card toggle ── */
+    function toggleBank(header) {
+      var body = header.nextElementSibling;
+      var isOpen = body.classList.toggle('open');
+      header.classList.toggle('open', isOpen);
+    }
+
+    /* ── Channel tabs ── */
+    function switchTab(tab, contentId) {
+      var card = tab.closest('.bank-card-body');
+      card.querySelectorAll('.channel-tab').forEach(function(t) { t.classList.remove('active'); });
+      card.querySelectorAll('.channel-content').forEach(function(c) { c.classList.remove('active'); });
+      tab.classList.add('active');
+      var target = document.getElementById(contentId);
+      if (target) target.classList.add('active');
+    }
+
+    /* ── NAV hamburger ── */
+    var navToggle = document.querySelector('.nav-toggle');
+    var navMenu = document.querySelector('nav ul');
+
+    function closeNav() {
+      navMenu.classList.remove('open');
+      navToggle.textContent = '☰';
+      navToggle.setAttribute('aria-label', 'פתח תפריט');
+      document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); });
+    }
+
+    navToggle.addEventListener('click', function() {
+      var isOpen = navMenu.classList.toggle('open');
+      navToggle.textContent = isOpen ? '✕' : '☰';
+      navToggle.setAttribute('aria-label', isOpen ? 'סגור תפריט' : 'פתח תפריט');
+      if (!isOpen) {
+        document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); });
+      }
+    });
+
+    document.querySelectorAll('.dropdown > a').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          var submenu = this.parentElement.querySelector('.dropdown-menu');
+          if (submenu) submenu.classList.toggle('open');
+        }
+      });
+    });
+
+    document.querySelectorAll('nav ul li:not(.dropdown) > a, .dropdown-menu a').forEach(function(link) {
+      link.addEventListener('click', closeNav);
+    });
+  </script>
+
+</body>
+</html>
