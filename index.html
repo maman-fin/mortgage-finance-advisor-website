@@ -465,6 +465,7 @@
       display: flex;
       width: max-content;
       animation: ticker 45s linear infinite;
+      direction: ltr;
     }
     .ticker-track:hover { animation-play-state: paused; }
     @keyframes ticker {
@@ -760,8 +761,8 @@
 
   <!-- PARTNERS TICKER -->
   <div class="partners-section">
-    <div class="partners-heading">אנו עובדים עם כל הבנקים וחברות האשראי בישראל</div>
-    <div style="overflow:hidden;">
+    <div class="partners-heading">אנו עובדים בשיתוף פעולה עם כל הבנקים והחברות החוץ בנקאיות בישראל</div>
+    <div style="overflow:hidden; direction:ltr;">
       <div class="ticker-track" id="tickerTrack"></div>
     </div>
   </div>
@@ -769,54 +770,64 @@
   <script>
     var PARTNERS = [
       // בנקים
-      { name: 'בנק לאומי',            domain: 'leumi.co.il',            color: '#003f87', init: 'ל' },
-      { name: 'בנק הפועלים',          domain: 'bankhapoalim.co.il',      color: '#e8001c', init: 'פ' },
-      { name: 'בנק דיסקונט',          domain: 'discount.co.il',          color: '#00529b', init: 'ד' },
-      { name: 'מזרחי-טפחות',          domain: 'mizrahi-tefahot.co.il',   color: '#f47920', init: 'מ' },
-      { name: 'הבנק הבינלאומי',       domain: 'fibi.co.il',              color: '#005f9e', init: 'ב' },
-      { name: 'בנק ירושלים',          domain: 'bankjerusalem.co.il',     color: '#006633', init: 'י' },
-      { name: 'מרכנתיל דיסקונט',      domain: 'mercantile.co.il',        color: '#1d4fa0', init: 'מ' },
-      { name: 'אוצר החייל',           domain: 'bankotsar.co.il',         color: '#7b2d8b', init: 'א' },
-      { name: 'בנק יהב',              domain: 'bank-yahav.co.il',        color: '#005baa', init: 'י' },
-      { name: 'בנק מסד',              domain: 'bankmassad.co.il',        color: '#c8102e', init: 'מ' },
-      { name: 'בנק איגוד',            domain: 'unionbank.co.il',         color: '#2e5fa3', init: 'א' },
-      { name: 'בנק פאג"י',            domain: 'pagi.co.il',              color: '#004b93', init: 'פ' },
+      { name: 'בנק לאומי',            local: 'תמונות/לאומי.png',                       domain: 'leumi.co.il',            color: '#003f87', init: 'ל' },
+      { name: 'בנק הפועלים',          local: 'תמונות/לוגו פועלים.jpg',                 domain: 'bankhapoalim.co.il',      color: '#e8001c', init: 'פ' },
+      { name: 'בנק דיסקונט',          local: 'תמונות/דיסקונט.jpg',                     domain: 'discount.co.il',          color: '#00529b', init: 'ד' },
+      { name: 'מזרחי-טפחות',          local: 'תמונות/טפחות.png',                       domain: 'mizrahi-tefahot.co.il',   color: '#f47920', init: 'מ' },
+      { name: 'הבנק הבינלאומי',       local: 'תמונות/הבנק-הבינלאומי-לוגו.webp',       domain: 'fibi.co.il',              color: '#005f9e', init: 'ב' },
+      { name: 'בנק ירושלים',          local: 'תמונות/בנק ירושלים.jpg',                 domain: 'bankjerusalem.co.il',     color: '#006633', init: 'י' },
+      { name: 'מרכנתיל דיסקונט',      local: 'תמונות/מרכנתיל.png',                     domain: 'mercantile.co.il',        color: '#1d4fa0', init: 'מ' },
+      { name: 'אוצר החייל',           local: 'תמונות/אוצר החייל.webp',                 domain: 'bankotsar.co.il',         color: '#7b2d8b', init: 'א' },
+      { name: 'בנק יהב',              local: 'תמונות/בנק יהב.jpg',                     domain: 'bank-yahav.co.il',        color: '#005baa', init: 'י' },
+      { name: 'בנק מסד',              local: 'תמונות/מסד.png',                         domain: 'bankmassad.co.il',        color: '#c8102e', init: 'מ' },
+      { name: 'בנק פאג"י',            local: 'תמונות/פאגי.png',                        domain: 'pagi.co.il',              color: '#004b93', init: 'פ' },
       // חוץ בנקאיות
-      { name: 'הפניקס',               domain: 'phoenix.co.il',           color: '#ff6600', init: 'פ' },
-      { name: 'מגדל',                 domain: 'migdal.co.il',            color: '#003875', init: 'מ' },
-      { name: 'הראל',                 domain: 'harel-group.co.il',       color: '#c8102e', init: 'ה' },
-      { name: 'כלל ביטוח',            domain: 'clalbit.co.il',           color: '#004b93', init: 'כ' },
-      { name: 'מנורה מבטחים',         domain: 'menora.co.il',            color: '#005f9e', init: 'מ' },
-      { name: 'פסגות',                domain: 'psagot.co.il',            color: '#1a6b3a', init: 'פ' },
-      { name: 'מיטב',                 domain: 'meitav.co.il',            color: '#e63329', init: 'מ' },
-      { name: 'אי.בי.אי',             domain: 'ibi.co.il',               color: '#006f51', init: 'א' },
-      { name: 'איילון',               domain: 'ayalon.co.il',            color: '#003875', init: 'א' },
-      { name: 'מימון ישיר',           domain: 'direct.co.il',            color: '#e63329', init: 'מ' },
-      { name: 'ילין לפידות',          domain: 'yalinlapidot.co.il',      color: '#1a3a5c', init: 'י' },
-      { name: 'אנליסט',               domain: 'analyst.co.il',           color: '#2a6496', init: 'א' },
+      { name: 'הפניקס',               local: 'תמונות/הפניקס.png',         domain: 'phoenix.co.il',           color: '#ff6600', init: 'פ' },
+      { name: 'מגדל',                 local: 'תמונות/מגדל.png',           domain: 'migdal.co.il',            color: '#003875', init: 'מ' },
+      { name: 'הראל',                 local: 'תמונות/הראל.png',           domain: 'harel-group.co.il',       color: '#c8102e', init: 'ה' },
+      { name: 'כלל ביטוח',            local: 'תמונות/כלל.jpg',            domain: 'clalbit.co.il',           color: '#004b93', init: 'כ' },
+      { name: 'מנורה מבטחים',         local: 'תמונות/מנורה מבטים.png',   domain: 'menora.co.il',            color: '#005f9e', init: 'מ' },
+      { name: 'פסגות',                local: 'תמונות/פסגות.png',          domain: 'psagot.co.il',            color: '#1a6b3a', init: 'פ' },
+      { name: 'מיטב',                 local: 'תמונות/מיטב.jpg',           domain: 'meitav.co.il',            color: '#e63329', init: 'מ' },
+      { name: 'אי.בי.אי',             local: 'תמונות/IBI.jpg',            domain: 'ibi.co.il',               color: '#006f51', init: 'א' },
+      { name: 'איילון',               local: null,                         domain: 'ayalon.co.il',            color: '#003875', init: 'א' },
+      { name: 'מימון ישיר',           local: 'תמונות/מימון ישיר.png',     domain: 'direct.co.il',            color: '#e63329', init: 'מ' },
+      { name: 'ילין לפידות',          local: 'תמונות/ילין לפידות.jpg',    domain: 'yalinlapidot.co.il',      color: '#1a3a5c', init: 'י' },
+      { name: 'אנליסט',               local: 'תמונות/אנליסט.png',         domain: 'analyst.co.il',           color: '#2a6496', init: 'א' },
+      { name: 'טריא',                 local: 'תמונות/TARYA.jpg',                    domain: 'tarya.co.il',             color: '#1a5276', init: 'ט' },
+      { name: 'WECHECK',              local: 'תמונות/WECHECK.png',                  domain: 'wecheck.co.il',           color: '#2ecc71', init: 'W' },
+      { name: 'BTB',                  local: 'תמונות/BTB.jpeg',                     domain: 'btb.co.il',               color: '#1a3a5c', init: 'B' },
+      { name: 'TOP BIT',              local: 'תמונות/TOP BIT.png',                  domain: 'topbit.co.il',            color: '#2a6496', init: 'T' },
+      { name: 'TOP מימון והשקעות',   local: 'תמונות/TOP מימון והשקעות.png',        domain: 'top-finance.co.il',       color: '#154360', init: 'T' },
+      { name: 'פמה מימון',            local: 'תמונות/פמה מימון.webp',               domain: 'fama.co.il',              color: '#784212', init: 'פ' },
+      { name: 'קרדיטו',               local: 'תמונות/קרדיטו.png',                   domain: 'credito.co.il',           color: '#1a5276', init: 'ק' },
     ];
 
     function buildItem(p) {
       var item = document.createElement('div');
       item.className = 'ticker-item';
-      var img = document.createElement('img');
-      img.className = 'ti-logo';
-      img.alt = p.name;
-      img.src = 'https://logo.clearbit.com/' + p.domain;
       var fallback = document.createElement('div');
       fallback.className = 'ti-fallback';
       fallback.style.background = p.color;
       fallback.style.display = 'none';
       fallback.textContent = p.init;
-      img.onerror = function() {
-        img.style.display = 'none';
-        fallback.style.display = 'flex';
-      };
-      var label = document.createElement('span');
-      label.textContent = p.name;
+      var img = document.createElement('img');
+      img.className = 'ti-logo';
+      img.alt = p.name;
+      var sources = p.local ? [p.local, 'https://logo.clearbit.com/' + p.domain] : ['https://logo.clearbit.com/' + p.domain];
+      var srcIndex = 0;
+      function tryNext() {
+        if (srcIndex < sources.length) {
+          img.src = sources[srcIndex++];
+        } else {
+          img.style.display = 'none';
+          fallback.style.display = 'flex';
+        }
+      }
+      img.onerror = tryNext;
+      tryNext();
       item.appendChild(img);
       item.appendChild(fallback);
-      item.appendChild(label);
       return item;
     }
 
