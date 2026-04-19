@@ -308,10 +308,36 @@
     .edit-modal h3 { color: var(--navy); margin-bottom: 20px; font-size: 1.1rem; }
     .edit-modal-actions { display: flex; gap: 12px; margin-top: 20px; }
 
-    /* Responsive */
+    /* ===== Header actions ===== */
+    .header-title { font-size: 1.1rem; }
+    .header-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .review-link-wrap {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 12px;
+    }
+    .review-link-label { font-size: 0.8rem; color: rgba(255,255,255,0.7); white-space: nowrap; }
+    .review-link-url   { font-size: 0.82rem; color: var(--gold-l); text-decoration: none; word-break: break-all; }
+    .copy-btn {
+      background: var(--gold); border: none; border-radius: 6px;
+      padding: 4px 10px; font-size: 0.78rem; font-weight: 700;
+      color: var(--navy); cursor: pointer; white-space: nowrap;
+    }
+    .header-home {
+      font-size: 0.82rem; color: rgba(255,255,255,0.7);
+      text-decoration: none; white-space: nowrap;
+    }
+    .header-home:hover { color: #fff; }
+
+    /* מובייל — מסתיר URL ותווית, משאיר רק כפתורים */
     @media (max-width: 600px) {
-      .cards-grid { grid-template-columns: 1fr; }
-      .tab-btn    { padding: 12px 14px; font-size: 0.8rem; }
+      .header-title      { font-size: 0.9rem; }
+      .review-link-label { display: none; }
+      .review-link-url   { display: none; }
+      .review-link-wrap  { background: none; padding: 0; }
+      .home-text         { display: none; }
+      .cards-grid        { grid-template-columns: 1fr; }
+      .tab-btn           { padding: 12px 10px; font-size: 0.78rem; }
     }
   </style>
 </head>
@@ -334,14 +360,15 @@
 <div id="app">
 
   <header>
-    <h1>⚙️ ניהול ביקורות — יחיאל ממן</h1>
-    <div style="display:flex;align-items:center;gap:16px;">
-      <div id="review-link-wrap" style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border-radius:8px;padding:6px 12px;">
-        <span style="font-size:0.8rem;color:rgba(255,255,255,0.7);white-space:nowrap;">🔗 קישור ללקוח:</span>
-        <a id="review-link-a" href="" target="_blank" style="font-size:0.82rem;color:var(--gold-l);text-decoration:none;word-break:break-all;" title="פתח בכרטיסייה חדשה"></a>
-        <button onclick="copyReviewLink()" style="background:var(--gold);border:none;border-radius:6px;padding:4px 10px;font-size:0.78rem;font-weight:700;color:var(--navy);cursor:pointer;white-space:nowrap;">העתק</button>
+    <h1 class="header-title">⚙️ ניהול ביקורות — יחיאל ממן</h1>
+    <div class="header-actions">
+      <!-- URL מוסתר במובייל, מוצג בדסקטופ -->
+      <div id="review-link-wrap" class="review-link-wrap">
+        <span class="review-link-label">🔗 קישור ללקוח:</span>
+        <a id="review-link-a" href="" target="_blank" class="review-link-url" title="פתח בכרטיסייה חדשה"></a>
+        <button onclick="copyReviewLink()" class="copy-btn">🔗 העתק קישור</button>
       </div>
-      <a href="index.html" style="font-size:0.82rem;color:rgba(255,255,255,0.7);text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">🏠 עמוד הבית</a>
+      <a href="index.html" class="header-home">🏠 <span class="home-text">עמוד הבית</span></a>
       <span class="logout" onclick="doLogout()">יציאה</span>
     </div>
   </header>
