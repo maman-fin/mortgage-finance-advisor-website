@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -15,10 +15,12 @@
     nav ul { list-style: none; display: flex; gap: 2rem; }
     nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
     nav ul a:hover, nav ul a.active { color: #fff; }
-    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; -webkit-tap-highlight-color: transparent; }
+    .nav-toggle:focus, .nav-toggle:active { outline: none; background: none; color: #fff; }
     .dropdown { position: relative; }
     .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
-    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0;
+    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } } background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
 
     .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
     .dropdown-menu li:last-child a { border-bottom: none; }
@@ -180,7 +182,7 @@
     <ul>
       <li><a href="index.html#services">שירותים</a></li>
       <li><a href="index.html#process">תהליך</a></li>
-      <li><a href="index.html#testimonials">המלצות</a></li>
+      <li><a href="testimonials.html">המלצות</a></li>
       <li class="dropdown">
         <a href="#">מחשבונים</a>
         <ul class="dropdown-menu">
@@ -192,7 +194,7 @@
         </ul>
       </li>
       <li class="dropdown">
-        <a href="#" class="active">מרכז הידע</a>
+        <a href="#">מרכז הידע</a>
         <ul class="dropdown-menu">
           <li><a href="articles.html">מאמרים ועדכונים</a></li>
           <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
@@ -200,6 +202,7 @@
           <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
         </ul>
       </li>
+      <li><a href="admin.html">עמוד ניהול</a></li>
       <li><a href="index.html#contact">צור קשר</a></li>
     </ul>
     <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
@@ -883,6 +886,7 @@
     });
     document.querySelectorAll('.dropdown > a').forEach(function(link) {
       link.addEventListener('click', function(e) {
+        if (window.innerWidth > 768) return;
         e.preventDefault();
         var submenu = this.parentElement.querySelector('.dropdown-menu');
         if (!submenu) return;

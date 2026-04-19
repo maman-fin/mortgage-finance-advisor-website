@@ -4,7 +4,12 @@
       "Bash(sed -n '1124,1140p' \"c:/Users/Yechiel/mortgage-advisor/calculator.html\")",
       "Bash(sed -n '723,735p' \"c:/Users/Yechiel/mortgage-advisor/index.html\")",
       "Bash(python3 -)",
-      "Bash(python -)"
+      "Bash(python -)",
+      "Bash(sed -n '477,507p' c:/Users/Yechiel/mortgage-advisor/calculator.html)",
+      "Bash(sed -n '559,590p' c:/Users/Yechiel/mortgage-advisor/index.html)",
+      "Bash(sed -n '153,183p' c:/Users/Yechiel/mortgage-advisor/articles.html)",
+      "Bash(sed -n '37,50p' c:/Users/Yechiel/mortgage-advisor/calculator.html)",
+      "Bash(sed -n '59,70p' c:/Users/Yechiel/mortgage-advisor/index.html)"
     ]
   }
 }

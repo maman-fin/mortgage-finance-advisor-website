@@ -1,0 +1,732 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ממליצים — יחיאל ממן, יועץ משכנתאות</title>
+
+  <!-- ================================================================
+       הגדרות לפני פריסה:
+       1. SUPABASE_URL       — כתובת פרויקט Supabase שלך
+       2. SUPABASE_ANON_KEY  — מפתח anon/public מ-Supabase
+  ================================================================ -->
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d1f3c;
+      --gold:   #c9a84c;
+      --gold-l: #e8c96a;
+      --bg:     #f7f8fa;
+      --white:  #ffffff;
+      --text:   #222;
+      --gray:   #777;
+      --radius: 16px;
+      --shadow: 0 6px 28px rgba(13,31,60,0.10);
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      direction: rtl;
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      background: #1a3a5c;
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+      position: sticky; top: 0; z-index: 200;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; text-decoration: none; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover { color: #fff; }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; -webkit-tap-highlight-color: transparent; }
+    .nav-toggle:focus, .nav-toggle:active { outline: none; background: none; color: #fff; }
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu {
+      display: none; position: absolute; top: 100%; right: 0;
+      background: #142d48; min-width: 200px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      border-radius: 0 0 8px 8px; list-style: none;
+      padding: 0.3rem 0; z-index: 200;
+    }
+    .dropdown-menu li a {
+      display: block; padding: 0.65rem 1.1rem;
+      color: #cde; text-decoration: none; font-size: 0.92rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      white-space: nowrap; transition: color 0.2s, background 0.2s;
+    }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    
+    /* desktop: פתיחת dropdown בריחוף */
+    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } }
+@media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      nav .logo { font-size: 1rem; }
+      .nav-toggle { display: block; }
+      nav ul {
+        display: none; position: absolute; top: 64px; right: 0; left: 0;
+        flex-direction: column; gap: 0; background: #1a3a5c;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 99;
+      }
+      nav ul.open { display: flex; }
+      nav ul li a { display: block; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 1rem; }
+      .dropdown-menu { position: static; display: none; box-shadow: none; border-radius: 0; background: rgba(0,0,0,0.2); min-width: unset; }
+      .dropdown-menu.open { display: block; }
+    .dropdown-menu li a { padding-right: 2.5rem; }
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+      color: var(--white);
+      text-align: center;
+      padding: 72px 24px 56px;
+    }
+    .hero h1 { font-size: 2.2rem; margin-bottom: 12px; }
+    .hero p  { font-size: 1.1rem; opacity: 0.85; max-width: 500px; margin: 0 auto; }
+    .hero .gold-line {
+      width: 60px; height: 4px;
+      background: var(--gold);
+      border-radius: 2px;
+      margin: 20px auto 0;
+    }
+
+    /* ===== Section wrapper ===== */
+    .section {
+      padding: 64px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-size: 1.6rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-bottom: 36px;
+    }
+    .divider {
+      width: 50px; height: 4px;
+      background: var(--gold); border-radius: 2px;
+      margin-bottom: 36px;
+    }
+
+    /* ===== VIDEO GRID ===== */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .video-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .video-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(13,31,60,0.15);
+    }
+
+    /* תמונה ממוזערת + כפתור play */
+    .video-thumb {
+      position: relative;
+      background: #111;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+    }
+    .video-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+    .video-card:hover .video-thumb img { opacity: 0.7; }
+    .play-btn {
+      position: absolute;
+      inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .play-btn::after {
+      content: '▶';
+      font-size: 2.5rem;
+      color: var(--white);
+      background: rgba(201,168,76,0.9);
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+      transition: transform 0.2s;
+    }
+    .video-card:hover .play-btn::after { transform: scale(1.1); }
+
+    .video-card-body { padding: 18px; }
+    .video-card-top  { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--white); font-weight: 700; font-size: 1rem;
+      flex-shrink: 0; overflow: hidden;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .card-name   { font-weight: 700; color: var(--navy); font-size: 0.95rem; }
+    .card-meta   { font-size: 0.8rem; color: var(--gray); }
+    .card-quote  {
+      font-size: 0.88rem; color: #444;
+      font-style: italic; line-height: 1.55;
+      border-right: 3px solid var(--gold);
+      padding-right: 10px;
+    }
+
+    /* ===== WRITTEN REVIEWS GRID ===== */
+    /* ===== קרוסלת ביקורות ===== */
+    .carousel-wrap {
+      position: relative;
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    /* viewport — מסתיר את מה שמחוץ לתצוגה */
+    .carousel-viewport {
+      flex: 1;
+      overflow: hidden;
+      cursor: grab;
+    }
+    .carousel-viewport:active { cursor: grabbing; }
+
+    /* track — שורת כרטיסים, גלילה בכיוון ltr פנימית לעקביות */
+    .reviews-grid {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      will-change: transform;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 8px 4px;   /* מרווח לצל הכרטיסים */
+    }
+
+    .review-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      display: flex; flex-direction: column; gap: 12px;
+      flex: 0 0 300px;     /* רוחב קבוע לכל כרטיס */
+      min-width: 0;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .review-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(13,31,60,0.14);
+    }
+
+    /* חצי ניווט */
+    .carousel-btn {
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      border-radius: 50%; border: 2px solid var(--gold);
+      background: var(--white);
+      color: var(--navy);
+      font-size: 1.3rem; font-weight: 700;
+      cursor: pointer; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(13,31,60,0.12);
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+      user-select: none;
+    }
+    .carousel-btn:hover  { background: var(--gold); color: var(--white); transform: scale(1.08); }
+    .carousel-btn:active { transform: scale(0.96); }
+    .carousel-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+    @media (max-width: 600px) {
+      .carousel-btn { width: 36px; height: 36px; font-size: 1.1rem; }
+      .review-card  { flex: 0 0 260px; }
+    }
+
+    .review-top  { display: flex; align-items: center; gap: 12px; }
+    .review-name { font-weight: 700; color: var(--navy); }
+    .review-meta { font-size: 0.8rem; color: var(--gray); }
+    .stars       { color: var(--gold); font-size: 1.05rem; letter-spacing: 2px; }
+    .review-text {
+      font-size: 0.9rem; line-height: 1.6; color: #444;
+      flex: 1;
+    }
+    .review-quote-mark {
+      font-size: 3rem; color: var(--gold); opacity: 0.2;
+      font-family: Georgia, serif;
+      line-height: 0.6;
+      margin-bottom: -4px;
+    }
+    .review-date { font-size: 0.78rem; color: var(--gray); }
+    .service-tag {
+      display: inline-block;
+      background: #eef2ff; color: var(--navy);
+      font-size: 0.75rem; font-weight: 600;
+      border-radius: 20px; padding: 3px 10px;
+      width: fit-content;
+    }
+
+    /* ===== Modal וידאו ===== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: none; align-items: center; justify-content: center;
+      z-index: 9999; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-inner {
+      background: #000; border-radius: 12px;
+      width: 100%; max-width: 760px;
+      position: relative; overflow: hidden;
+    }
+    .modal-inner iframe {
+      display: block; width: 100%;
+      aspect-ratio: 16/9; border: 0;
+    }
+    .modal-close {
+      position: absolute; top: 12px; left: 12px;
+      background: rgba(255,255,255,0.15);
+      border: none; color: #fff;
+      font-size: 1.4rem; width: 36px; height: 36px;
+      border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.3); }
+
+    /* ===== Loader / Empty ===== */
+    .loader { text-align: center; padding: 48px; color: var(--gray); }
+    .loader::after {
+      content: '';
+      display: block; width: 36px; height: 36px;
+      border: 4px solid #e0e4ec;
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 16px auto 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); font-size: 1rem; }
+
+    /* ===== CTA ===== */
+    .cta-section {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+      color: var(--white);
+      text-align: center;
+      padding: 64px 24px;
+    }
+    .cta-section h2 { font-size: 1.7rem; margin-bottom: 12px; }
+    .cta-section p  { opacity: 0.85; margin-bottom: 28px; }
+    .btn-cta {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), var(--gold-l));
+      color: var(--navy);
+      padding: 14px 36px;
+      border-radius: 10px; font-size: 1rem; font-weight: 700;
+      text-decoration: none;
+      transition: filter 0.2s, transform 0.15s;
+    }
+    .btn-cta:hover { filter: brightness(1.08); transform: scale(1.03); }
+
+    /* ===== Footer ===== */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,0.55);
+      text-align: center; padding: 24px;
+      font-size: 0.82rem;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 600px) {
+      .hero h1       { font-size: 1.5rem; }
+      .section       { padding: 48px 16px; }
+      .section-title { font-size: 1.3rem; }
+      nav .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+  <nav>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+    <ul id="nav-menu">
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="testimonials.html">המלצות</a></li>
+      <li class="dropdown">
+        <a href="#">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="loan-calculator.html">מחשבון הלוואה</a></li>
+          <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+          <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+          <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
+          <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+        </ul>
+      </li>
+      <li><a href="admin.html">עמוד ניהול</a></li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="פתח תפריט">☰</button>
+  </nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <h1>לקוחות מרוצים מספרים</h1>
+  <p>מאות משפחות כבר חסכו עשרות אלפי שקלים — הנה מה שיש להן לומר</p>
+  <div class="gold-line"></div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     חלק א — ביקורות וידאו
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="section" id="video-section" style="display:none;">
+  <h2 class="section-title">לקוחות מספרים בווידאו 🎬</h2>
+  <p class="section-sub">לחץ על הווידאו לצפייה</p>
+  <div class="divider"></div>
+  <div class="video-grid" id="video-grid">
+    <div class="loader"></div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     חלק ב — ביקורות כתובות (קרוסלה)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="section">
+  <h2 class="section-title">מה אומרים עלינו ✍️</h2>
+  <p class="section-sub">ביקורות אמיתיות מלקוחות ששיתפו את חוויתם</p>
+  <div class="divider"></div>
+
+  <div class="carousel-wrap">
+    <!-- חץ ימין (אחורה) -->
+    <button class="carousel-btn" id="btn-prev" onclick="carouselMove(-1)" aria-label="הקודם">‹</button>
+
+    <div class="carousel-viewport" id="carousel-viewport">
+      <div class="reviews-grid" id="reviews-grid">
+        <div class="loader"></div>
+      </div>
+    </div>
+
+    <!-- חץ שמאל (קדימה) -->
+    <button class="carousel-btn" id="btn-next" onclick="carouselMove(1)" aria-label="הבא">›</button>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     CTA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="cta-section">
+  <h2>גם אתם רוצים לחסוך?</h2>
+  <p>צרו קשר עוד היום לייעוץ ראשוני ללא עלות</p>
+  <a href="index.html#contact" class="btn-cta">לתיאום פגישה →</a>
+</div>
+
+<!-- Footer -->
+<footer style="background:#111e2e;color:#889;text-align:center;padding:1.5rem;font-size:0.85rem;">
+  <span style="color:#aab;">© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות | האתר אינו מהווה ייעוץ פיננסי מחייב
+</footer>
+
+<!-- ━━━━ Modal וידאו ━━━━ -->
+<div class="modal-overlay" id="video-modal" onclick="closeModal(event)">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeVideoModal()">✕</button>
+    <iframe id="modal-iframe" src="" allowfullscreen allow="autoplay"></iframe>
+  </div>
+</div>
+
+<script>
+  /* ================================================================
+     הגדרות — החלף לפני פריסה:
+  ================================================================ */
+  const SUPABASE_URL      = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
+
+  /* ================================================================ */
+
+  /* ── שליפת נתונים מ-Supabase ── */
+  async function sbGet(table, filter) {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${table}?${filter}&order=created_at.desc`,
+      {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      }
+    );
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  }
+
+  /* ── כלים ── */
+  function starsHtml(n) {
+    return '★'.repeat(Math.max(0, n)) + '☆'.repeat(Math.max(0, 5 - n));
+  }
+  function dateStr(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleDateString('he-IL', { year:'numeric', month:'long', day:'numeric' });
+  }
+  function avatarEl(name, imageUrl, size = 44) {
+    const s = `width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;`;
+    if (imageUrl) {
+      return `<div class="avatar" style="width:${size}px;height:${size}px;"><img src="${imageUrl}" alt="${name}" style="${s}" onerror="this.parentElement.textContent='${name?.[0]||'?'}'"></div>`;
+    }
+    return `<div class="avatar" style="width:${size}px;height:${size}px;font-size:${size*0.4}px;">${name?.[0] || '?'}</div>`;
+  }
+
+  /* ── מחלץ thumbnail YouTube / Vimeo ── */
+  function thumbUrl(url) {
+    if (!url) return '';
+    const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);
+    if (yt) return `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`;
+    return ''; // Vimeo requires API call for thumbnail — use blank
+  }
+
+  /* ── מחלץ embed URL ── */
+  function embedUrl(url) {
+    if (!url) return '';
+    const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);
+    if (yt) return `https://www.youtube.com/embed/${yt[1]}?autoplay=1`;
+    const vm = url.match(/vimeo\.com\/(\d+)/);
+    if (vm) return `https://player.vimeo.com/video/${vm[1]}?autoplay=1`;
+    return url;
+  }
+
+  /* ── Modal וידאו ── */
+  function openVideoModal(videoUrl) {
+    document.getElementById('modal-iframe').src = embedUrl(videoUrl);
+    document.getElementById('video-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeVideoModal() {
+    document.getElementById('modal-iframe').src = '';
+    document.getElementById('video-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  // סגירה בלחיצה על הרקע
+  function closeModal(e) {
+    if (e.target === document.getElementById('video-modal')) closeVideoModal();
+  }
+  // סגירה ב-Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeVideoModal();
+  });
+
+  /* ── טעינת ביקורות וידאו ── */
+  async function loadVideoReviews() {
+    const grid    = document.getElementById('video-grid');
+    const section = document.getElementById('video-section');
+    try {
+      const rows = await sbGet('video_reviews', 'approved=eq.true');
+      if (!rows.length) {
+        // אם אין ביקורות וידאו — מסתירים את הסקשן לגמרי
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = 'block';
+      grid.innerHTML = rows.map(r => {
+        const thumb = thumbUrl(r.video_url);
+        return `
+          <div class="video-card" onclick="openVideoModal('${r.video_url}')">
+            <div class="video-thumb">
+              ${thumb
+                ? `<img src="${thumb}" alt="${r.name}" loading="lazy">`
+                : `<div style="width:100%;aspect-ratio:16/9;background:#1a2a40;"></div>`
+              }
+              <div class="play-btn"></div>
+            </div>
+            <div class="video-card-body">
+              <div class="video-card-top">
+                ${avatarEl(r.name, r.photo_url)}
+                <div>
+                  <div class="card-name">${r.name || ''}</div>
+                  <div class="card-meta">
+                    ${r.city || ''}
+                    ${r.city && r.service_type ? ' • ' : ''}
+                    ${r.service_type || ''}
+                  </div>
+                </div>
+              </div>
+              ${r.quote ? `<div class="card-quote">"${r.quote}"</div>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+    } catch(e) {
+      grid.innerHTML = `<div class="empty-state">שגיאה בטעינת ביקורות וידאו</div>`;
+    }
+  }
+
+  /* ── קרוסלה ── */
+  const CARD_W   = 300 + 20;  // רוחב כרטיס + gap
+  let carouselIdx   = 0;      // אינדקס נוכחי
+  let carouselTotal = 0;      // כמות כרטיסים
+  let autoTimer     = null;
+
+  function carouselUpdate(animate = true) {
+    const track    = document.getElementById('reviews-grid');
+    const viewport = document.getElementById('carousel-viewport');
+    if (!track) return;
+
+    const visible  = Math.floor(viewport.offsetWidth / CARD_W) || 1;
+    const maxIdx   = Math.max(0, carouselTotal - visible);
+    carouselIdx    = Math.max(0, Math.min(carouselIdx, maxIdx));
+
+    // בגלל RTL, translateX חיובי = ימינה. נזיז שמאלה (שלילי) לכל צעד
+    track.style.transition = animate ? 'transform 0.5s cubic-bezier(0.4,0,0.2,1)' : 'none';
+    track.style.transform  = `translateX(${carouselIdx * CARD_W}px)`;
+
+    document.getElementById('btn-prev').disabled = (carouselIdx <= 0);
+    document.getElementById('btn-next').disabled = (carouselIdx >= maxIdx);
+  }
+
+  function carouselMove(dir) {
+    // dir: +1 = קדימה (שמאל), -1 = אחורה (ימין)
+    // בגלל RTL, ‟קדימה" = אינדקס גדל = translateX גדל (זז ימינה = חושף מה מימין)
+    // בעצם הרצועה זורמת מימין לשמאל
+    carouselIdx -= dir;   // -1 כי RTL: לחץ ‟›" = קדימה = אינדקס קטן
+    carouselUpdate();
+    resetAutoScroll();
+  }
+
+  function startAutoScroll() {
+    autoTimer = setInterval(() => {
+      const viewport = document.getElementById('carousel-viewport');
+      const visible  = Math.floor((viewport?.offsetWidth || 0) / CARD_W) || 1;
+      const maxIdx   = Math.max(0, carouselTotal - visible);
+      if (carouselIdx >= maxIdx) {
+        carouselIdx = 0;
+      } else {
+        carouselIdx++;
+      }
+      carouselUpdate();
+    }, 4000);
+  }
+
+  function stopAutoScroll()  { clearInterval(autoTimer); }
+  function resetAutoScroll() { stopAutoScroll(); startAutoScroll(); }
+
+  // עצור בריחוף עכבר
+  document.getElementById('carousel-viewport').addEventListener('mouseenter', stopAutoScroll);
+  document.getElementById('carousel-viewport').addEventListener('mouseleave', startAutoScroll);
+
+  // גרירה עם עכבר (drag to scroll)
+  (() => {
+    const vp = document.getElementById('carousel-viewport');
+    let startX = 0, isDragging = false;
+    vp.addEventListener('mousedown', e => { isDragging = true; startX = e.clientX; stopAutoScroll(); });
+    window.addEventListener('mouseup', e => {
+      if (!isDragging) return;
+      isDragging = false;
+      const diff = e.clientX - startX;
+      if (Math.abs(diff) > 40) carouselMove(diff > 0 ? -1 : 1);
+      startAutoScroll();
+    });
+    // touch
+    vp.addEventListener('touchstart', e => { startX = e.touches[0].clientX; stopAutoScroll(); }, { passive: true });
+    vp.addEventListener('touchend',   e => {
+      const diff = e.changedTouches[0].clientX - startX;
+      if (Math.abs(diff) > 40) carouselMove(diff > 0 ? -1 : 1);
+      startAutoScroll();
+    }, { passive: true });
+  })();
+
+  /* ── טעינת ביקורות כתובות ── */
+  async function loadWrittenReviews() {
+    const grid = document.getElementById('reviews-grid');
+    try {
+      const rows = await sbGet('reviews', 'approved=eq.true&rejected=eq.false');
+      if (!rows.length) {
+        grid.innerHTML = '<div class="empty-state">אין ביקורות להצגה עדיין</div>';
+        return;
+      }
+      grid.innerHTML = rows.map(r => `
+        <div class="review-card">
+          <div class="review-top">
+            ${avatarEl(r.name, r.image_url)}
+            <div>
+              <div class="review-name">${r.name || 'לקוח/ה'}</div>
+              <div class="review-meta">
+                ${r.city || ''}
+                ${r.city && r.service_type ? ' • ' : ''}
+                ${r.service_type || ''}
+              </div>
+            </div>
+          </div>
+          <div class="stars">${starsHtml(r.rating || 0)}</div>
+          ${r.service_type ? `<span class="service-tag">${r.service_type}</span>` : ''}
+          <div>
+            <div class="review-quote-mark">"</div>
+            <div class="review-text">${r.text || ''}</div>
+          </div>
+          <div class="review-date">${dateStr(r.created_at)}</div>
+        </div>`).join('');
+
+      carouselTotal = rows.length;
+      carouselIdx   = 0;
+      carouselUpdate(false);   // מיקום התחלתי ללא אנימציה
+      startAutoScroll();
+    } catch(e) {
+      grid.innerHTML = `<div class="empty-state">שגיאה בטעינת ביקורות</div>`;
+    }
+  }
+
+  /* ── הפעלה ── */
+  loadVideoReviews();
+  loadWrittenReviews();
+
+  /* ── נאב — המבורגר ודרופדאון ── */
+  var navToggle = document.getElementById('nav-toggle');
+  var navMenu   = document.getElementById('nav-menu');
+
+  function closeNav() {
+    navMenu.classList.remove('open');
+    navToggle.textContent = '☰';
+    document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); });
+  }
+  navToggle.addEventListener('click', function() {
+    var isOpen = navMenu.classList.toggle('open');
+    navToggle.textContent = isOpen ? '✕' : '☰';
+  });
+  document.querySelectorAll('.dropdown > a').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var sub = this.parentElement.querySelector('.dropdown-menu');
+      if (!sub) return;
+      var open = sub.classList.toggle('open');
+      document.querySelectorAll('.dropdown-menu.open').forEach(function(m) { if (m !== sub) m.classList.remove('open'); });
+    });
+  });
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dropdown')) {
+      document.querySelectorAll('.dropdown-menu.open').forEach(function(m) { m.classList.remove('open'); });
+    }
+  });
+  document.querySelectorAll('nav ul li:not(.dropdown) > a, .dropdown-menu a').forEach(function(l) {
+    l.addEventListener('click', closeNav);
+  });
+</script>
+</body>
+</html>

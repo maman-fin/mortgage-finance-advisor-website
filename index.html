@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -37,6 +37,7 @@
       font-size: 1.3rem;
       font-weight: 700;
     }
+    nav .logo a { color: inherit; text-decoration: none; }
 
     nav ul {
       list-style: none;
@@ -56,16 +57,8 @@
     }
 
     /* HAMBURGER TOGGLE */
-    .nav-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.6rem;
-      cursor: pointer;
-      padding: 0.4rem 0.5rem;
-      line-height: 1;
-    }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; -webkit-tap-highlight-color: transparent; }
+    .nav-toggle:focus, .nav-toggle:active { outline: none; background: none; color: #fff; }
 
     /* DROPDOWN SUBMENU */
     .dropdown { position: relative; }
@@ -83,7 +76,6 @@
       padding: 0.3rem 0;
       z-index: 200;
     }
-
     .dropdown-menu li a {
       display: block;
       padding: 0.65rem 1.1rem;
@@ -276,42 +268,69 @@
 
     /* TESTIMONIALS */
     #testimonials {
-      background: #1a3a5c;
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
       color: #fff;
+      padding: 5rem 1rem;
+    }
+    #testimonials .section-title  { color: #fff; }
+    #testimonials .section-subtitle { color: #aac; }
+
+    /* כרטיסי ביקורת */
+    .reviews-grid-home {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.4rem;
+      margin-bottom: 2.4rem;
+    }
+    .review-card-home {
+      flex: 0 0 300px;        /* רוחב קבוע — כולן שוות */
+      max-width: 300px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 12px;
+      padding: 1.6rem;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: background 0.2s;
+    }
+    @media (max-width: 680px) {
+      .review-card-home { flex: 0 0 100%; max-width: 100%; }
+    }
+    .review-card-home:hover { background: rgba(255,255,255,0.14); }
+    .rch-top { display: flex; align-items: center; gap: 12px; }
+    .rch-avatar {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: #c9a84c;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1.1rem; color: #0d1f3c;
+      flex-shrink: 0; overflow: hidden;
+    }
+    .rch-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .rch-name { font-weight: 700; color: #fff; font-size: 0.95rem; }
+    .rch-meta { font-size: 0.78rem; color: #aac; }
+    .rch-stars { color: #c9a84c; font-size: 1rem; letter-spacing: 2px; }
+    .rch-text {
+      font-size: 0.88rem; line-height: 1.6; color: #dde;
+      font-style: italic;
     }
 
-    #testimonials .section-title {
-      color: #fff;
-    }
-
-    #testimonials .section-subtitle {
-      color: #aac;
-    }
-
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .testimonial {
-      background: rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 1.8rem;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .testimonial p {
-      font-size: 0.95rem;
-      line-height: 1.7;
-      color: #dde;
-      margin-bottom: 1rem;
-    }
-
-    .testimonial .author {
+    /* כפתור זהב */
+    .btn-gold {
+      display: inline-block;
+      background: linear-gradient(135deg, #c9a84c, #e8c96a);
+      color: #0d1f3c;
+      padding: 0.9rem 2.4rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 1.05rem;
       font-weight: 700;
-      color: #e8a020;
+      transition: filter 0.2s, transform 0.15s;
+      box-shadow: 0 4px 18px rgba(201,168,76,0.35);
     }
+    .btn-gold:hover { filter: brightness(1.08); transform: translateY(-2px); }
+
+    /* placeholder בזמן טעינה */
+    .reviews-loading { text-align: center; color: #aac; padding: 2rem; font-size: 0.95rem; }
 
     /* CONTACT */
     #contact {
@@ -325,7 +344,10 @@
       align-items: start;
     }
 
-    @media (max-width: 768px) {
+    
+    /* desktop: פתיחת dropdown בריחוף */
+    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } }
+@media (max-width: 768px) {
       /* NAV: hamburger */
       nav { padding: 0 1rem; }
       nav .logo { font-size: 1rem; }
@@ -374,7 +396,7 @@
         min-width: unset;
       }
       .dropdown-menu.open { display: block; }
-      .dropdown-menu li a {
+    .dropdown-menu li a {
         padding-right: 2.5rem;
         border-bottom: 1px solid rgba(255,255,255,0.04);
       }
@@ -529,11 +551,11 @@
 
   <!-- NAV -->
   <nav>
-    <div class="logo">יחיאל ממן | יועץ משכנתאות</div>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
     <ul>
-      <li><a href="#services">שירותים</a></li>
-      <li><a href="#process">תהליך</a></li>
-      <li><a href="#testimonials">המלצות</a></li>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="testimonials.html">המלצות</a></li>
       <li class="dropdown">
         <a href="#">מחשבונים</a>
         <ul class="dropdown-menu">
@@ -553,7 +575,8 @@
           <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
         </ul>
       </li>
-      <li><a href="#contact">צור קשר</a></li>
+      <li><a href="admin.html">עמוד ניהול</a></li>
+      <li><a href="index.html#contact">צור קשר</a></li>
     </ul>
     <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
   </nav>
@@ -636,24 +659,16 @@
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
+  <!-- TESTIMONIALS — ביקורות חיות מ-Supabase -->
   <section id="testimonials">
     <div class="container">
-      <h2 class="section-title">מה אומרים הלקוחות</h2>
-      <p class="section-subtitle">כבר מעל 500 משפחות בחרו בנו</p>
-      <div class="testimonials-grid">
-        <div class="testimonial">
-          <p>"דוד חסך לנו יותר מ-300 ש"ח בחודש לעומת ההצעה שקיבלנו ישירות מהבנק. ממליצים בחום לכל מי שרוכש דירה!"</p>
-          <div class="author">— רחל ואמיר לוי, תל אביב</div>
-        </div>
-        <div class="testimonial">
-          <p>"תהליך מורכב הפך לפשוט ונוח. דוד ענה על כל שאלה, היה זמין בכל שעה, ודאג שנקבל את התנאים הטובים ביותר."</p>
-          <div class="author">— משפחת ברקוביץ', ירושלים</div>
-        </div>
-        <div class="testimonial">
-          <p>"כתושבי חוץ לא ידענו מאיפה להתחיל. דוד ליווה אותנו לאורך כל הדרך ועשה את זה קל להפליא. מקצועי ואמין."</p>
-          <div class="author">— יוסי גולדמן, ניו יורק</div>
-        </div>
+      <h2 class="section-title">מה אומרים הלקוחות שלנו</h2>
+      <p class="section-subtitle">ביקורות אמיתיות ממשפחות שעבדו איתנו</p>
+      <div id="home-reviews-grid" class="reviews-grid-home">
+        <div class="reviews-loading">טוען ביקורות...</div>
+      </div>
+      <div style="text-align:center;">
+        <a href="testimonials.html" class="btn-gold">לכל הביקורות וההמלצות ←</a>
       </div>
     </div>
   </section>
@@ -724,6 +739,7 @@
 
     document.querySelectorAll('.dropdown > a').forEach(function(link) {
       link.addEventListener('click', function(e) {
+        if (window.innerWidth > 768) return;
         e.preventDefault();
         var submenu = this.parentElement.querySelector('.dropdown-menu');
         if (!submenu) return;
@@ -824,6 +840,45 @@
         track.appendChild(buildItem(p));
       });
     });
+  </script>
+
+  <!-- JS: טעינת ביקורות מ-Supabase לדף הראשי -->
+  <script>
+    (function() {
+      var SUPABASE_URL = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
+      var SUPABASE_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
+
+      function stars(n) {
+        return '★'.repeat(n) + '☆'.repeat(5 - n);
+      }
+
+      fetch(SUPABASE_URL + '/rest/v1/reviews?approved=eq.true&rejected=eq.false&order=created_at.desc&limit=3', {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(rows) {
+        var grid = document.getElementById('home-reviews-grid');
+        if (!rows || !rows.length) {
+          grid.innerHTML = '<div class="reviews-loading">אין ביקורות להצגה עדיין</div>';
+          return;
+        }
+        grid.innerHTML = rows.map(function(r) {
+          var avatar = r.image_url
+            ? '<div class="rch-avatar"><img src="' + r.image_url + '" alt="' + (r.name||'') + '" onerror="this.parentElement.textContent=\'' + (r.name ? r.name[0] : '?') + '\'"></div>'
+            : '<div class="rch-avatar">' + (r.name ? r.name[0] : '?') + '</div>';
+          return '<div class="review-card-home">'
+            + '<div class="rch-top">' + avatar
+            + '<div><div class="rch-name">' + (r.name || 'לקוח/ה') + '</div>'
+            + '<div class="rch-meta">' + (r.city || '') + (r.city && r.service_type ? ' • ' : '') + (r.service_type || '') + '</div></div></div>'
+            + '<div class="rch-stars">' + stars(r.rating || 0) + '</div>'
+            + '<div class="rch-text">"' + (r.text || '') + '"</div>'
+            + '</div>';
+        }).join('');
+      })
+      .catch(function() {
+        document.getElementById('home-reviews-grid').innerHTML = '';
+      });
+    })();
   </script>
 
   <!-- FOOTER -->
