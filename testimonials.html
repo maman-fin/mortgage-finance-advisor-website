@@ -216,29 +216,13 @@
     }
 
     /* ===== WRITTEN REVIEWS GRID ===== */
-    /* ===== קרוסלת ביקורות ===== */
-    .carousel-wrap {
-      position: relative;
-      display: flex; align-items: center; gap: 12px;
-    }
-
-    /* viewport — מסתיר את מה שמחוץ לתצוגה */
-    .carousel-viewport {
-      flex: 1;
-      overflow: hidden;
-      cursor: grab;
-    }
-    .carousel-viewport:active { cursor: grabbing; }
-
-    /* track — שורת כרטיסים, גלילה בכיוון ltr פנימית לעקביות */
-    .reviews-grid {
-      display: flex;
-      flex-direction: row;
+    .written-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      will-change: transform;
-      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      padding: 8px 4px;   /* מרווח לצל הכרטיסים */
     }
+    @media (max-width: 900px) { .written-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .written-grid { grid-template-columns: 1fr; } }
 
     .review-card {
       background: var(--white);
@@ -246,8 +230,6 @@
       box-shadow: var(--shadow);
       padding: 22px;
       display: flex; flex-direction: column; gap: 12px;
-      flex: 0 0 300px;     /* רוחב קבוע לכל כרטיס */
-      min-width: 0;
       transition: transform 0.2s, box-shadow 0.2s;
     }
     .review-card:hover {
@@ -255,28 +237,17 @@
       box-shadow: 0 12px 36px rgba(13,31,60,0.14);
     }
 
-    /* חצי ניווט */
-    .carousel-btn {
-      flex-shrink: 0;
-      width: 44px; height: 44px;
-      border-radius: 50%; border: 2px solid var(--gold);
-      background: var(--white);
+    /* כפתור הצג עוד */
+    .btn-show-more {
+      background: transparent;
+      border: 2px solid var(--gold);
       color: var(--navy);
-      font-size: 1.3rem; font-weight: 700;
-      cursor: pointer; line-height: 1;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 10px rgba(13,31,60,0.12);
-      transition: background 0.2s, color 0.2s, transform 0.15s;
-      user-select: none;
+      font-size: 0.95rem; font-weight: 700;
+      padding: 12px 36px; border-radius: 10px;
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+      font-family: inherit;
     }
-    .carousel-btn:hover  { background: var(--gold); color: var(--white); transform: scale(1.08); }
-    .carousel-btn:active { transform: scale(0.96); }
-    .carousel-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
-
-    @media (max-width: 600px) {
-      .carousel-btn { width: 36px; height: 36px; font-size: 1.1rem; }
-      .review-card  { flex: 0 0 260px; }
-    }
+    .btn-show-more:hover { background: var(--gold); color: var(--white); }
 
     .review-top  { display: flex; align-items: center; gap: 12px; }
     .review-name { font-weight: 700; color: var(--navy); }
@@ -431,28 +402,23 @@
   <div class="video-grid" id="video-grid">
     <div class="loader"></div>
   </div>
+  <div style="text-align:center;margin-top:28px;">
+    <button class="btn-show-more" id="btn-video-more" style="display:none;" onclick="showMoreVideos()">הצג עוד ▼</button>
+  </div>
 </div>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     חלק ב — ביקורות כתובות (קרוסלה)
+     חלק ב — ביקורות כתובות
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <div class="section">
   <h2 class="section-title">מה אומרים עלינו ✍️</h2>
   <p class="section-sub">ביקורות אמיתיות מלקוחות ששיתפו את חוויתם</p>
   <div class="divider"></div>
-
-  <div class="carousel-wrap">
-    <!-- חץ ימין (אחורה) -->
-    <button class="carousel-btn" id="btn-prev" onclick="carouselMove(-1)" aria-label="הקודם">‹</button>
-
-    <div class="carousel-viewport" id="carousel-viewport">
-      <div class="reviews-grid" id="reviews-grid">
-        <div class="loader"></div>
-      </div>
-    </div>
-
-    <!-- חץ שמאל (קדימה) -->
-    <button class="carousel-btn" id="btn-next" onclick="carouselMove(1)" aria-label="הבא">›</button>
+  <div class="written-grid" id="written-grid">
+    <div class="loader"></div>
+  </div>
+  <div style="text-align:center;margin-top:28px;">
+    <button class="btn-show-more" id="btn-written-more" style="display:none;" onclick="showMoreWritten()">הצג עוד ▼</button>
   </div>
 </div>
 
@@ -585,31 +551,18 @@
       <iframe src="${safeUrl}" allowfullscreen allow="autoplay; fullscreen" style="width:100%;height:100%;border:none;"></iframe>`;
   }
 
-  /* ── טעינת ביקורות וידאו ── */
-  async function loadVideoReviews() {
-    const grid    = document.getElementById('video-grid');
-    const section = document.getElementById('video-section');
-    try {
-      const rows = await sbGet('video_reviews', 'approved=eq.true');
-      if (!rows.length) {
-        section.style.display = 'none';
-        return;
-      }
-      section.style.display = 'block';
-      grid.innerHTML = rows.map(r => {
+  function renderVideoCard(r) {
         const playUrl = r.video_file_url || r.video_url || '';
         const cardId  = `vc-${r.id}`;
         const isDirect = isDirectVideo(playUrl);
 
         let thumbContent;
         if (isDirect) {
-          // סרטון ישיר — מוצג inline מיד
           thumbContent = `
             <video src="${playUrl}" controls playsinline preload="metadata"
               style="width:100%;height:100%;object-fit:contain;background:#000;display:block;">
             </video>`;
         } else {
-          // YouTube / Vimeo — thumbnail + play, לחיצה טוענת inline
           const thumb = thumbUrl(r.video_url);
           const thumbImg = thumb
             ? `<img src="${thumb}" alt="${r.name}" loading="lazy">`
@@ -641,125 +594,91 @@
               ${r.quote ? `<div class="card-quote">"${r.quote}"</div>` : ''}
             </div>
           </div>`;
-      }).join('');
+  }
+
+  function showMoreVideos() {
+    const grid = document.getElementById('video-grid');
+    const next = _videoRows.slice(_videoShown, _videoShown + VIDEO_PAGE);
+    next.forEach(r => grid.insertAdjacentHTML('beforeend', renderVideoCard(r)));
+    _videoShown += next.length;
+    document.getElementById('btn-video-more').style.display =
+      _videoShown < _videoRows.length ? 'inline-block' : 'none';
+  }
+
+  /* ── טעינת ביקורות וידאו ── */
+  async function loadVideoReviews() {
+    const grid    = document.getElementById('video-grid');
+    const section = document.getElementById('video-section');
+    try {
+      const rows = await sbGet('video_reviews', 'approved=eq.true');
+      if (!rows.length) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = 'block';
+      _videoRows  = rows;
+      _videoShown = 0;
+      grid.innerHTML = '';
+      showMoreVideos();
     } catch(e) {
       grid.innerHTML = `<div class="empty-state">שגיאה בטעינת ביקורות וידאו</div>`;
     }
   }
 
-  /* ── קרוסלה ── */
-  const CARD_W   = 300 + 20;  // רוחב כרטיס + gap
-  let carouselIdx   = 0;      // אינדקס נוכחי
-  let carouselTotal = 0;      // כמות כרטיסים
-  let autoTimer     = null;
 
-  function carouselUpdate(animate = true) {
-    const track    = document.getElementById('reviews-grid');
-    const viewport = document.getElementById('carousel-viewport');
-    if (!track) return;
+  /* ── ביקורות כתובות — pagination ── */
+  let _writtenRows = [];
+  let _writtenShown = 0;
+  const WRITTEN_PAGE = 6;
 
-    const visible  = Math.floor(viewport.offsetWidth / CARD_W) || 1;
-    const maxIdx   = Math.max(0, carouselTotal - visible);
-    carouselIdx    = Math.max(0, Math.min(carouselIdx, maxIdx));
-
-    // בגלל RTL, translateX חיובי = ימינה. נזיז שמאלה (שלילי) לכל צעד
-    track.style.transition = animate ? 'transform 0.5s cubic-bezier(0.4,0,0.2,1)' : 'none';
-    track.style.transform  = `translateX(${carouselIdx * CARD_W}px)`;
-
-    document.getElementById('btn-prev').disabled = (carouselIdx <= 0);
-    document.getElementById('btn-next').disabled = (carouselIdx >= maxIdx);
+  function renderWrittenCard(r) {
+    return `<div class="review-card">
+      <div class="review-top">
+        ${avatarEl(r.name, r.image_url)}
+        <div>
+          <div class="review-name">${r.name || 'לקוח/ה'}</div>
+          <div class="review-meta">${r.city || ''}${r.city && r.service_type ? ' • ' : ''}${r.service_type || ''}</div>
+        </div>
+      </div>
+      <div class="stars">${starsHtml(r.rating || 0)}</div>
+      ${r.service_type ? `<span class="service-tag">${r.service_type}</span>` : ''}
+      <div>
+        <div class="review-quote-mark">"</div>
+        <div class="review-text">${r.text || ''}</div>
+      </div>
+      <div class="review-date">${dateStr(r.created_at)}</div>
+    </div>`;
   }
 
-  function carouselMove(dir) {
-    // dir: +1 = קדימה (שמאל), -1 = אחורה (ימין)
-    // בגלל RTL, ‟קדימה" = אינדקס גדל = translateX גדל (זז ימינה = חושף מה מימין)
-    // בעצם הרצועה זורמת מימין לשמאל
-    carouselIdx -= dir;   // -1 כי RTL: לחץ ‟›" = קדימה = אינדקס קטן
-    carouselUpdate();
-    resetAutoScroll();
+  function showMoreWritten() {
+    const grid = document.getElementById('written-grid');
+    const next = _writtenRows.slice(_writtenShown, _writtenShown + WRITTEN_PAGE);
+    next.forEach(r => grid.insertAdjacentHTML('beforeend', renderWrittenCard(r)));
+    _writtenShown += next.length;
+    document.getElementById('btn-written-more').style.display =
+      _writtenShown < _writtenRows.length ? 'inline-block' : 'none';
   }
 
-  function startAutoScroll() {
-    autoTimer = setInterval(() => {
-      const viewport = document.getElementById('carousel-viewport');
-      const visible  = Math.floor((viewport?.offsetWidth || 0) / CARD_W) || 1;
-      const maxIdx   = Math.max(0, carouselTotal - visible);
-      if (carouselIdx >= maxIdx) {
-        carouselIdx = 0;
-      } else {
-        carouselIdx++;
-      }
-      carouselUpdate();
-    }, 4000);
-  }
-
-  function stopAutoScroll()  { clearInterval(autoTimer); }
-  function resetAutoScroll() { stopAutoScroll(); startAutoScroll(); }
-
-  // עצור בריחוף עכבר
-  document.getElementById('carousel-viewport').addEventListener('mouseenter', stopAutoScroll);
-  document.getElementById('carousel-viewport').addEventListener('mouseleave', startAutoScroll);
-
-  // גרירה עם עכבר (drag to scroll)
-  (() => {
-    const vp = document.getElementById('carousel-viewport');
-    let startX = 0, isDragging = false;
-    vp.addEventListener('mousedown', e => { isDragging = true; startX = e.clientX; stopAutoScroll(); });
-    window.addEventListener('mouseup', e => {
-      if (!isDragging) return;
-      isDragging = false;
-      const diff = e.clientX - startX;
-      if (Math.abs(diff) > 40) carouselMove(diff > 0 ? -1 : 1);
-      startAutoScroll();
-    });
-    // touch
-    vp.addEventListener('touchstart', e => { startX = e.touches[0].clientX; stopAutoScroll(); }, { passive: true });
-    vp.addEventListener('touchend',   e => {
-      const diff = e.changedTouches[0].clientX - startX;
-      if (Math.abs(diff) > 40) carouselMove(diff > 0 ? -1 : 1);
-      startAutoScroll();
-    }, { passive: true });
-  })();
-
-  /* ── טעינת ביקורות כתובות ── */
   async function loadWrittenReviews() {
-    const grid = document.getElementById('reviews-grid');
+    const grid = document.getElementById('written-grid');
     try {
-      const rows = await sbGet('reviews', 'approved=eq.true&rejected=eq.false');
-      if (!rows.length) {
+      _writtenRows = await sbGet('reviews', 'approved=eq.true&rejected=eq.false');
+      if (!_writtenRows.length) {
         grid.innerHTML = '<div class="empty-state">אין ביקורות להצגה עדיין</div>';
         return;
       }
-      grid.innerHTML = rows.map(r => `
-        <div class="review-card">
-          <div class="review-top">
-            ${avatarEl(r.name, r.image_url)}
-            <div>
-              <div class="review-name">${r.name || 'לקוח/ה'}</div>
-              <div class="review-meta">
-                ${r.city || ''}
-                ${r.city && r.service_type ? ' • ' : ''}
-                ${r.service_type || ''}
-              </div>
-            </div>
-          </div>
-          <div class="stars">${starsHtml(r.rating || 0)}</div>
-          ${r.service_type ? `<span class="service-tag">${r.service_type}</span>` : ''}
-          <div>
-            <div class="review-quote-mark">"</div>
-            <div class="review-text">${r.text || ''}</div>
-          </div>
-          <div class="review-date">${dateStr(r.created_at)}</div>
-        </div>`).join('');
-
-      carouselTotal = rows.length;
-      carouselIdx   = 0;
-      carouselUpdate(false);   // מיקום התחלתי ללא אנימציה
-      startAutoScroll();
+      grid.innerHTML = '';
+      _writtenShown = 0;
+      showMoreWritten();
     } catch(e) {
       grid.innerHTML = `<div class="empty-state">שגיאה בטעינת ביקורות</div>`;
     }
   }
+
+  /* ── ביקורות וידאו — pagination ── */
+  let _videoRows = [];
+  let _videoShown = 0;
+  const VIDEO_PAGE = 3;
 
   /* ── הפעלה ── */
   loadVideoReviews();
