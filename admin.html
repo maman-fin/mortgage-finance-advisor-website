@@ -432,6 +432,7 @@
     </button>
     <button class="tab-btn" onclick="openTab('rejected')">ביקורות שנדחו</button>
     <button class="tab-btn" onclick="openTab('approved')">ביקורות מאושרות</button>
+    <button class="tab-btn" onclick="openTab('articles')">מאמרים 📝</button>
     <button class="tab-btn" onclick="openTab('stats')">סטטיסטיקות</button>
   </div>
 
@@ -518,6 +519,66 @@
   <!-- ━━━━━━━━━━━━━ טאב 5: ביקורות מאושרות ━━━━━━━━━━━━━ -->
   <div id="tab-approved" class="tab-panel">
     <div id="approved-list" class="cards-grid">
+      <div class="loader">טוען...</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━ טאב 7: מאמרים ━━━━━━━━━━━━━ -->
+  <div id="tab-articles" class="tab-panel">
+    <div class="form-card">
+      <h2>➕ מאמר / עדכון חדש</h2>
+
+      <label>כותרת <span style="color:red">*</span></label>
+      <input type="text" id="art-title" placeholder="כותרת המאמר">
+
+      <label>תקציר <span class="opt">(מוצג על הכרטיס)</span></label>
+      <input type="text" id="art-summary" placeholder="משפט קצר המסכם את המאמר...">
+
+      <label>תוכן מלא <span class="opt">(פסקאות מופרדות בשורה ריקה)</span></label>
+      <textarea id="art-body" style="min-height:160px;" placeholder="כתוב את תוכן המאמר כאן...&#10;&#10;פסקה שנייה..."></textarea>
+
+      <label>קטגוריה</label>
+      <select id="art-category">
+        <option value="rates">ריביות ועדכונים</option>
+        <option value="tips">טיפים למשכנתא</option>
+        <option value="market">חדשות שוק הנדל"ן</option>
+      </select>
+
+      <label>תמונה ראשית <span class="opt">(אופציונלי)</span></label>
+      <div class="photo-wrap">
+        <label class="upload-label" for="art-image">
+          <img id="art-image-preview" src="" alt="" style="width:64px;height:44px;object-fit:cover;border-radius:6px;display:none;">
+          <span id="art-image-text">🖼 לחץ להעלאת תמונה</span>
+        </label>
+        <button type="button" class="photo-clear" id="art-image-clear" title="הסר">✕</button>
+      </div>
+      <input type="file" id="art-image" accept="image/*" style="display:none">
+
+      <label>קישור וידאו <span class="opt">(YouTube / Vimeo — אופציונלי)</span></label>
+      <input type="url" id="art-video-url" placeholder="https://youtube.com/watch?v=...">
+
+      <div class="or-sep">או העלה סרטון ישירות</div>
+      <div class="video-upload-wrap" id="art-video-wrap" onclick="document.getElementById('art-video-file').click()">
+        <span id="art-video-text">🎬 לחץ להעלאת סרטון</span>
+        <div class="video-preview-bar" id="art-video-preview-bar">
+          <video id="art-video-preview" muted playsinline controls></video>
+        </div>
+        <button type="button" class="v-clear" id="art-video-clear" title="הסר" onclick="clearArtVideo(event)">✕</button>
+      </div>
+      <input type="file" id="art-video-file" accept="video/mp4,video/mov,video/quicktime,video/webm,video/*" style="display:none">
+
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+        <input type="checkbox" id="art-published" checked style="width:18px;height:18px;margin:0;">
+        פרסם מיד
+      </label>
+
+      <button class="btn btn-gold" style="justify-content:center;margin-top:16px;" id="btn-add-article">
+        📝 פרסם מאמר
+      </button>
+    </div>
+
+    <h2 style="color:var(--navy);margin-bottom:16px;">מאמרים פורסמו</h2>
+    <div id="articles-list" class="cards-grid">
       <div class="loader">טוען...</div>
     </div>
   </div>
@@ -643,6 +704,67 @@
   </div>
 </div>
 
+<!-- מודל עריכת מאמר -->
+<div class="edit-modal-overlay" id="artedit-overlay">
+  <div class="edit-modal">
+    <h3>✏️ עריכת מאמר</h3>
+    <input type="hidden" id="artedit-id">
+
+    <label>כותרת</label>
+    <input type="text" id="artedit-title" placeholder="כותרת המאמר">
+
+    <label>תקציר</label>
+    <input type="text" id="artedit-summary" placeholder="תקציר קצר...">
+
+    <label>תוכן מלא</label>
+    <textarea id="artedit-body" style="min-height:160px;"></textarea>
+
+    <label>קטגוריה</label>
+    <select id="artedit-category">
+      <option value="rates">ריביות ועדכונים</option>
+      <option value="tips">טיפים למשכנתא</option>
+      <option value="market">חדשות שוק הנדל"ן</option>
+    </select>
+
+    <label>תמונה <span class="opt">(השאר ריק לשמור קיימת)</span></label>
+    <div id="artedit-cur-img-wrap" style="margin-bottom:8px;display:none;">
+      <img id="artedit-cur-img" src="" alt="" style="width:120px;height:70px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-left:8px;">
+      <span style="font-size:0.82rem;color:var(--gray);">תמונה נוכחית</span>
+    </div>
+    <div class="photo-wrap">
+      <label class="upload-label" for="artedit-image">
+        <img id="artedit-image-preview" src="" alt="" style="width:64px;height:44px;object-fit:cover;border-radius:6px;display:none;">
+        <span id="artedit-image-text">🖼 החלף תמונה</span>
+      </label>
+      <button type="button" class="photo-clear" id="artedit-image-clear" title="הסר">✕</button>
+    </div>
+    <input type="file" id="artedit-image" accept="image/*" style="display:none">
+
+    <label>קישור וידאו <span class="opt">(YouTube / Vimeo)</span></label>
+    <input type="url" id="artedit-video-url" placeholder="https://youtube.com/watch?v=...">
+
+    <label>או החלף סרטון</label>
+    <div class="video-upload-wrap" id="artedit-video-wrap" onclick="document.getElementById('artedit-video-file').click()">
+      <span id="artedit-video-text">🎬 לחץ להחלפת סרטון</span>
+      <div class="video-preview-bar" id="artedit-video-preview-bar">
+        <video id="artedit-video-preview" muted playsinline controls></video>
+      </div>
+      <button type="button" class="v-clear" id="artedit-video-clear" title="הסר" onclick="clearArtEditVideo(event)">✕</button>
+    </div>
+    <input type="file" id="artedit-video-file" accept="video/mp4,video/mov,video/quicktime,video/webm,video/*" style="display:none">
+
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:10px;">
+      <input type="checkbox" id="artedit-published" checked style="width:18px;height:18px;margin:0;">
+      מפורסם
+    </label>
+
+    <div class="edit-modal-actions">
+      <button class="btn btn-green" style="flex:1;justify-content:center;" onclick="saveEditArticle()">💾 שמור שינויים</button>
+      <button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="closeEditArticle()">ביטול</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast"></div>
 
@@ -688,7 +810,7 @@
   }
 
   /* ── Tabs ── */
-  const tabData = ['pending','video','feedback','rejected','approved','stats'];
+  const tabData = ['pending','video','feedback','rejected','approved','articles','stats'];
   function openTab(name) {
     tabData.forEach(t => {
       document.getElementById(`tab-${t}`).classList.remove('active');
@@ -826,6 +948,7 @@
     loadFeedback();
     loadRejected();
     loadApproved();
+    loadArticles();
     loadStats();
   }
 
@@ -1363,6 +1486,233 @@
       closeEditModal();
       loadApproved();
       showToast('✅ הביקורת עודכנה בהצלחה');
+    } catch(e) { showToast('שגיאה: ' + e.message); }
+  }
+
+  /* ══════════════════════════════════════════
+     טאב 7: מאמרים
+  ══════════════════════════════════════════ */
+  const ARTICLE_IMAGE_BUCKET = 'article-images';
+
+  async function uploadArticleImage(file) {
+    const ext  = file.name.split('.').pop();
+    const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const res  = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/${ARTICLE_IMAGE_BUCKET}/${path}`,
+      { method:'POST', headers:{ 'apikey':SUPABASE_ANON_KEY, 'Authorization':`Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type':file.type, 'x-upsert':'false' }, body:file }
+    );
+    if (!res.ok) { const b = await res.text().catch(()=>''); throw new Error('שגיאה בהעלאת תמונה: '+b); }
+    return `${SUPABASE_URL}/storage/v1/object/public/${ARTICLE_IMAGE_BUCKET}/${path}`;
+  }
+
+  const CAT_LABEL = { rates:'ריביות ועדכונים', tips:'טיפים למשכנתא', market:'חדשות שוק הנדל"ן' };
+
+  function renderArticleCard(a) {
+    const catLabel = CAT_LABEL[a.category] || a.category || '';
+    const imgEl = a.image_url
+      ? `<img src="${a.image_url}" alt="${a.title}" style="width:100%;height:130px;object-fit:cover;display:block;border-radius:8px 8px 0 0;">`
+      : `<div style="width:100%;height:60px;background:linear-gradient(135deg,#1a3a5c,#2a6496);border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;font-size:2rem;">📝</div>`;
+    const videoEl = a.video_file_url
+      ? `<video src="${a.video_file_url}" controls playsinline preload="metadata" style="width:100%;max-height:120px;display:block;margin-top:8px;border-radius:6px;"></video>`
+      : a.video_url
+        ? `<div style="margin-top:8px;"><iframe src="${embedUrl(a.video_url)}" allowfullscreen style="width:100%;height:120px;border:none;border-radius:6px;"></iframe></div>`
+        : '';
+    return `
+      <div class="review-card" id="card-art-${a.id}">
+        ${imgEl}
+        <div style="padding:12px;">
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:4px;">${catLabel}</div>
+          <h3 style="font-size:0.95rem;color:var(--navy);margin-bottom:6px;line-height:1.4;">${a.title || ''}</h3>
+          ${a.summary ? `<p style="font-size:0.82rem;color:var(--gray);margin-bottom:8px;">${a.summary}</p>` : ''}
+          ${videoEl}
+          <div style="font-size:0.75rem;color:var(--gray);margin-top:8px;margin-bottom:10px;">${dateStr(a.created_at)} ${a.published ? '' : '· <span style="color:orange">טיוטה</span>'}</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-gold" style="flex:1;justify-content:center;padding:9px;" onclick="openEditArticle(${a.id})">✏️ ערוך</button>
+            <button class="btn btn-red"  style="flex:1;justify-content:center;padding:9px;" onclick="deleteArticle(${a.id})">🗑 מחק</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  async function loadArticles() {
+    const wrap = document.getElementById('articles-list');
+    try {
+      const rows = await sbGet('articles', '');
+      if (!rows.length) { wrap.innerHTML = '<div class="empty-state"><div class="icon">📝</div>אין מאמרים עדיין</div>'; return; }
+      wrap.innerHTML = rows.map(renderArticleCard).join('');
+    } catch(e) { wrap.innerHTML = `<div class="empty-state">שגיאה: ${e.message}</div>`; }
+  }
+
+  /* ── טפסי תמונה / וידאו למאמר חדש ── */
+  function clearArtImage() {
+    document.getElementById('art-image').value = '';
+    document.getElementById('art-image-preview').src = '';
+    document.getElementById('art-image-preview').style.display = 'none';
+    document.getElementById('art-image-text').textContent = '🖼 לחץ להעלאת תמונה';
+    document.getElementById('art-image-clear').classList.remove('visible');
+  }
+  function clearArtVideo(e) {
+    if (e) e.stopPropagation();
+    const v = document.getElementById('art-video-preview');
+    if (v.src) URL.revokeObjectURL(v.src);
+    document.getElementById('art-video-file').value = '';
+    v.src = '';
+    document.getElementById('art-video-preview-bar').style.display = 'none';
+    document.getElementById('art-video-text').textContent = '🎬 לחץ להעלאת סרטון';
+    document.getElementById('art-video-wrap').classList.remove('has-file');
+  }
+
+  document.getElementById('art-image').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('art-image-preview');
+      img.src = e.target.result; img.style.display = 'block';
+      document.getElementById('art-image-text').textContent = file.name;
+      document.getElementById('art-image-clear').classList.add('visible');
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('art-image-clear').addEventListener('click', e => { e.preventDefault(); clearArtImage(); });
+
+  document.getElementById('art-video-file').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    const url = URL.createObjectURL(file);
+    document.getElementById('art-video-preview').src = url;
+    document.getElementById('art-video-preview-bar').style.display = 'flex';
+    document.getElementById('art-video-text').textContent = file.name;
+    document.getElementById('art-video-wrap').classList.add('has-file');
+  });
+
+  document.getElementById('btn-add-article').addEventListener('click', async function() {
+    const title     = document.getElementById('art-title').value.trim();
+    const summary   = document.getElementById('art-summary').value.trim();
+    const body      = document.getElementById('art-body').value.trim();
+    const category  = document.getElementById('art-category').value;
+    const videoUrl  = document.getElementById('art-video-url').value.trim();
+    const published = document.getElementById('art-published').checked;
+
+    if (!title) { showToast('נא להזין כותרת'); return; }
+    this.disabled = true;
+    this.innerHTML = '<span class="spinner"></span> מפרסם...';
+    try {
+      let imageUrl = null, videoFileUrl = null;
+      const imgFile   = document.getElementById('art-image').files[0];
+      const videoFile = document.getElementById('art-video-file').files[0];
+      if (imgFile)   imageUrl     = await uploadArticleImage(imgFile);
+      if (videoFile) videoFileUrl = await uploadVideo(videoFile);
+
+      await sbInsert('articles', { title, summary: summary||null, body: body||null, category, image_url: imageUrl, video_url: videoUrl||null, video_file_url: videoFileUrl, published });
+
+      showToast('📝 המאמר פורסם!');
+      ['art-title','art-summary','art-body','art-video-url'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('art-category').value = 'rates';
+      document.getElementById('art-published').checked = true;
+      clearArtImage(); clearArtVideo();
+      loadArticles();
+    } catch(e) { showToast('שגיאה: ' + e.message); }
+    this.disabled = false;
+    this.textContent = '📝 פרסם מאמר';
+  });
+
+  /* ── עריכת מאמר ── */
+  async function openEditArticle(id) {
+    const rows = await sbGet('articles', `id=eq.${id}`).catch(()=>[]);
+    const a = rows[0]; if (!a) return;
+
+    document.getElementById('artedit-id').value              = a.id;
+    document.getElementById('artedit-title').value           = a.title || '';
+    document.getElementById('artedit-summary').value         = a.summary || '';
+    document.getElementById('artedit-body').value            = a.body || '';
+    document.getElementById('artedit-category').value        = a.category || 'tips';
+    document.getElementById('artedit-video-url').value       = a.video_url || '';
+    document.getElementById('artedit-published').checked     = !!a.published;
+
+    const curWrap = document.getElementById('artedit-cur-img-wrap');
+    if (a.image_url) { document.getElementById('artedit-cur-img').src = a.image_url; curWrap.style.display='block'; }
+    else             { curWrap.style.display='none'; }
+
+    clearArtEditImage(); clearArtEditVideo(null);
+    document.getElementById('artedit-overlay').classList.add('open');
+  }
+
+  function closeEditArticle() { document.getElementById('artedit-overlay').classList.remove('open'); }
+  document.getElementById('artedit-overlay').addEventListener('click', function(e) { if(e.target===this) closeEditArticle(); });
+
+  function clearArtEditImage() {
+    document.getElementById('artedit-image').value = '';
+    document.getElementById('artedit-image-preview').src = '';
+    document.getElementById('artedit-image-preview').style.display = 'none';
+    document.getElementById('artedit-image-text').textContent = '🖼 החלף תמונה';
+    document.getElementById('artedit-image-clear').classList.remove('visible');
+  }
+  function clearArtEditVideo(e) {
+    if (e) e.stopPropagation();
+    const v = document.getElementById('artedit-video-preview');
+    if (v.src) URL.revokeObjectURL(v.src);
+    document.getElementById('artedit-video-file').value = '';
+    v.src = '';
+    document.getElementById('artedit-video-preview-bar').style.display = 'none';
+    document.getElementById('artedit-video-text').textContent = '🎬 לחץ להחלפת סרטון';
+    document.getElementById('artedit-video-wrap').classList.remove('has-file');
+  }
+
+  document.getElementById('artedit-image').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('artedit-image-preview');
+      img.src = e.target.result; img.style.display = 'block';
+      document.getElementById('artedit-image-text').textContent = file.name;
+      document.getElementById('artedit-image-clear').classList.add('visible');
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('artedit-image-clear').addEventListener('click', e => { e.preventDefault(); clearArtEditImage(); });
+
+  document.getElementById('artedit-video-file').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    const url = URL.createObjectURL(file);
+    document.getElementById('artedit-video-preview').src = url;
+    document.getElementById('artedit-video-preview-bar').style.display = 'flex';
+    document.getElementById('artedit-video-text').textContent = file.name;
+    document.getElementById('artedit-video-wrap').classList.add('has-file');
+  });
+
+  async function saveEditArticle() {
+    const id       = document.getElementById('artedit-id').value;
+    const title    = document.getElementById('artedit-title').value.trim();
+    const summary  = document.getElementById('artedit-summary').value.trim();
+    const body     = document.getElementById('artedit-body').value.trim();
+    const category = document.getElementById('artedit-category').value;
+    const videoUrl = document.getElementById('artedit-video-url').value.trim();
+    const published = document.getElementById('artedit-published').checked;
+
+    if (!title) { showToast('נא להזין כותרת'); return; }
+    try {
+      const updates = { title, summary: summary||null, body: body||null, category, video_url: videoUrl||null, published };
+      const imgFile   = document.getElementById('artedit-image').files[0];
+      const videoFile = document.getElementById('artedit-video-file').files[0];
+      if (imgFile)   updates.image_url      = await uploadArticleImage(imgFile);
+      if (videoFile) updates.video_file_url = await uploadVideo(videoFile);
+
+      await sbUpdate('articles', id, updates);
+      closeEditArticle();
+      loadArticles();
+      showToast('✅ המאמר עודכן בהצלחה');
+    } catch(e) { showToast('שגיאה: ' + e.message); }
+  }
+
+  async function deleteArticle(id) {
+    if (!confirm('האם למחוק את המאמר לצמיתות?')) return;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      if (!res.ok) throw new Error(await res.text());
+      document.getElementById(`card-art-${id}`)?.remove();
+      showToast('🗑 המאמר נמחק');
     } catch(e) { showToast('שגיאה: ' + e.message); }
   }
 
