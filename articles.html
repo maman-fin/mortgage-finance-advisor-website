@@ -23,8 +23,8 @@
     .nav-toggle:focus, .nav-toggle:active { outline: none; background: none; color: #fff; }
     .dropdown { position: relative; }
     .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
-    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0;
-    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } } background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } }
 
     .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
     .dropdown-menu li:last-child a { border-bottom: none; }
@@ -86,22 +86,7 @@
 
     .article-summary { font-size: 0.91rem; color: #555; line-height: 1.65; margin-bottom: 0.8rem; }
 
-    .article-full {
-      font-size: 0.91rem; color: #444; line-height: 1.7;
-      max-height: 0; overflow: hidden;
-      transition: max-height 0.35s ease, padding 0.2s;
-      padding: 0;
-    }
-    .article-full.open {
-      max-height: 1000px;
-      padding: 0.8rem 0 0.4rem;
-      border-top: 1px solid #eef2f7;
-    }
-    .article-full p { margin-bottom: 0.7rem; }
-    .article-full p:last-child { margin-bottom: 0; }
-    .article-full h4 { color: #1a3a5c; margin: 0.7rem 0 0.3rem; font-size: 0.95rem; }
-    .article-full ul { padding-right: 1.2rem; margin-bottom: 0.5rem; }
-    .article-full ul li { margin-bottom: 0.3rem; }
+    .article-card { cursor: pointer; }
 
     .read-more-btn {
       margin-top: auto; align-self: flex-start; padding-top: 0.6rem;
@@ -110,8 +95,44 @@
       display: flex; align-items: center; gap: 0.3rem; transition: color 0.2s;
     }
     .read-more-btn:hover { color: #1a3a5c; }
-    .read-more-btn .arrow { transition: transform 0.2s; display: inline-block; }
-    .read-more-btn.open .arrow { transform: rotate(180deg); }
+
+    /* ── ARTICLE READER OVERLAY ── */
+    .reader-overlay {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: #fff; overflow-y: auto;
+      animation: readerIn 0.22s ease;
+    }
+    .reader-overlay.open { display: block; }
+    @keyframes readerIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+    .reader-topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: #1a3a5c; color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.2rem; height: 54px;
+    }
+    .reader-topbar-title { font-size: 0.95rem; font-weight: 700; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding-left: 1rem; }
+    .reader-close-btn {
+      background: rgba(255,255,255,0.15); border: none; color: #fff;
+      border-radius: 6px; padding: 6px 14px; font-size: 1rem; cursor: pointer;
+      font-family: inherit; white-space: nowrap; flex-shrink: 0;
+    }
+    .reader-close-btn:hover { background: rgba(255,255,255,0.28); }
+
+    .reader-content {
+      max-width: 780px; margin: 0 auto; padding: 2rem 1.4rem 4rem;
+    }
+    .reader-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 10px; margin-bottom: 1.4rem; display: block; }
+    .reader-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+    .reader-title { font-size: 1.75rem; font-weight: 800; color: #1a3a5c; margin-bottom: 0.6rem; line-height: 1.35; }
+    .reader-summary { font-size: 1.05rem; color: #555; line-height: 1.7; margin-bottom: 1.4rem; border-bottom: 1px solid #eef2f7; padding-bottom: 1rem; }
+    .reader-body { font-size: 1rem; color: #333; line-height: 1.85; }
+    .reader-body p { margin-bottom: 0.85rem; }
+    .reader-body p:last-child { margin-bottom: 0; }
+    .reader-body h4 { color: #1a3a5c; margin: 1rem 0 0.4rem; }
+    .reader-body ul { padding-right: 1.4rem; margin-bottom: 0.6rem; }
+    .reader-body ul li { margin-bottom: 0.35rem; }
+    .reader-video { margin: 1.2rem 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── CTA ── */
@@ -195,7 +216,16 @@
     <button class="filter-btn active" onclick="filterArticles('all', this)">הכל</button>
     <button class="filter-btn" onclick="filterArticles('rates', this)">ריביות ועדכונים</button>
     <button class="filter-btn" onclick="filterArticles('tips', this)">טיפים למשכנתא</button>
-    <button class="filter-btn" onclick="filterArticles('market', this)">חדשות שוק הנדל"ן</button>
+    <button class="filter-btn" onclick="filterArticles('market', this)">שוק הנדל"ן</button>
+  </div>
+
+  <!-- READER OVERLAY -->
+  <div class="reader-overlay" id="readerOverlay">
+    <div class="reader-topbar">
+      <span class="reader-topbar-title" id="readerTopTitle"></span>
+      <button class="reader-close-btn" onclick="closeArticle()">✕ חזור למאמרים</button>
+    </div>
+    <div class="reader-content" id="readerContent"></div>
   </div>
 
   <!-- ARTICLES -->
@@ -228,7 +258,7 @@
     var SUPABASE_URL = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
     var SUPABASE_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
 
-    var CAT_LABEL = { rates:'ריביות ועדכונים', tips:'טיפים למשכנתא', market:'חדשות שוק הנדל"ן' };
+    var CAT_LABEL = { rates:'ריביות ועדכונים', tips:'טיפים למשכנתא', market:'שוק הנדל"ן' };
     var CAT_CLASS = { rates:'rates', tips:'tips', market:'market' };
     var CAT_ICON  = { rates:'📈', tips:'💡', market:'🏘️' };
 
@@ -255,6 +285,7 @@
 
     function bodyToHtml(text) {
       if (!text) return '';
+      if (/<[a-z][\s\S]*?>/i.test(text)) return text;
       return text.split(/\n\n+/).map(function(p) {
         return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
       }).join('');
@@ -265,25 +296,12 @@
       var label = CAT_LABEL[cat] || cat;
       var cls   = CAT_CLASS[cat] || cat;
       var icon  = CAT_ICON[cat]  || '📝';
-      var fullId = 'full-art-' + a.id;
 
       var imgEl = a.image_url
         ? '<img src="' + a.image_url + '" alt="' + (a.title||'') + '" style="width:100%;height:160px;object-fit:cover;display:block;border-radius:12px 12px 0 0;">'
         : '<div class="article-img cat-' + cls + '">' + icon + '</div>';
 
-      var videoEl = '';
-      if (a.video_file_url) {
-        videoEl = '<div style="margin:12px 0;"><video src="' + a.video_file_url + '" controls playsinline preload="metadata" style="width:100%;border-radius:8px;"></video></div>';
-      } else if (a.video_url) {
-        videoEl = '<div style="margin:12px 0;"><iframe src="' + embedUrl(a.video_url) + '" allowfullscreen style="width:100%;height:200px;border:none;border-radius:8px;"></iframe></div>';
-      }
-
-      var bodyHtml = a.body ? ('<div class="article-full" id="' + fullId + '">' + videoEl + bodyToHtml(a.body) + '</div>') : '';
-      var btn = (a.body || a.video_url || a.video_file_url)
-        ? '<button class="read-more-btn" onclick="toggleArticle(\'' + fullId + '\', this)">קרא עוד <span class="arrow">▼</span></button>'
-        : '';
-
-      return '<div class="article-card" data-category="' + cat + '">'
+      return '<div class="article-card" data-category="' + cat + '" onclick="openArticle(' + idx + ')">'
         + imgEl
         + '<div class="article-body">'
         + '<div class="article-meta">'
@@ -292,10 +310,54 @@
         + '</div>'
         + '<h2 class="article-title">' + (a.title || '') + '</h2>'
         + (a.summary ? '<p class="article-summary">' + a.summary + '</p>' : '')
-        + bodyHtml
-        + btn
+        + '<span class="read-more-btn">קרא עוד ›</span>'
         + '</div></div>';
     }
+
+    function openArticle(idx) {
+      var a = allArticles[idx];
+      if (!a) return;
+      var cat = a.category || 'tips';
+      var cls = CAT_CLASS[cat] || cat;
+      var label = CAT_LABEL[cat] || cat;
+
+      var imgEl = a.image_url
+        ? '<img class="reader-img" src="' + a.image_url + '" alt="' + (a.title||'') + '">'
+        : '';
+
+      var videoEl = '';
+      if (a.video_file_url) {
+        videoEl = '<div class="reader-video"><video src="' + a.video_file_url + '" controls playsinline preload="metadata" style="width:100%;border-radius:8px;max-height:400px;"></video></div>';
+      } else if (a.video_url) {
+        videoEl = '<div class="reader-video"><iframe src="' + embedUrl(a.video_url) + '" allowfullscreen style="width:100%;height:300px;border:none;border-radius:8px;"></iframe></div>';
+      }
+
+      var html = imgEl
+        + '<div class="reader-meta">'
+        + '<span class="category-badge badge-' + cls + '">' + label + '</span>'
+        + '<span class="article-date">' + dateStr(a.created_at) + '</span>'
+        + '</div>'
+        + '<h1 class="reader-title">' + (a.title || '') + '</h1>'
+        + (a.summary ? '<p class="reader-summary">' + a.summary + '</p>' : '')
+        + videoEl
+        + (a.body ? '<div class="reader-body">' + bodyToHtml(a.body) + '</div>' : '');
+
+      document.getElementById('readerTopTitle').textContent = a.title || '';
+      document.getElementById('readerContent').innerHTML = html;
+      var overlay = document.getElementById('readerOverlay');
+      overlay.classList.add('open');
+      overlay.scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeArticle() {
+      document.getElementById('readerOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeArticle();
+    });
 
     function filterArticles(cat, btn) {
       document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -304,15 +366,6 @@
       document.querySelectorAll('.article-card').forEach(function(card) {
         card.classList.toggle('hidden', cat !== 'all' && card.dataset.category !== cat);
       });
-    }
-
-    function toggleArticle(fullId, btn) {
-      var full = document.getElementById(fullId);
-      if (!full) return;
-      var isOpen = full.classList.toggle('open');
-      btn.classList.toggle('open', isOpen);
-      btn.querySelector('.arrow').textContent = isOpen ? '▲' : '▼';
-      btn.childNodes[0].nodeValue = isOpen ? 'סגור ' : 'קרא עוד ';
     }
 
     fetch(SUPABASE_URL + '/rest/v1/articles?published=eq.true&order=created_at.desc', {

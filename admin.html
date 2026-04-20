@@ -340,6 +340,29 @@
     }
     .video-thumb iframe { width: 100%; height: 160px; border: 0; display: block; }
 
+    /* ===== עורך טקסט עשיר (RTE) ===== */
+    .rte-toolbar {
+      display: flex; gap: 4px; flex-wrap: wrap; align-items: center;
+      background: #f0f4fa; border: 1px solid #dde1ec; border-bottom: none;
+      border-radius: 8px 8px 0 0; padding: 6px 8px;
+    }
+    .rte-btn {
+      background: #fff; border: 1px solid #ccc; border-radius: 4px;
+      padding: 3px 10px; font-size: 0.85rem; cursor: pointer; font-family: inherit; line-height: 1.5;
+    }
+    .rte-btn:hover { background: #e0e7f5; }
+    .rte-sep { width: 1px; height: 20px; background: #ccc; margin: 0 2px; flex-shrink: 0; }
+    .rte-color-label { font-size: 0.75rem; color: #666; white-space: nowrap; }
+    .rte-color-input { width: 26px; height: 22px; padding: 1px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer; vertical-align: middle; }
+    .rte-editor {
+      min-height: 160px; max-height: 360px; overflow-y: auto;
+      border: 1px solid #dde1ec; border-radius: 0 0 8px 8px;
+      padding: 10px 12px; direction: rtl; line-height: 1.8;
+      font-size: 0.95rem; font-family: inherit; color: #222; outline: none;
+    }
+    .rte-editor:focus { border-color: var(--navy); }
+    .rte-editor:empty:before { content: attr(placeholder); color: #aaa; pointer-events: none; }
+
     /* ===== מודל עריכה ===== */
     .edit-modal-overlay {
       position: fixed; inset: 0;
@@ -539,14 +562,28 @@
       <label>תקציר <span class="opt">(מוצג על הכרטיס)</span></label>
       <input type="text" id="art-summary" placeholder="משפט קצר המסכם את המאמר...">
 
-      <label>תוכן מלא <span class="opt">(פסקאות מופרדות בשורה ריקה)</span></label>
-      <textarea id="art-body" style="min-height:160px;" placeholder="כתוב את תוכן המאמר כאן...&#10;&#10;פסקה שנייה..."></textarea>
+      <label>תוכן מלא</label>
+      <div class="rte-toolbar">
+        <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('bold')"><b>B</b></button>
+        <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('italic')"><i>I</i></button>
+        <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('underline')"><u>U</u></button>
+        <div class="rte-sep"></div>
+        <span class="rte-color-label">צבע טקסט:</span>
+        <input type="color" class="rte-color-input" id="art-fg-color" value="#c0392b"
+               onfocus="rteSaveSel()" onchange="rteColor('foreColor', this.value, 'art-body')">
+        <span class="rte-color-label">סימון:</span>
+        <input type="color" class="rte-color-input" id="art-hl-color" value="#fff176"
+               onfocus="rteSaveSel()" onchange="rteColor('hiliteColor', this.value, 'art-body')">
+        <div class="rte-sep"></div>
+        <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('removeFormat')">✕ נקה</button>
+      </div>
+      <div id="art-body" class="rte-editor" contenteditable="true" dir="rtl" placeholder="כתוב את תוכן המאמר כאן..."></div>
 
       <label>קטגוריה</label>
       <select id="art-category">
         <option value="rates">ריביות ועדכונים</option>
         <option value="tips">טיפים למשכנתא</option>
-        <option value="market">חדשות שוק הנדל"ן</option>
+        <option value="market">שוק הנדל"ן</option>
       </select>
 
       <label>תמונה ראשית <span class="opt">(אופציונלי)</span></label>
@@ -725,13 +762,27 @@
     <input type="text" id="artedit-summary" placeholder="תקציר קצר...">
 
     <label>תוכן מלא</label>
-    <textarea id="artedit-body" style="min-height:160px;"></textarea>
+    <div class="rte-toolbar">
+      <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('bold')"><b>B</b></button>
+      <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('italic')"><i>I</i></button>
+      <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('underline')"><u>U</u></button>
+      <div class="rte-sep"></div>
+      <span class="rte-color-label">צבע טקסט:</span>
+      <input type="color" class="rte-color-input" id="artedit-fg-color" value="#c0392b"
+             onfocus="rteSaveSel()" onchange="rteColor('foreColor', this.value, 'artedit-body')">
+      <span class="rte-color-label">סימון:</span>
+      <input type="color" class="rte-color-input" id="artedit-hl-color" value="#fff176"
+             onfocus="rteSaveSel()" onchange="rteColor('hiliteColor', this.value, 'artedit-body')">
+      <div class="rte-sep"></div>
+      <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('removeFormat')">✕ נקה</button>
+    </div>
+    <div id="artedit-body" class="rte-editor" contenteditable="true" dir="rtl"></div>
 
     <label>קטגוריה</label>
     <select id="artedit-category">
       <option value="rates">ריביות ועדכונים</option>
       <option value="tips">טיפים למשכנתא</option>
-      <option value="market">חדשות שוק הנדל"ן</option>
+      <option value="market">שוק הנדל"ן</option>
     </select>
 
     <label>תמונה <span class="opt">(השאר ריק לשמור קיימת)</span></label>
@@ -747,6 +798,15 @@
       <button type="button" class="photo-clear" id="artedit-image-clear" title="הסר">✕</button>
     </div>
     <input type="file" id="artedit-image" accept="image/*" style="display:none">
+
+    <label>וידאו קיים</label>
+    <div id="artedit-cur-video-wrap" style="display:none;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <span id="artedit-cur-video-label" style="font-size:0.82rem;color:var(--gray);word-break:break-all;flex:1;"></span>
+        <button type="button" class="btn btn-red" style="padding:4px 12px;font-size:0.78rem;flex:none;" onclick="deleteArtEditVideo()">🗑 מחק סרטון</button>
+      </div>
+      <video id="artedit-cur-video-player" src="" controls style="width:100%;max-height:140px;border-radius:6px;margin-top:6px;display:none;"></video>
+    </div>
 
     <label>קישור וידאו <span class="opt">(YouTube / Vimeo)</span></label>
     <input type="url" id="artedit-video-url" placeholder="https://youtube.com/watch?v=...">
@@ -766,10 +826,13 @@
       מפורסם
     </label>
 
-    <div class="edit-modal-actions">
-      <button class="btn btn-green" style="flex:1;justify-content:center;" onclick="saveEditArticle()">💾 שמור שינויים</button>
+    <div class="edit-modal-actions" style="flex-wrap:wrap;gap:8px;">
+      <button class="btn btn-green"   style="flex:1;justify-content:center;" onclick="saveEditArticle()">💾 שמור שינויים</button>
+      <button class="btn btn-navy"    style="flex:1;justify-content:center;" onclick="toggleArtPreview()">👁 תצוגה מקדימה</button>
       <button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="closeEditArticle()">ביטול</button>
     </div>
+    <!-- תצוגה מקדימה -->
+    <div id="artedit-preview-box" style="display:none;margin-top:16px;padding:16px;background:#f4f6fb;border-radius:8px;max-height:400px;overflow-y:auto;direction:rtl;line-height:1.8;font-size:0.95rem;color:#222;white-space:pre-wrap;word-break:break-word;"></div>
   </div>
 </div>
 
@@ -787,6 +850,24 @@
   const ADMIN_PASSWORD    = '343436';
 
   /* ================================================================ */
+
+  /* ── עורך טקסט עשיר ── */
+  let _rteSavedRange = null;
+  function rteSaveSel() {
+    const s = window.getSelection();
+    if (s && s.rangeCount) _rteSavedRange = s.getRangeAt(0).cloneRange();
+  }
+  function rteColor(cmd, color, editorId) {
+    const ed = document.getElementById(editorId);
+    ed.focus();
+    if (_rteSavedRange) {
+      const s = window.getSelection(); s.removeAllRanges(); s.addRange(_rteSavedRange);
+    }
+    document.execCommand(cmd, false, color);
+  }
+  document.querySelectorAll('.rte-editor').forEach(el => {
+    el.addEventListener('blur', rteSaveSel);
+  });
 
   let chartInstance = null;
 
@@ -1521,7 +1602,7 @@
     return `${SUPABASE_URL}/storage/v1/object/public/${ARTICLE_IMAGE_BUCKET}/${path}`;
   }
 
-  const CAT_LABEL = { rates:'ריביות ועדכונים', tips:'טיפים למשכנתא', market:'חדשות שוק הנדל"ן' };
+  const CAT_LABEL = { rates:'ריביות ועדכונים', tips:'טיפים למשכנתא', market:'שוק הנדל"ן' };
 
   function renderArticleCard(a) {
     const catLabel = CAT_LABEL[a.category] || a.category || '';
@@ -1603,7 +1684,7 @@
   document.getElementById('btn-add-article').addEventListener('click', async function() {
     const title     = document.getElementById('art-title').value.trim();
     const summary   = document.getElementById('art-summary').value.trim();
-    const body      = document.getElementById('art-body').value.trim();
+    const body      = document.getElementById('art-body').innerHTML.trim();
     const category  = document.getElementById('art-category').value;
     const videoUrl  = document.getElementById('art-video-url').value.trim();
     const published = document.getElementById('art-published').checked;
@@ -1621,7 +1702,8 @@
       await sbInsert('articles', { title, summary: summary||null, body: body||null, category, image_url: imageUrl, video_url: videoUrl||null, video_file_url: videoFileUrl, published });
 
       showToast('📝 המאמר פורסם!');
-      ['art-title','art-summary','art-body','art-video-url'].forEach(id => document.getElementById(id).value = '');
+      ['art-title','art-summary','art-video-url'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('art-body').innerHTML = '';
       document.getElementById('art-category').value = 'rates';
       document.getElementById('art-published').checked = true;
       clearArtImage(); clearArtVideo();
@@ -1639,7 +1721,7 @@
     document.getElementById('artedit-id').value              = a.id;
     document.getElementById('artedit-title').value           = a.title || '';
     document.getElementById('artedit-summary').value         = a.summary || '';
-    document.getElementById('artedit-body').value            = a.body || '';
+    document.getElementById('artedit-body').innerHTML         = a.body || '';
     document.getElementById('artedit-category').value        = a.category || 'tips';
     document.getElementById('artedit-video-url').value       = a.video_url || '';
     document.getElementById('artedit-published').checked     = !!a.published;
@@ -1648,7 +1730,23 @@
     if (a.image_url) { document.getElementById('artedit-cur-img').src = a.image_url; curWrap.style.display='block'; }
     else             { curWrap.style.display='none'; }
 
+    /* סרטון קיים */
+    const curVidWrap   = document.getElementById('artedit-cur-video-wrap');
+    const curVidLabel  = document.getElementById('artedit-cur-video-label');
+    const curVidPlayer = document.getElementById('artedit-cur-video-player');
+    const existingVideo = a.video_file_url || a.video_url || '';
+    if (existingVideo) {
+      curVidLabel.textContent = existingVideo.replace(/^https?:\/\/[^/]+\//, '');
+      if (a.video_file_url) { curVidPlayer.src = a.video_file_url; curVidPlayer.style.display = 'block'; }
+      else { curVidPlayer.src = ''; curVidPlayer.style.display = 'none'; }
+      curVidWrap.style.display = 'block';
+    } else {
+      curVidWrap.style.display = 'none';
+    }
+    document.getElementById('artedit-overlay')._deleteVideo = false;
+
     clearArtEditImage(); clearArtEditVideo(null);
+    document.getElementById('artedit-preview-box').style.display = 'none';
     document.getElementById('artedit-overlay').classList.add('open');
   }
 
@@ -1662,6 +1760,23 @@
     document.getElementById('artedit-image-text').textContent = '🖼 החלף תמונה';
     document.getElementById('artedit-image-clear').classList.remove('visible');
   }
+  function deleteArtEditVideo() {
+    document.getElementById('artedit-cur-video-wrap').style.display = 'none';
+    document.getElementById('artedit-overlay')._deleteVideo = true;
+  }
+
+  function toggleArtPreview() {
+    const box  = document.getElementById('artedit-preview-box');
+    const body = document.getElementById('artedit-body').innerHTML.trim();
+    if (box.style.display === 'none') {
+      box.innerHTML = body || '<em style="color:#888">אין תוכן</em>';
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      box.style.display = 'none';
+    }
+  }
+
   function clearArtEditVideo(e) {
     if (e) e.stopPropagation();
     const v = document.getElementById('artedit-video-preview');
@@ -1699,14 +1814,16 @@
     const id       = document.getElementById('artedit-id').value;
     const title    = document.getElementById('artedit-title').value.trim();
     const summary  = document.getElementById('artedit-summary').value.trim();
-    const body     = document.getElementById('artedit-body').value.trim();
+    const body     = document.getElementById('artedit-body').innerHTML.trim();
     const category = document.getElementById('artedit-category').value;
     const videoUrl = document.getElementById('artedit-video-url').value.trim();
     const published = document.getElementById('artedit-published').checked;
 
+    const deleteVideo = document.getElementById('artedit-overlay')._deleteVideo;
     if (!title) { showToast('נא להזין כותרת'); return; }
     try {
       const updates = { title, summary: summary||null, body: body||null, category, video_url: videoUrl||null, published };
+      if (deleteVideo) { updates.video_url = null; updates.video_file_url = null; }
       const imgFile   = document.getElementById('artedit-image').files[0];
       const videoFile = document.getElementById('artedit-video-file').files[0];
       if (imgFile)   updates.image_url      = await uploadArticleImage(imgFile);
