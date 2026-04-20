@@ -366,7 +366,7 @@
       background: rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 12px;
     }
     .review-link-label { font-size: 0.8rem; color: rgba(255,255,255,0.7); white-space: nowrap; }
-    .review-link-url   { font-size: 0.82rem; color: var(--gold-l); text-decoration: none; word-break: break-all; }
+    .review-link-url   { font-size: 0.82rem; color: var(--gold-l); text-decoration: none; white-space: nowrap; }
     .copy-btn {
       background: var(--gold); border: none; border-radius: 6px;
       padding: 4px 10px; font-size: 0.78rem; font-weight: 700;
@@ -409,7 +409,7 @@
 <div id="app">
 
   <header>
-    <h1 class="header-title">⚙️ ניהול ביקורות — יחיאל ממן</h1>
+    <h1 class="header-title">⚙️ פאנל ניהול — יחיאל ממן</h1>
     <div class="header-actions">
       <!-- URL מוסתר במובייל, מוצג בדסקטופ -->
       <div id="review-link-wrap" class="review-link-wrap">
@@ -791,10 +791,11 @@
   let chartInstance = null;
 
   /* ── קישור ביקורת ── */
-  const REVIEW_URL = window.location.origin + window.location.pathname.replace('admin.html','') + 'review.html';
-  const _isLocal = /localhost|127\.0\.0\.1/.test(window.location.hostname);
-  const REVIEW_DISPLAY = _isLocal ? '/review.html' : REVIEW_URL.replace(/^https?:\/\//, '');
-  document.getElementById('review-link-a').textContent = REVIEW_DISPLAY;
+  /* הגדר כאן את כתובת האתר בפרודקשן, לדוגמה: 'https://yechiel-mortgages.co.il' */
+  const SITE_URL = '';
+  const _base = (SITE_URL || window.location.origin) + window.location.pathname.replace('admin.html','');
+  const REVIEW_URL = _base + 'review.html';
+  document.getElementById('review-link-a').textContent = REVIEW_URL.replace(/^https?:\/\//, '');
   document.getElementById('review-link-a').href = REVIEW_URL;
 
   function copyReviewLink() {
