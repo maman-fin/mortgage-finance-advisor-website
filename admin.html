@@ -225,6 +225,55 @@
     }
     .upload-label:hover { border-color: var(--gold); }
     .upload-label span  { font-size: 0.88rem; color: var(--gray); }
+    .or-sep {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--gray); font-size: 0.85rem; margin: 4px 0 14px;
+    }
+    .or-sep::before, .or-sep::after {
+      content: ''; flex: 1; height: 1px; background: #dde2ec;
+    }
+    .video-upload-wrap {
+      border: 2px dashed #c0c8d8; border-radius: 8px;
+      padding: 18px 14px; margin-bottom: 14px;
+      text-align: center; cursor: pointer;
+      transition: border-color 0.2s;
+      position: relative;
+    }
+    .video-upload-wrap:hover { border-color: var(--gold); }
+    .video-upload-wrap.has-file { border-color: #4caf7d; background: #f0faf4; }
+    .video-upload-wrap span { font-size: 0.88rem; color: var(--gray); display: block; }
+    .video-upload-wrap .v-clear {
+      display: none; position: absolute; top: 8px; left: 10px;
+      background: #e74c3c; color: #fff; border: none; border-radius: 50%;
+      width: 22px; height: 22px; font-size: 13px; cursor: pointer;
+      align-items: center; justify-content: center; z-index: 10; line-height: 1;
+    }
+    .video-upload-wrap.has-file .v-clear { display: flex; }
+    .video-preview-bar {
+      display: none; align-items: center; gap: 10px;
+      background: #111; border-radius: 6px; overflow: hidden; margin-top: 10px;
+    }
+    .video-preview-bar video { width: 100%; max-height: 160px; display: block; border-radius: 6px; }
+
+    .photo-wrap { position: relative; }
+    .photo-clear {
+      display: none;
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 22px; height: 22px;
+      font-size: 13px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      line-height: 1;
+    }
+    .photo-clear.visible { display: flex; }
 
     /* ===== ריק ===== */
     .empty-state {
@@ -415,14 +464,28 @@
       </select>
 
       <label>תמונת פרופיל <span class="opt">(אופציונלי)</span></label>
-      <label class="upload-label" for="v-photo">
-        <img id="v-photo-preview" src="" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;display:none;">
-        <span id="v-upload-text">📷 לחץ להעלאת תמונה</span>
-      </label>
+      <div class="photo-wrap">
+        <label class="upload-label" for="v-photo">
+          <img id="v-photo-preview" src="" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;display:none;">
+          <span id="v-upload-text">📷 לחץ להעלאת תמונה</span>
+        </label>
+        <button type="button" class="photo-clear" id="v-photo-clear" title="הסר תמונה">✕</button>
+      </div>
       <input type="file" id="v-photo" accept="image/*" style="display:none">
 
-      <label>קישור וידאו (YouTube / Vimeo)</label>
+      <label>קישור וידאו <span class="opt">(YouTube / Vimeo — אופציונלי)</span></label>
       <input type="url" id="v-url" placeholder="https://youtube.com/watch?v=...">
+
+      <div class="or-sep">או העלה סרטון ישירות</div>
+
+      <div class="video-upload-wrap" id="v-video-wrap" onclick="document.getElementById('v-video-file').click()">
+        <span id="v-video-text">🎬 לחץ להעלאת סרטון (MP4, MOV, WebM)</span>
+        <div class="video-preview-bar" id="v-video-preview-bar">
+          <video id="v-video-preview" muted playsinline controls></video>
+        </div>
+        <button type="button" class="v-clear" id="v-video-clear" title="הסר סרטון" onclick="clearVVideo(event)">✕</button>
+      </div>
+      <input type="file" id="v-video-file" accept="video/mp4,video/mov,video/quicktime,video/webm,video/*" style="display:none">
 
       <label>ציטוט קצר <span class="opt">(אופציונלי)</span></label>
       <textarea id="v-quote" placeholder="משפט קצר מהוידאו..."></textarea>
@@ -497,12 +560,85 @@
     <label>דירוג (1–5)</label>
     <input type="number" id="edit-rating" min="1" max="5" placeholder="5">
 
+    <label>תמונת פרופיל <span class="opt">(השאר ריק לשמור קיימת)</span></label>
+    <div id="edit-cur-photo-wrap" style="margin-bottom:8px;display:none;">
+      <img id="edit-cur-photo" src="" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-left:8px;">
+      <span style="font-size:0.82rem;color:var(--gray);">תמונה נוכחית</span>
+    </div>
+    <div class="photo-wrap">
+      <label class="upload-label" for="edit-photo">
+        <img id="edit-photo-preview" src="" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;display:none;">
+        <span id="edit-photo-text">📷 החלף תמונה</span>
+      </label>
+      <button type="button" class="photo-clear" id="edit-photo-clear" title="הסר">✕</button>
+    </div>
+    <input type="file" id="edit-photo" accept="image/*" style="display:none">
+
     <label>טקסט ההמלצה</label>
     <textarea id="edit-text" style="min-height:100px;"></textarea>
 
     <div class="edit-modal-actions">
       <button class="btn btn-green" style="flex:1;justify-content:center;" onclick="saveEdit()">💾 שמור שינויים</button>
       <button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="closeEditModal()">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- מודל עריכת ביקורת וידאו -->
+<div class="edit-modal-overlay" id="vedit-overlay">
+  <div class="edit-modal">
+    <h3>✏️ עריכת ביקורת וידאו</h3>
+    <input type="hidden" id="vedit-id">
+
+    <label>שם הלקוח</label>
+    <input type="text" id="vedit-name" placeholder="ישראל ישראלי">
+
+    <label>עיר</label>
+    <input type="text" id="vedit-city" placeholder="תל אביב">
+
+    <label>סוג שירות</label>
+    <select id="vedit-service">
+      <option value="">-- בחר --</option>
+      <option value="משכנתא לרכישה">משכנתא לרכישה</option>
+      <option value="מחזור משכנתא">מחזור משכנתא</option>
+      <option value="תכנון פיננסי">תכנון פיננסי</option>
+      <option value="ייעוץ להשקעה">ייעוץ להשקעה</option>
+      <option value="אחר">אחר</option>
+    </select>
+
+    <label>תמונת פרופיל <span class="opt">(השאר ריק לשמור קיימת)</span></label>
+    <div id="vedit-cur-photo-wrap" style="margin-bottom:8px;display:none;">
+      <img id="vedit-cur-photo" src="" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-left:8px;">
+      <span style="font-size:0.82rem;color:var(--gray);">תמונה נוכחית</span>
+    </div>
+    <div class="photo-wrap">
+      <label class="upload-label" for="vedit-photo">
+        <img id="vedit-photo-preview" src="" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;display:none;">
+        <span id="vedit-photo-text">📷 החלף תמונה</span>
+      </label>
+      <button type="button" class="photo-clear" id="vedit-photo-clear" title="הסר">✕</button>
+    </div>
+    <input type="file" id="vedit-photo" accept="image/*" style="display:none">
+
+    <label>קישור וידאו <span class="opt">(YouTube / Vimeo)</span></label>
+    <input type="url" id="vedit-url" placeholder="https://youtube.com/watch?v=...">
+
+    <label>או העלה סרטון חדש <span class="opt">(ישחרר את הסרטון הנוכחי)</span></label>
+    <div class="video-upload-wrap" id="vedit-video-wrap" onclick="document.getElementById('vedit-video-file').click()">
+      <span id="vedit-video-text">🎬 לחץ להחלפת סרטון</span>
+      <div class="video-preview-bar" id="vedit-video-preview-bar">
+        <video id="vedit-video-preview" muted playsinline controls></video>
+      </div>
+      <button type="button" class="v-clear" id="vedit-video-clear" title="הסר" onclick="clearVEditVideo(event)">✕</button>
+    </div>
+    <input type="file" id="vedit-video-file" accept="video/mp4,video/mov,video/quicktime,video/webm,video/*" style="display:none">
+
+    <label>ציטוט קצר <span class="opt">(אופציונלי)</span></label>
+    <textarea id="vedit-quote" placeholder="משפט קצר..."></textarea>
+
+    <div class="edit-modal-actions">
+      <button class="btn btn-green" style="flex:1;justify-content:center;" onclick="saveEditVideo()">💾 שמור שינויים</button>
+      <button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="closeEditVideo()">ביטול</button>
     </div>
   </div>
 </div>
@@ -516,7 +652,8 @@
   ================================================================ */
   const SUPABASE_URL      = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
-  const SUPABASE_STORAGE_BUCKET = 'review-photos';                  // ← Storage bucket
+  const SUPABASE_STORAGE_BUCKET       = 'review-photos';
+  const SUPABASE_VIDEO_BUCKET         = 'review-videos';
   const ADMIN_PASSWORD    = '343436';
 
   /* ================================================================ */
@@ -630,6 +767,29 @@
     return `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_STORAGE_BUCKET}/${path}`;
   }
 
+  async function uploadVideo(file) {
+    const ext  = file.name.split('.').pop();
+    const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const res  = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/${SUPABASE_VIDEO_BUCKET}/${path}`,
+      {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': file.type || 'video/mp4',
+          'x-upsert': 'false'
+        },
+        body: file
+      }
+    );
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      throw new Error('שגיאה בהעלאת סרטון: ' + body);
+    }
+    return `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_VIDEO_BUCKET}/${path}`;
+  }
+
   /* ── כלים ── */
   function starsHtml(n) {
     return '★'.repeat(n) + '☆'.repeat(5 - n);
@@ -730,7 +890,13 @@
         wrap.innerHTML = '<div class="empty-state"><div class="icon">🎬</div>אין ביקורות וידאו עדיין</div>';
         return;
       }
-      wrap.innerHTML = rows.map(r => `
+      wrap.innerHTML = rows.map(r => {
+        const videoEl = r.video_file_url
+          ? `<div class="video-thumb"><video src="${r.video_file_url}" controls playsinline preload="metadata" style="width:100%;height:160px;object-fit:contain;background:#000;display:block;"></video></div>`
+          : r.video_url
+            ? `<div class="video-thumb"><iframe src="${embedUrl(r.video_url)}" allowfullscreen loading="lazy"></iframe></div>`
+            : '';
+        return `
         <div class="review-card" id="card-v-${r.id}">
           <div class="card-top">
             ${avatarEl(r.name, r.photo_url)}
@@ -739,17 +905,30 @@
               <p>${r.city || ''} ${r.service_type ? '• ' + r.service_type : ''}</p>
             </div>
           </div>
-          ${r.video_url ? `<div class="video-thumb"><iframe src="${embedUrl(r.video_url)}" allowfullscreen loading="lazy"></iframe></div>` : ''}
+          ${videoEl}
           ${r.quote ? `<div class="card-text">"${r.quote}"</div>` : ''}
           <div class="card-date">${dateStr(r.created_at)}</div>
-          <button class="btn btn-red" style="width:100%;justify-content:center;" onclick="deleteVideo(${r.id})">🗑 הסר ביקורת וידאו</button>
-        </div>`).join('');
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="btn btn-gold" style="flex:1;justify-content:center;padding:10px;" onclick="openEditVideo(${r.id})">✏️ ערוך</button>
+            <button class="btn btn-red" style="flex:1;justify-content:center;padding:10px;" onclick="deleteVideo(${r.id})">🗑 הסר</button>
+          </div>
+        </div>`;
+      }).join('');
     } catch(e) {
       wrap.innerHTML = `<div class="empty-state">שגיאה: ${e.message}</div>`;
     }
   }
 
   /* תצוגה מקדימה תמונה בטופס וידאו */
+  function clearVPhoto() {
+    document.getElementById('v-photo').value = '';
+    const img = document.getElementById('v-photo-preview');
+    img.src = '';
+    img.style.display = 'none';
+    document.getElementById('v-upload-text').textContent = '📷 לחץ להעלאת תמונה';
+    document.getElementById('v-photo-clear').classList.remove('visible');
+  }
+
   document.getElementById('v-photo').addEventListener('change', function() {
     const file = this.files[0];
     if (!file) return;
@@ -759,42 +938,81 @@
       img.src = e.target.result;
       img.style.display = 'block';
       document.getElementById('v-upload-text').textContent = file.name;
+      document.getElementById('v-photo-clear').classList.add('visible');
     };
     reader.readAsDataURL(file);
   });
 
-  document.getElementById('btn-add-video').addEventListener('click', async function() {
-    const name    = document.getElementById('v-name').value.trim();
-    const city    = document.getElementById('v-city').value.trim();
-    const service = document.getElementById('v-service').value;
-    const url     = document.getElementById('v-url').value.trim();
-    const quote   = document.getElementById('v-quote').value.trim();
+  document.getElementById('v-photo-clear').addEventListener('click', function(e) {
+    e.preventDefault();
+    clearVPhoto();
+  });
 
-    if (!name || !city || !service || !url) {
-      showToast('נא למלא שם, עיר, סוג שירות וקישור וידאו');
+  /* ── תצוגה מקדימה של סרטון ── */
+  document.getElementById('v-video-file').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const video = document.getElementById('v-video-preview');
+    video.src = url;
+    document.getElementById('v-video-preview-bar').style.display = 'flex';
+    document.getElementById('v-video-text').textContent = file.name;
+    document.getElementById('v-video-wrap').classList.add('has-file');
+  });
+
+  function clearVVideo(e) {
+    if (e) e.stopPropagation();
+    const input = document.getElementById('v-video-file');
+    const video = document.getElementById('v-video-preview');
+    if (video.src) URL.revokeObjectURL(video.src);
+    input.value = '';
+    video.src = '';
+    document.getElementById('v-video-preview-bar').style.display = 'none';
+    document.getElementById('v-video-text').textContent = '🎬 לחץ להעלאת סרטון (MP4, MOV, WebM)';
+    document.getElementById('v-video-wrap').classList.remove('has-file');
+  }
+
+  document.getElementById('btn-add-video').addEventListener('click', async function() {
+    const name      = document.getElementById('v-name').value.trim();
+    const city      = document.getElementById('v-city').value.trim();
+    const service   = document.getElementById('v-service').value;
+    const url       = document.getElementById('v-url').value.trim();
+    const quote     = document.getElementById('v-quote').value.trim();
+    const videoFile = document.getElementById('v-video-file').files[0];
+
+    if (!name || !city || !service) {
+      showToast('נא למלא שם, עיר וסוג שירות');
+      return;
+    }
+    if (!url && !videoFile) {
+      showToast('נא להזין קישור וידאו או להעלות קובץ סרטון');
       return;
     }
     this.disabled = true;
     this.innerHTML = '<span class="spinner"></span> מפרסם...';
 
     try {
-      let photoUrl = null;
+      let photoUrl    = null;
+      let videoFileUrl = null;
+
       const photoFile = document.getElementById('v-photo').files[0];
       if (photoFile) photoUrl = await uploadPhoto(photoFile);
+      if (videoFile) videoFileUrl = await uploadVideo(videoFile);
 
       await sbInsert('video_reviews', {
         name, city, service_type: service,
-        photo_url: photoUrl, video_url: url,
-        quote: quote || null, approved: true
+        photo_url: photoUrl,
+        video_url: url || null,
+        video_file_url: videoFileUrl,
+        quote: quote || null,
+        approved: true
       });
 
       showToast('🎬 ביקורת הוידאו פורסמה!');
-      // איפוס טופס
       ['v-name','v-city','v-url','v-quote'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('v-service').value = '';
-      document.getElementById('v-photo-preview').style.display = 'none';
-      document.getElementById('v-upload-text').textContent = '📷 לחץ להעלאת תמונה';
-      document.getElementById('v-photo').value = '';
+      clearVPhoto();
+      clearVVideo();
       loadVideo();
     } catch(e) {
       showToast('שגיאה: ' + e.message);
@@ -802,6 +1020,131 @@
     this.disabled = false;
     this.textContent = '🎬 פרסם ביקורת וידאו';
   });
+
+  /* ── עריכת ביקורת וידאו ── */
+  let _veditRow = null;
+
+  async function openEditVideo(id) {
+    const rows = await sbGet('video_reviews', `id=eq.${id}`).catch(() => []);
+    const r = rows[0];
+    if (!r) return;
+    _veditRow = r;
+
+    document.getElementById('vedit-id').value        = r.id;
+    document.getElementById('vedit-name').value      = r.name || '';
+    document.getElementById('vedit-city').value      = r.city || '';
+    document.getElementById('vedit-service').value   = r.service_type || '';
+    document.getElementById('vedit-url').value       = r.video_url || '';
+    document.getElementById('vedit-quote').value     = r.quote || '';
+
+    const curPhotoWrap = document.getElementById('vedit-cur-photo-wrap');
+    if (r.photo_url) {
+      document.getElementById('vedit-cur-photo').src = r.photo_url;
+      curPhotoWrap.style.display = 'block';
+    } else {
+      curPhotoWrap.style.display = 'none';
+    }
+    clearVEditPhoto();
+    clearVEditVideo(null);
+
+    document.getElementById('vedit-overlay').classList.add('open');
+  }
+
+  function closeEditVideo() {
+    document.getElementById('vedit-overlay').classList.remove('open');
+    _veditRow = null;
+  }
+
+  document.getElementById('vedit-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeEditVideo();
+  });
+
+  function clearVEditPhoto() {
+    document.getElementById('vedit-photo').value = '';
+    document.getElementById('vedit-photo-preview').src = '';
+    document.getElementById('vedit-photo-preview').style.display = 'none';
+    document.getElementById('vedit-photo-text').textContent = '📷 החלף תמונה';
+    document.getElementById('vedit-photo-clear').classList.remove('visible');
+  }
+
+  function clearVEditVideo(e) {
+    if (e) e.stopPropagation();
+    const input = document.getElementById('vedit-video-file');
+    const video = document.getElementById('vedit-video-preview');
+    if (video.src) URL.revokeObjectURL(video.src);
+    input.value = '';
+    video.src = '';
+    document.getElementById('vedit-video-preview-bar').style.display = 'none';
+    document.getElementById('vedit-video-text').textContent = '🎬 לחץ להחלפת סרטון';
+    document.getElementById('vedit-video-wrap').classList.remove('has-file');
+  }
+
+  document.getElementById('vedit-photo').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('vedit-photo-preview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('vedit-photo-text').textContent = file.name;
+      document.getElementById('vedit-photo-clear').classList.add('visible');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('vedit-photo-clear').addEventListener('click', function(e) {
+    e.preventDefault();
+    clearVEditPhoto();
+  });
+
+  document.getElementById('vedit-video-file').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const video = document.getElementById('vedit-video-preview');
+    video.src = url;
+    document.getElementById('vedit-video-preview-bar').style.display = 'flex';
+    document.getElementById('vedit-video-text').textContent = file.name;
+    document.getElementById('vedit-video-wrap').classList.add('has-file');
+  });
+
+  async function saveEditVideo() {
+    const id      = document.getElementById('vedit-id').value;
+    const name    = document.getElementById('vedit-name').value.trim();
+    const city    = document.getElementById('vedit-city').value.trim();
+    const service = document.getElementById('vedit-service').value;
+    const url     = document.getElementById('vedit-url').value.trim();
+    const quote   = document.getElementById('vedit-quote').value.trim();
+
+    if (!name || !city || !service) {
+      showToast('נא למלא שם, עיר וסוג שירות');
+      return;
+    }
+    const newVideoFile = document.getElementById('vedit-video-file').files[0];
+    const newPhotoFile = document.getElementById('vedit-photo').files[0];
+    if (!url && !newVideoFile && !_veditRow?.video_file_url && !_veditRow?.video_url) {
+      showToast('נא להזין קישור וידאו או להעלות קובץ סרטון');
+      return;
+    }
+
+    try {
+      const updates = { name, city, service_type: service, quote: quote || null };
+
+      if (newPhotoFile) updates.photo_url = await uploadPhoto(newPhotoFile);
+      if (newVideoFile) {
+        updates.video_file_url = await uploadVideo(newVideoFile);
+        updates.video_url = url || null;
+      } else {
+        updates.video_url = url || null;
+      }
+
+      await sbUpdate('video_reviews', id, updates);
+      closeEditVideo();
+      loadVideo();
+      showToast('✅ הביקורת עודכנה בהצלחה');
+    } catch(e) { showToast('שגיאה: ' + e.message); }
+  }
 
   async function deleteVideo(id) {
     if (!confirm('האם למחוק ביקורת וידאו זו?')) return;
@@ -912,7 +1255,7 @@
           <div class="card-text">"${r.text || ''}"</div>
           <div class="card-date">${dateStr(r.created_at)}</div>
           <div class="card-actions">
-            <button class="btn btn-navy" onclick="openEditModal(${r.id},'${escJ(r.name)}','${escJ(r.city)}','${escJ(r.service_type)}',${r.rating},'${escJ(r.text)}')">
+            <button class="btn btn-navy" onclick="openEditModal(${r.id},'${escJ(r.name)}','${escJ(r.city)}','${escJ(r.service_type)}',${r.rating},'${escJ(r.text)}','${escJ(r.image_url||'')}')">
               ✏️ עריכה
             </button>
             <button class="btn btn-red" onclick="deleteReview(${r.id})">🗑 מחיקה</button>
@@ -946,15 +1289,51 @@
   }
 
   /* פתיחת מודל עריכה */
-  function openEditModal(id, name, city, service, rating, text) {
+  function openEditModal(id, name, city, service, rating, text, imageUrl) {
     document.getElementById('edit-id').value      = id;
     document.getElementById('edit-name').value    = name;
     document.getElementById('edit-city').value    = city;
     document.getElementById('edit-service').value = service;
     document.getElementById('edit-rating').value  = rating;
     document.getElementById('edit-text').value    = text;
+
+    const curWrap = document.getElementById('edit-cur-photo-wrap');
+    if (imageUrl) {
+      document.getElementById('edit-cur-photo').src = imageUrl;
+      curWrap.style.display = 'block';
+    } else {
+      curWrap.style.display = 'none';
+    }
+    clearEditPhoto();
     document.getElementById('edit-modal-overlay').classList.add('open');
   }
+
+  function clearEditPhoto() {
+    document.getElementById('edit-photo').value = '';
+    document.getElementById('edit-photo-preview').src = '';
+    document.getElementById('edit-photo-preview').style.display = 'none';
+    document.getElementById('edit-photo-text').textContent = '📷 החלף תמונה';
+    document.getElementById('edit-photo-clear').classList.remove('visible');
+  }
+
+  document.getElementById('edit-photo').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('edit-photo-preview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('edit-photo-text').textContent = file.name;
+      document.getElementById('edit-photo-clear').classList.add('visible');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('edit-photo-clear').addEventListener('click', function(e) {
+    e.preventDefault();
+    clearEditPhoto();
+  });
 
   function closeEditModal() {
     document.getElementById('edit-modal-overlay').classList.remove('open');
@@ -976,7 +1355,11 @@
 
     if (!text) { showToast('טקסט ההמלצה לא יכול להיות ריק'); return; }
     try {
-      await sbUpdate('reviews', id, { name, city, service_type: service, rating, text });
+      const updates = { name, city, service_type: service, rating, text };
+      const photoFile = document.getElementById('edit-photo').files[0];
+      if (photoFile) updates.image_url = await uploadPhoto(photoFile);
+
+      await sbUpdate('reviews', id, updates);
       closeEditModal();
       loadApproved();
       showToast('✅ הביקורת עודכנה בהצלחה');

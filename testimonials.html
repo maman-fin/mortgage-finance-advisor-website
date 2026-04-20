@@ -157,6 +157,15 @@
       transition: opacity 0.2s;
     }
     .video-card:hover .video-thumb img { opacity: 0.7; }
+    .video-thumb video {
+      width: 100%; height: 100%;
+      display: block; object-fit: contain;
+      background: #000;
+    }
+    .video-thumb iframe {
+      width: 100%; height: 100%;
+      border: none; display: block;
+    }
     .play-btn {
       position: absolute;
       inset: 0;
@@ -174,6 +183,18 @@
       transition: transform 0.2s;
     }
     .video-card:hover .play-btn::after { transform: scale(1.1); }
+    .expand-btn {
+      position: absolute;
+      bottom: 8px; left: 8px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      border: none; border-radius: 6px;
+      padding: 5px 10px; font-size: 0.78rem;
+      cursor: pointer; z-index: 10;
+      transition: background 0.2s;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .expand-btn:hover { background: rgba(201,168,76,0.9); color: #fff; }
 
     .video-card-body { padding: 18px; }
     .video-card-top  { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
@@ -453,7 +474,8 @@
 <div class="modal-overlay" id="video-modal" onclick="closeModal(event)">
   <div class="modal-inner">
     <button class="modal-close" onclick="closeVideoModal()">✕</button>
-    <iframe id="modal-iframe" src="" allowfullscreen allow="autoplay"></iframe>
+    <iframe id="modal-iframe" src="" allowfullscreen allow="autoplay" style="display:none"></iframe>
+    <video id="modal-video" src="" controls playsinline style="display:none;width:100%;border-radius:8px;"></video>
   </div>
 </div>
 
@@ -505,6 +527,10 @@
     return ''; // Vimeo requires API call for thumbnail — use blank
   }
 
+  function isDirectVideo(url) {
+    return url && url.includes('/storage/v1/object/public/');
+  }
+
   /* ── מחלץ embed URL ── */
   function embedUrl(url) {
     if (!url) return '';
@@ -517,12 +543,27 @@
 
   /* ── Modal וידאו ── */
   function openVideoModal(videoUrl) {
-    document.getElementById('modal-iframe').src = embedUrl(videoUrl);
+    const iframe = document.getElementById('modal-iframe');
+    const video  = document.getElementById('modal-video');
+    if (isDirectVideo(videoUrl)) {
+      iframe.style.display = 'none';
+      iframe.src = '';
+      video.src = videoUrl;
+      video.style.display = 'block';
+    } else {
+      video.style.display = 'none';
+      video.src = '';
+      iframe.src = embedUrl(videoUrl);
+      iframe.style.display = 'block';
+    }
     document.getElementById('video-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
   function closeVideoModal() {
     document.getElementById('modal-iframe').src = '';
+    document.getElementById('modal-video').src  = '';
+    document.getElementById('modal-video').style.display = 'none';
+    document.getElementById('modal-iframe').style.display = 'none';
     document.getElementById('video-modal').classList.remove('open');
     document.body.style.overflow = '';
   }
@@ -535,6 +576,15 @@
     if (e.key === 'Escape') closeVideoModal();
   });
 
+  /* ── הפעלת סרטון inline בכרטיס (YouTube/Vimeo) ── */
+  function inlinePlay(cardId, playUrl) {
+    const thumb = document.querySelector(`#${cardId} .video-thumb`);
+    if (!thumb) return;
+    const safeUrl = encodeURI(embedUrl(playUrl)) + (playUrl.includes('youtube') || playUrl.includes('youtu.be') || playUrl.includes('vimeo') ? '&autoplay=1' : '');
+    thumb.innerHTML = `
+      <iframe src="${safeUrl}" allowfullscreen allow="autoplay; fullscreen" style="width:100%;height:100%;border:none;"></iframe>`;
+  }
+
   /* ── טעינת ביקורות וידאו ── */
   async function loadVideoReviews() {
     const grid    = document.getElementById('video-grid');
@@ -542,21 +592,41 @@
     try {
       const rows = await sbGet('video_reviews', 'approved=eq.true');
       if (!rows.length) {
-        // אם אין ביקורות וידאו — מסתירים את הסקשן לגמרי
         section.style.display = 'none';
         return;
       }
       section.style.display = 'block';
       grid.innerHTML = rows.map(r => {
-        const thumb = thumbUrl(r.video_url);
+        const playUrl = r.video_file_url || r.video_url || '';
+        const cardId  = `vc-${r.id}`;
+        const isDirect = isDirectVideo(playUrl);
+
+        let thumbContent;
+        if (isDirect) {
+          // סרטון ישיר — מוצג inline מיד
+          thumbContent = `
+            <video src="${playUrl}" controls playsinline preload="metadata"
+              style="width:100%;height:100%;object-fit:contain;background:#000;display:block;">
+            </video>`;
+        } else {
+          // YouTube / Vimeo — thumbnail + play, לחיצה טוענת inline
+          const thumb = thumbUrl(r.video_url);
+          const thumbImg = thumb
+            ? `<img src="${thumb}" alt="${r.name}" loading="lazy">`
+            : r.photo_url
+              ? `<img src="${r.photo_url}" alt="${r.name}" loading="lazy" style="object-position:top;">`
+              : `<div style="width:100%;height:100%;background:#1a2a40;display:flex;align-items:center;justify-content:center;font-size:3rem;">🎬</div>`;
+          thumbContent = `${thumbImg}<div class="play-btn"></div>`;
+        }
+
+        const clickAttr = isDirect
+          ? ''
+          : `onclick="inlinePlay('${cardId}', '${playUrl.replace(/'/g,"\\'")}')"`;
+
         return `
-          <div class="video-card" onclick="openVideoModal('${r.video_url}')">
-            <div class="video-thumb">
-              ${thumb
-                ? `<img src="${thumb}" alt="${r.name}" loading="lazy">`
-                : `<div style="width:100%;aspect-ratio:16/9;background:#1a2a40;"></div>`
-              }
-              <div class="play-btn"></div>
+          <div class="video-card" id="${cardId}">
+            <div class="video-thumb" ${clickAttr} style="${isDirect ? '' : 'cursor:pointer;'}">
+              ${thumbContent}
             </div>
             <div class="video-card-body">
               <div class="video-card-top">
@@ -564,9 +634,7 @@
                 <div>
                   <div class="card-name">${r.name || ''}</div>
                   <div class="card-meta">
-                    ${r.city || ''}
-                    ${r.city && r.service_type ? ' • ' : ''}
-                    ${r.service_type || ''}
+                    ${r.city || ''}${r.city && r.service_type ? ' • ' : ''}${r.service_type || ''}
                   </div>
                 </div>
               </div>
