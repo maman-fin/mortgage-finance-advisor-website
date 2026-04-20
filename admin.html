@@ -1319,7 +1319,7 @@
           <div style="flex:1;"></div>
           <div class="card-date">${dateStr(r.created_at)}</div>
           ${!r.handled
-            ? `<button class="btn btn-orange" style="width:100%;justify-content:center;" onclick="markHandled(${r.id})">✔️ סמן כטופל</button>`
+            ? `<button class="btn btn-orange" style="width:100%;justify-content:center;flex:none;" onclick="markHandled(${r.id})">✔️ סמן כטופל</button>`
             : `<div style="font-size:0.82rem;color:var(--gray);text-align:center;">✔ טופל</div>`
           }
         </div>`).join('');
