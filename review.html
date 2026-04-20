@@ -360,6 +360,12 @@
       <label>שמך <span class="opt">(אופציונלי)</span></label>
       <input type="text" id="low-name" placeholder="שם פרטי">
 
+      <label>אימייל <span class="opt">(אופציונלי — לחזרה אליך)</span></label>
+      <input type="email" id="low-email" placeholder="you@example.com">
+
+      <label>טלפון <span class="opt">(אופציונלי)</span></label>
+      <input type="text" id="low-phone" placeholder="05X-XXXXXXX">
+
       <label>מה היה פחות טוב?</label>
       <textarea id="low-bad" placeholder="ספר לנו מה הפריע..."></textarea>
 
@@ -600,11 +606,13 @@
 
     try {
       await supabaseInsert('feedback', {
-        rating:         selectedRating,
-        name:           document.getElementById('low-name').value.trim() || null,
-        what_was_bad:   bad,
+        rating:          selectedRating,
+        name:            document.getElementById('low-name').value.trim()  || null,
+        email:           document.getElementById('low-email').value.trim() || null,
+        phone:           document.getElementById('low-phone').value.trim() || null,
+        what_was_bad:    bad,
         what_to_improve: improve,
-        handled:        false
+        handled:         false
       });
       setProgress(100);
       goTo('step-done-low');

@@ -426,13 +426,15 @@
     <button class="tab-btn active" onclick="openTab('pending')">
       ממתינות <span class="badge" id="badge-pending">0</span>
     </button>
-    <button class="tab-btn" onclick="openTab('video')">ביקורות וידאו</button>
+    <button class="tab-btn" onclick="openTab('video-add')">➕ הוסף וידאו</button>
+    <button class="tab-btn" onclick="openTab('video-list')">ביקורות וידאו</button>
     <button class="tab-btn" onclick="openTab('feedback')">
       משובים שליליים <span class="badge" id="badge-feedback" style="background:var(--orange)">0</span>
     </button>
     <button class="tab-btn" onclick="openTab('rejected')">ביקורות שנדחו</button>
     <button class="tab-btn" onclick="openTab('approved')">ביקורות מאושרות</button>
-    <button class="tab-btn" onclick="openTab('articles')">מאמרים 📝</button>
+    <button class="tab-btn" onclick="openTab('articles-add')">➕ הוסף מאמר</button>
+    <button class="tab-btn" onclick="openTab('articles-list')">מאמרים 📝</button>
     <button class="tab-btn" onclick="openTab('stats')">סטטיסטיקות</button>
   </div>
 
@@ -443,8 +445,8 @@
     </div>
   </div>
 
-  <!-- ━━━━━━━━━━━━━ טאב 2: וידאו ━━━━━━━━━━━━━ -->
-  <div id="tab-video" class="tab-panel">
+  <!-- ━━━━━━━━━━━━━ טאב: הוסף וידאו ━━━━━━━━━━━━━ -->
+  <div id="tab-video-add" class="tab-panel">
     <div class="form-card">
       <h2>➕ הוסף ביקורת וידאו חדשה</h2>
 
@@ -495,7 +497,10 @@
         🎬 פרסם ביקורת וידאו
       </button>
     </div>
+  </div>
 
+  <!-- ━━━━━━━━━━━━━ טאב: ביקורות וידאו ━━━━━━━━━━━━━ -->
+  <div id="tab-video-list" class="tab-panel">
     <h2 style="color:var(--navy);margin-bottom:16px;">ביקורות וידאו פעילות</h2>
     <div id="video-list" class="cards-grid">
       <div class="loader">טוען...</div>
@@ -523,8 +528,8 @@
     </div>
   </div>
 
-  <!-- ━━━━━━━━━━━━━ טאב 7: מאמרים ━━━━━━━━━━━━━ -->
-  <div id="tab-articles" class="tab-panel">
+  <!-- ━━━━━━━━━━━━━ טאב: הוסף מאמר ━━━━━━━━━━━━━ -->
+  <div id="tab-articles-add" class="tab-panel">
     <div class="form-card">
       <h2>➕ מאמר / עדכון חדש</h2>
 
@@ -576,7 +581,10 @@
         📝 פרסם מאמר
       </button>
     </div>
+  </div>
 
+  <!-- ━━━━━━━━━━━━━ טאב: מאמרים ━━━━━━━━━━━━━ -->
+  <div id="tab-articles-list" class="tab-panel">
     <h2 style="color:var(--navy);margin-bottom:16px;">מאמרים פורסמו</h2>
     <div id="articles-list" class="cards-grid">
       <div class="loader">טוען...</div>
@@ -784,7 +792,9 @@
 
   /* ── קישור ביקורת ── */
   const REVIEW_URL = window.location.origin + window.location.pathname.replace('admin.html','') + 'review.html';
-  document.getElementById('review-link-a').textContent = REVIEW_URL;
+  const _isLocal = /localhost|127\.0\.0\.1/.test(window.location.hostname);
+  const REVIEW_DISPLAY = _isLocal ? '/review.html' : REVIEW_URL.replace(/^https?:\/\//, '');
+  document.getElementById('review-link-a').textContent = REVIEW_DISPLAY;
   document.getElementById('review-link-a').href = REVIEW_URL;
 
   function copyReviewLink() {
@@ -810,7 +820,7 @@
   }
 
   /* ── Tabs ── */
-  const tabData = ['pending','video','feedback','rejected','approved','articles','stats'];
+  const tabData = ['pending','video-add','video-list','feedback','rejected','approved','articles-add','articles-list','stats'];
   function openTab(name) {
     tabData.forEach(t => {
       document.getElementById(`tab-${t}`).classList.remove('active');
@@ -1299,8 +1309,13 @@
               <div class="stars-small" style="color:var(--orange);">${starsHtml(r.rating || 0)}</div>
             </div>
           </div>
+          ${r.email || r.phone ? `<div style="font-size:0.82rem;color:var(--navy);background:#f0f4ff;border-radius:8px;padding:8px 10px;display:flex;gap:16px;flex-wrap:wrap;">
+            ${r.email ? `<span>✉️ <a href="mailto:${r.email}" style="color:var(--navy);">${r.email}</a></span>` : ''}
+            ${r.phone ? `<span>📞 <a href="tel:${r.phone}" style="color:var(--navy);">${r.phone}</a></span>` : ''}
+          </div>` : ''}
           ${r.what_was_bad    ? `<div style="font-size:0.8rem;color:var(--gray);margin-bottom:2px;">מה היה רע:</div><div class="card-text">${r.what_was_bad}</div>` : ''}
           ${r.what_to_improve ? `<div style="font-size:0.8rem;color:var(--gray);margin-bottom:2px;margin-top:6px;">מה לשפר:</div><div class="card-text">${r.what_to_improve}</div>` : ''}
+          <div style="flex:1;"></div>
           <div class="card-date">${dateStr(r.created_at)}</div>
           ${!r.handled
             ? `<button class="btn btn-orange" style="width:100%;justify-content:center;" onclick="markHandled(${r.id})">✔️ סמן כטופל</button>`
