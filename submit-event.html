@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הוספת אירוע | יחיאל ממן</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0d1f3c;
+      --gold: #c9a84c;
+      --bg: #f4f6fa;
+      --white: #fff;
+      --text: #222;
+      --gray: #888;
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(13,31,60,0.13);
+    }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); direction: rtl; min-height: 100vh; }
+
+    /* NAV */
+    nav { background: #1a3a5c; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover { color: #fff; }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; }
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } }
+    .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* PAGE */
+    .page-header { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 3rem 1rem 2.5rem; }
+    .page-header h1 { font-size: 2rem; margin-bottom: 0.4rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; }
+
+    .page-wrap { max-width: 580px; margin: 2.5rem auto 4rem; padding: 0 1rem; }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px 32px;
+    }
+
+    label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 5px; margin-top: 16px; }
+    label:first-of-type { margin-top: 0; }
+    label .opt { font-weight: 400; color: var(--gray); }
+
+    input[type="text"], input[type="tel"], input[type="date"], textarea, select {
+      width: 100%; padding: 10px 13px;
+      border: 2px solid #e0e4ec; border-radius: 10px;
+      font-size: 0.95rem; font-family: inherit;
+      color: var(--text); background: #fafbfd;
+      direction: rtl; transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--gold); }
+    textarea { resize: vertical; min-height: 100px; }
+
+    /* Image upload */
+    .img-upload-wrap {
+      border: 2px dashed #c0c8d8; border-radius: 10px;
+      padding: 20px; text-align: center; cursor: pointer;
+      transition: border-color 0.2s; position: relative;
+    }
+    .img-upload-wrap:hover { border-color: var(--gold); }
+    .img-upload-wrap.has-file { border-color: #4caf7d; background: #f0faf4; }
+    .img-upload-wrap span { font-size: 0.88rem; color: var(--gray); display: block; margin-top: 6px; }
+    #img-preview { max-width: 100%; max-height: 160px; border-radius: 8px; display: none; margin: 0 auto 8px; }
+    .img-clear { display: none; position: absolute; top: 8px; left: 10px; background: #e74c3c; color: #fff; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; cursor: pointer; align-items: center; justify-content: center; z-index: 10; }
+    .img-clear.visible { display: flex; }
+
+    /* Region */
+    .region-group { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 4px; }
+    .region-btn {
+      flex: 1; min-width: 80px; padding: 0.6rem 1rem;
+      border: 2px solid #d0d8e4; border-radius: 10px;
+      background: #fff; color: #555; font-size: 0.92rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.18s; text-align: center;
+    }
+    .region-btn:hover { border-color: #2a6496; color: #2a6496; }
+    .region-btn.selected { background: #1a3a5c; border-color: #1a3a5c; color: #fff; }
+
+    .submit-btn {
+      width: 100%; margin-top: 24px; padding: 14px;
+      background: linear-gradient(135deg, var(--navy), #2a6496);
+      color: #fff; border: none; border-radius: 12px;
+      font-size: 1.05rem; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: filter 0.2s;
+    }
+    .submit-btn:hover { filter: brightness(1.1); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    #success-box { display: none; text-align: center; padding: 2rem; }
+    #success-box .icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    #success-box h2 { color: var(--navy); font-size: 1.4rem; margin-bottom: 0.5rem; }
+    #success-box p { color: var(--gray); font-size: 0.95rem; }
+    #success-box a { display: inline-block; margin-top: 1.2rem; color: var(--navy); font-weight: 700; text-decoration: underline; }
+
+    #error-msg { color: #e74c3c; font-size: 0.88rem; margin-top: 8px; display: none; }
+
+    @media (max-width: 600px) {
+      .card { padding: 24px 18px; }
+      nav ul { display: none; }
+      .nav-toggle { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+  <ul id="nav-menu">
+    <li><a href="index.html#services">שירותים</a></li>
+    <li><a href="index.html#process">תהליך</a></li>
+    <li><a href="testimonials.html">המלצות</a></li>
+    <li><a href="events-list.html" class="active">אירועים</a></li>
+    <li class="dropdown">
+      <a href="#">מחשבונים</a>
+      <ul class="dropdown-menu">
+        <li><a href="calculator.html">מחשבון משכנתא</a></li>
+        <li><a href="loan-calculator.html">מחשבון הלוואה</a></li>
+        <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+        <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+        <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="#">מרכז הידע</a>
+      <ul class="dropdown-menu">
+        <li><a href="articles.html">מאמרים ועדכונים</a></li>
+        <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+        <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
+        <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+      </ul>
+    </li>
+    <li><a href="index.html#contact">צור קשר</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('nav-menu').classList.toggle('open')" aria-label="פתח תפריט">☰</button>
+</nav>
+
+<div class="page-header">
+  <h1>📅 פרסום אירוע</h1>
+  <p>מלא את הטופס ואירועך יועבר לאישור — ופורסם לאחר בדיקה</p>
+</div>
+
+<div class="page-wrap">
+  <div class="card">
+    <div id="form-area">
+      <label>שם הפרסם <span style="color:red">*</span></label>
+      <input type="text" id="sub-name" placeholder="שם מלא">
+
+      <label>טלפון <span class="opt">(אופציונלי)</span></label>
+      <input type="tel" id="sub-phone" placeholder="050-0000000">
+
+      <label>שם האירוע <span style="color:red">*</span></label>
+      <input type="text" id="ev-title" placeholder="כותרת האירוע">
+
+      <label>תיאור האירוע <span style="color:red">*</span></label>
+      <textarea id="ev-desc" placeholder="פרטים על האירוע — מה, מתי, איפה, למי מיועד..."></textarea>
+
+      <label>תאריך האירוע <span style="color:red">*</span></label>
+      <input type="date" id="ev-date">
+
+      <label>אזור <span style="color:red">*</span></label>
+      <div class="region-group">
+        <button type="button" class="region-btn" data-region="צפון" onclick="selectRegion(this)">צפון</button>
+        <button type="button" class="region-btn" data-region="מרכז" onclick="selectRegion(this)">מרכז</button>
+        <button type="button" class="region-btn" data-region="דרום" onclick="selectRegion(this)">דרום</button>
+      </div>
+
+      <label>תמונה <span class="opt">(אופציונלי)</span></label>
+      <div class="img-upload-wrap" id="img-wrap" onclick="document.getElementById('ev-image').click()">
+        <img id="img-preview" src="" alt="">
+        <span id="img-text">🖼 לחץ להעלאת תמונה</span>
+        <button type="button" class="img-clear" id="img-clear" onclick="clearImg(event)" title="הסר">✕</button>
+      </div>
+      <input type="file" id="ev-image" accept="image/*" style="display:none" onchange="onImgChange(this)">
+
+      <div id="error-msg"></div>
+      <button class="submit-btn" id="submit-btn" onclick="submitEvent()">📤 שלח לאישור</button>
+    </div>
+
+    <div id="success-box">
+      <div class="icon">🎉</div>
+      <h2>האירוע נשלח בהצלחה!</h2>
+      <p>האירוע שלך התקבל ויפורסם לאחר אישור הניהול.<br>תודה על שיתוף הפעולה!</p>
+      <a href="events-list.html">← לכל האירועים</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL      = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
+  const EVENT_IMAGE_BUCKET = 'event-images';
+
+  let selectedRegion = '';
+
+  function selectRegion(btn) {
+    document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedRegion = btn.dataset.region;
+  }
+
+  function onImgChange(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('img-preview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('img-text').textContent = file.name;
+      document.getElementById('img-wrap').classList.add('has-file');
+      document.getElementById('img-clear').classList.add('visible');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearImg(e) {
+    e.stopPropagation();
+    document.getElementById('ev-image').value = '';
+    document.getElementById('img-preview').src = '';
+    document.getElementById('img-preview').style.display = 'none';
+    document.getElementById('img-text').textContent = '🖼 לחץ להעלאת תמונה';
+    document.getElementById('img-wrap').classList.remove('has-file');
+    document.getElementById('img-clear').classList.remove('visible');
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  async function uploadEventImage(file) {
+    const ext  = file.name.split('.').pop();
+    const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const res = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/${EVENT_IMAGE_BUCKET}/${path}`,
+      { method: 'POST', headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': file.type, 'x-upsert': 'false' }, body: file }
+    );
+    if (!res.ok) throw new Error('שגיאה בהעלאת תמונה');
+    return `${SUPABASE_URL}/storage/v1/object/public/${EVENT_IMAGE_BUCKET}/${path}`;
+  }
+
+  async function submitEvent() {
+    document.getElementById('error-msg').style.display = 'none';
+    const name  = document.getElementById('sub-name').value.trim();
+    const phone = document.getElementById('sub-phone').value.trim();
+    const title = document.getElementById('ev-title').value.trim();
+    const desc  = document.getElementById('ev-desc').value.trim();
+    const date  = document.getElementById('ev-date').value;
+
+    if (!name)   { showError('נא להזין שם'); return; }
+    if (!title)  { showError('נא להזין שם האירוע'); return; }
+    if (!desc)   { showError('נא להזין תיאור לאירוע'); return; }
+    if (!date)   { showError('נא לבחור תאריך'); return; }
+    if (!selectedRegion) { showError('נא לבחור אזור'); return; }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = '⏳ שולח...';
+
+    try {
+      let image_url = null;
+      const imgFile = document.getElementById('ev-image').files[0];
+      if (imgFile) image_url = await uploadEventImage(imgFile);
+
+      const payload = {
+        submitter_name: name,
+        submitter_phone: phone || null,
+        title,
+        description: desc,
+        event_date: date,
+        region: selectedRegion,
+        image_url,
+        approved: false,
+        rejected: false
+      };
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('success-box').style.display = 'block';
+    } catch(e) {
+      showError('שגיאה בשליחה: ' + e.message);
+      btn.disabled = false;
+      btn.textContent = '📤 שלח לאישור';
+    }
+  }
+</script>
+</body>
+</html>

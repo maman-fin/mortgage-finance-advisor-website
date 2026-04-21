@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אירועים | יחיאל ממן</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #f7f8fa; direction: rtl; }
+
+    /* NAV */
+    nav { background: #1a3a5c; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; }
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } }
+    .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* PAGE HEADER */
+    .page-header { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 3.5rem 1rem 3rem; }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; }
+
+    /* ADD EVENT BUTTON */
+    .add-event-wrap { text-align: center; margin-top: 1.5rem; }
+    .btn-add-event {
+      display: inline-block; padding: 0.7rem 1.8rem;
+      background: linear-gradient(135deg, #c9a84c, #e8c96a);
+      color: #1a3a5c; font-weight: 700; font-size: 0.95rem;
+      border-radius: 25px; text-decoration: none;
+      transition: filter 0.2s, transform 0.2s;
+    }
+    .btn-add-event:hover { filter: brightness(1.08); transform: translateY(-2px); }
+
+    /* FILTER BAR */
+    .filter-bar { max-width: 1000px; margin: 2rem auto 0; padding: 0 1rem; display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 0.5rem 1.15rem; border-radius: 20px; border: 2px solid #d0d8e4;
+      background: #fff; color: #555; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.18s;
+    }
+    .filter-btn:hover { border-color: #2a6496; color: #2a6496; }
+    .filter-btn.active { background: #1a3a5c; border-color: #1a3a5c; color: #fff; }
+
+    /* GRID */
+    .events-section { max-width: 1000px; margin: 1.8rem auto 3rem; padding: 0 1rem; }
+    .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.6rem; }
+    .loading { text-align: center; color: #88a; padding: 3rem; font-size: 0.95rem; }
+    .empty-state { text-align: center; color: #888; padding: 4rem 1rem; }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+
+    /* EVENT CARD */
+    .event-card {
+      background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .event-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateY(-3px); }
+    .event-card.hidden { display: none; }
+
+    .event-img {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+    }
+    .event-img-placeholder {
+      width: 100%; aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+    }
+
+    .event-body { padding: 1.2rem; display: flex; flex-direction: column; flex: 1; }
+
+    .event-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+    .region-badge {
+      font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem;
+      border-radius: 12px; white-space: nowrap;
+    }
+    .badge-צפון { background: #e8f0fb; color: #1a3a5c; }
+    .badge-מרכז { background: #e6f7ee; color: #1a6040; }
+    .badge-דרום { background: #fef3e2; color: #7a4f00; }
+
+    .event-date-badge { font-size: 0.78rem; color: #888; }
+
+    .event-title { font-size: 1.05rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.5rem; }
+    .event-desc { font-size: 0.88rem; color: #555; line-height: 1.55; flex: 1; }
+
+    /* FOOTER */
+    footer { background: #1a3a5c; color: #aab; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
+
+    @media (max-width: 768px) {
+      nav ul { display: none; }
+      .nav-toggle { display: block; }
+      nav ul.open { display: flex; flex-direction: column; position: absolute; top: 64px; right: 0; left: 0; background: #1a3a5c; padding: 1rem 2rem; gap: 1rem; z-index: 99; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+  <ul id="nav-menu">
+    <li><a href="index.html#services">שירותים</a></li>
+    <li><a href="index.html#process">תהליך</a></li>
+    <li><a href="testimonials.html">המלצות</a></li>
+    <li><a href="events-list.html" class="active">אירועים</a></li>
+    <li class="dropdown">
+      <a href="#">מחשבונים</a>
+      <ul class="dropdown-menu">
+        <li><a href="calculator.html">מחשבון משכנתא</a></li>
+        <li><a href="loan-calculator.html">מחשבון הלוואה</a></li>
+        <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+        <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+        <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="#">מרכז הידע</a>
+      <ul class="dropdown-menu">
+        <li><a href="articles.html">מאמרים ועדכונים</a></li>
+        <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+        <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
+        <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+      </ul>
+    </li>
+    <li><a href="index.html#contact">צור קשר</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('nav-menu').classList.toggle('open')" aria-label="פתח תפריט">☰</button>
+</nav>
+
+<div class="page-header">
+  <h1>📅 אירועים</h1>
+  <p>אירועים בתחום הנדל"ן והמשכנתאות באזורים שונים בארץ</p>
+  <div class="add-event-wrap">
+    <a href="submit-event.html" class="btn-add-event">➕ פרסם אירוע</a>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterEvents('הכל', this)">הכל</button>
+  <button class="filter-btn" onclick="filterEvents('צפון', this)">צפון</button>
+  <button class="filter-btn" onclick="filterEvents('מרכז', this)">מרכז</button>
+  <button class="filter-btn" onclick="filterEvents('דרום', this)">דרום</button>
+</div>
+
+<div class="events-section">
+  <div id="events-grid" class="events-grid">
+    <div class="loading">טוען אירועים...</div>
+  </div>
+</div>
+
+<footer><span>© 2025 יחיאל ממן — יועץ משכנתאות</span></footer>
+
+<script>
+  const SUPABASE_URL      = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
+
+  let allEvents = [];
+
+  function dateHe(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function eventCard(ev) {
+    const img = ev.image_url
+      ? `<img class="event-img" src="${ev.image_url}" alt="${ev.title}" loading="lazy" onerror="this.style.display='none'">`
+      : `<div class="event-img-placeholder">📅</div>`;
+    return `
+      <div class="event-card" data-region="${ev.region}">
+        ${img}
+        <div class="event-body">
+          <div class="event-meta">
+            <span class="region-badge badge-${ev.region}">${ev.region}</span>
+            <span class="event-date-badge">📆 ${dateHe(ev.event_date)}</span>
+          </div>
+          <div class="event-title">${ev.title}</div>
+          <div class="event-desc">${ev.description || ''}</div>
+        </div>
+      </div>`;
+  }
+
+  async function loadEvents() {
+    const grid = document.getElementById('events-grid');
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/events?approved=eq.true&rejected=eq.false&order=event_date.asc`,
+        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
+      );
+      if (!res.ok) throw new Error(await res.text());
+      allEvents = await res.json();
+      if (!allEvents.length) {
+        grid.innerHTML = '<div class="empty-state"><div class="icon">📅</div><p>אין אירועים להצגה כרגע</p></div>';
+        return;
+      }
+      grid.innerHTML = allEvents.map(eventCard).join('');
+    } catch(e) {
+      grid.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>שגיאה בטעינת האירועים</p></div>`;
+    }
+  }
+
+  function filterEvents(region, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.event-card').forEach(card => {
+      if (region === 'הכל' || card.dataset.region === region) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }
+
+  loadEvents();
+</script>
+</body>
+</html>

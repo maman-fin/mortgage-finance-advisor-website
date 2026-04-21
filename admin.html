@@ -458,6 +458,10 @@
     <button class="tab-btn" onclick="openTab('approved')">ביקורות מאושרות</button>
     <button class="tab-btn" onclick="openTab('articles-add')">➕ הוסף מאמר</button>
     <button class="tab-btn" onclick="openTab('articles-list')">מאמרים 📝</button>
+    <button class="tab-btn" onclick="openTab('events-pending')">
+      אירועים ממתינים <span class="badge" id="badge-events" style="background:var(--blue)">0</span>
+    </button>
+    <button class="tab-btn" onclick="openTab('events-approved')">אירועים מאושרים 📅</button>
     <button class="tab-btn" onclick="openTab('stats')">סטטיסטיקות</button>
   </div>
 
@@ -624,6 +628,22 @@
   <div id="tab-articles-list" class="tab-panel">
     <h2 style="color:var(--navy);margin-bottom:16px;">מאמרים פורסמו</h2>
     <div id="articles-list" class="cards-grid">
+      <div class="loader">טוען...</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━ טאב: אירועים ממתינים ━━━━━━━━━━━━━ -->
+  <div id="tab-events-pending" class="tab-panel">
+    <h2 style="color:var(--navy);margin-bottom:16px;">📅 אירועים ממתינים לאישור</h2>
+    <div id="events-pending-list" class="cards-grid">
+      <div class="loader">טוען...</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━ טאב: אירועים מאושרים ━━━━━━━━━━━━━ -->
+  <div id="tab-events-approved" class="tab-panel">
+    <h2 style="color:var(--navy);margin-bottom:16px;">📅 אירועים מאושרים</h2>
+    <div id="events-approved-list" class="cards-grid">
       <div class="loader">טוען...</div>
     </div>
   </div>
@@ -902,7 +922,7 @@
   }
 
   /* ── Tabs ── */
-  const tabData = ['pending','video-add','video-list','feedback','rejected','approved','articles-add','articles-list','stats'];
+  const tabData = ['pending','video-add','video-list','feedback','rejected','approved','articles-add','articles-list','events-pending','events-approved','stats'];
   function openTab(name) {
     tabData.forEach(t => {
       document.getElementById(`tab-${t}`).classList.remove('active');
@@ -1041,6 +1061,8 @@
     loadRejected();
     loadApproved();
     loadArticles();
+    loadEventsPending();
+    loadEventsApproved();
     loadStats();
   }
 
@@ -1846,6 +1868,116 @@
       if (!res.ok) throw new Error(await res.text());
       document.getElementById(`card-art-${id}`)?.remove();
       showToast('🗑 המאמר נמחק');
+    } catch(e) { showToast('שגיאה: ' + e.message); }
+  }
+
+  /* ══════════════════════════════════════════
+     טאבי אירועים
+  ══════════════════════════════════════════ */
+  const EVENT_IMAGE_BUCKET_ADMIN = 'event-images';
+
+  function regionBadge(r) {
+    const colors = { 'צפון': '#e8f0fb', 'מרכז': '#e6f7ee', 'דרום': '#fef3e2' };
+    const text   = { 'צפון': '#1a3a5c', 'מרכז': '#1a6040', 'דרום': '#7a4f00' };
+    return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;background:${colors[r]||'#eee'};color:${text[r]||'#333'}">${r}</span>`;
+  }
+
+  function eventDateStr(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' });
+  }
+
+  function eventCardAdmin(ev, isPending) {
+    const imgHtml = ev.image_url
+      ? `<img src="${ev.image_url}" alt="${ev.title}" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;margin-bottom:10px;">`
+      : '';
+    const actions = isPending ? `
+      <div class="card-actions">
+        <button class="btn btn-green" onclick="approveEvent(${ev.id})">✅ אשר ופרסם</button>
+        <button class="btn btn-red"   onclick="rejectEvent(${ev.id})">❌ דחה</button>
+      </div>` : `
+      <div class="card-actions">
+        <button class="btn btn-red" onclick="deleteEvent(${ev.id})">🗑 מחק</button>
+      </div>`;
+    return `
+      <div class="review-card ${isPending ? 'pending' : ''}" id="ev-card-${ev.id}">
+        ${imgHtml}
+        <div class="card-top" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            ${regionBadge(ev.region)}
+            <span style="font-size:0.78rem;color:var(--gray);">📆 ${eventDateStr(ev.event_date)}</span>
+          </div>
+          <h3 style="font-size:1rem;color:var(--navy);">${ev.title}</h3>
+          <p style="font-size:0.82rem;color:var(--gray);">${ev.submitter_name || ''}${ev.submitter_phone ? ' • ' + ev.submitter_phone : ''}</p>
+        </div>
+        <div class="card-text">${ev.description || ''}</div>
+        <div class="card-date">${dateStr(ev.created_at)}</div>
+        ${actions}
+      </div>`;
+  }
+
+  async function loadEventsPending() {
+    const wrap = document.getElementById('events-pending-list');
+    try {
+      const rows = await sbGet('events', 'approved=eq.false&rejected=eq.false');
+      document.getElementById('badge-events').textContent = rows.length;
+      if (!rows.length) {
+        wrap.innerHTML = '<div class="empty-state"><div class="icon">✅</div>אין אירועים ממתינים</div>';
+        return;
+      }
+      wrap.innerHTML = rows.map(ev => eventCardAdmin(ev, true)).join('');
+    } catch(e) {
+      wrap.innerHTML = `<div class="empty-state">שגיאה: ${e.message}</div>`;
+    }
+  }
+
+  async function loadEventsApproved() {
+    const wrap = document.getElementById('events-approved-list');
+    try {
+      const rows = await sbGet('events', 'approved=eq.true&rejected=eq.false');
+      if (!rows.length) {
+        wrap.innerHTML = '<div class="empty-state"><div class="icon">📅</div>אין אירועים מאושרים עדיין</div>';
+        return;
+      }
+      wrap.innerHTML = rows.map(ev => eventCardAdmin(ev, false)).join('');
+    } catch(e) {
+      wrap.innerHTML = `<div class="empty-state">שגיאה: ${e.message}</div>`;
+    }
+  }
+
+  async function approveEvent(id) {
+    try {
+      await sbUpdate('events', id, { approved: true, rejected: false });
+      document.getElementById(`ev-card-${id}`)?.remove();
+      const badge = document.getElementById('badge-events');
+      badge.textContent = Math.max(0, parseInt(badge.textContent) - 1);
+      showToast('✅ האירוע אושר ופורסם!');
+      loadEventsApproved();
+    } catch(e) { showToast('שגיאה: ' + e.message); }
+  }
+
+  async function rejectEvent(id) {
+    if (!confirm('לדחות את האירוע?')) return;
+    try {
+      await sbUpdate('events', id, { rejected: true, approved: false });
+      document.getElementById(`ev-card-${id}`)?.remove();
+      const badge = document.getElementById('badge-events');
+      badge.textContent = Math.max(0, parseInt(badge.textContent) - 1);
+      showToast('🚫 האירוע נדחה');
+    } catch(e) { showToast('שגיאה: ' + e.message); }
+  }
+
+  async function deleteEvent(id) {
+    if (!confirm('למחוק את האירוע לצמיתות?')) return;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/events?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      if (!res.ok) throw new Error(await res.text());
+      document.getElementById(`ev-card-${id}`)?.remove();
+      showToast('🗑 האירוע נמחק');
     } catch(e) { showToast('שגיאה: ' + e.message); }
   }
 
