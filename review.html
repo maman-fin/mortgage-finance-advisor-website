@@ -4,17 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>שתף את חוויתך</title>
-
-  <!-- ============================================================
-       הגדר את הקישורים הבאים לפני פריסה:
-       1. SUPABASE_URL       — כתובת פרויקט Supabase שלך
-       2. SUPABASE_ANON_KEY  — מפתח anon/public מ-Supabase
-       3. GOOGLE_REVIEW_URL  — קישור גוגל ביזנס לביקורות
-       4. FACEBOOK_REVIEW_URL — קישור דף פייסבוק לביקורות
-  ============================================================ -->
-
   <style>
-    /* ===== איפוס ובסיס ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -37,284 +27,231 @@
       min-height: 100vh;
     }
 
-    /* ===== Progress Bar ===== */
     #progress-bar-wrap {
-      position: fixed;
-      top: 0; right: 0; left: 0;
-      height: 5px;
-      background: rgba(13,31,60,0.12);
-      z-index: 999;
+      position: fixed; top: 0; right: 0; left: 0;
+      height: 5px; background: rgba(13,31,60,0.12); z-index: 999;
     }
     #progress-bar {
       height: 100%;
       background: linear-gradient(90deg, var(--navy), var(--gold));
-      transition: width 0.5s ease;
-      width: 33%;
+      transition: width 0.5s ease; width: 33%;
     }
 
-    /* ===== עטיפה ===== */
     .page-wrap {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center; padding: 32px 16px;
     }
 
     .card {
-      background: var(--white);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 40px 32px;
-      max-width: 520px;
-      width: 100%;
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 40px 32px;
+      max-width: 520px; width: 100%;
     }
 
-    /* לוגו / כותרת עליונה */
-    .brand {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    .brand h1 {
-      font-size: 1.5rem;
-      color: var(--navy);
-      font-weight: 700;
-    }
-    .brand p {
-      font-size: 0.9rem;
-      color: var(--gray);
-      margin-top: 4px;
-    }
+    .brand { text-align: center; margin-bottom: 28px; }
+    .brand h1 { font-size: 1.5rem; color: var(--navy); font-weight: 700; }
+    .brand p  { font-size: 0.9rem; color: var(--gray); margin-top: 4px; }
 
-    /* ===== Step ===== */
-    .step {
-      display: none;
-      opacity: 0;
-      animation: fadeIn 0.4s forwards;
-    }
-    .step.active {
-      display: block;
-    }
+    .step { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
+    .step.active { display: block; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    h2 {
-      font-size: 1.3rem;
-      color: var(--navy);
-      text-align: center;
-      margin-bottom: 28px;
-      line-height: 1.5;
-    }
+    h2 { font-size: 1.3rem; color: var(--navy); text-align: center; margin-bottom: 28px; line-height: 1.5; }
 
-    /* ===== כוכבים ===== */
-    .stars-row {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 36px;
-    }
-    .star {
-      font-size: 3rem;
-      cursor: pointer;
-      color: #ddd;
-      transition: color 0.2s, transform 0.15s;
-      user-select: none;
-    }
+    .stars-row { display: flex; justify-content: center; gap: 12px; margin-bottom: 36px; }
+    .star { font-size: 3rem; cursor: pointer; color: #ddd; transition: color 0.2s, transform 0.15s; user-select: none; }
     .star.active { color: var(--gold); }
     .star:hover  { transform: scale(1.2); }
 
-    /* ===== שדות טופס ===== */
-    label {
-      display: block;
-      font-size: 0.88rem;
-      color: var(--navy);
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    label .opt {
-      font-weight: 400;
-      color: var(--gray);
-      font-size: 0.82rem;
-    }
+    label { display: block; font-size: 0.88rem; color: var(--navy); font-weight: 600; margin-bottom: 6px; }
+    label .opt { font-weight: 400; color: var(--gray); font-size: 0.82rem; }
 
-    input[type="text"],
-    input[type="email"],
-    textarea,
-    select {
-      width: 100%;
-      padding: 12px 14px;
-      border: 2px solid #e0e4ec;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-family: inherit;
-      color: var(--text);
-      background: #fafbfd;
-      direction: rtl;
-      transition: border-color 0.2s;
-      margin-bottom: 18px;
+    input[type="text"], input[type="email"], textarea, select {
+      width: 100%; padding: 12px 14px;
+      border: 2px solid #e0e4ec; border-radius: 10px;
+      font-size: 1rem; font-family: inherit; color: var(--text);
+      background: #fafbfd; direction: rtl;
+      transition: border-color 0.2s; margin-bottom: 18px;
     }
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: var(--gold);
-    }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--gold); }
     textarea { resize: vertical; min-height: 90px; }
 
-    /* העלאת תמונה */
+    /* ── תמונה ── */
     .upload-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      border: 2px dashed #c0c8d8;
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 18px;
-      transition: border-color 0.2s;
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+      border: 2px dashed #c0c8d8; border-radius: 10px;
+      padding: 14px 16px; margin-bottom: 18px; transition: border-color 0.2s;
     }
     .upload-label:hover { border-color: var(--gold); }
     .upload-label span { font-size: 0.9rem; color: var(--gray); }
-    #photo-preview {
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      object-fit: cover;
-      display: none;
-    }
+    #photo-preview { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; display: none; }
     .photo-wrap { position: relative; }
     .photo-clear {
-      display: none;
-      position: absolute;
-      top: 8px;
-      left: 10px;
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 22px; height: 22px;
-      font-size: 13px;
-      cursor: pointer;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      line-height: 1;
+      display: none; position: absolute; top: 8px; left: 10px;
+      background: #e74c3c; color: #fff; border: none; border-radius: 50%;
+      width: 22px; height: 22px; font-size: 13px; cursor: pointer;
+      align-items: center; justify-content: center; z-index: 10; line-height: 1;
     }
     .photo-clear.visible { display: flex; }
 
-    /* ===== כפתורים ===== */
+    /* ── כפתורים ── */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-family: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 28px; border: none; border-radius: 10px;
+      font-size: 1rem; font-family: inherit; font-weight: 700;
+      cursor: pointer; transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
       text-decoration: none;
     }
     .btn:active { transform: scale(0.97); }
 
     .btn-primary {
       background: linear-gradient(135deg, var(--navy), #1a3560);
-      color: var(--white);
-      width: 100%;
+      color: var(--white); width: 100%;
       box-shadow: 0 4px 14px rgba(13,31,60,0.25);
     }
     .btn-primary:hover { background: linear-gradient(135deg, #1a3560, var(--navy)); }
 
     .btn-gold {
       background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: var(--navy);
-      width: 100%;
-      box-shadow: 0 4px 14px rgba(201,168,76,0.35);
-      margin-bottom: 12px;
+      color: var(--navy); width: 100%;
+      box-shadow: 0 4px 14px rgba(201,168,76,0.35); margin-bottom: 12px;
     }
     .btn-gold:hover { filter: brightness(1.07); }
 
-    .btn-outline {
-      background: transparent;
-      border: 2px solid var(--navy);
-      color: var(--navy);
-      width: 100%;
-    }
+    .btn-outline { background: transparent; border: 2px solid var(--navy); color: var(--navy); width: 100%; }
 
-    /* ===== תצוגה מקדימה של המלצה ===== */
     .preview-card {
       background: linear-gradient(135deg, #f0f4ff, #fff8eb);
-      border: 2px solid var(--gold);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 24px;
-      text-align: center;
+      border: 2px solid var(--gold); border-radius: var(--radius);
+      padding: 20px; margin-bottom: 24px; text-align: center;
     }
-    .preview-card .preview-name {
-      font-weight: 700;
-      color: var(--navy);
-      font-size: 1.05rem;
-    }
-    .preview-card .preview-meta {
-      font-size: 0.85rem;
-      color: var(--gray);
-      margin-bottom: 10px;
-    }
+    .preview-card .preview-name  { font-weight: 700; color: var(--navy); font-size: 1.05rem; }
+    .preview-card .preview-meta  { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
     .preview-card .preview-stars { color: var(--gold); font-size: 1.4rem; margin-bottom: 10px; }
-    .preview-card .preview-text {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--text);
-      font-style: italic;
-    }
+    .preview-card .preview-text  { font-size: 0.95rem; line-height: 1.6; color: var(--text); font-style: italic; }
 
-    /* ===== הודעת הצלחה ===== */
     .success-box {
-      text-align: center;
-      padding: 16px;
-      background: #eefaf2;
-      border: 2px solid #4caf7d;
-      border-radius: 12px;
-      color: #1a5c35;
-      font-weight: 600;
-      margin-bottom: 20px;
+      text-align: center; padding: 16px;
+      background: #eefaf2; border: 2px solid #4caf7d;
+      border-radius: 12px; color: #1a5c35; font-weight: 600; margin-bottom: 20px;
     }
 
-    /* ===== הודעת clipboard ===== */
     .clipboard-note {
-      text-align: center;
-      font-size: 0.88rem;
-      color: var(--gray);
-      margin-bottom: 20px;
-      padding: 10px;
-      background: #fffbe6;
-      border-radius: 8px;
-      border: 1px solid #ffe58f;
+      text-align: center; font-size: 0.88rem; color: var(--gray);
+      margin-bottom: 20px; padding: 10px; background: #fffbe6;
+      border-radius: 8px; border: 1px solid #ffe58f;
     }
 
-    /* ===== שגיאת שליחה ===== */
-    .error-msg {
-      color: #c0392b;
-      font-size: 0.88rem;
-      text-align: center;
-      margin-bottom: 12px;
-      display: none;
-    }
+    .error-msg { color: #c0392b; font-size: 0.88rem; text-align: center; margin-bottom: 12px; display: none; }
 
-    /* ===== Spinner ===== */
     .spinner {
-      display: inline-block;
-      width: 18px; height: 18px;
-      border: 3px solid rgba(255,255,255,0.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      display: inline-block; width: 18px; height: 18px;
+      border: 3px solid rgba(255,255,255,0.4); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ===== Responsive ===== */
+    /* ══════════════════════════════════
+       CROP MODAL
+    ══════════════════════════════════ */
+    #crop-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 24px 16px;
+    }
+    #crop-modal.open { display: flex; }
+
+    #crop-title {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+      text-align: center;
+    }
+
+    #crop-container {
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      /* size set by JS */
+    }
+
+    #crop-img {
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      /* size set by JS */
+    }
+
+    #crop-box {
+      position: absolute;
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.55);
+      cursor: move;
+      touch-action: none;
+    }
+
+    /* corner handles */
+    .ch {
+      position: absolute;
+      width: 14px; height: 14px;
+      background: #fff;
+      border: 2px solid rgba(0,0,0,0.25);
+      touch-action: none;
+    }
+    .ch[data-c="nw"] { top:    -7px; left:  -7px; cursor: nwse-resize; }
+    .ch[data-c="ne"] { top:    -7px; right: -7px; cursor: nesw-resize; }
+    .ch[data-c="sw"] { bottom: -7px; left:  -7px; cursor: nesw-resize; }
+    .ch[data-c="se"] { bottom: -7px; right: -7px; cursor: nwse-resize; }
+
+    /* midpoint handles for resize hint */
+    .ch-edge {
+      position: absolute;
+      background: rgba(255,255,255,0.7);
+      touch-action: none;
+    }
+
+    #crop-actions {
+      display: flex;
+      gap: 12px;
+      direction: ltr;
+    }
+
+    #crop-cancel-btn {
+      padding: 10px 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.85);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+    #crop-cancel-btn:hover { background: rgba(255,255,255,0.14); }
+
+    #crop-confirm-btn {
+      padding: 10px 28px;
+      background: var(--gold);
+      border: none;
+      color: var(--navy);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: inherit;
+      transition: filter 0.2s;
+    }
+    #crop-confirm-btn:hover { filter: brightness(1.08); }
+
     @media (max-width: 480px) {
       .card { padding: 28px 18px; }
       h2 { font-size: 1.15rem; }
@@ -324,21 +261,17 @@
 </head>
 <body>
 
-<!-- פס התקדמות עליון -->
-<div id="progress-bar-wrap">
-  <div id="progress-bar"></div>
-</div>
+<div id="progress-bar-wrap"><div id="progress-bar"></div></div>
 
 <div class="page-wrap">
   <div class="card">
 
-    <!-- לוגו -->
     <div class="brand">
       <h1>יחיאל ממן — יועץ משכנתאות</h1>
       <p>שיתוף חוויה אישית</p>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━ שלב א — דירוג ━━━━━━━━━━━━━━━━━━ -->
+    <!-- שלב א — דירוג -->
     <div id="step-1" class="step active">
       <h2>כמה היית מרוצה מהשירות?</h2>
       <div class="stars-row" id="stars-row">
@@ -351,42 +284,31 @@
       <button class="btn btn-primary" id="btn-continue" disabled>המשך ←</button>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━ שלב ב — ציון נמוך (1-3) ━━━━━━━━━━━━━━━━━━ -->
+    <!-- שלב ב — ציון נמוך -->
     <div id="step-low" class="step">
       <h2>תודה על הכנות — נשפר בשבילך 🙏</h2>
-
       <div id="error-low" class="error-msg">שגיאה בשליחה, נסה שנית.</div>
-
       <label>שמך <span class="opt">(אופציונלי)</span></label>
       <input type="text" id="low-name" placeholder="שם פרטי">
-
-      <label>אימייל <span class="opt">(אופציונלי — לחזרה אליך)</span></label>
+      <label>אימייל <span class="opt">(אופציונלי)</span></label>
       <input type="email" id="low-email" placeholder="you@example.com">
-
       <label>טלפון <span class="opt">(אופציונלי)</span></label>
       <input type="text" id="low-phone" placeholder="05X-XXXXXXX">
-
       <label>מה היה פחות טוב?</label>
       <textarea id="low-bad" placeholder="ספר לנו מה הפריע..."></textarea>
-
       <label>מה היית רוצה שישתפר?</label>
       <textarea id="low-improve" placeholder="הצעות שלך חשובות לנו..."></textarea>
-
       <button class="btn btn-primary" id="btn-send-low">שלח משוב</button>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━ שלב ב — ציון גבוה (4-5) ━━━━━━━━━━━━━━━━━━ -->
+    <!-- שלב ב — ציון גבוה -->
     <div id="step-high" class="step">
       <h2>שמחים לשמוע! 🎉 ספר לאחרים</h2>
-
       <div id="error-high" class="error-msg">שגיאה בשליחה, נסה שנית.</div>
-
       <label>שם מלא</label>
       <input type="text" id="high-name" placeholder="ישראל ישראלי">
-
       <label>עיר</label>
       <input type="text" id="high-city" placeholder="תל אביב">
-
       <label>סוג שירות</label>
       <select id="high-service">
         <option value="">-- בחר --</option>
@@ -396,7 +318,6 @@
         <option value="ייעוץ להשקעה">ייעוץ להשקעה</option>
         <option value="אחר">אחר</option>
       </select>
-
       <label>תמונת פרופיל <span class="opt">(אופציונלי)</span></label>
       <div class="photo-wrap">
         <label class="upload-label" for="high-photo">
@@ -406,70 +327,58 @@
         <button type="button" class="photo-clear" id="photo-clear" title="הסר תמונה">✕</button>
       </div>
       <input type="file" id="high-photo" accept="image/*" style="display:none">
-
       <label>טקסט ההמלצה שלך</label>
       <textarea id="high-text" placeholder="ספר על החוויה שלך..." style="min-height:110px;"></textarea>
-
       <button class="btn btn-primary" id="btn-send-high">שלח המלצה ✉</button>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━ שלב ג — תצוגה מקדימה + שיתוף ━━━━━━━━━━━━━━━━━━ -->
+    <!-- שלב ג — שיתוף -->
     <div id="step-share" class="step">
       <h2>תודה רבה! ✨ ההמלצה שלך נשמרה</h2>
-
       <div class="preview-card" id="review-preview">
         <div class="preview-stars" id="prev-stars">★★★★★</div>
-        <div class="preview-name" id="prev-name">שם הלקוח</div>
-        <div class="preview-meta" id="prev-meta">עיר • סוג שירות</div>
-        <div class="preview-text" id="prev-text">"טקסט ההמלצה..."</div>
+        <div class="preview-name"  id="prev-name">שם הלקוח</div>
+        <div class="preview-meta"  id="prev-meta">עיר • סוג שירות</div>
+        <div class="preview-text"  id="prev-text">"טקסט ההמלצה..."</div>
       </div>
-
-      <div class="clipboard-note">
-        ✅ הטקסט כבר מועתק — פשוט הדבק!
-      </div>
-
-      <!-- ━━ החלף את הקישורים הבאים בקישורים האמיתיים שלך ━━ -->
-      <a
-        id="btn-google"
-        class="btn btn-gold"
-        href="https://share.google/2sl7jr8XocVkS0ELa"
-        target="_blank" rel="noopener">
-        ⭐ כתוב ביקורת בגוגל ← הדבק את הטקסט
-      </a>
-
-      <a
-        id="btn-facebook"
-        class="btn btn-outline"
-        href="https://www.facebook.com/profile.php?id=61568332318079&sk=reviews"
-        target="_blank" rel="noopener">
-        👍 כתוב ביקורת בפייסבוק ← הדבק את הטקסט
-      </a>
+      <div class="clipboard-note">✅ הטקסט כבר מועתק — פשוט הדבק!</div>
+      <a id="btn-google"   class="btn btn-gold"    href="https://share.google/2sl7jr8XocVkS0ELa"                                      target="_blank" rel="noopener">⭐ כתוב ביקורת בגוגל ← הדבק את הטקסט</a>
+      <a id="btn-facebook" class="btn btn-outline" href="https://www.facebook.com/profile.php?id=61568332318079&sk=reviews" target="_blank" rel="noopener">👍 כתוב ביקורת בפייסבוק ← הדבק את הטקסט</a>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━ שלב סיום — משוב שלילי ━━━━━━━━━━━━━━━━━━ -->
+    <!-- שלב סיום — משוב שלילי -->
     <div id="step-done-low" class="step">
-      <div class="success-box">
-        תודה! המשוב שלך יעזור לנו להשתפר 🙏
-      </div>
-      <p style="text-align:center; color:var(--gray); font-size:0.9rem;">
-        אנחנו מעריכים את הכנות שלך. נשתדל להשתפר בהתאם.
-      </p>
+      <div class="success-box">תודה! המשוב שלך יעזור לנו להשתפר 🙏</div>
+      <p style="text-align:center;color:var(--gray);font-size:0.9rem;">אנחנו מעריכים את הכנות שלך. נשתדל להשתפר בהתאם.</p>
     </div>
 
-  </div><!-- /card -->
-</div><!-- /page-wrap -->
+  </div>
+</div>
+
+<!-- ══════ CROP MODAL ══════ -->
+<div id="crop-modal">
+  <div id="crop-title">גרור את הריבוע לבחירת האזור · מתח מפינה להגדלה / הקטנה</div>
+  <div id="crop-container">
+    <img id="crop-img" src="" alt="" draggable="false">
+    <div id="crop-box">
+      <div class="ch" data-c="nw"></div>
+      <div class="ch" data-c="ne"></div>
+      <div class="ch" data-c="sw"></div>
+      <div class="ch" data-c="se"></div>
+    </div>
+  </div>
+  <div id="crop-actions">
+    <button id="crop-cancel-btn">ביטול</button>
+    <button id="crop-confirm-btn">✓ אשר חיתוך</button>
+  </div>
+</div>
 
 <script>
-  /* ================================================================
-     הגדרות — החלף ערכים אלו לפני פריסה:
-     ================================================================ */
-  const SUPABASE_URL     = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
-  const SUPABASE_STORAGE_BUCKET = 'review-photos';                      // ← שם ה-bucket ב-Supabase Storage
+  /* ── Supabase ── */
+  const SUPABASE_URL          = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
+  const SUPABASE_ANON_KEY     = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
+  const SUPABASE_STORAGE_BUCKET = 'review-photos';
 
-  /* ================================================================ */
-
-  /* ── כלי עזר לקריאות Supabase REST API ── */
   async function supabaseInsert(table, data) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
       method: 'POST',
@@ -485,7 +394,7 @@
   }
 
   async function uploadPhoto(file) {
-    const ext  = file.name.split('.').pop();
+    const ext  = file.name ? file.name.split('.').pop() : 'jpg';
     const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
     const res  = await fetch(
       `${SUPABASE_URL}/storage/v1/object/${SUPABASE_STORAGE_BUCKET}/${path}`,
@@ -494,45 +403,36 @@
         headers: {
           'apikey': SUPABASE_ANON_KEY,
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': file.type,
+          'Content-Type': file.type || 'image/jpeg',
           'x-upsert': 'false'
         },
         body: file
       }
     );
-    if (!res.ok) {
-      const errBody = await res.text().catch(() => '');
-      console.error('storage error body:', errBody);
-      throw new Error('שגיאה בהעלאת תמונה (' + res.status + '): ' + errBody);
-    }
+    if (!res.ok) throw new Error('שגיאה בהעלאת תמונה (' + res.status + ')');
     return `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_STORAGE_BUCKET}/${path}`;
   }
 
-  /* ── מצב אפליקציה ── */
+  /* ── App state ── */
   let selectedRating = 0;
+  let croppedBlob    = null;  // File blob after crop
 
-  /* ── Progress bar ── */
   function setProgress(pct) {
     document.getElementById('progress-bar').style.width = pct + '%';
   }
 
-  /* ── מעבר בין שלבים ── */
   function goTo(stepId) {
-    document.querySelectorAll('.step').forEach(s => {
-      s.classList.remove('active');
-    });
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
     const next = document.getElementById(stepId);
     next.classList.add('active');
-    // הפעל אנימציה מחדש
     next.style.animation = 'none';
     requestAnimationFrame(() => { next.style.animation = ''; });
   }
 
-  /* ── כוכבים — שלב א ── */
-  const starsRow   = document.getElementById('stars-row');
+  /* ── Stars ── */
+  const starsRow    = document.getElementById('stars-row');
   const btnContinue = document.getElementById('btn-continue');
 
-  // הכוכבים מסודרים בתצוגה מ-5 לשמאל עד 1 לימין (RTL)
   starsRow.querySelectorAll('.star').forEach(star => {
     star.addEventListener('mouseenter', () => highlightStars(+star.dataset.val));
     star.addEventListener('mouseleave', () => highlightStars(selectedRating));
@@ -550,39 +450,180 @@
   }
 
   btnContinue.addEventListener('click', () => {
-    if (selectedRating <= 3) {
-      setProgress(66);
-      goTo('step-low');
-    } else {
-      setProgress(66);
-      goTo('step-high');
-    }
+    setProgress(66);
+    goTo(selectedRating <= 3 ? 'step-low' : 'step-high');
   });
 
-  /* ── תצוגה מקדימה של תמונה ── */
-  function clearHighPhoto() {
-    const input = document.getElementById('high-photo');
-    input.value = '';
-    const img = document.getElementById('photo-preview');
-    img.src = '';
-    img.style.display = 'none';
-    document.getElementById('upload-text').textContent = '📷 לחץ להעלאת תמונה';
-    document.getElementById('photo-clear').classList.remove('visible');
+  /* ══════════════════════════════════
+     CROP LOGIC
+  ══════════════════════════════════ */
+  const cropModal     = document.getElementById('crop-modal');
+  const cropContainer = document.getElementById('crop-container');
+  const cropImg       = document.getElementById('crop-img');
+  const cropBox       = document.getElementById('crop-box');
+
+  const cs = { x: 0, y: 0, size: 100, W: 0, H: 0, scaleX: 1, scaleY: 1 };
+  let dragMode  = null;
+  let dragStart = {};
+
+  function openCropper(file) {
+    const url = URL.createObjectURL(file);
+    cropImg.onload = function() {
+      const maxW = Math.min(520, window.innerWidth  - 40);
+      const maxH = Math.min(440, window.innerHeight * 0.58);
+      const ratio = cropImg.naturalWidth / cropImg.naturalHeight;
+      let W, H;
+      if (ratio > maxW / maxH) { W = maxW; H = Math.round(maxW / ratio); }
+      else                      { H = maxH; W = Math.round(maxH * ratio); }
+
+      cropContainer.style.width  = W + 'px';
+      cropContainer.style.height = H + 'px';
+      cropImg.style.width  = W + 'px';
+      cropImg.style.height = H + 'px';
+
+      cs.W = W; cs.H = H;
+      cs.scaleX = cropImg.naturalWidth  / W;
+      cs.scaleY = cropImg.naturalHeight / H;
+
+      const s = Math.round(Math.min(W, H) * 0.72);
+      cs.x    = Math.round((W - s) / 2);
+      cs.y    = Math.round((H - s) / 2);
+      cs.size = s;
+
+      updateCropBox();
+      cropModal.classList.add('open');
+    };
+    cropImg.src = url;
   }
 
+  function updateCropBox() {
+    cropBox.style.left   = cs.x    + 'px';
+    cropBox.style.top    = cs.y    + 'px';
+    cropBox.style.width  = cs.size + 'px';
+    cropBox.style.height = cs.size + 'px';
+  }
+
+  function clamp() {
+    cs.size = Math.max(40, Math.min(cs.size, cs.W, cs.H));
+    cs.x    = Math.max(0,  Math.min(cs.x, cs.W - cs.size));
+    cs.y    = Math.max(0,  Math.min(cs.y, cs.H - cs.size));
+  }
+
+  /* drag on box → move */
+  cropBox.addEventListener('pointerdown', function(e) {
+    if (e.target.classList.contains('ch')) return;
+    e.preventDefault();
+    dragMode  = 'move';
+    dragStart = { px: e.clientX, py: e.clientY, x: cs.x, y: cs.y, size: cs.size };
+  });
+
+  /* drag on corner → resize */
+  document.querySelectorAll('.ch').forEach(h => {
+    h.addEventListener('pointerdown', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragMode  = 'resize-' + this.dataset.c;
+      dragStart = { px: e.clientX, py: e.clientY, x: cs.x, y: cs.y, size: cs.size };
+    });
+  });
+
+  document.addEventListener('pointermove', function(e) {
+    if (!dragMode) return;
+    const dx = e.clientX - dragStart.px;
+    const dy = e.clientY - dragStart.py;
+
+    if (dragMode === 'move') {
+      cs.x = dragStart.x + dx;
+      cs.y = dragStart.y + dy;
+    } else {
+      let delta, newSize;
+      switch (dragMode) {
+        case 'resize-se': // bottom-right: drag right/down = grow
+          delta = (dx + dy) / 2;
+          newSize = Math.max(40, dragStart.size + delta);
+          cs.size = newSize;
+          cs.x    = dragStart.x;
+          cs.y    = dragStart.y;
+          break;
+        case 'resize-sw': // bottom-left: drag left/down = grow
+          delta = (-dx + dy) / 2;
+          newSize = Math.max(40, dragStart.size + delta);
+          cs.size = newSize;
+          cs.x    = (dragStart.x + dragStart.size) - newSize;
+          cs.y    = dragStart.y;
+          break;
+        case 'resize-ne': // top-right: drag right/up = grow
+          delta = (dx + (-dy)) / 2;
+          newSize = Math.max(40, dragStart.size + delta);
+          cs.size = newSize;
+          cs.x    = dragStart.x;
+          cs.y    = (dragStart.y + dragStart.size) - newSize;
+          break;
+        case 'resize-nw': // top-left: drag left/up = grow
+          delta = ((-dx) + (-dy)) / 2;
+          newSize = Math.max(40, dragStart.size + delta);
+          cs.size = newSize;
+          cs.x    = (dragStart.x + dragStart.size) - newSize;
+          cs.y    = (dragStart.y + dragStart.size) - newSize;
+          break;
+      }
+    }
+    clamp();
+    updateCropBox();
+  });
+
+  document.addEventListener('pointerup', () => { dragMode = null; });
+
+  /* confirm crop */
+  document.getElementById('crop-confirm-btn').addEventListener('click', function() {
+    const canvas = document.createElement('canvas');
+    canvas.width  = 400;
+    canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+
+    const srcX = cs.x    * cs.scaleX;
+    const srcY = cs.y    * cs.scaleY;
+    const srcW = cs.size * cs.scaleX;
+    const srcH = cs.size * cs.scaleY;
+
+    ctx.drawImage(cropImg, srcX, srcY, srcW, srcH, 0, 0, 400, 400);
+
+    canvas.toBlob(function(blob) {
+      croppedBlob = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
+
+      const objUrl = URL.createObjectURL(blob);
+      const preview = document.getElementById('photo-preview');
+      preview.src = objUrl;
+      preview.style.display = 'block';
+      document.getElementById('upload-text').textContent = '✓ תמונה נחתכה';
+      document.getElementById('photo-clear').classList.add('visible');
+
+      cropModal.classList.remove('open');
+    }, 'image/jpeg', 0.93);
+  });
+
+  /* cancel crop */
+  document.getElementById('crop-cancel-btn').addEventListener('click', function() {
+    cropModal.classList.remove('open');
+    document.getElementById('high-photo').value = '';
+  });
+
+  /* ── Photo input → open cropper ── */
   document.getElementById('high-photo').addEventListener('change', function() {
     const file = this.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = document.getElementById('photo-preview');
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById('upload-text').textContent = file.name;
-      document.getElementById('photo-clear').classList.add('visible');
-    };
-    reader.readAsDataURL(file);
+    croppedBlob = null;
+    openCropper(file);
   });
+
+  function clearHighPhoto() {
+    croppedBlob = null;
+    document.getElementById('high-photo').value = '';
+    const img = document.getElementById('photo-preview');
+    img.src = ''; img.style.display = 'none';
+    document.getElementById('upload-text').textContent = '📷 לחץ להעלאת תמונה';
+    document.getElementById('photo-clear').classList.remove('visible');
+  }
 
   document.getElementById('photo-clear').addEventListener('click', function(e) {
     e.preventDefault();
@@ -594,25 +635,19 @@
     const bad     = document.getElementById('low-bad').value.trim();
     const improve = document.getElementById('low-improve').value.trim();
     const errEl   = document.getElementById('error-low');
-
-    if (!bad && !improve) {
-      errEl.textContent = 'נא למלא לפחות שדה אחד.';
-      errEl.style.display = 'block';
-      return;
-    }
+    if (!bad && !improve) { errEl.textContent = 'נא למלא לפחות שדה אחד.'; errEl.style.display = 'block'; return; }
     errEl.style.display = 'none';
     this.disabled = true;
     this.innerHTML = '<span class="spinner"></span> שולח...';
-
     try {
       await supabaseInsert('feedback', {
-        rating:          selectedRating,
-        name:            document.getElementById('low-name').value.trim()  || null,
-        email:           document.getElementById('low-email').value.trim() || null,
-        phone:           document.getElementById('low-phone').value.trim() || null,
+        rating: selectedRating,
+        name:   document.getElementById('low-name').value.trim()  || null,
+        email:  document.getElementById('low-email').value.trim() || null,
+        phone:  document.getElementById('low-phone').value.trim() || null,
         what_was_bad:    bad,
         what_to_improve: improve,
-        handled:         false
+        handled: false
       });
       setProgress(100);
       goTo('step-done-low');
@@ -643,36 +678,26 @@
 
     try {
       let imageUrl = null;
-      const photoFile = document.getElementById('high-photo').files[0];
-      if (photoFile) {
-        imageUrl = await uploadPhoto(photoFile);
-      }
+      const photoFile = croppedBlob || document.getElementById('high-photo').files[0];
+      if (photoFile) imageUrl = await uploadPhoto(photoFile);
 
       await supabaseInsert('reviews', {
-        name,
-        city,
-        rating:       selectedRating,
-        service_type: service,
-        text,
-        image_url:    imageUrl,
-        approved:     false,
-        rejected:     false
+        name, city, rating: selectedRating,
+        service_type: service, text,
+        image_url: imageUrl,
+        approved: false, rejected: false
       });
 
-      // בנה תצוגה מקדימה
       document.getElementById('prev-stars').textContent = '★'.repeat(selectedRating);
       document.getElementById('prev-name').textContent  = name;
       document.getElementById('prev-meta').textContent  = `${city} • ${service}`;
       document.getElementById('prev-text').textContent  = `"${text}"`;
 
-      // העתק טקסט ל-clipboard
-      const clipText = `${name}, ${city}:\n"${text}"`;
-      try { await navigator.clipboard.writeText(clipText); } catch(e) {}
+      try { await navigator.clipboard.writeText(`${name}, ${city}:\n"${text}"`); } catch(e) {}
 
       setProgress(100);
       goTo('step-share');
     } catch(e) {
-      console.error('review submit error:', e);
       errEl.textContent = 'שגיאה בשליחה: ' + (e.message || e);
       errEl.style.display = 'block';
       this.disabled = false;

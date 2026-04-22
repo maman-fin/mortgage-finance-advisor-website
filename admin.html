@@ -41,6 +41,45 @@
       direction: rtl;
     }
 
+    /* ===== Crop Modal ===== */
+    #admin-crop-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92); z-index: 99999;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 18px; padding: 24px 16px;
+    }
+    #admin-crop-modal.open { display: flex; }
+    #admin-crop-title { color: rgba(255,255,255,0.7); font-size: 0.82rem; text-align: center; }
+    #admin-crop-container { position: relative; overflow: hidden; flex-shrink: 0; }
+    #admin-crop-img { display: block; pointer-events: none; user-select: none; }
+    #admin-crop-box {
+      position: absolute;
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.55);
+      cursor: move; touch-action: none;
+    }
+    .admin-ch {
+      position: absolute; width: 14px; height: 14px;
+      background: #fff; border: 2px solid rgba(0,0,0,0.25); touch-action: none;
+    }
+    .admin-ch[data-c="nw"] { top: -7px; left:  -7px; cursor: nwse-resize; }
+    .admin-ch[data-c="ne"] { top: -7px; right: -7px; cursor: nesw-resize; }
+    .admin-ch[data-c="sw"] { bottom: -7px; left:  -7px; cursor: nesw-resize; }
+    .admin-ch[data-c="se"] { bottom: -7px; right: -7px; cursor: nwse-resize; }
+    #admin-crop-actions { display: flex; gap: 12px; direction: ltr; }
+    #admin-crop-cancel-btn {
+      padding: 9px 22px; background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85);
+      border-radius: 8px; cursor: pointer; font-size: 0.88rem; font-family: inherit;
+    }
+    #admin-crop-cancel-btn:hover { background: rgba(255,255,255,0.14); }
+    #admin-crop-confirm-btn {
+      padding: 9px 26px; background: var(--gold); border: none;
+      color: var(--navy); border-radius: 8px; cursor: pointer;
+      font-size: 0.88rem; font-weight: 700; font-family: inherit;
+    }
+    #admin-crop-confirm-btn:hover { filter: brightness(1.08); }
+
     /* ===== מסך כניסה ===== */
     #login-screen {
       min-height: 100vh;
@@ -687,9 +726,10 @@
     <input type="number" id="edit-rating" min="1" max="5" placeholder="5">
 
     <label>תמונת פרופיל <span class="opt">(השאר ריק לשמור קיימת)</span></label>
-    <div id="edit-cur-photo-wrap" style="margin-bottom:8px;display:none;">
-      <img id="edit-cur-photo" src="" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-left:8px;">
+    <div id="edit-cur-photo-wrap" style="margin-bottom:8px;display:none;align-items:center;gap:10px;">
+      <img id="edit-cur-photo" src="" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;">
       <span style="font-size:0.82rem;color:var(--gray);">תמונה נוכחית</span>
+      <button type="button" class="btn btn-blue" style="padding:5px 12px;font-size:0.78rem;flex:none;" onclick="cropExistingPhoto()">✂ חתוך</button>
     </div>
     <div class="photo-wrap">
       <label class="upload-label" for="edit-photo">
@@ -853,6 +893,24 @@
     </div>
     <!-- תצוגה מקדימה -->
     <div id="artedit-preview-box" style="display:none;margin-top:16px;padding:16px;background:#f4f6fb;border-radius:8px;max-height:400px;overflow-y:auto;direction:rtl;line-height:1.8;font-size:0.95rem;color:#222;white-space:pre-wrap;word-break:break-word;"></div>
+  </div>
+</div>
+
+<!-- Admin Crop Modal -->
+<div id="admin-crop-modal">
+  <div id="admin-crop-title">גרור את הריבוע · מתח מפינה להגדלה / הקטנה</div>
+  <div id="admin-crop-container">
+    <img id="admin-crop-img" src="" alt="" draggable="false">
+    <div id="admin-crop-box">
+      <div class="admin-ch" data-c="nw"></div>
+      <div class="admin-ch" data-c="ne"></div>
+      <div class="admin-ch" data-c="sw"></div>
+      <div class="admin-ch" data-c="se"></div>
+    </div>
+  </div>
+  <div id="admin-crop-actions">
+    <button id="admin-crop-cancel-btn">ביטול</button>
+    <button id="admin-crop-confirm-btn">✓ אשר חיתוך</button>
   </div>
 </div>
 
@@ -1551,6 +1609,7 @@
   }
 
   function clearEditPhoto() {
+    editCroppedBlob = null;
     document.getElementById('edit-photo').value = '';
     document.getElementById('edit-photo-preview').src = '';
     document.getElementById('edit-photo-preview').style.display = 'none';
@@ -1561,15 +1620,8 @@
   document.getElementById('edit-photo').addEventListener('change', function() {
     const file = this.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = document.getElementById('edit-photo-preview');
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById('edit-photo-text').textContent = file.name;
-      document.getElementById('edit-photo-clear').classList.add('visible');
-    };
-    reader.readAsDataURL(file);
+    editCroppedBlob = null;
+    openAdminCropper(file);
   });
 
   document.getElementById('edit-photo-clear').addEventListener('click', function(e) {
@@ -1598,7 +1650,7 @@
     if (!text) { showToast('טקסט ההמלצה לא יכול להיות ריק'); return; }
     try {
       const updates = { name, city, service_type: service, rating, text };
-      const photoFile = document.getElementById('edit-photo').files[0];
+      const photoFile = editCroppedBlob || document.getElementById('edit-photo').files[0];
       if (photoFile) updates.image_url = await uploadPhoto(photoFile);
 
       await sbUpdate('reviews', id, updates);
@@ -2070,6 +2122,147 @@
       document.getElementById('stats-grid').innerHTML = `<div>שגיאה: ${e.message}</div>`;
     }
   }
+
+  /* ══ Admin Cropper ══ */
+  let editCroppedBlob = null;
+  const acs = { x: 0, y: 0, size: 100, W: 0, H: 0, scaleX: 1, scaleY: 1 };
+  let aDragMode  = null;
+  let aDragStart = {};
+
+  function cropExistingPhoto() {
+    const src = document.getElementById('edit-cur-photo').src;
+    if (!src) return;
+    openAdminCropperFromUrl(src);
+  }
+
+  function openAdminCropperFromUrl(url) {
+    const img = document.getElementById('admin-crop-img');
+    const con = document.getElementById('admin-crop-container');
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      const maxW = Math.min(520, window.innerWidth  - 40);
+      const maxH = Math.min(420, window.innerHeight * 0.55);
+      const ratio = img.naturalWidth / img.naturalHeight;
+      let W, H;
+      if (ratio > maxW / maxH) { W = maxW; H = Math.round(maxW / ratio); }
+      else                      { H = maxH; W = Math.round(maxH * ratio); }
+      con.style.width  = W + 'px'; con.style.height = H + 'px';
+      img.style.width  = W + 'px'; img.style.height = H + 'px';
+      acs.W = W; acs.H = H;
+      acs.scaleX = img.naturalWidth  / W;
+      acs.scaleY = img.naturalHeight / H;
+      const s = Math.round(Math.min(W, H) * 0.72);
+      acs.x = Math.round((W - s) / 2);
+      acs.y = Math.round((H - s) / 2);
+      acs.size = s;
+      updateAdminCropBox();
+      document.getElementById('admin-crop-modal').classList.add('open');
+    };
+    img.src = url;
+  }
+
+  function openAdminCropper(file) {
+    const url = URL.createObjectURL(file);
+    const img = document.getElementById('admin-crop-img');
+    const con = document.getElementById('admin-crop-container');
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      const maxW = Math.min(520, window.innerWidth  - 40);
+      const maxH = Math.min(420, window.innerHeight * 0.55);
+      const ratio = img.naturalWidth / img.naturalHeight;
+      let W, H;
+      if (ratio > maxW / maxH) { W = maxW; H = Math.round(maxW / ratio); }
+      else                      { H = maxH; W = Math.round(maxH * ratio); }
+      con.style.width  = W + 'px';
+      con.style.height = H + 'px';
+      img.style.width  = W + 'px';
+      img.style.height = H + 'px';
+      acs.W = W; acs.H = H;
+      acs.scaleX = img.naturalWidth  / W;
+      acs.scaleY = img.naturalHeight / H;
+      const s = Math.round(Math.min(W, H) * 0.72);
+      acs.x = Math.round((W - s) / 2);
+      acs.y = Math.round((H - s) / 2);
+      acs.size = s;
+      updateAdminCropBox();
+      document.getElementById('admin-crop-modal').classList.add('open');
+    };
+    img.src = url;
+  }
+
+  function updateAdminCropBox() {
+    const box = document.getElementById('admin-crop-box');
+    box.style.left   = acs.x    + 'px';
+    box.style.top    = acs.y    + 'px';
+    box.style.width  = acs.size + 'px';
+    box.style.height = acs.size + 'px';
+  }
+
+  function clampAcs() {
+    acs.size = Math.max(40, Math.min(acs.size, acs.W, acs.H));
+    acs.x    = Math.max(0, Math.min(acs.x, acs.W - acs.size));
+    acs.y    = Math.max(0, Math.min(acs.y, acs.H - acs.size));
+  }
+
+  document.getElementById('admin-crop-box').addEventListener('pointerdown', function(e) {
+    if (e.target.classList.contains('admin-ch')) return;
+    e.preventDefault();
+    aDragMode  = 'move';
+    aDragStart = { px: e.clientX, py: e.clientY, x: acs.x, y: acs.y, size: acs.size };
+  });
+
+  document.querySelectorAll('.admin-ch').forEach(h => {
+    h.addEventListener('pointerdown', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      aDragMode  = 'resize-' + this.dataset.c;
+      aDragStart = { px: e.clientX, py: e.clientY, x: acs.x, y: acs.y, size: acs.size };
+    });
+  });
+
+  document.addEventListener('pointermove', function(e) {
+    if (!aDragMode) return;
+    const dx = e.clientX - aDragStart.px;
+    const dy = e.clientY - aDragStart.py;
+    if (aDragMode === 'move') {
+      acs.x = aDragStart.x + dx;
+      acs.y = aDragStart.y + dy;
+    } else {
+      let delta, newSize;
+      switch (aDragMode) {
+        case 'resize-se': delta = (dx + dy) / 2;       newSize = Math.max(40, aDragStart.size + delta); acs.size = newSize; acs.x = aDragStart.x; acs.y = aDragStart.y; break;
+        case 'resize-sw': delta = (-dx + dy) / 2;      newSize = Math.max(40, aDragStart.size + delta); acs.size = newSize; acs.x = (aDragStart.x + aDragStart.size) - newSize; acs.y = aDragStart.y; break;
+        case 'resize-ne': delta = (dx + (-dy)) / 2;    newSize = Math.max(40, aDragStart.size + delta); acs.size = newSize; acs.x = aDragStart.x; acs.y = (aDragStart.y + aDragStart.size) - newSize; break;
+        case 'resize-nw': delta = ((-dx) + (-dy)) / 2; newSize = Math.max(40, aDragStart.size + delta); acs.size = newSize; acs.x = (aDragStart.x + aDragStart.size) - newSize; acs.y = (aDragStart.y + aDragStart.size) - newSize; break;
+      }
+    }
+    clampAcs();
+    updateAdminCropBox();
+  });
+
+  document.addEventListener('pointerup', () => { aDragMode = null; });
+
+  document.getElementById('admin-crop-confirm-btn').addEventListener('click', function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 400; canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+    const img = document.getElementById('admin-crop-img');
+    ctx.drawImage(img, acs.x * acs.scaleX, acs.y * acs.scaleY, acs.size * acs.scaleX, acs.size * acs.scaleY, 0, 0, 400, 400);
+    canvas.toBlob(function(blob) {
+      editCroppedBlob = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
+      const objUrl = URL.createObjectURL(blob);
+      const preview = document.getElementById('edit-photo-preview');
+      preview.src = objUrl; preview.style.display = 'block';
+      document.getElementById('edit-photo-text').textContent = '✓ תמונה נחתכה';
+      document.getElementById('edit-photo-clear').classList.add('visible');
+      document.getElementById('admin-crop-modal').classList.remove('open');
+    }, 'image/jpeg', 0.93);
+  });
+
+  document.getElementById('admin-crop-cancel-btn').addEventListener('click', function() {
+    document.getElementById('admin-crop-modal').classList.remove('open');
+    document.getElementById('edit-photo').value = '';
+  });
+
 </script>
 </body>
 </html>
