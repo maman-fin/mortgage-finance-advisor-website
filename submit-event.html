@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>הוספת אירוע | יחיאל ממן</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -52,7 +53,7 @@
     label:first-of-type { margin-top: 0; }
     label .opt { font-weight: 400; color: var(--gray); }
 
-    input[type="text"], input[type="tel"], input[type="date"], textarea, select {
+    input[type="text"], input[type="tel"], input[type="date"], input[type="time"], textarea, select {
       width: 100%; padding: 10px 13px;
       border: 2px solid #e0e4ec; border-radius: 10px;
       font-size: 0.95rem; font-family: inherit;
@@ -74,6 +75,10 @@
     #img-preview { max-width: 100%; max-height: 160px; border-radius: 8px; display: none; margin: 0 auto 8px; }
     .img-clear { display: none; position: absolute; top: 8px; left: 10px; background: #e74c3c; color: #fff; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; cursor: pointer; align-items: center; justify-content: center; z-index: 10; }
     .img-clear.visible { display: flex; }
+    .img-action-btns { display: none; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .img-action-btns.visible { display: flex; }
+    .img-action-btns button { background: none; border: 1px solid #2a6496; color: #2a6496; border-radius: 8px; padding: 5px 14px; font-size: 0.82rem; cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .img-action-btns button:hover { background: #2a6496; color: #fff; }
 
     /* Region */
     .region-group { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 4px; }
@@ -104,6 +109,36 @@
 
     #error-msg { color: #e74c3c; font-size: 0.88rem; margin-top: 8px; display: none; }
 
+    /* Crop modal */
+    #crop-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); z-index: 500;
+      align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    #crop-modal.open { display: flex; }
+    .crop-box {
+      background: #fff; border-radius: 16px; padding: 20px;
+      max-width: 680px; width: 100%;
+      display: flex; flex-direction: column; gap: 14px;
+      max-height: 92vh;
+    }
+    .crop-box h3 { color: var(--navy); font-size: 1rem; text-align: center; }
+    .crop-container { max-height: 55vh; overflow: hidden; border-radius: 8px; background: #000; }
+    #crop-img { display: block; max-width: 100%; }
+    .crop-ratio-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .crop-ratio-btns button {
+      padding: 5px 14px; border-radius: 8px; border: 1px solid #d0d8e4;
+      background: #f4f6fa; color: #555; font-size: 0.82rem; cursor: pointer;
+      font-family: inherit; transition: all 0.18s;
+    }
+    .crop-ratio-btns button:hover, .crop-ratio-btns button.active { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
+    .crop-confirm-btns { display: flex; gap: 10px; justify-content: center; }
+    .crop-confirm-btns button { padding: 10px 28px; border-radius: 10px; border: none; font-size: 0.95rem; font-weight: 700; font-family: inherit; cursor: pointer; }
+    #btn-crop-ok { background: #1a3a5c; color: #fff; }
+    #btn-crop-ok:hover { filter: brightness(1.15); }
+    #btn-crop-cancel { background: #f4f6fa; color: #555; border: 1px solid #d0d8e4; }
+
     @media (max-width: 600px) {
       .card { padding: 24px 18px; }
       nav ul { display: none; }
@@ -119,7 +154,6 @@
     <li><a href="index.html#services">שירותים</a></li>
     <li><a href="index.html#process">תהליך</a></li>
     <li><a href="testimonials.html">המלצות</a></li>
-    <li><a href="events-list.html" class="active">אירועים</a></li>
     <li class="dropdown">
       <a href="#">מחשבונים</a>
       <ul class="dropdown-menu">
@@ -137,6 +171,7 @@
         <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
         <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
         <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+        <li><a href="events-list.html">אירועים</a></li>
       </ul>
     </li>
     <li><a href="index.html#contact">צור קשר</a></li>
@@ -167,11 +202,19 @@
       <label>תאריך האירוע <span style="color:red">*</span></label>
       <input type="date" id="ev-date">
 
+      <label>שעת האירוע <span style="color:red">*</span></label>
+      <input type="time" id="ev-time">
+
+      <label>עיר <span style="color:red">*</span></label>
+      <input type="text" id="ev-city" placeholder="לדוגמה: תל אביב, ירושלים, חיפה...">
+
       <label>אזור <span style="color:red">*</span></label>
       <div class="region-group">
         <button type="button" class="region-btn" data-region="צפון" onclick="selectRegion(this)">צפון</button>
         <button type="button" class="region-btn" data-region="מרכז" onclick="selectRegion(this)">מרכז</button>
         <button type="button" class="region-btn" data-region="דרום" onclick="selectRegion(this)">דרום</button>
+        <button type="button" class="region-btn" data-region='יו"ש' onclick="selectRegion(this)">יו"ש</button>
+        <button type="button" class="region-btn" data-region="ירושלים" onclick="selectRegion(this)">ירושלים</button>
       </div>
 
       <label>תמונה <span class="opt">(אופציונלי)</span></label>
@@ -179,6 +222,10 @@
         <img id="img-preview" src="" alt="">
         <span id="img-text">🖼 לחץ להעלאת תמונה</span>
         <button type="button" class="img-clear" id="img-clear" onclick="clearImg(event)" title="הסר">✕</button>
+      </div>
+      <div class="img-action-btns" id="img-action-btns">
+        <button onclick="openCropModal()">✂️ ערוך / חתוך</button>
+        <button onclick="document.getElementById('ev-image').click()">🔄 החלף תמונה</button>
       </div>
       <input type="file" id="ev-image" accept="image/*" style="display:none" onchange="onImgChange(this)">
 
@@ -195,12 +242,36 @@
   </div>
 </div>
 
+<!-- Crop modal -->
+<div id="crop-modal">
+  <div class="crop-box">
+    <h3>✂️ ערוך וחתוך תמונה</h3>
+    <div class="crop-container">
+      <img id="crop-img" src="" alt="">
+    </div>
+    <div class="crop-ratio-btns">
+      <button id="ratio-free" onclick="setCropRatio(NaN, this)">חופשי</button>
+      <button id="ratio-16-9" class="active" onclick="setCropRatio(16/9, this)">16:9</button>
+      <button id="ratio-4-3" onclick="setCropRatio(4/3, this)">4:3</button>
+      <button id="ratio-1-1" onclick="setCropRatio(1, this)">1:1</button>
+    </div>
+    <div class="crop-confirm-btns">
+      <button id="btn-crop-ok" onclick="confirmCrop()">✅ אשר חיתוך</button>
+      <button id="btn-crop-cancel" onclick="cancelCrop()">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script>
-  const SUPABASE_URL      = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
+  const SUPABASE_URL       = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
+  const SUPABASE_ANON_KEY  = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
   const EVENT_IMAGE_BUCKET = 'event-images';
 
-  let selectedRegion = '';
+  let selectedRegion  = '';
+  let cropperInstance = null;
+  let croppedBlob     = null;
+  let originalDataUrl = null;
 
   function selectRegion(btn) {
     document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('selected'));
@@ -213,14 +284,61 @@
     if (!file) return;
     const reader = new FileReader();
     reader.onload = e => {
-      const img = document.getElementById('img-preview');
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById('img-text').textContent = file.name;
-      document.getElementById('img-wrap').classList.add('has-file');
-      document.getElementById('img-clear').classList.add('visible');
+      originalDataUrl = e.target.result;
+      croppedBlob = null;
+      openCropModal();
     };
     reader.readAsDataURL(file);
+  }
+
+  function openCropModal() {
+    if (!originalDataUrl) return;
+    const modal = document.getElementById('crop-modal');
+    const cropImg = document.getElementById('crop-img');
+    cropImg.src = originalDataUrl;
+    modal.classList.add('open');
+
+    if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+
+    cropperInstance = new Cropper(cropImg, {
+      aspectRatio: 16 / 9,
+      viewMode: 1,
+      autoCropArea: 1,
+      movable: true,
+      zoomable: true,
+      rotatable: false,
+    });
+
+    document.querySelectorAll('.crop-ratio-btns button').forEach(b => b.classList.remove('active'));
+    document.getElementById('ratio-16-9').classList.add('active');
+  }
+
+  function setCropRatio(ratio, btn) {
+    if (cropperInstance) cropperInstance.setAspectRatio(isNaN(ratio) ? NaN : ratio);
+    document.querySelectorAll('.crop-ratio-btns button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  function confirmCrop() {
+    if (!cropperInstance) return;
+    const canvas = cropperInstance.getCroppedCanvas({ maxWidth: 1400, maxHeight: 1400 });
+    canvas.toBlob(blob => {
+      croppedBlob = blob;
+      const url = URL.createObjectURL(blob);
+      const preview = document.getElementById('img-preview');
+      preview.src = url;
+      preview.style.display = 'block';
+      document.getElementById('img-text').textContent = '✅ תמונה נבחרה';
+      document.getElementById('img-wrap').classList.add('has-file');
+      document.getElementById('img-clear').classList.add('visible');
+      document.getElementById('img-action-btns').classList.add('visible');
+      cancelCrop();
+    }, 'image/jpeg', 0.92);
+  }
+
+  function cancelCrop() {
+    document.getElementById('crop-modal').classList.remove('open');
+    if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
   }
 
   function clearImg(e) {
@@ -231,6 +349,9 @@
     document.getElementById('img-text').textContent = '🖼 לחץ להעלאת תמונה';
     document.getElementById('img-wrap').classList.remove('has-file');
     document.getElementById('img-clear').classList.remove('visible');
+    document.getElementById('img-action-btns').classList.remove('visible');
+    croppedBlob = null;
+    originalDataUrl = null;
   }
 
   function showError(msg) {
@@ -239,14 +360,16 @@
     el.style.display = 'block';
   }
 
-  async function uploadEventImage(file) {
-    const ext  = file.name.split('.').pop();
-    const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+  async function uploadEventImage(blob) {
+    const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
     const res = await fetch(
       `${SUPABASE_URL}/storage/v1/object/${EVENT_IMAGE_BUCKET}/${path}`,
-      { method: 'POST', headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': file.type, 'x-upsert': 'false' }, body: file }
+      { method: 'POST', headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'image/jpeg', 'x-upsert': 'true' }, body: blob }
     );
-    if (!res.ok) throw new Error('שגיאה בהעלאת תמונה');
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error('שגיאה בהעלאת תמונה: ' + errText);
+    }
     return `${SUPABASE_URL}/storage/v1/object/public/${EVENT_IMAGE_BUCKET}/${path}`;
   }
 
@@ -257,11 +380,15 @@
     const title = document.getElementById('ev-title').value.trim();
     const desc  = document.getElementById('ev-desc').value.trim();
     const date  = document.getElementById('ev-date').value;
+    const time  = document.getElementById('ev-time').value;
+    const city  = document.getElementById('ev-city').value.trim();
 
     if (!name)   { showError('נא להזין שם'); return; }
     if (!title)  { showError('נא להזין שם האירוע'); return; }
     if (!desc)   { showError('נא להזין תיאור לאירוע'); return; }
     if (!date)   { showError('נא לבחור תאריך'); return; }
+    if (!time)   { showError('נא להזין שעת האירוע'); return; }
+    if (!city)   { showError('נא להזין עיר'); return; }
     if (!selectedRegion) { showError('נא לבחור אזור'); return; }
 
     const btn = document.getElementById('submit-btn');
@@ -270,8 +397,7 @@
 
     try {
       let image_url = null;
-      const imgFile = document.getElementById('ev-image').files[0];
-      if (imgFile) image_url = await uploadEventImage(imgFile);
+      if (croppedBlob) image_url = await uploadEventImage(croppedBlob);
 
       const payload = {
         submitter_name: name,
@@ -279,6 +405,8 @@
         title,
         description: desc,
         event_date: date,
+        event_time: time,
+        city,
         region: selectedRegion,
         image_url,
         approved: false,

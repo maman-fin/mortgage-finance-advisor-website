@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>פאנל ניהול ביקורות</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 
   <!-- ================================================================
        הגדרות לפני פריסה:
@@ -49,6 +50,21 @@
       gap: 18px; padding: 24px 16px;
     }
     #admin-crop-modal.open { display: flex; }
+
+    /* Event image crop modal */
+    #ev-crop-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:99999; align-items:center; justify-content:center; padding:1rem; }
+    #ev-crop-modal.open { display:flex; }
+    .ev-crop-box { background:#fff; border-radius:14px; padding:18px; max-width:660px; width:100%; display:flex; flex-direction:column; gap:12px; max-height:92vh; }
+    .ev-crop-box h3 { color:var(--navy); font-size:1rem; text-align:center; }
+    .ev-crop-container { max-height:52vh; overflow:hidden; border-radius:8px; background:#000; }
+    #ev-crop-img { display:block; max-width:100%; }
+    .ev-crop-ratio-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+    .ev-crop-ratio-btns button { padding:4px 12px; border-radius:8px; border:1px solid #d0d8e4; background:#f4f6fa; color:#555; font-size:0.8rem; cursor:pointer; font-family:inherit; transition:all 0.18s; }
+    .ev-crop-ratio-btns button:hover, .ev-crop-ratio-btns button.active { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .ev-crop-confirm-btns { display:flex; gap:10px; justify-content:center; }
+    .ev-crop-confirm-btns button { padding:9px 26px; border-radius:10px; border:none; font-size:0.93rem; font-weight:700; font-family:inherit; cursor:pointer; }
+    #ev-crop-ok { background:var(--navy); color:#fff; }
+    #ev-crop-cancel { background:#f4f6fa; color:#555; border:1px solid #d0d8e4; }
     #admin-crop-title { color: rgba(255,255,255,0.7); font-size: 0.82rem; text-align: center; }
     #admin-crop-container { position: relative; overflow: hidden; flex-shrink: 0; }
     #admin-crop-img { display: block; pointer-events: none; user-select: none; }
@@ -243,7 +259,7 @@
     label { display: block; font-size: 0.88rem; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
     label .opt { font-weight: 400; color: var(--gray); }
 
-    input[type="text"], input[type="url"], textarea, select {
+    input[type="text"], input[type="url"], input[type="date"], input[type="time"], textarea, select {
       width: 100%; padding: 10px 12px;
       border: 2px solid #e0e4ec; border-radius: 8px;
       font-size: 0.95rem; font-family: inherit;
@@ -501,6 +517,7 @@
       אירועים ממתינים <span class="badge" id="badge-events" style="background:var(--blue)">0</span>
     </button>
     <button class="tab-btn" onclick="openTab('events-approved')">אירועים מאושרים 📅</button>
+    <button class="tab-btn" onclick="openTab('events-rejected')">אירועים שנדחו 🚫</button>
     <button class="tab-btn" onclick="openTab('stats')">סטטיסטיקות</button>
   </div>
 
@@ -684,6 +701,75 @@
     <h2 style="color:var(--navy);margin-bottom:16px;">📅 אירועים מאושרים</h2>
     <div id="events-approved-list" class="cards-grid">
       <div class="loader">טוען...</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━ טאב: אירועים שנדחו ━━━━━━━━━━━━━ -->
+  <div id="tab-events-rejected" class="tab-panel">
+    <h2 style="color:var(--navy);margin-bottom:16px;">🚫 אירועים שנדחו</h2>
+    <div id="events-rejected-list" class="cards-grid">
+      <div class="loader">טוען...</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━ מודל עריכת אירוע ━━━━━━━━━━━━━ -->
+  <div class="edit-modal-overlay" id="ev-edit-overlay">
+    <div class="edit-modal">
+      <h3>✏️ עריכת אירוע</h3>
+      <input type="hidden" id="ev-edit-id">
+
+      <label>שם האירוע <span style="color:red">*</span></label>
+      <input type="text" id="ev-edit-title" placeholder="כותרת האירוע">
+
+      <label>תיאור</label>
+      <textarea id="ev-edit-desc" style="min-height:90px;"></textarea>
+
+      <label>תאריך <span style="color:red">*</span></label>
+      <input type="date" id="ev-edit-date">
+
+      <label>שעה <span style="color:red">*</span></label>
+      <input type="time" id="ev-edit-time">
+
+      <label>עיר <span style="color:red">*</span></label>
+      <input type="text" id="ev-edit-city" placeholder="עיר">
+
+      <label>אזור <span style="color:red">*</span></label>
+      <select id="ev-edit-region">
+        <option value="">-- בחר אזור --</option>
+        <option value="צפון">צפון</option>
+        <option value="מרכז">מרכז</option>
+        <option value="דרום">דרום</option>
+        <option value='יו"ש'>יו"ש</option>
+        <option value="ירושלים">ירושלים</option>
+      </select>
+
+      <label>תמונה</label>
+      <input type="hidden" id="ev-edit-image-url">
+      <div id="ev-edit-cur-img-wrap" style="display:none;margin-bottom:10px;">
+        <img id="ev-edit-cur-img" src="" alt="" style="width:100%;max-height:110px;object-fit:cover;border-radius:8px;margin-bottom:6px;">
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn btn-blue" style="padding:5px 12px;font-size:0.78rem;" onclick="openEvCropModalFromCurrent()">✂️ חתוך תמונה קיימת</button>
+          <button type="button" class="btn btn-red"  style="padding:5px 12px;font-size:0.78rem;" onclick="removeEvEditImg()">🗑 הסר תמונה</button>
+        </div>
+      </div>
+      <div class="photo-wrap" style="margin-bottom:6px;">
+        <label class="upload-label" for="ev-edit-img-file" style="cursor:pointer;">
+          <span id="ev-edit-img-text">🖼 העלה תמונה חדשה</span>
+        </label>
+      </div>
+      <input type="file" id="ev-edit-img-file" accept="image/*" style="display:none" onchange="onEvEditImgChange(this)">
+      <div id="ev-edit-new-preview-wrap" style="display:none;margin-bottom:6px;">
+        <img id="ev-edit-new-preview" src="" alt="" style="width:100%;max-height:90px;object-fit:cover;border-radius:8px;margin-bottom:6px;">
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn btn-blue" style="padding:4px 10px;font-size:0.78rem;" onclick="openEvCropModal()">✂️ ערוך / חתוך</button>
+          <button type="button" class="btn btn-red"  style="padding:4px 10px;font-size:0.78rem;" onclick="clearEvNewImg()">✕ בטל</button>
+        </div>
+      </div>
+
+      <div class="edit-modal-actions">
+        <button class="btn btn-green" style="flex:1;justify-content:center;" onclick="saveEditEvent()">💾 שמור שינויים</button>
+        <button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="closeEditEvent()">ביטול</button>
+      </div>
     </div>
   </div>
 
@@ -896,6 +982,26 @@
   </div>
 </div>
 
+<!-- Event Image Crop Modal -->
+<div id="ev-crop-modal">
+  <div class="ev-crop-box">
+    <h3>✂️ ערוך וחתוך תמונה</h3>
+    <div class="ev-crop-container">
+      <img id="ev-crop-img" src="" alt="">
+    </div>
+    <div class="ev-crop-ratio-btns">
+      <button id="ev-ratio-free" onclick="setEvCropRatio(NaN, this)">חופשי</button>
+      <button id="ev-ratio-16-9" class="active" onclick="setEvCropRatio(16/9, this)">16:9</button>
+      <button id="ev-ratio-4-3" onclick="setEvCropRatio(4/3, this)">4:3</button>
+      <button id="ev-ratio-1-1" onclick="setEvCropRatio(1, this)">1:1</button>
+    </div>
+    <div class="ev-crop-confirm-btns">
+      <button id="ev-crop-ok" onclick="confirmEvCrop()">✅ אשר חיתוך</button>
+      <button id="ev-crop-cancel" onclick="cancelEvCrop()">ביטול</button>
+    </div>
+  </div>
+</div>
+
 <!-- Admin Crop Modal -->
 <div id="admin-crop-modal">
   <div id="admin-crop-title">גרור את הריבוע · מתח מפינה להגדלה / הקטנה</div>
@@ -980,7 +1086,7 @@
   }
 
   /* ── Tabs ── */
-  const tabData = ['pending','video-add','video-list','feedback','rejected','approved','articles-add','articles-list','events-pending','events-approved','stats'];
+  const tabData = ['pending','video-add','video-list','feedback','rejected','approved','articles-add','articles-list','events-pending','events-approved','events-rejected','stats'];
   function openTab(name) {
     tabData.forEach(t => {
       document.getElementById(`tab-${t}`).classList.remove('active');
@@ -1121,6 +1227,7 @@
     loadArticles();
     loadEventsPending();
     loadEventsApproved();
+    loadEventsRejected();
     loadStats();
   }
 
@@ -1638,6 +1745,10 @@
     if (e.target === this) closeEditModal();
   });
 
+  document.getElementById('ev-edit-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeEditEvent();
+  });
+
   /* שמירת עריכה */
   async function saveEdit() {
     const id      = document.getElementById('edit-id').value;
@@ -1929,8 +2040,8 @@
   const EVENT_IMAGE_BUCKET_ADMIN = 'event-images';
 
   function regionBadge(r) {
-    const colors = { 'צפון': '#e8f0fb', 'מרכז': '#e6f7ee', 'דרום': '#fef3e2' };
-    const text   = { 'צפון': '#1a3a5c', 'מרכז': '#1a6040', 'דרום': '#7a4f00' };
+    const colors = { 'צפון': '#e8f0fb', 'מרכז': '#e6f7ee', 'דרום': '#fef3e2', 'ירושלים': '#f3eafd', 'יו"ש': '#fde8e8' };
+    const text   = { 'צפון': '#1a3a5c', 'מרכז': '#1a6040', 'דרום': '#7a4f00', 'ירושלים': '#5a1a8c', 'יו"ש': '#7a1a1a' };
     return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;background:${colors[r]||'#eee'};color:${text[r]||'#333'}">${r}</span>`;
   }
 
@@ -1940,25 +2051,37 @@
     return d.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' });
   }
 
-  function eventCardAdmin(ev, isPending) {
+  function eventCardAdmin(ev, type) {
     const imgHtml = ev.image_url
       ? `<img src="${ev.image_url}" alt="${ev.title}" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;margin-bottom:10px;">`
       : '';
-    const actions = isPending ? `
-      <div class="card-actions">
+    const editBtn = `<button class="btn btn-gold" onclick="openEditEvent(${ev.id},'${escJ(ev.title)}','${escJ(ev.description)}','${ev.event_date||''}','${ev.event_time||''}','${escJ(ev.city||'')}','${escJ(ev.region||'')}','${escJ(ev.image_url||'')}')">✏️ ערוך</button>`;
+    let actions;
+    if (type === 'pending') {
+      actions = `<div class="card-actions">
         <button class="btn btn-green" onclick="approveEvent(${ev.id})">✅ אשר ופרסם</button>
-        <button class="btn btn-red"   onclick="rejectEvent(${ev.id})">❌ דחה</button>
-      </div>` : `
-      <div class="card-actions">
+        ${editBtn}
+        <button class="btn btn-red" onclick="rejectEvent(${ev.id})">❌ דחה</button>
+      </div>`;
+    } else if (type === 'approved') {
+      actions = `<div class="card-actions">
+        ${editBtn}
         <button class="btn btn-red" onclick="deleteEvent(${ev.id})">🗑 מחק</button>
       </div>`;
+    } else {
+      actions = `<div class="card-actions">
+        <button class="btn btn-green" onclick="approveEvent(${ev.id})">✅ אשר ופרסם</button>
+        ${editBtn}
+        <button class="btn btn-red" onclick="deleteEvent(${ev.id})">🗑 מחק</button>
+      </div>`;
+    }
     return `
-      <div class="review-card ${isPending ? 'pending' : ''}" id="ev-card-${ev.id}">
+      <div class="review-card ${type === 'pending' ? 'pending' : ''}" id="ev-card-${ev.id}">
         ${imgHtml}
         <div class="card-top" style="flex-direction:column;align-items:flex-start;gap:6px;">
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             ${regionBadge(ev.region)}
-            <span style="font-size:0.78rem;color:var(--gray);">📆 ${eventDateStr(ev.event_date)}</span>
+            <span style="font-size:0.78rem;color:var(--gray);">📆 ${eventDateStr(ev.event_date)}${ev.event_time ? ' • 🕐 ' + ev.event_time.slice(0,5) : ''}${ev.city ? ' • 📍 ' + ev.city : ''}</span>
           </div>
           <h3 style="font-size:1rem;color:var(--navy);">${ev.title}</h3>
           <p style="font-size:0.82rem;color:var(--gray);">${ev.submitter_name || ''}${ev.submitter_phone ? ' • ' + ev.submitter_phone : ''}</p>
@@ -1978,7 +2101,7 @@
         wrap.innerHTML = '<div class="empty-state"><div class="icon">✅</div>אין אירועים ממתינים</div>';
         return;
       }
-      wrap.innerHTML = rows.map(ev => eventCardAdmin(ev, true)).join('');
+      wrap.innerHTML = rows.map(ev => eventCardAdmin(ev, 'pending')).join('');
     } catch(e) {
       wrap.innerHTML = `<div class="empty-state">שגיאה: ${e.message}</div>`;
     }
@@ -1992,7 +2115,21 @@
         wrap.innerHTML = '<div class="empty-state"><div class="icon">📅</div>אין אירועים מאושרים עדיין</div>';
         return;
       }
-      wrap.innerHTML = rows.map(ev => eventCardAdmin(ev, false)).join('');
+      wrap.innerHTML = rows.map(ev => eventCardAdmin(ev, 'approved')).join('');
+    } catch(e) {
+      wrap.innerHTML = `<div class="empty-state">שגיאה: ${e.message}</div>`;
+    }
+  }
+
+  async function loadEventsRejected() {
+    const wrap = document.getElementById('events-rejected-list');
+    try {
+      const rows = await sbGet('events', 'rejected=eq.true');
+      if (!rows.length) {
+        wrap.innerHTML = '<div class="empty-state"><div class="icon">🚫</div>אין אירועים שנדחו</div>';
+        return;
+      }
+      wrap.innerHTML = rows.map(ev => eventCardAdmin(ev, 'rejected')).join('');
     } catch(e) {
       wrap.innerHTML = `<div class="empty-state">שגיאה: ${e.message}</div>`;
     }
@@ -2006,6 +2143,7 @@
       badge.textContent = Math.max(0, parseInt(badge.textContent) - 1);
       showToast('✅ האירוע אושר ופורסם!');
       loadEventsApproved();
+      loadEventsRejected();
     } catch(e) { showToast('שגיאה: ' + e.message); }
   }
 
@@ -2017,7 +2155,158 @@
       const badge = document.getElementById('badge-events');
       badge.textContent = Math.max(0, parseInt(badge.textContent) - 1);
       showToast('🚫 האירוע נדחה');
+      loadEventsRejected();
     } catch(e) { showToast('שגיאה: ' + e.message); }
+  }
+
+  let evEditCroppedBlob   = null;
+  let evEditRemoveImg     = false;
+  let evEditOrigDataUrl   = null;
+  let evCropperInstance   = null;
+
+  function openEditEvent(id, title, description, date, time, city, region, imageUrl) {
+    document.getElementById('ev-edit-id').value        = id;
+    document.getElementById('ev-edit-title').value     = title;
+    document.getElementById('ev-edit-desc').value      = description;
+    document.getElementById('ev-edit-date').value      = date;
+    document.getElementById('ev-edit-time').value      = time;
+    document.getElementById('ev-edit-city').value      = city;
+    document.getElementById('ev-edit-region').value    = region;
+    document.getElementById('ev-edit-image-url').value = imageUrl;
+    evEditCroppedBlob = null;
+    evEditRemoveImg   = false;
+    evEditOrigDataUrl = null;
+    document.getElementById('ev-edit-img-file').value  = '';
+    document.getElementById('ev-edit-new-preview-wrap').style.display = 'none';
+    document.getElementById('ev-edit-img-text').textContent = '🖼 העלה תמונה חדשה';
+    const curWrap = document.getElementById('ev-edit-cur-img-wrap');
+    if (imageUrl) {
+      document.getElementById('ev-edit-cur-img').src = imageUrl;
+      curWrap.style.display = 'block';
+    } else {
+      curWrap.style.display = 'none';
+    }
+    document.getElementById('ev-edit-overlay').classList.add('open');
+  }
+
+  function closeEditEvent() {
+    document.getElementById('ev-edit-overlay').classList.remove('open');
+    if (evCropperInstance) { evCropperInstance.destroy(); evCropperInstance = null; }
+  }
+
+  function removeEvEditImg() {
+    evEditRemoveImg = true;
+    document.getElementById('ev-edit-image-url').value = '';
+    document.getElementById('ev-edit-cur-img-wrap').style.display = 'none';
+    showToast('התמונה תוסר בשמירה');
+  }
+
+  function onEvEditImgChange(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      evEditOrigDataUrl = e.target.result;
+      evEditCroppedBlob = null;
+      openEvCropModal();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function openEvCropModal() {
+    if (!evEditOrigDataUrl) return;
+    const modal  = document.getElementById('ev-crop-modal');
+    const cropImg = document.getElementById('ev-crop-img');
+    cropImg.src  = evEditOrigDataUrl;
+    modal.classList.add('open');
+    if (evCropperInstance) { evCropperInstance.destroy(); evCropperInstance = null; }
+    evCropperInstance = new Cropper(cropImg, {
+      aspectRatio: 16 / 9, viewMode: 1, autoCropArea: 1, movable: true, zoomable: true, rotatable: false,
+    });
+    document.querySelectorAll('.ev-crop-ratio-btns button').forEach(b => b.classList.remove('active'));
+    document.getElementById('ev-ratio-16-9').classList.add('active');
+  }
+
+  function openEvCropModalFromCurrent() {
+    const src = document.getElementById('ev-edit-cur-img').src;
+    if (!src) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      evEditOrigDataUrl = canvas.toDataURL('image/jpeg');
+      openEvCropModal();
+    };
+    img.src = src + (src.includes('?') ? '&' : '?') + 't=' + Date.now();
+  }
+
+  function setEvCropRatio(ratio, btn) {
+    if (evCropperInstance) evCropperInstance.setAspectRatio(isNaN(ratio) ? NaN : ratio);
+    document.querySelectorAll('.ev-crop-ratio-btns button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  function confirmEvCrop() {
+    if (!evCropperInstance) return;
+    const canvas = evCropperInstance.getCroppedCanvas({ maxWidth: 1400, maxHeight: 1400 });
+    canvas.toBlob(blob => {
+      evEditCroppedBlob = blob;
+      const url = URL.createObjectURL(blob);
+      document.getElementById('ev-edit-new-preview').src = url;
+      document.getElementById('ev-edit-new-preview-wrap').style.display = 'block';
+      document.getElementById('ev-edit-img-text').textContent = '✅ תמונה חדשה נבחרה';
+      cancelEvCrop();
+    }, 'image/jpeg', 0.92);
+  }
+
+  function cancelEvCrop() {
+    document.getElementById('ev-crop-modal').classList.remove('open');
+    if (evCropperInstance) { evCropperInstance.destroy(); evCropperInstance = null; }
+  }
+
+  function clearEvNewImg() {
+    evEditCroppedBlob = null;
+    evEditOrigDataUrl = null;
+    document.getElementById('ev-edit-img-file').value = '';
+    document.getElementById('ev-edit-new-preview-wrap').style.display = 'none';
+    document.getElementById('ev-edit-img-text').textContent = '🖼 העלה תמונה חדשה';
+  }
+
+  async function saveEditEvent() {
+    const id     = document.getElementById('ev-edit-id').value;
+    const title  = document.getElementById('ev-edit-title').value.trim();
+    const desc   = document.getElementById('ev-edit-desc').value.trim();
+    const date   = document.getElementById('ev-edit-date').value;
+    const time   = document.getElementById('ev-edit-time').value;
+    const city   = document.getElementById('ev-edit-city').value.trim();
+    const region = document.getElementById('ev-edit-region').value;
+    if (!title || !date || !time || !city || !region) { showToast('נא למלא את כל השדות החובה'); return; }
+
+    let image_url = document.getElementById('ev-edit-image-url').value || null;
+    if (evEditRemoveImg) image_url = null;
+
+    const saveBtn = document.querySelector('#ev-edit-overlay .btn-green');
+    saveBtn.disabled = true; saveBtn.textContent = '⏳ שומר...';
+
+    try {
+      if (evEditCroppedBlob) {
+        const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
+        const res = await fetch(`${SUPABASE_URL}/storage/v1/object/event-images/${path}`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'image/jpeg', 'x-upsert': 'true' },
+          body: evEditCroppedBlob
+        });
+        if (!res.ok) { const e = await res.text(); throw new Error('שגיאה בהעלאת תמונה: ' + e); }
+        image_url = `${SUPABASE_URL}/storage/v1/object/public/event-images/${path}`;
+      }
+      await sbUpdate('events', id, { title, description: desc, event_date: date, event_time: time, city, region, image_url });
+      closeEditEvent();
+      showToast('✅ האירוע עודכן בהצלחה');
+      loadEventsPending(); loadEventsApproved(); loadEventsRejected();
+    } catch(e) { showToast('שגיאה: ' + e.message); }
+    finally { saveBtn.disabled = false; saveBtn.textContent = '💾 שמור שינויים'; }
   }
 
   async function deleteEvent(id) {
@@ -2264,5 +2553,6 @@
   });
 
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </body>
 </html>

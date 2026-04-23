@@ -62,8 +62,9 @@
       background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07);
       overflow: hidden; display: flex; flex-direction: column;
       transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
     }
-    .event-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateY(-3px); }
+    .event-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.15); transform: translateY(-4px); }
     .event-card.hidden { display: none; }
 
     .event-img {
@@ -87,19 +88,105 @@
     .badge-צפון { background: #e8f0fb; color: #1a3a5c; }
     .badge-מרכז { background: #e6f7ee; color: #1a6040; }
     .badge-דרום { background: #fef3e2; color: #7a4f00; }
+    .badge-ירושלים { background: #f3eafd; color: #5a1a8c; }
+    .region-badge[data-region='יו"ש'] { background: #fde8e8; color: #7a1a1a; }
 
     .event-date-badge { font-size: 0.78rem; color: #888; }
+    .event-city-badge { font-size: 0.78rem; color: #555; font-weight: 600; }
 
     .event-title { font-size: 1.05rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.5rem; }
-    .event-desc { font-size: 0.88rem; color: #555; line-height: 1.55; flex: 1; }
+    .event-desc {
+      font-size: 0.88rem; color: #555; line-height: 1.55; flex: 1;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .event-read-more { font-size: 0.82rem; color: #2a6496; font-weight: 600; margin-top: 0.7rem; }
+
+    /* ── EVENT READER OVERLAY ── */
+    .ev-reader-overlay {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: #fff; overflow-y: auto;
+      animation: evReaderIn 0.22s ease;
+    }
+    .ev-reader-overlay.open { display: block; }
+    @keyframes evReaderIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+    .ev-reader-topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: #1a3a5c; color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.2rem; height: 54px;
+    }
+    .ev-reader-topbar-title { font-size: 0.95rem; font-weight: 700; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding-left: 1rem; }
+    .ev-reader-close-btn {
+      background: rgba(255,255,255,0.15); border: none; color: #fff;
+      border-radius: 6px; padding: 6px 14px; font-size: 1rem; cursor: pointer;
+      font-family: inherit; white-space: nowrap; flex-shrink: 0;
+    }
+    .ev-reader-close-btn:hover { background: rgba(255,255,255,0.28); }
+
+    .ev-reader-content { max-width: 780px; margin: 0 auto; padding: 2rem 1.4rem 4rem; }
+
+    /* layout: image thumbnail beside title on desktop */
+    .ev-reader-layout { display: flex; gap: 1.6rem; align-items: flex-start; margin-bottom: 1.6rem; }
+    .ev-reader-img-wrap { flex-shrink: 0; width: 200px; }
+    .ev-reader-img {
+      width: 200px; height: 140px; object-fit: cover;
+      border-radius: 10px; display: block;
+    }
+    .ev-reader-img-placeholder {
+      width: 200px; height: 140px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+    }
+    .ev-reader-header { flex: 1; min-width: 0; }
+    .ev-reader-meta { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+    .ev-reader-title { font-size: 1.7rem; font-weight: 800; color: #1a3a5c; margin-bottom: 1rem; line-height: 1.3; }
+    .ev-reader-info-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1.2rem;
+      background: #f4f6fa; border-radius: 10px; padding: 1rem 1.2rem;
+      margin-bottom: 1.4rem;
+    }
+    .ev-reader-info-item { font-size: 0.95rem; color: #444; display: flex; align-items: center; gap: 0.5rem; }
+    .ev-reader-info-item .ev-icon { font-size: 1.1rem; }
+    .ev-reader-info-item strong { color: #1a3a5c; font-size: 0.9rem; display: block; margin-bottom: 1px; }
+    .ev-reader-info-item span { font-size: 0.95rem; }
+    .ev-reader-desc {
+      font-size: 1rem; color: #333; line-height: 1.85;
+      border-top: 2px solid #eef2f7; padding-top: 1.2rem;
+    }
+    .ev-reader-desc p { margin-bottom: 0.85rem; }
+    .ev-reader-desc p:last-child { margin-bottom: 0; }
 
     /* FOOTER */
     footer { background: #1a3a5c; color: #aab; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
 
-    @media (max-width: 768px) {
+    /* Image lightbox */
+    .ev-lightbox {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.92); align-items: center; justify-content: center;
+      cursor: zoom-out;
+    }
+    .ev-lightbox.open { display: flex; }
+    .ev-lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 8px; object-fit: contain; }
+    .ev-lightbox-close {
+      position: fixed; top: 16px; left: 20px;
+      background: rgba(255,255,255,0.15); border: none; color: #fff;
+      border-radius: 6px; padding: 6px 14px; font-size: 1rem; cursor: pointer;
+      font-family: inherit;
+    }
+    .ev-lightbox-close:hover { background: rgba(255,255,255,0.3); }
+
+    @media (max-width: 640px) {
       nav ul { display: none; }
       .nav-toggle { display: block; }
       nav ul.open { display: flex; flex-direction: column; position: absolute; top: 64px; right: 0; left: 0; background: #1a3a5c; padding: 1rem 2rem; gap: 1rem; z-index: 99; }
+      .ev-reader-layout { flex-direction: column; gap: 1rem; }
+      .ev-reader-img-wrap { width: 100%; }
+      .ev-reader-img { width: 100%; height: 180px; }
+      .ev-reader-img-placeholder { width: 100%; height: 140px; }
+      .ev-reader-title { font-size: 1.35rem; }
+      .ev-reader-info-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -111,7 +198,6 @@
     <li><a href="index.html#services">שירותים</a></li>
     <li><a href="index.html#process">תהליך</a></li>
     <li><a href="testimonials.html">המלצות</a></li>
-    <li><a href="events-list.html" class="active">אירועים</a></li>
     <li class="dropdown">
       <a href="#">מחשבונים</a>
       <ul class="dropdown-menu">
@@ -129,6 +215,7 @@
         <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
         <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
         <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+        <li><a href="events-list.html">אירועים</a></li>
       </ul>
     </li>
     <li><a href="index.html#contact">צור קשר</a></li>
@@ -149,6 +236,8 @@
   <button class="filter-btn" onclick="filterEvents('צפון', this)">צפון</button>
   <button class="filter-btn" onclick="filterEvents('מרכז', this)">מרכז</button>
   <button class="filter-btn" onclick="filterEvents('דרום', this)">דרום</button>
+  <button class="filter-btn" onclick="filterEvents('יו&quot;ש', this)">יו"ש</button>
+  <button class="filter-btn" onclick="filterEvents('ירושלים', this)">ירושלים</button>
 </div>
 
 <div class="events-section">
@@ -159,6 +248,21 @@
 
 <footer><span>© 2025 יחיאל ממן — יועץ משכנתאות</span></footer>
 
+<!-- EVENT READER OVERLAY -->
+<div class="ev-reader-overlay" id="evReaderOverlay">
+  <div class="ev-reader-topbar">
+    <span class="ev-reader-topbar-title" id="evReaderTopTitle"></span>
+    <button class="ev-reader-close-btn" onclick="closeEvent()">✕ חזור לאירועים</button>
+  </div>
+  <div class="ev-reader-content" id="evReaderContent"></div>
+</div>
+
+<!-- IMAGE LIGHTBOX -->
+<div class="ev-lightbox" id="evLightbox" onclick="closeLightbox()">
+  <button class="ev-lightbox-close" onclick="closeLightbox()">✕ סגור</button>
+  <img id="evLightboxImg" src="" alt="">
+</div>
+
 <script>
   const SUPABASE_URL      = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
@@ -167,27 +271,100 @@
 
   function dateHe(iso) {
     if (!iso) return '';
-    const d = new Date(iso);
+    const d = new Date(iso + 'T00:00:00');
     return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  function eventCard(ev) {
+  function regionBadgeHtml(region) {
+    const colors = { 'צפון':'#e8f0fb','מרכז':'#e6f7ee','דרום':'#fef3e2','ירושלים':'#f3eafd','יו"ש':'#fde8e8' };
+    const texts  = { 'צפון':'#1a3a5c','מרכז':'#1a6040','דרום':'#7a4f00','ירושלים':'#5a1a8c','יו"ש':'#7a1a1a' };
+    const bg  = colors[region] || '#eee';
+    const col = texts[region]  || '#333';
+    return `<span style="display:inline-block;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;background:${bg};color:${col}">${region}</span>`;
+  }
+
+  function descToHtml(text) {
+    if (!text) return '';
+    return text.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('');
+  }
+
+  function eventCard(ev, idx) {
     const img = ev.image_url
       ? `<img class="event-img" src="${ev.image_url}" alt="${ev.title}" loading="lazy" onerror="this.style.display='none'">`
       : `<div class="event-img-placeholder">📅</div>`;
     return `
-      <div class="event-card" data-region="${ev.region}">
+      <div class="event-card" data-region="${ev.region}" onclick="openEvent(${idx})">
         ${img}
         <div class="event-body">
           <div class="event-meta">
-            <span class="region-badge badge-${ev.region}">${ev.region}</span>
-            <span class="event-date-badge">📆 ${dateHe(ev.event_date)}</span>
+            <span class="region-badge badge-${ev.region}" data-region="${ev.region}">${ev.region}</span>
+            ${ev.city ? `<span class="event-city-badge">📍 ${ev.city}</span>` : ''}
+            <span class="event-date-badge">📆 ${dateHe(ev.event_date)}${ev.event_time ? ' • 🕐 ' + ev.event_time.slice(0,5) : ''}</span>
           </div>
           <div class="event-title">${ev.title}</div>
           <div class="event-desc">${ev.description || ''}</div>
+          <div class="event-read-more">לפרטים נוספים ›</div>
         </div>
       </div>`;
   }
+
+  function openEvent(idx) {
+    const ev = allEvents[idx];
+    if (!ev) return;
+
+    const imgWrap = ev.image_url
+      ? `<div class="ev-reader-img-wrap">
+           <img class="ev-reader-img" src="${ev.image_url}" alt="${ev.title}"
+                style="cursor:zoom-in;" onclick="openLightbox('${ev.image_url.replace(/'/g,"\\'")}','${ev.title.replace(/'/g,"\\'")}')">
+         </div>`
+      : `<div class="ev-reader-img-wrap"><div class="ev-reader-img-placeholder">📅</div></div>`;
+
+    const infoItems = [
+      ev.event_date ? `<div class="ev-reader-info-item"><span class="ev-icon">📆</span><div><strong>תאריך</strong><span>${dateHe(ev.event_date)}</span></div></div>` : '',
+      ev.event_time ? `<div class="ev-reader-info-item"><span class="ev-icon">🕐</span><div><strong>שעה</strong><span>${ev.event_time.slice(0,5)}</span></div></div>` : '',
+      ev.city       ? `<div class="ev-reader-info-item"><span class="ev-icon">📍</span><div><strong>עיר</strong><span>${ev.city}</span></div></div>` : '',
+      ev.region     ? `<div class="ev-reader-info-item"><span class="ev-icon">🗺️</span><div><strong>אזור</strong><span>${ev.region}</span></div></div>` : '',
+    ].filter(Boolean).join('');
+
+    const html = `
+      <div class="ev-reader-layout">
+        ${imgWrap}
+        <div class="ev-reader-header">
+          <div class="ev-reader-meta">${regionBadgeHtml(ev.region)}</div>
+          <h1 class="ev-reader-title">${ev.title}</h1>
+        </div>
+      </div>
+      ${infoItems ? `<div class="ev-reader-info-grid">${infoItems}</div>` : ''}
+      ${ev.description ? `<div class="ev-reader-desc">${descToHtml(ev.description)}</div>` : ''}
+    `;
+
+    document.getElementById('evReaderTopTitle').textContent = ev.title;
+    document.getElementById('evReaderContent').innerHTML = html;
+    const overlay = document.getElementById('evReaderOverlay');
+    overlay.classList.add('open');
+    overlay.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeEvent() {
+    document.getElementById('evReaderOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function openLightbox(src, alt) {
+    const lb = document.getElementById('evLightbox');
+    document.getElementById('evLightboxImg').src = src;
+    document.getElementById('evLightboxImg').alt = alt;
+    lb.classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('evLightbox').classList.remove('open');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeLightbox(); closeEvent(); }
+  });
 
   async function loadEvents() {
     const grid = document.getElementById('events-grid');
@@ -202,7 +379,7 @@
         grid.innerHTML = '<div class="empty-state"><div class="icon">📅</div><p>אין אירועים להצגה כרגע</p></div>';
         return;
       }
-      grid.innerHTML = allEvents.map(eventCard).join('');
+      grid.innerHTML = allEvents.map((ev, idx) => eventCard(ev, idx)).join('');
     } catch(e) {
       grid.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>שגיאה בטעינת האירועים</p></div>`;
     }
