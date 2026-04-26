@@ -73,7 +73,7 @@
     }
     .bank-meta { display: flex; flex-direction: column; gap: 0.1rem; }
     .bank-name { font-size: 1rem; font-weight: 700; color: #1a3a5c; }
-    .bank-phone { font-size: 0.82rem; color: #557; direction: ltr; text-align: right; }
+    .bank-phone { font-size: 0.82rem; color: #557; display: flex; gap: 0.3em; direction: rtl; }
     .bank-arrow { font-size: 0.9rem; color: #666; transition: transform 0.25s; }
     .bank-card-header.open .bank-arrow { transform: rotate(180deg); }
 
@@ -220,7 +220,7 @@
           <img src="תמונות/טפחות.png" alt="בנק מזרחי טפחות" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
           <div class="bank-meta">
             <div class="bank-name">בנק מזרחי טפחות</div>
-            <div class="bank-phone">מוקד משכנתאות: *8860</div>
+            <div class="bank-phone"><span>מוקד משכנתאות:</span><span dir="ltr">*8860</span></div>
           </div>
         </div>
         <span class="bank-arrow">▼</span>
@@ -256,7 +256,7 @@
         <div class="channel-content" id="mizrahi-phone">
           <div class="phone-box">
             <span class="ph-icon">📞</span>
-            <span>צרו קשר עם מרכז המשכנתאות של בנק מזרחי טפחות בטלפון <strong>*8860</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+            <span>צרו קשר עם מרכז המשכנתאות של בנק מזרחי טפחות בטלפון <strong dir="ltr">*8860</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
           </div>
         </div>
       </div>
@@ -271,7 +271,7 @@
           <img src="תמונות/לאומי.png" alt="בנק לאומי" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
           <div class="bank-meta">
             <div class="bank-name">בנק לאומי</div>
-            <div class="bank-phone">מוקד: *6062</div>
+            <div class="bank-phone"><span>מוקד:</span><span dir="ltr">*6062</span></div>
           </div>
         </div>
         <span class="bank-arrow">▼</span>
@@ -296,7 +296,7 @@
         <div class="channel-content" id="leumi-phone">
           <div class="phone-box">
             <span class="ph-icon">📞</span>
-            <span>צרו קשר עם המוקד בטלפון <strong>*6062</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+            <span>צרו קשר עם המוקד בטלפון <strong dir="ltr">*6062</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
           </div>
         </div>
       </div>
@@ -311,7 +311,7 @@
           <img src="תמונות/לוגו פועלים.jpg" alt="בנק הפועלים" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
           <div class="bank-meta">
             <div class="bank-name">בנק הפועלים</div>
-            <div class="bank-phone">מוקד: *2401</div>
+            <div class="bank-phone"><span>מוקד:</span><span dir="ltr">*2401</span></div>
           </div>
         </div>
         <span class="bank-arrow">▼</span>
@@ -337,14 +337,14 @@
 
         <div class="channel-content" id="hapoalim-no-account">
           <div class="note-box" style="margin-top:0;">
-            <strong>לקוחות ללא חשבון עו"ש בבנק הפועלים —</strong> לא ניתן להפיק את הדו"ח דרך האתר. יש להזמין את הדו"ח <strong>דרך המוקד בלבד</strong> בטלפון <strong>*2401</strong>.
+            <strong>לקוחות ללא חשבון עו"ש בבנק הפועלים —</strong> לא ניתן להפיק את הדו"ח דרך האתר. יש להזמין את הדו"ח <strong>דרך המוקד בלבד</strong> בטלפון <strong dir="ltr">*2401</strong>.
           </div>
         </div>
 
         <div class="channel-content" id="hapoalim-phone">
           <div class="phone-box">
             <span class="ph-icon">📞</span>
-            <span>צרו קשר עם מוקד בנק הפועלים בטלפון <strong>*2401</strong> ובקשו הפקת דו"ח פרטי משכנתאות.</span>
+            <span>צרו קשר עם מוקד בנק הפועלים בטלפון <strong dir="ltr">*2401</strong> ובקשו הפקת דו"ח פרטי משכנתאות.</span>
           </div>
         </div>
       </div>
@@ -359,7 +359,7 @@
           <img src="תמונות/דיסקונט.jpg" alt="בנק דיסקונט" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
           <div class="bank-meta">
             <div class="bank-name">בנק דיסקונט</div>
-            <div class="bank-phone">מוקד: *2009</div>
+            <div class="bank-phone"><span>מוקד:</span><span dir="ltr">*2009</span></div>
           </div>
         </div>
         <span class="bank-arrow">▼</span>
@@ -384,14 +384,14 @@
 
         <div class="channel-content" id="discount-no-account">
           <div class="note-box" style="margin-top:0;">
-            <strong>לקוחות ללא חשבון עו"ש בבנק דיסקונט —</strong> לא ניתן להפיק את הדו"ח דרך האתר. יש להזמין את הדו"ח <strong>דרך המוקד בלבד</strong> בטלפון <strong>*2009</strong>.
+            <strong>לקוחות ללא חשבון עו"ש בבנק דיסקונט —</strong> לא ניתן להפיק את הדו"ח דרך האתר. יש להזמין את הדו"ח <strong>דרך המוקד בלבד</strong> בטלפון <strong dir="ltr">*2009</strong>.
           </div>
         </div>
 
         <div class="channel-content" id="discount-phone">
           <div class="phone-box">
             <span class="ph-icon">📞</span>
-            <span>צרו קשר עם מוקד בנק דיסקונט בטלפון <strong>*2009</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+            <span>צרו קשר עם מוקד בנק דיסקונט בטלפון <strong dir="ltr">*2009</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
           </div>
         </div>
       </div>
@@ -406,7 +406,7 @@
           <img src="תמונות/מרכנתיל.png" alt="בנק מרכנתיל" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
           <div class="bank-meta">
             <div class="bank-name">בנק מרכנתיל</div>
-            <div class="bank-phone">מוקד: *3477</div>
+            <div class="bank-phone"><span>מוקד:</span><span dir="ltr">*3477</span></div>
           </div>
         </div>
         <span class="bank-arrow">▼</span>
@@ -431,14 +431,14 @@
 
         <div class="channel-content" id="mercantile-no-account">
           <div class="note-box" style="margin-top:0;">
-            <strong>לקוחות ללא חשבון עו"ש בבנק מרכנתיל —</strong> לא ניתן להפיק את הדו"ח דרך האתר. יש להזמין את הדו"ח <strong>דרך המוקד בלבד</strong> בטלפון <strong>*3477</strong>.
+            <strong>לקוחות ללא חשבון עו"ש בבנק מרכנתיל —</strong> לא ניתן להפיק את הדו"ח דרך האתר. יש להזמין את הדו"ח <strong>דרך המוקד בלבד</strong> בטלפון <strong dir="ltr">*3477</strong>.
           </div>
         </div>
 
         <div class="channel-content" id="mercantile-phone">
           <div class="phone-box">
             <span class="ph-icon">📞</span>
-            <span>צרו קשר עם מוקד בנק מרכנתיל בטלפון <strong>*3477</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+            <span>צרו קשר עם מוקד בנק מרכנתיל בטלפון <strong dir="ltr">*3477</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
           </div>
         </div>
       </div>
@@ -453,7 +453,7 @@
           <img src="תמונות/בנק ירושלים.jpg" alt="בנק ירושלים" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
           <div class="bank-meta">
             <div class="bank-name">בנק ירושלים</div>
-            <div class="bank-phone">שירות לקוחות: *5726</div>
+            <div class="bank-phone"><span>שירות לקוחות:</span><span dir="ltr">*5726</span></div>
           </div>
         </div>
         <span class="bank-arrow">▼</span>
@@ -478,7 +478,7 @@
         <div class="channel-content" id="jerusalem-phone">
           <div class="phone-box">
             <span class="ph-icon">📞</span>
-            <span>צרו קשר עם שירות הלקוחות של בנק ירושלים בטלפון <strong>*5726</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+            <span>צרו קשר עם שירות הלקוחות של בנק ירושלים בטלפון <strong dir="ltr">*5726</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
           </div>
         </div>
       </div>
@@ -493,7 +493,7 @@
           <img src="תמונות/הבנק-הבינלאומי-לוגו.webp" alt="קבוצת הבינלאומי" style="width:46px;height:46px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;">
           <div class="bank-meta">
             <div class="bank-name">קבוצת הבינלאומי</div>
-            <div class="bank-phone">הבינלאומי / מסד / אוצר החייל / פאגי — *3533</div>
+            <div class="bank-phone"><span>הבינלאומי / מסד / אוצר החייל / פאגי —</span><span dir="ltr">*3533</span></div>
           </div>
         </div>
         <span class="bank-arrow">▼</span>
@@ -526,7 +526,7 @@
         <div class="channel-content" id="fibi-phone">
           <div class="phone-box">
             <span class="ph-icon">📞</span>
-            <span>צרו קשר עם מוקד המשכנתאות של קבוצת הבינלאומי בטלפון <strong>*3533</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
+            <span>צרו קשר עם מוקד המשכנתאות של קבוצת הבינלאומי בטלפון <strong dir="ltr">*3533</strong> ובקשו הפקת דו"ח יתרה לסילוק.</span>
           </div>
         </div>
       </div>

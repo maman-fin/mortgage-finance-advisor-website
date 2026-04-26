@@ -52,7 +52,7 @@
     .bank-info { display: flex; align-items: center; gap: 0.9rem; }
     .bank-meta { display: flex; flex-direction: column; gap: 0.1rem; }
     .bank-name { font-size: 1rem; font-weight: 700; color: #fff; }
-    .bank-phone { font-size: 0.82rem; color: #aad4f5; direction: ltr; text-align: right; }
+    .bank-phone { font-size: 0.82rem; color: #aad4f5; display: flex; gap: 0.3em; direction: rtl; flex-wrap: wrap; }
     .bank-arrow { font-size: 0.9rem; color: #fff; transition: transform 0.25s; }
     .bank-card-header.open .bank-arrow { transform: rotate(180deg); }
     .bank-card-body { display: none; padding: 1.4rem 1.5rem; background: #fff; }
@@ -182,7 +182,7 @@
           <div style="width:46px;height:46px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.4rem;">🏛️</div>
           <div class="bank-meta">
             <div class="bank-name">מערכת נתוני האשראי — בנק ישראל</div>
-            <div class="bank-phone" style="direction:rtl;text-align:right;">טלפון: *6194 | אתר: creditdata.org.il</div>
+            <div class="bank-phone"><span>טלפון:</span><span dir="ltr">*6194</span><span> | אתר: creditdata.org.il</span></div>
           </div>
         </div>
       </div>
@@ -208,7 +208,7 @@
         <div class="channel-content" id="credit-phone">
           <div class="phone-box">
             <span class="ph-icon">📞</span>
-            <span>התקשרו למוקד מערכת נתוני האשראי בטלפון <strong>*6194</strong> ובקשו הפקת דו"ח ריכוז נתוני אשראי. הנציג ידריך אתכם בתהליך.</span>
+            <span>התקשרו למוקד מערכת נתוני האשראי בטלפון <strong dir="ltr">*6194</strong> ובקשו הפקת דו"ח ריכוז נתוני אשראי. הנציג ידריך אתכם בתהליך.</span>
           </div>
           <div class="note-box" style="margin-top:0.8rem;"><strong>שימו לב:</strong> גם בטלפון הדו"ח הראשון בשנה הוא ללא עלות.</div>
         </div>
@@ -236,7 +236,7 @@
   </div>
 
   <div class="disclaimer">
-    <p>המידע המוצג בדף זה נועד לסייע בהפקת מסמכים ואינו מהווה ייעוץ פיננסי מחייב. ייתכנו שינויים בממשק האתר — במקרה של שינוי פנו למוקד *6194.</p>
+    <p>המידע המוצג בדף זה נועד לסייע בהפקת מסמכים ואינו מהווה ייעוץ פיננסי מחייב. ייתכנו שינויים בממשק האתר — במקרה של שינוי פנו למוקד <span dir="ltr">*6194</span>.</p>
   </div>
 
   <footer>

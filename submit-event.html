@@ -142,42 +142,45 @@
     @media (max-width: 600px) {
       .card { padding: 24px 18px; }
       nav ul { display: none; }
+      nav ul.open { display: flex; flex-direction: column; position: absolute; top: 64px; right: 0; left: 0; background: #1a3a5c; padding: 1rem 2rem; gap: 1rem; z-index: 99; }
       .nav-toggle { display: block; }
     }
   </style>
 </head>
 <body>
 
-<nav>
-  <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
-  <ul id="nav-menu">
-    <li><a href="index.html#services">שירותים</a></li>
-    <li><a href="index.html#process">תהליך</a></li>
-    <li><a href="testimonials.html">המלצות</a></li>
-    <li class="dropdown">
-      <a href="#">מחשבונים</a>
-      <ul class="dropdown-menu">
-        <li><a href="calculator.html">מחשבון משכנתא</a></li>
-        <li><a href="loan-calculator.html">מחשבון הלוואה</a></li>
-        <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
-        <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
-        <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
-      </ul>
-    </li>
-    <li class="dropdown">
-      <a href="#">מרכז הידע</a>
-      <ul class="dropdown-menu">
-        <li><a href="articles.html">מאמרים ועדכונים</a></li>
-        <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
-        <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
-        <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+  <!-- NAV -->
+  <nav>
+    <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
+    <ul>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="testimonials.html">המלצות</a></li>
+      <li class="dropdown">
+        <a href="#">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="loan-calculator.html">מחשבון הלוואה</a></li>
+          <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+          <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+          <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
+          <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
         <li><a href="events-list.html">אירועים</a></li>
-      </ul>
-    </li>
-    <li><a href="index.html#contact">צור קשר</a></li>
-  </ul>
-  <button class="nav-toggle" onclick="document.getElementById('nav-menu').classList.toggle('open')" aria-label="פתח תפריט">☰</button>
-</nav>
+        </ul>
+      </li>
+      <li><a href="admin.html">עמוד ניהול</a></li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
+  </nav>
 
 <div class="page-header">
   <h1>📅 פרסום אירוע</h1>
@@ -264,6 +267,39 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script>
+  var navToggle = document.querySelector('.nav-toggle');
+  var navMenu = document.querySelector('nav ul');
+  function closeNav() {
+    navMenu.classList.remove('open');
+    navToggle.textContent = '☰';
+    navToggle.setAttribute('aria-label', 'פתח תפריט');
+    document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); });
+  }
+  navToggle.addEventListener('click', function() {
+    var isOpen = navMenu.classList.toggle('open');
+    navToggle.textContent = isOpen ? '✕' : '☰';
+    navToggle.setAttribute('aria-label', isOpen ? 'סגור תפריט' : 'פתח תפריט');
+    if (!isOpen) { document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); }); }
+  });
+  document.querySelectorAll('.dropdown > a').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      if (window.innerWidth > 768) return;
+      e.preventDefault();
+      var submenu = this.parentElement.querySelector('.dropdown-menu');
+      if (!submenu) return;
+      var isOpen = submenu.classList.toggle('open');
+      document.querySelectorAll('.dropdown-menu.open').forEach(function(m) { if (m !== submenu) m.classList.remove('open'); });
+    });
+  });
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dropdown')) {
+      document.querySelectorAll('.dropdown-menu.open').forEach(function(m) { m.classList.remove('open'); });
+    }
+  });
+  document.querySelectorAll('nav ul li:not(.dropdown) > a, .dropdown-menu a').forEach(function(link) {
+    link.addEventListener('click', closeNav);
+  });
+
   const SUPABASE_URL       = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
   const SUPABASE_ANON_KEY  = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
   const EVENT_IMAGE_BUCKET = 'event-images';

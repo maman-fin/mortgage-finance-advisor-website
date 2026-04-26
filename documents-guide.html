@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -9,7 +9,11 @@
     body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #f7f8fa; direction: rtl; }
 
     /* ── NAV ── */
-    nav { background: #1a3a5c; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    nav {
+      background: #1a3a5c; padding: 0 2rem; display: flex; align-items: center;
+      justify-content: space-between; height: 64px; position: sticky; top: 0;
+      z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
     nav .logo { color: #fff; font-size: 1.3rem; font-weight: 700; }
     nav .logo a { color: inherit; text-decoration: none; }
     nav ul { list-style: none; display: flex; gap: 2rem; }
@@ -19,9 +23,8 @@
     .nav-toggle:focus, .nav-toggle:active { outline: none; background: none; color: #fff; }
     .dropdown { position: relative; }
     .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
-    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0;
-    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } } background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
-
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 200px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } }
     .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
     .dropdown-menu li:last-child a { border-bottom: none; }
     .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
@@ -29,126 +32,72 @@
     /* ── PAGE HEADER ── */
     .page-header { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 3.5rem 1rem 3rem; }
     .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
-    .page-header p { opacity: 0.85; font-size: 1rem; max-width: 600px; margin: 0 auto; }
+    .page-header p { opacity: 0.85; font-size: 1rem; }
 
-    /* ── MAIN CONTENT ── */
-    .content-wrap { max-width: 860px; margin: 2.5rem auto 1rem; padding: 0 1rem; }
+    /* ── FILTER BAR ── */
+    .filter-bar { max-width: 1000px; margin: 2rem auto 0; padding: 0 1rem; display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .filter-btn { padding: 0.5rem 1.15rem; border-radius: 20px; border: 2px solid #d0d8e4; background: #fff; color: #555; font-size: 0.88rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .filter-btn:hover { border-color: #2a6496; color: #2a6496; }
+    .filter-btn.active { background: #1a3a5c; border-color: #1a3a5c; color: #fff; }
 
-    /* ── MAIN SECTION ACCORDION ── */
-    .main-section { margin-bottom: 1.2rem; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    /* ── GUIDES GRID ── */
+    .articles-section { max-width: 1000px; margin: 1.8rem auto 3rem; padding: 0 1rem; }
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.6rem; }
 
-    .main-section-header {
-      background: #1a3a5c; color: #fff; padding: 1.1rem 1.4rem;
-      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-      user-select: none; transition: background 0.2s;
-    }
-    .main-section-header:hover { background: #244e7a; }
-    .main-section-header .sec-title { font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 0.6rem; }
-    .main-section-header .sec-badge { font-size: 0.8rem; background: rgba(255,255,255,0.18); padding: 0.2rem 0.65rem; border-radius: 12px; }
-    .main-section-header .sec-arrow { font-size: 1rem; transition: transform 0.3s; }
-    .main-section-header.open .sec-arrow { transform: rotate(180deg); }
+    /* ── GUIDE CARD ── */
+    .article-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.2s, transform 0.2s; cursor: pointer; }
+    .article-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateY(-3px); }
+    .article-card.hidden { display: none; }
 
-    .main-section-body { background: #fff; display: none; }
-    .main-section-body.open { display: block; }
+    .article-img { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; flex-shrink: 0; }
+    .article-img.type-written      { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); }
+    .article-img.type-video        { background: linear-gradient(135deg, #6a1a8c 0%, #b44fc0 100%); }
+    .article-img.type-presentation { background: linear-gradient(135deg, #7a3a0a 0%, #e8a020 100%); }
 
-    /* ── GUIDE ITEM ── */
-    .guide-item {
-      border-bottom: 1px solid #eef2f7; padding: 1.4rem 1.4rem 1.2rem;
-    }
-    .guide-item:last-child { border-bottom: none; }
+    .article-body { padding: 1.3rem 1.3rem 1rem; display: flex; flex-direction: column; flex: 1; }
+    .article-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
+    .category-badge { font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 12px; white-space: nowrap; }
+    .badge-written      { background: #e8f0fb; color: #1a3a5c; }
+    .badge-video        { background: #f3e9fd; color: #6a1a8c; }
+    .badge-presentation { background: #fff4e0; color: #7a5010; }
 
-    .guide-item-header {
-      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-      user-select: none;
-    }
-    .guide-item-header h3 { font-size: 0.98rem; font-weight: 700; color: #1a3a5c; display: flex; align-items: center; gap: 0.5rem; }
-    .guide-item-arrow { font-size: 0.85rem; color: #888; transition: transform 0.25s; }
-    .guide-item-header.open .guide-item-arrow { transform: rotate(180deg); }
+    .article-date  { font-size: 0.8rem; color: #888; }
+    .article-title { font-size: 1.1rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.65rem; line-height: 1.4; }
+    .article-summary { font-size: 0.91rem; color: #555; line-height: 1.65; margin-bottom: 0.8rem; }
+    .read-more-btn { margin-top: auto; align-self: flex-start; padding-top: 0.6rem; background: none; border: none; color: #2a6496; font-size: 0.88rem; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 0.3rem; }
 
-    .guide-item-content { display: none; padding-top: 1rem; }
-    .guide-item-content.open { display: block; }
+    /* ── READER OVERLAY ── */
+    .reader-overlay { display: none; position: fixed; inset: 0; z-index: 500; background: #fff; overflow-y: auto; animation: readerIn 0.22s ease; }
+    .reader-overlay.open { display: block; }
+    @keyframes readerIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    .reader-topbar { position: sticky; top: 0; z-index: 10; background: #1a3a5c; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 1.2rem; height: 54px; }
+    .reader-topbar-title { font-size: 0.95rem; font-weight: 700; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding-left: 1rem; }
+    .reader-close-btn { background: rgba(255,255,255,0.15); border: none; color: #fff; border-radius: 6px; padding: 6px 14px; font-size: 1rem; cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0; }
+    .reader-close-btn:hover { background: rgba(255,255,255,0.28); }
+    .reader-content { max-width: 780px; margin: 0 auto; padding: 2rem 1.4rem 4rem; }
+    .reader-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 10px; margin-bottom: 1.4rem; display: block; }
+    .reader-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+    .reader-title { font-size: 1.75rem; font-weight: 800; color: #1a3a5c; margin-bottom: 0.6rem; line-height: 1.35; }
+    .reader-summary { font-size: 1.05rem; color: #555; line-height: 1.7; margin-bottom: 1.4rem; border-bottom: 1px solid #eef2f7; padding-bottom: 1rem; }
+    .reader-body { font-size: 1rem; color: #333; line-height: 1.85; }
+    .reader-body p { margin-bottom: 0.85rem; }
+    .reader-body p:last-child { margin-bottom: 0; }
+    .reader-body h4 { color: #1a3a5c; margin: 1rem 0 0.4rem; }
+    .reader-body ul { padding-right: 1.4rem; margin-bottom: 0.6rem; }
+    .reader-body ul li { margin-bottom: 0.35rem; }
+    .reader-video { margin: 1.2rem 0; }
+    .reader-presentation { margin: 1.2rem 0; }
+    .reader-presentation iframe { width: 100%; height: 480px; border: none; border-radius: 8px; }
 
-    .guide-text { font-size: 0.92rem; color: #444; line-height: 1.7; margin-bottom: 1rem; }
-    .guide-text p { margin-bottom: 0.5rem; }
-    .guide-text ul, .guide-text ol { padding-right: 1.3rem; margin-bottom: 0.5rem; }
-    .guide-text li { margin-bottom: 0.3rem; }
-    .guide-text strong { color: #1a3a5c; }
-
-    /* ── STEP LIST ── */
-    .step-list { counter-reset: step; padding: 0; list-style: none; margin-bottom: 1rem; }
-    .step-list li {
-      counter-increment: step; display: flex; gap: 0.8rem; align-items: flex-start;
-      padding: 0.55rem 0; border-bottom: 1px solid #f0f2f5; font-size: 0.91rem; color: #444;
-    }
-    .step-list li:last-child { border-bottom: none; }
-    .step-list li::before {
-      content: counter(step); flex-shrink: 0; width: 26px; height: 26px;
-      background: #1a3a5c; color: #fff; border-radius: 50%; display: flex;
-      align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;
-    }
-
-    /* ── MEDIA EMBEDS ── */
-    .embed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
-    .embed-block { }
-    .embed-label { font-size: 0.8rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.3rem; }
-    .embed-container {
-      width: 100%; aspect-ratio: 16/9; background: #f0f4f8; border: 2px dashed #c5d8ec;
-      border-radius: 8px; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; color: #888; font-size: 0.82rem; text-align: center;
-      gap: 0.4rem; overflow: hidden; position: relative;
-    }
-    .embed-container iframe { width: 100%; height: 100%; border: none; position: absolute; inset: 0; }
-    .embed-placeholder-icon { font-size: 2rem; opacity: 0.5; }
-    .embed-placeholder-text { font-size: 0.8rem; color: #999; }
-    .embed-soon-badge { background: #e8a020; color: #fff; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 10px; }
-
-    /* ── BANK CARD ── */
-    .bank-card {
-      border: 1px solid #dde8f2; border-radius: 10px; overflow: hidden; margin-bottom: 1.2rem;
-    }
-    .bank-card-header {
-      background: #eaf0f8; padding: 0.9rem 1.2rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: space-between; user-select: none;
-      transition: background 0.18s;
-    }
-    .bank-card-header:hover { background: #d8e8f5; }
-    .bank-info { display: flex; align-items: center; gap: 0.9rem; }
-    .bank-logo-placeholder {
-      width: 44px; height: 44px; border-radius: 8px; background: #1a3a5c; color: #fff;
-      display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; flex-shrink: 0;
-    }
-    .bank-name { font-size: 1rem; font-weight: 700; color: #1a3a5c; }
-    .bank-arrow { font-size: 0.9rem; color: #666; transition: transform 0.25s; }
-    .bank-card-header.open .bank-arrow { transform: rotate(180deg); }
-    .bank-card-body { display: none; padding: 1.2rem; }
-    .bank-card-body.open { display: block; }
-    .bank-note { background: #fff8e6; border: 1px solid #f0d080; border-radius: 7px; padding: 0.6rem 0.9rem; font-size: 0.82rem; color: #7a5010; margin-top: 0.8rem; }
-
-    /* ── TIPS SECTION ── */
-    .tip-item { padding: 0.9rem 1.2rem; border-bottom: 1px solid #f0f2f5; }
-    .tip-item:last-child { border-bottom: none; }
-    .tip-item h3 { font-size: 0.96rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.5rem; }
-    .tip-item p { font-size: 0.9rem; color: #555; line-height: 1.6; }
-
-    /* ── FULL DOCUMENT LIST ── */
-    .doc-list { list-style: none; padding: 0; }
-    .doc-list li { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.55rem 0; border-bottom: 1px solid #f0f2f5; font-size: 0.91rem; color: #444; }
-    .doc-list li:last-child { border-bottom: none; }
-    .doc-list li::before { content: '📄'; flex-shrink: 0; }
-    .doc-category { font-size: 0.78rem; font-weight: 700; color: #2a6496; background: #e8f0fb; padding: 0.15rem 0.55rem; border-radius: 10px; margin-bottom: 0.4rem; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── CTA ── */
-    .cta-section { background: #1a3a5c; padding: 3rem 1rem; text-align: center; color: #fff; margin-top: 1.5rem; }
+    .cta-section { background: #1a3a5c; padding: 3rem 1rem; text-align: center; color: #fff; margin-top: 1rem; }
     .cta-section h3 { font-size: 1.5rem; margin-bottom: 0.6rem; }
     .cta-section p { opacity: 0.85; margin-bottom: 1.4rem; }
     .btn-cta { display: inline-block; background: #e8a020; color: #fff; padding: 0.85rem 2.2rem; border-radius: 6px; text-decoration: none; font-size: 1rem; font-weight: 700; transition: background 0.2s; }
     .btn-cta:hover { background: #c98010; }
 
-    /* ── DISCLAIMER ── */
-    .disclaimer { max-width: 860px; margin: 1.5rem auto 2rem; padding: 0 1rem; }
-    .disclaimer p { background: #fff8e6; border: 1px solid #f0d080; border-radius: 8px; padding: 0.85rem 1.1rem; font-size: 0.82rem; color: #7a5c10; line-height: 1.6; }
-
-    /* ── FOOTER ── */
     footer { background: #111e2e; color: #889; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
     footer span { color: #aab; }
 
@@ -160,17 +109,15 @@
       nav ul { display: none; position: absolute; top: 64px; right: 0; left: 0; flex-direction: column; gap: 0; background: #1a3a5c; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 99; }
       nav ul.open { display: flex; }
       nav ul li a { display: block; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 1rem; }
-      .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
       .dropdown-menu { position: static; display: none; box-shadow: none; border-radius: 0; background: rgba(0,0,0,0.2); min-width: unset; }
       .dropdown-menu.open { display: block; }
       .dropdown-menu li a { padding-right: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
-
       .page-header { padding: 1.5rem 1rem 1.2rem; }
       .page-header h1 { font-size: 1.6rem; }
-      .content-wrap { margin: 1rem auto; }
-      .embed-grid { grid-template-columns: 1fr; }
-      .guide-item { padding: 1rem; }
-      .main-section-header { padding: 0.9rem 1rem; }
+      .articles-grid { grid-template-columns: 1fr; }
+      .filter-bar { gap: 0.5rem; }
+      .filter-btn { font-size: 0.82rem; padding: 0.45rem 0.9rem; }
+      .reader-presentation iframe { height: 260px; }
     }
   </style>
 </head>
@@ -211,636 +158,42 @@
 
   <!-- PAGE HEADER -->
   <div class="page-header">
-    <h1>הדרכה להפקת מידע ומסמכים</h1>
-    <p>מדריכים מפורטים — צעד אחר צעד — להפקת כל מסמך שהבנק מבקש</p>
+    <h1>הדרכה למסמכים</h1>
+    <p>הדרכות מקצועיות — כתובות, וידאו ומצגות — להכנת תיק המסמכים למשכנתא</p>
   </div>
 
-  <div class="content-wrap">
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterGuides('all', this)">הכל</button>
+    <button class="filter-btn" onclick="filterGuides('written', this)">📝 הדרכות כתובות</button>
+    <button class="filter-btn" onclick="filterGuides('video', this)">🎬 הדרכות וידאו</button>
+    <button class="filter-btn" onclick="filterGuides('presentation', this)">📊 מצגות</button>
+  </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-         SECTION A — הפקת מסמכים שוטפים
-    ═══════════════════════════════════════════════════════ -->
-    <div class="main-section">
-      <div class="main-section-header" onclick="toggleSection(this)">
-        <div class="sec-title">
-          <span>📋</span>
-          <span>א. הפקת מסמכים שוטפים</span>
-          <span class="sec-badge">5 מדריכים</span>
-        </div>
-        <span class="sec-arrow">▼</span>
+  <!-- READER OVERLAY -->
+  <div class="reader-overlay" id="readerOverlay">
+    <div class="reader-topbar">
+      <span class="reader-topbar-title" id="readerTopTitle"></span>
+      <button class="reader-close-btn" onclick="closeGuide()">✕ חזור להדרכות</button>
+    </div>
+    <div class="reader-content" id="readerContent"></div>
+  </div>
+
+  <!-- GUIDES -->
+  <section class="articles-section">
+    <div class="articles-grid" id="guidesGrid">
+      <div style="text-align:center;padding:48px;color:#888;grid-column:1/-1;">
+        <div style="width:36px;height:36px;border:4px solid #e0e4ec;border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>
+        טוען הדרכות...
       </div>
-      <div class="main-section-body open">
-
-        <!-- 1. דוח תנועות -->
-        <div class="guide-item">
-          <div class="guide-item-header open" onclick="toggleGuideItem(this)">
-            <h3>🏦 דוח תנועות עו"ש — 3 חודשים אחרונים</h3>
-            <span class="guide-item-arrow">▲</span>
-          </div>
-          <div class="guide-item-content open">
-            <div class="guide-text">
-              <p>הבנק מבקש לראות את תנועות חשבון העו"ש שלך ב-3 החודשים האחרונים כדי לאמוד את ההכנסות וההוצאות הקבועות שלך. להלן השלבים להפקת הדוח מהאפליקציה הבנקאית:</p>
-            </div>
-            <ol class="step-list">
-              <li>היכנס לאפליקציית הבנק שלך (או לאתר הבנק המקוון)</li>
-              <li>נווט לסעיף <strong>"חשבונות"</strong> ובחר את חשבון העו"ש</li>
-              <li>לחץ על <strong>"תנועות"</strong> או <strong>"פירוט תנועות"</strong></li>
-              <li>הגדר טווח תאריכים: מ-3 חודשים אחורה עד היום</li>
-              <li>לחץ על <strong>"הפקת דוח"</strong> או <strong>"ייצוא ל-PDF"</strong></li>
-              <li>שמור את הקובץ ושלח ליועץ המשכנתאות</li>
-            </ol>
-            <div class="guide-text"><p><strong>טיפ:</strong> חשוב שהדוח יכלול את שם בעל החשבון, מספר החשבון ומספר הסניף בצורה ברורה.</p></div>
-            <div class="embed-grid">
-              <div class="embed-block">
-                <div class="embed-label">🎬 סרטון הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">▶️</div>
-                  <div class="embed-placeholder-text">סרטון הסבר</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-              <div class="embed-block">
-                <div class="embed-label">📊 מצגת הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">📑</div>
-                  <div class="embed-placeholder-text">מצגת שלבים</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. ריכוז יתרות -->
-        <div class="guide-item">
-          <div class="guide-item-header" onclick="toggleGuideItem(this)">
-            <h3>💰 ריכוז יתרות</h3>
-            <span class="guide-item-arrow">▼</span>
-          </div>
-          <div class="guide-item-content">
-            <div class="guide-text">
-              <p>ריכוז יתרות הוא מסמך המסכם את כל היתרות בחשבונות שלך — פיקדונות, קרנות השתלמות, חסכונות וכו'. הבנק מבקש אותו כדי להעריך את שוויך הכולל.</p>
-            </div>
-            <ol class="step-list">
-              <li>היכנס לאפליקציית הבנק שלך</li>
-              <li>נווט לסעיף <strong>"תיק פיננסי"</strong> או <strong>"כל החשבונות"</strong></li>
-              <li>חפש אפשרות <strong>"ריכוז יתרות"</strong> או <strong>"תמונת מצב פיננסית"</strong></li>
-              <li>בחר את כל סוגי החשבונות הרצויים</li>
-              <li>לחץ <strong>"הפקת דוח"</strong> ושמור כ-PDF</li>
-              <li>ודא שהדוח מתוארך ומציג את שם בעל החשבון</li>
-            </ol>
-            <div class="guide-text"><p><strong>חשוב:</strong> אם יש לך חסכונות בבנקים שונים, הפק ריכוז יתרות מכל אחד מהם.</p></div>
-            <div class="embed-grid">
-              <div class="embed-block">
-                <div class="embed-label">🎬 סרטון הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">▶️</div>
-                  <div class="embed-placeholder-text">סרטון הסבר</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-              <div class="embed-block">
-                <div class="embed-label">📊 מצגת הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">📑</div>
-                  <div class="embed-placeholder-text">מצגת שלבים</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. תלושי שכר -->
-        <div class="guide-item">
-          <div class="guide-item-header" onclick="toggleGuideItem(this)">
-            <h3>📄 תלושי שכר — 3 חודשים אחרונים</h3>
-            <span class="guide-item-arrow">▼</span>
-          </div>
-          <div class="guide-item-content">
-            <div class="guide-text">
-              <p>תלושי שכר הם הוכחת הכנסה. הבנק מבקש את 3 התלושים האחרונים. ישנם מספר דרכים להשיגם:</p>
-            </div>
-            <ol class="step-list">
-              <li><strong>מהמעסיק ישירות:</strong> פנה למחלקת שכר / HR ובקש תלושי שכר ל-3 החודשים האחרונים</li>
-              <li><strong>ממערכת שכר מקוונת:</strong> חברות רבות משתמשות ב-Hilan, Priority או מערכות דומות — היכנס לפורטל העובד שלך</li>
-              <li><strong>באפליקציית Hilan:</strong> התחבר ← "תלושי שכר" ← בחר חודשים ← הורד PDF</li>
-              <li>הדפס או שמור קבצים דיגיטליים</li>
-              <li>ודא שהתלוש כולל: שם עובד, ח.פ./ת.ז., חודש, ברוטו ונטו</li>
-            </ol>
-            <div class="guide-text"><p><strong>עצמאים:</strong> במקום תלושי שכר, הבנק יבקש שומת מס ודוח רואה חשבון. פנה ליועץ המשכנתאות שלך לפרטים.</p></div>
-            <div class="embed-grid">
-              <div class="embed-block">
-                <div class="embed-label">🎬 סרטון הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">▶️</div>
-                  <div class="embed-placeholder-text">סרטון הסבר</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-              <div class="embed-block">
-                <div class="embed-label">📊 מצגת הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">📑</div>
-                  <div class="embed-placeholder-text">מצגת שלבים</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. אישור יתרה -->
-        <div class="guide-item">
-          <div class="guide-item-header" onclick="toggleGuideItem(this)">
-            <h3>✅ אישור יתרה בחשבון</h3>
-            <span class="guide-item-arrow">▼</span>
-          </div>
-          <div class="guide-item-content">
-            <div class="guide-text">
-              <p>אישור יתרה הוא מסמך רשמי מהבנק המאשר את סכום הכסף בחשבון העו"ש שלך לתאריך מסוים. שונה מדוח תנועות — זהו מכתב רשמי חתום.</p>
-            </div>
-            <ol class="step-list">
-              <li>היכנס לאפליקציית הבנק</li>
-              <li>נווט לסעיף <strong>"שירותים"</strong> או <strong>"מסמכים ואישורים"</strong></li>
-              <li>בחר <strong>"אישור יתרה"</strong> או <strong>"מכתב יתרה"</strong></li>
-              <li>בחר את החשבון הרצוי ואת התאריך</li>
-              <li>לחץ <strong>"הפקה"</strong> — המסמך ייווצר באופן מיידי</li>
-              <li>שמור כ-PDF — המסמך תקף ל-30 יום בדרך כלל</li>
-            </ol>
-            <div class="guide-text"><p><strong>לא מוצא באפליקציה?</strong> ניתן לבקש אישור יתרה גם בסניף הבנק, בדרך כלל ללא עמלה.</p></div>
-            <div class="embed-grid">
-              <div class="embed-block">
-                <div class="embed-label">🎬 סרטון הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">▶️</div>
-                  <div class="embed-placeholder-text">סרטון הסבר</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-              <div class="embed-block">
-                <div class="embed-label">📊 מצגת הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">📑</div>
-                  <div class="embed-placeholder-text">מצגת שלבים</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5. רשימה מלאה -->
-        <div class="guide-item">
-          <div class="guide-item-header" onclick="toggleGuideItem(this)">
-            <h3>📋 מסמכים נדרשים לבקשת משכנתא — רשימה מלאה</h3>
-            <span class="guide-item-arrow">▼</span>
-          </div>
-          <div class="guide-item-content">
-            <div class="guide-text"><p>להלן הרשימה המלאה של המסמכים הנדרשים לרוב לצורך הגשת בקשה למשכנתא. הדרישות עשויות להשתנות בין הבנקים.</p></div>
-
-            <div class="doc-category">זיהוי אישי</div>
-            <ul class="doc-list">
-              <li>תעודת זהות + ספח (של שני הלווים אם רלוונטי)</li>
-              <li>אישור תושב / ספח מעודכן</li>
-            </ul>
-
-            <div class="doc-category">הוכחת הכנסה — שכירים</div>
-            <ul class="doc-list">
-              <li>3 תלושי שכר אחרונים</li>
-              <li>אישור מעסיק על הכנסה ותנאי עסקאות (לעיתים)</li>
-            </ul>
-
-            <div class="doc-category">הוכחת הכנסה — עצמאים</div>
-            <ul class="doc-list">
-              <li>שומת מס 2 שנים אחרונות (שומה עצמית + שומה סופית)</li>
-              <li>דוח רווח והפסד + מאזן חתום ע"י רו"ח</li>
-              <li>דוח מקדמות למע"מ</li>
-            </ul>
-
-            <div class="doc-category">חשבון בנק</div>
-            <ul class="doc-list">
-              <li>דפי עו"ש — 3 חודשים אחרונים (כל הדפים)</li>
-              <li>ריכוז יתרות (פיקדונות, חסכונות, קרנות)</li>
-              <li>אישור יתרה לתאריך קרוב</li>
-            </ul>
-
-            <div class="doc-category">מסמכי הנכס</div>
-            <ul class="doc-list">
-              <li>חוזה רכישה / זכרון דברים חתום</li>
-              <li>נסח טאבו עדכני (לא יותר מ-30 יום)</li>
-              <li>אישור זכויות ממינהל מקרקעי ישראל (אם רלוונטי)</li>
-              <li>הערכת שמאי (יוזמן על ידי הבנק בדרך כלל)</li>
-            </ul>
-
-            <div class="doc-category">משכנתא קיימת (אם רלוונטי)</div>
-            <ul class="doc-list">
-              <li>יתרה לסילוק מהבנק הנוכחי</li>
-              <li>לוח סילוקין עדכני</li>
-            </ul>
-            <div class="embed-grid">
-              <div class="embed-block">
-                <div class="embed-label">🎬 סרטון הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">▶️</div>
-                  <div class="embed-placeholder-text">סרטון הסבר</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-              <div class="embed-block">
-                <div class="embed-label">📊 מצגת הסבר</div>
-                <div class="embed-container">
-                  <div class="embed-placeholder-icon">📑</div>
-                  <div class="embed-placeholder-text">מצגת שלבים</div>
-                  <span class="embed-soon-badge">בקרוב</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- end body A -->
-    </div><!-- end section A -->
-
-    <!-- ═══════════════════════════════════════════════════════
-         SECTION B — יתרה לסילוק
-    ═══════════════════════════════════════════════════════ -->
-    <div class="main-section">
-      <div class="main-section-header" onclick="toggleSection(this)">
-        <div class="sec-title">
-          <span>🏛️</span>
-          <span>ב. יתרה לסילוק משכנתא — לפי בנק</span>
-          <span class="sec-badge">7 בנקים</span>
-        </div>
-        <span class="sec-arrow">▼</span>
-      </div>
-      <div class="main-section-body">
-        <div style="padding: 1rem 1.4rem 0.5rem; font-size: 0.88rem; color: #555; line-height: 1.6;">
-          בחר את הבנק שלך וקבל הוראות מפורטות להפקת יתרה לסילוק המשכנתא. מסמך זה נדרש בעת מחזור משכנתא, מכירת נכס, או קבלת הצעה מבנק אחר.
-        </div>
-
-        <!-- בנק הפועלים -->
-        <div style="padding: 0.8rem 1.4rem 0;">
-          <div class="bank-card">
-            <div class="bank-card-header" onclick="toggleBank(this)">
-              <div class="bank-info">
-                <div class="bank-logo-placeholder">פו</div>
-                <div class="bank-name">בנק הפועלים</div>
-              </div>
-              <span class="bank-arrow">▼</span>
-            </div>
-            <div class="bank-card-body">
-              <ol class="step-list">
-                <li>פתח את אפליקציית <strong>הפועלים ניידת</strong> ← היכנס עם סיסמה / טביעת אצבע</li>
-                <li>בתפריט הראשי: לחץ על <strong>"משכנתאות"</strong></li>
-                <li>בחר את מספר תיק המשכנתא הרלוונטי</li>
-                <li>לחץ על <strong>"דוחות ומסמכים"</strong></li>
-                <li>בחר <strong>"יתרה לסילוק"</strong></li>
-                <li>הגדר את <strong>תאריך הסילוק המבוקש</strong> (בדרך כלל 30–60 יום קדימה)</li>
-                <li>לחץ <strong>"הפק"</strong> — קובץ PDF ייווצר ויישלח למייל הרשום</li>
-              </ol>
-              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. במידה ואינך מוצא את האפשרות — פנה לשירות לקוחות: <strong>*2407</strong></div>
-              <div class="embed-grid" style="margin-top:1rem;">
-                <div class="embed-block">
-                  <div class="embed-label">🎬 סרטון הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">▶️</div>
-                    <div class="embed-placeholder-text">סרטון הסבר — בנק הפועלים</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-                <div class="embed-block">
-                  <div class="embed-label">📊 מצגת הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">📑</div>
-                    <div class="embed-placeholder-text">מצגת שלבים</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- בנק לאומי -->
-          <div class="bank-card">
-            <div class="bank-card-header" onclick="toggleBank(this)">
-              <div class="bank-info">
-                <div class="bank-logo-placeholder">לא</div>
-                <div class="bank-name">בנק לאומי</div>
-              </div>
-              <span class="bank-arrow">▼</span>
-            </div>
-            <div class="bank-card-body">
-              <ol class="step-list">
-                <li>היכנס ל<strong>לאומי דיגיטל</strong> (אפליקציה או אתר) עם פרטי הזיהוי שלך</li>
-                <li>עבור לסעיף <strong>"הלוואות ומשכנתאות"</strong> בתפריט הראשי</li>
-                <li>בחר את תיק המשכנתא שלך מהרשימה</li>
-                <li>לחץ על <strong>"מסמכים ואישורים"</strong></li>
-                <li>בחר <strong>"יתרה לסילוק"</strong></li>
-                <li>הזן את תאריך הסילוק הרצוי</li>
-                <li>לחץ <strong>"הפקת מסמך"</strong> ← הורד PDF</li>
-              </ol>
-              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות לאומי: <strong>*5073</strong></div>
-              <div class="embed-grid" style="margin-top:1rem;">
-                <div class="embed-block">
-                  <div class="embed-label">🎬 סרטון הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">▶️</div>
-                    <div class="embed-placeholder-text">סרטון הסבר — בנק לאומי</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-                <div class="embed-block">
-                  <div class="embed-label">📊 מצגת הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">📑</div>
-                    <div class="embed-placeholder-text">מצגת שלבים</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- בנק דיסקונט -->
-          <div class="bank-card">
-            <div class="bank-card-header" onclick="toggleBank(this)">
-              <div class="bank-info">
-                <div class="bank-logo-placeholder">דס</div>
-                <div class="bank-name">בנק דיסקונט</div>
-              </div>
-              <span class="bank-arrow">▼</span>
-            </div>
-            <div class="bank-card-body">
-              <ol class="step-list">
-                <li>פתח את אפליקציית <strong>דיסקונט</strong> ← היכנס עם סיסמה / ביומטריה</li>
-                <li>בתפריט: בחר <strong>"ניהול חשבון"</strong> ← <strong>"הלוואות ומשכנתא"</strong></li>
-                <li>לחץ על תיק המשכנתא שלך</li>
-                <li>בחר <strong>"אפשרויות נוספות"</strong> ← <strong>"יתרה לסילוק"</strong></li>
-                <li>הזן את תאריך הסילוק המבוקש</li>
-                <li>אשר ולחץ <strong>"הפק מסמך"</strong></li>
-                <li>המסמך יישלח למייל הרשום בחשבון</li>
-              </ol>
-              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות: <strong>*2244</strong></div>
-              <div class="embed-grid" style="margin-top:1rem;">
-                <div class="embed-block">
-                  <div class="embed-label">🎬 סרטון הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">▶️</div>
-                    <div class="embed-placeholder-text">סרטון הסבר — דיסקונט</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-                <div class="embed-block">
-                  <div class="embed-label">📊 מצגת הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">📑</div>
-                    <div class="embed-placeholder-text">מצגת שלבים</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- בנק מזרחי טפחות -->
-          <div class="bank-card">
-            <div class="bank-card-header" onclick="toggleBank(this)">
-              <div class="bank-info">
-                <div class="bank-logo-placeholder">מז</div>
-                <div class="bank-name">בנק מזרחי טפחות</div>
-              </div>
-              <span class="bank-arrow">▼</span>
-            </div>
-            <div class="bank-card-body">
-              <ol class="step-list">
-                <li>היכנס לאפליקציית <strong>מזרחי טפחות</strong> (My Mizrahi)</li>
-                <li>בחר בתפריט <strong>"מוצרים ושירותים"</strong></li>
-                <li>לחץ על <strong>"משכנתאות"</strong></li>
-                <li>בחר את תיק המשכנתא שלך</li>
-                <li>לחץ על <strong>"מסמכים ואישורים"</strong> ← <strong>"יתרה לסילוק"</strong></li>
-                <li>הגדר תאריך ויעד סילוק</li>
-                <li>אשר ← קבל PDF במייל תוך דקות</li>
-              </ol>
-              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות: <strong>*3002</strong></div>
-              <div class="embed-grid" style="margin-top:1rem;">
-                <div class="embed-block">
-                  <div class="embed-label">🎬 סרטון הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">▶️</div>
-                    <div class="embed-placeholder-text">סרטון הסבר — מזרחי טפחות</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-                <div class="embed-block">
-                  <div class="embed-label">📊 מצגת הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">📑</div>
-                    <div class="embed-placeholder-text">מצגת שלבים</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- בנק הבינלאומי -->
-          <div class="bank-card">
-            <div class="bank-card-header" onclick="toggleBank(this)">
-              <div class="bank-info">
-                <div class="bank-logo-placeholder">בי</div>
-                <div class="bank-name">בנק הבינלאומי (FIBI)</div>
-              </div>
-              <span class="bank-arrow">▼</span>
-            </div>
-            <div class="bank-card-body">
-              <ol class="step-list">
-                <li>היכנס לאתר או לאפליקציית <strong>בנק הבינלאומי</strong></li>
-                <li>עבור לסעיף <strong>"הלוואות"</strong> ← <strong>"משכנתאות"</strong></li>
-                <li>בחר את תיק המשכנתא הרצוי</li>
-                <li>לחץ על <strong>"דוחות"</strong> ← <strong>"יתרה לסילוק"</strong></li>
-                <li>בחר תאריך סילוק מבוקש</li>
-                <li>לחץ <strong>"הפקה"</strong> ← שמור PDF</li>
-              </ol>
-              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. ניתן גם לפנות לסניף ישירות. שירות לקוחות: <strong>*2146</strong></div>
-              <div class="embed-grid" style="margin-top:1rem;">
-                <div class="embed-block">
-                  <div class="embed-label">🎬 סרטון הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">▶️</div>
-                    <div class="embed-placeholder-text">סרטון הסבר — הבינלאומי</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-                <div class="embed-block">
-                  <div class="embed-label">📊 מצגת הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">📑</div>
-                    <div class="embed-placeholder-text">מצגת שלבים</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- בנק ירושלים -->
-          <div class="bank-card">
-            <div class="bank-card-header" onclick="toggleBank(this)">
-              <div class="bank-info">
-                <div class="bank-logo-placeholder">יר</div>
-                <div class="bank-name">בנק ירושלים</div>
-              </div>
-              <span class="bank-arrow">▼</span>
-            </div>
-            <div class="bank-card-body">
-              <ol class="step-list">
-                <li>היכנס לאתר <strong>בנק ירושלים</strong> (bank.jerusalem.co.il) ← בנקאות אינטרנטית</li>
-                <li>נווט לסעיף <strong>"הלוואות"</strong> ← בחר את המשכנתא שלך</li>
-                <li>לחץ על <strong>"מסמכים"</strong> ← <strong>"יתרה לסילוק"</strong></li>
-                <li>הזן את תאריך הסילוק הרצוי</li>
-                <li>לחץ <strong>"הפקת אישור"</strong></li>
-                <li>שמור PDF שנשלח למייל הרשום</li>
-              </ol>
-              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות: <strong>02-6788555</strong></div>
-              <div class="embed-grid" style="margin-top:1rem;">
-                <div class="embed-block">
-                  <div class="embed-label">🎬 סרטון הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">▶️</div>
-                    <div class="embed-placeholder-text">סרטון הסבר — ירושלים</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-                <div class="embed-block">
-                  <div class="embed-label">📊 מצגת הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">📑</div>
-                    <div class="embed-placeholder-text">מצגת שלבים</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- בנק אוצר החייל -->
-          <div class="bank-card">
-            <div class="bank-card-header" onclick="toggleBank(this)">
-              <div class="bank-info">
-                <div class="bank-logo-placeholder">אח</div>
-                <div class="bank-name">בנק אוצר החייל</div>
-              </div>
-              <span class="bank-arrow">▼</span>
-            </div>
-            <div class="bank-card-body">
-              <ol class="step-list">
-                <li>היכנס לאפליקציית <strong>אוצר החייל</strong> ← זיהוי ביומטרי / סיסמה</li>
-                <li>בתפריט הראשי: לחץ <strong>"הלוואות ומשכנתאות"</strong></li>
-                <li>בחר את תיק המשכנתא שלך</li>
-                <li>לחץ <strong>"מסמכים"</strong> ← <strong>"יתרה לסילוק"</strong></li>
-                <li>הזן תאריך ייחוס לסילוק</li>
-                <li>לחץ <strong>"הפקה ושליחה"</strong> ← תקבל PDF במייל</li>
-              </ol>
-              <div class="bank-note">⚠️ השלבים עשויים להשתנות בהתאם לעדכוני הבנק. שירות לקוחות: <strong>*2724</strong></div>
-              <div class="embed-grid" style="margin-top:1rem;">
-                <div class="embed-block">
-                  <div class="embed-label">🎬 סרטון הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">▶️</div>
-                    <div class="embed-placeholder-text">סרטון הסבר — אוצר החייל</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-                <div class="embed-block">
-                  <div class="embed-label">📊 מצגת הסבר</div>
-                  <div class="embed-container">
-                    <div class="embed-placeholder-icon">📑</div>
-                    <div class="embed-placeholder-text">מצגת שלבים</div>
-                    <span class="embed-soon-badge">בקרוב</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div><!-- end bank cards padding div -->
-      </div><!-- end body B -->
-    </div><!-- end section B -->
-
-    <!-- ═══════════════════════════════════════════════════════
-         SECTION C — טיפים להצלחה
-    ═══════════════════════════════════════════════════════ -->
-    <div class="main-section">
-      <div class="main-section-header" onclick="toggleSection(this)">
-        <div class="sec-title">
-          <span>💡</span>
-          <span>ג. טיפים להצלחה בתהליך</span>
-          <span class="sec-badge">6 טיפים</span>
-        </div>
-        <span class="sec-arrow">▼</span>
-      </div>
-      <div class="main-section-body">
-        <div class="tip-item">
-          <h3>✅ הכן את המסמכים מראש</h3>
-          <p>אל תמתין לבקשה מהבנק — אסוף את כל המסמכים מספר שבועות לפני הגשת הבקשה. מסמכים חסרים הם הסיבה הנפוצה ביותר לעיכובים באישור משכנתא.</p>
-        </div>
-        <div class="tip-item">
-          <h3>📁 שמור הכל בתיקייה דיגיטלית</h3>
-          <p>צור תיקייה בענן (Google Drive, Dropbox) עם כל המסמכים. כך תוכל לשלוח אותם בקלות לבנקים שונים ולייועץ המשכנתאות, ותמיד תהיה לך גישה מלאה.</p>
-        </div>
-        <div class="tip-item">
-          <h3>🔄 עדכן מסמכים תקופתית</h3>
-          <p>מסמכים רבים תקפים ל-30–90 יום בלבד. ודא שדפי הבנק, אישורי היתרה ותלושי השכר שברשותך לא פגו. הבנק לא יקבל מסמכים ישנים.</p>
-        </div>
-        <div class="tip-item">
-          <h3>📞 בקש עזרה כשצריך</h3>
-          <p>תהליך הגשת המסמכים יכול להיות מסובך. אל תהסס לפנות לשירות הלקוחות של הבנק שלך, או ליועץ המשכנתאות, כשאינך מוצא מסמך מסוים.</p>
-        </div>
-        <div class="tip-item">
-          <h3>🔍 בדוק את המסמכים לפני שליחה</h3>
-          <p>ודא שבכל מסמך מופיעים: שמך המלא, מספר תעודת זהות, מספר חשבון, וחתימה / חותמת הבנק. מסמך שנראה חלקי עלול לגרום לעיכוב.</p>
-        </div>
-        <div class="tip-item">
-          <h3>⏰ שים לב לתוקף יתרה לסילוק</h3>
-          <p>יתרה לסילוק תקפה בדרך כלל ל-30 יום בלבד מהתאריך שהגדרת. הפק אותה רק כשאתה קרוב למועד הסגירה בפועל, אחרת תצטרך לבקש מחדש.</p>
-        </div>
-
-        <div style="padding: 1.2rem 1.4rem;">
-          <div class="embed-grid">
-            <div class="embed-block">
-              <div class="embed-label">🎬 סרטון טיפים</div>
-              <div class="embed-container">
-                <div class="embed-placeholder-icon">▶️</div>
-                <div class="embed-placeholder-text">סרטון טיפים כלליים</div>
-                <span class="embed-soon-badge">בקרוב</span>
-              </div>
-            </div>
-            <div class="embed-block">
-              <div class="embed-label">📊 מצגת מדריך</div>
-              <div class="embed-container">
-                <div class="embed-placeholder-icon">📑</div>
-                <div class="embed-placeholder-text">מצגת מדריך מלא</div>
-                <span class="embed-soon-badge">בקרוב</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div><!-- end body C -->
-    </div><!-- end section C -->
-
-  </div><!-- end content-wrap -->
+    </div>
+  </section>
 
   <!-- CTA -->
   <div class="cta-section">
     <h3>יש לך שאלה? צור קשר עכשיו</h3>
-    <p>נשמח לעזור — ייעוץ ראשוני חינם וללא התחייבות</p>
+    <p>ייעוץ ראשוני חינם — ללא התחייבות</p>
     <a href="index.html#contact" class="btn-cta">לייעוץ אישי</a>
-  </div>
-
-  <!-- DISCLAIMER -->
-  <div class="disclaimer">
-    <p>⚠️ <strong>הבהרה:</strong> המידע באתר זה מיועד לצרכי מידע כללי בלבד ואינו מהווה ייעוץ משפטי או פיננסי. ההוראות עשויות להשתנות בהתאם לעדכוני הבנקים. לייעוץ מקצועי, פנה ליחיאל ממן.</p>
   </div>
 
   <footer>
@@ -848,29 +201,135 @@
   </footer>
 
   <script>
-    // ── ACCORDION: main sections ──────────────────────────────────────────────
-    function toggleSection(header) {
-      var body = header.nextElementSibling;
-      var isOpen = body.classList.toggle('open');
-      header.classList.toggle('open', isOpen);
+    var SUPABASE_URL = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
+
+    var TYPE_LABEL = { written: 'הדרכה כתובה', video: 'הדרכת וידאו', presentation: 'מצגת' };
+    var TYPE_ICON  = { written: '📝', video: '🎬', presentation: '📊' };
+
+    var allGuides = [];
+
+    function dateStr(iso) {
+      if (!iso) return '';
+      return new Date(iso).toLocaleDateString('he-IL', { year:'numeric', month:'long', day:'numeric' });
     }
 
-    // ── ACCORDION: guide items within section A ───────────────────────────────
-    function toggleGuideItem(header) {
-      var content = header.nextElementSibling;
-      var isOpen = content.classList.toggle('open');
-      header.classList.toggle('open', isOpen);
-      header.querySelector('.guide-item-arrow').textContent = isOpen ? '▲' : '▼';
+    function embedUrl(url) {
+      if (!url) return '';
+      var yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);
+      if (yt) return 'https://www.youtube.com/embed/' + yt[1];
+      var vm = url.match(/vimeo\.com\/(\d+)/);
+      if (vm) return 'https://player.vimeo.com/video/' + vm[1];
+      return url;
     }
 
-    // ── ACCORDION: bank cards ─────────────────────────────────────────────────
-    function toggleBank(header) {
-      var body = header.nextElementSibling;
-      var isOpen = body.classList.toggle('open');
-      header.classList.toggle('open', isOpen);
+    function bodyToHtml(text) {
+      if (!text) return '';
+      if (/<[a-z][\s\S]*?>/i.test(text)) return text;
+      return text.split(/\n\n+/).map(function(p) {
+        return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+      }).join('');
     }
 
-    // ── HAMBURGER ─────────────────────────────────────────────────────────────
+    function renderCard(g, idx) {
+      var type  = g.type || 'written';
+      var label = TYPE_LABEL[type] || type;
+      var icon  = TYPE_ICON[type]  || '📝';
+
+      var imgEl = g.image_url
+        ? '<img src="' + g.image_url + '" alt="' + (g.title||'') + '" style="width:100%;height:160px;object-fit:cover;display:block;border-radius:12px 12px 0 0;">'
+        : '<div class="article-img type-' + type + '">' + icon + '</div>';
+
+      return '<div class="article-card" data-type="' + type + '" onclick="openGuide(' + idx + ')">'
+        + imgEl
+        + '<div class="article-body">'
+        + '<div class="article-meta">'
+        + '<span class="category-badge badge-' + type + '">' + label + '</span>'
+        + '<span class="article-date">' + dateStr(g.created_at) + '</span>'
+        + '</div>'
+        + '<h2 class="article-title">' + (g.title || '') + '</h2>'
+        + (g.summary ? '<p class="article-summary">' + g.summary + '</p>' : '')
+        + '<span class="read-more-btn">פתח הדרכה ›</span>'
+        + '</div></div>';
+    }
+
+    function openGuide(idx) {
+      var g = allGuides[idx];
+      if (!g) return;
+      var type  = g.type || 'written';
+      var label = TYPE_LABEL[type] || type;
+
+      var imgEl = g.image_url
+        ? '<img class="reader-img" src="' + g.image_url + '" alt="' + (g.title||'') + '">'
+        : '';
+
+      var mainContent = '';
+      if (type === 'video') {
+        if (g.video_file_url) {
+          mainContent = '<div class="reader-video"><video src="' + g.video_file_url + '" controls playsinline preload="metadata" style="width:100%;border-radius:8px;max-height:400px;"></video></div>';
+        } else if (g.video_url) {
+          mainContent = '<div class="reader-video"><iframe src="' + embedUrl(g.video_url) + '" allowfullscreen style="width:100%;height:300px;border:none;border-radius:8px;"></iframe></div>';
+        }
+      } else if (type === 'presentation') {
+        if (g.presentation_url) {
+          mainContent = '<div class="reader-presentation"><iframe src="' + g.presentation_url + '" allowfullscreen></iframe></div>';
+        }
+      }
+
+      var html = imgEl
+        + '<div class="reader-meta">'
+        + '<span class="category-badge badge-' + type + '">' + label + '</span>'
+        + '<span class="article-date">' + dateStr(g.created_at) + '</span>'
+        + '</div>'
+        + '<h1 class="reader-title">' + (g.title || '') + '</h1>'
+        + (g.summary ? '<p class="reader-summary">' + g.summary + '</p>' : '')
+        + mainContent
+        + (g.body ? '<div class="reader-body">' + bodyToHtml(g.body) + '</div>' : '');
+
+      document.getElementById('readerTopTitle').textContent = g.title || '';
+      document.getElementById('readerContent').innerHTML = html;
+      var overlay = document.getElementById('readerOverlay');
+      overlay.classList.add('open');
+      overlay.scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeGuide() {
+      document.getElementById('readerOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeGuide();
+    });
+
+    function filterGuides(type, btn) {
+      document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.article-card').forEach(function(card) {
+        card.classList.toggle('hidden', type !== 'all' && card.dataset.type !== type);
+      });
+    }
+
+    fetch(SUPABASE_URL + '/rest/v1/guides?published=eq.true&order=created_at.desc', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      allGuides = rows || [];
+      var grid = document.getElementById('guidesGrid');
+      if (!allGuides.length) {
+        grid.innerHTML = '<div style="text-align:center;padding:60px;color:#888;grid-column:1/-1;">אין הדרכות להצגה עדיין</div>';
+        return;
+      }
+      grid.innerHTML = allGuides.map(renderCard).join('');
+    })
+    .catch(function() {
+      document.getElementById('guidesGrid').innerHTML =
+        '<div style="text-align:center;padding:60px;color:#888;grid-column:1/-1;">שגיאה בטעינת הדרכות</div>';
+    });
+
+    // Hamburger nav
     var navToggle = document.querySelector('.nav-toggle');
     var navMenu   = document.querySelector('nav ul');
     function closeNav() {
@@ -897,7 +356,6 @@
         });
       });
     });
-
     document.addEventListener('click', function(e) {
       if (!e.target.closest('.dropdown')) {
         document.querySelectorAll('.dropdown-menu.open').forEach(function(m) { m.classList.remove('open'); });

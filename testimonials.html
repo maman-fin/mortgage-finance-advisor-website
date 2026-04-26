@@ -375,7 +375,7 @@
 <!-- NAV -->
   <nav>
     <div class="logo"><a href="index.html">יחיאל ממן | יועץ משכנתאות</a></div>
-    <ul id="nav-menu">
+    <ul>
       <li><a href="index.html#services">שירותים</a></li>
       <li><a href="index.html#process">תהליך</a></li>
       <li><a href="testimonials.html">המלצות</a></li>
@@ -402,7 +402,7 @@
       <li><a href="admin.html">עמוד ניהול</a></li>
       <li><a href="index.html#contact">צור קשר</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="פתח תפריט">☰</button>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
   </nav>
 
 <!-- ── HERO ── -->
@@ -705,8 +705,8 @@
   loadWrittenReviews();
 
   /* ── נאב — המבורגר ודרופדאון ── */
-  var navToggle = document.getElementById('nav-toggle');
-  var navMenu   = document.getElementById('nav-menu');
+  var navToggle = document.querySelector('.nav-toggle');
+  var navMenu   = document.querySelector('nav ul');
 
   function closeNav() {
     navMenu.classList.remove('open');
