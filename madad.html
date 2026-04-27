@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="תמונות/logo_main.png">
+  <link rel="apple-touch-icon" href="תמונות/logo_main.png">
+  <meta name="theme-color" content="#1a3a5c">
+  <title>מצפן השוק | יחיאל ממן</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Arial,sans-serif; color:#222; background:#f7f8fa; direction:rtl; }
+
+    /* ── NAV ── */
+    nav { background:#1a3a5c; padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:64px; position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+    nav .logo { color:#fff; font-size:1.3rem; font-weight:700; }
+    nav .logo a { color:inherit; text-decoration:none; }
+    nav ul { list-style:none; display:flex; gap:2rem; }
+    nav ul a { color:#cde; text-decoration:none; font-size:0.95rem; transition:color .2s; }
+    nav ul a:hover { color:#fff; }
+    .nav-toggle { display:none; background:none; border:none; color:#fff; font-size:1.6rem; cursor:pointer; padding:.4rem .5rem; line-height:1; -webkit-tap-highlight-color:transparent; }
+    .nav-toggle:focus,.nav-toggle:active { outline:none; background:none; color:#fff; }
+    .dropdown { position:relative; }
+    .dropdown > a::after { content:' ▾'; font-size:.75em; opacity:.8; }
+    .dropdown-menu { display:none; position:absolute; top:100%; right:0; background:#142d48; min-width:200px; box-shadow:0 6px 16px rgba(0,0,0,.35); border-radius:0 0 8px 8px; list-style:none; padding:.3rem 0; z-index:200; }
+    .dropdown-menu li a { display:block; padding:.65rem 1.1rem; color:#cde; text-decoration:none; font-size:.92rem; border-bottom:1px solid rgba(255,255,255,.06); white-space:nowrap; transition:color .2s,background .2s; }
+    .dropdown-menu li:last-child a { border-bottom:none; }
+    .dropdown-menu li a:hover { color:#fff; background:rgba(255,255,255,.1); }
+
+    /* ── HERO ── */
+    .market-hero {
+      background: linear-gradient(150deg, #07142a 0%, #0f2540 40%, #1a3a5c 100%);
+      padding: 3.5rem 1rem 4.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .market-hero::before {
+      content:'';
+      position:absolute; inset:0;
+      background:
+        radial-gradient(ellipse at 15% 60%, rgba(42,100,150,.25) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 20%, rgba(232,160,32,.08) 0%, transparent 45%);
+      pointer-events:none;
+    }
+    .hero-inner { position:relative; z-index:1; }
+    .live-badge {
+      display:inline-flex; align-items:center; gap:.5rem;
+      background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.35);
+      color:#4ade80; font-size:.78rem; font-weight:600;
+      padding:.3rem .85rem; border-radius:999px; margin-bottom:1.4rem;
+      letter-spacing:.05em;
+    }
+    .pulse-dot {
+      width:8px; height:8px; border-radius:50%; background:#22c55e;
+      animation:pulse-anim 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse-anim {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:.4; transform:scale(.75); }
+    }
+    .market-hero h1 { font-size:2.4rem; color:#fff; margin-bottom:.6rem; font-weight:800; letter-spacing:-.02em; }
+    .market-hero .hero-sub { font-size:1.05rem; color:rgba(200,220,240,.7); margin-bottom:2.5rem; }
+
+    /* indicator cards */
+    .indicators { display:flex; justify-content:center; gap:1.2rem; flex-wrap:wrap; }
+    .ind-card {
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+      backdrop-filter:blur(10px);
+      border-radius:16px; padding:1.4rem 2rem; min-width:180px; text-align:center;
+      transition:transform .25s, box-shadow .25s;
+    }
+    .ind-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,.4); }
+    .ind-card.gold { border-color:rgba(232,160,32,.45); background:rgba(232,160,32,.08); }
+    .ind-label { font-size:.78rem; color:rgba(200,220,240,.65); margin-bottom:.5rem; text-transform:uppercase; letter-spacing:.08em; }
+    .ind-val { font-size:2.4rem; font-weight:800; color:#fff; line-height:1; margin-bottom:.5rem; font-variant-numeric:tabular-nums; }
+    .ind-card.gold .ind-val { color:#fbbf24; }
+    .ind-sub { font-size:.78rem; color:rgba(200,220,240,.55); line-height:1.4; }
+    .ind-change { font-size:.85rem; font-weight:600; }
+    .ind-change.up { color:#f87171; }
+    .ind-change.down { color:#4ade80; }
+    .ind-change.same { color:#94a3b8; }
+
+    .data-ts { margin-top:2rem; font-size:.75rem; color:rgba(200,220,240,.35); }
+
+    /* ── SECTIONS ── */
+    .section { padding:4rem 1rem; }
+    .section:nth-child(even) { background:#fff; }
+    .container { max-width:960px; margin:0 auto; }
+    .sec-header { margin-bottom:2.5rem; }
+    .sec-header h2 { font-size:1.7rem; color:#1a3a5c; font-weight:800; margin-bottom:.4rem; }
+    .sec-header p { color:#64748b; font-size:.95rem; }
+    .sec-header p span { font-weight:600; color:#1a3a5c; }
+
+    /* ── CHART ── */
+    .chart-wrap {
+      background:#fff; border-radius:16px;
+      box-shadow:0 2px 16px rgba(0,0,0,.07);
+      padding:1.5rem 1rem 1rem;
+      overflow:hidden;
+    }
+    .chart-loading { text-align:center; padding:3rem; color:#94a3b8; font-size:.95rem; }
+
+    /* annotation tooltip for chart */
+    .chart-annotation { font-size:11px; fill:#64748b; }
+
+    /* ── TRACKS ── */
+    .tracks-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2rem; }
+    .track-card {
+      background:#fff; border-radius:16px; padding:1.6rem 1.4rem;
+      box-shadow:0 2px 12px rgba(0,0,0,.06); border-top:4px solid #cbd5e1;
+      transition:transform .2s, box-shadow .2s;
+    }
+    .track-card:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(0,0,0,.1); }
+    .track-card.green { border-color:#22c55e; }
+    .track-card.yellow { border-color:#f59e0b; }
+    .track-card.orange { border-color:#f97316; }
+    .track-card.red { border-color:#ef4444; }
+    .track-name { font-size:.78rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.07em; margin-bottom:.8rem; }
+    .track-abbr { font-size:1.2rem; font-weight:800; color:#1a3a5c; margin-bottom:.3rem; }
+    .track-rate { font-size:2rem; font-weight:800; color:#1a3a5c; line-height:1; margin-bottom:.5rem; font-variant-numeric:tabular-nums; }
+    .track-card.green .track-rate { color:#16a34a; }
+    .track-card.yellow .track-rate { color:#b45309; }
+    .track-card.orange .track-rate { color:#ea580c; }
+    .track-card.red .track-rate { color:#dc2626; }
+    .track-desc { font-size:.8rem; color:#94a3b8; line-height:1.45; }
+    .track-badge { display:inline-block; font-size:.7rem; font-weight:700; padding:.2rem .6rem; border-radius:999px; margin-top:.6rem; }
+    .track-badge.green { background:#dcfce7; color:#15803d; }
+    .track-badge.yellow { background:#fef9c3; color:#854d0e; }
+    .track-badge.orange { background:#ffedd5; color:#9a3412; }
+    .track-badge.red { background:#fee2e2; color:#991b1b; }
+    .tracks-note { font-size:.78rem; color:#94a3b8; margin-top:1.2rem; text-align:center; }
+
+    /* ── CALCULATOR ── */
+    .calc-card {
+      background:#fff; border-radius:20px;
+      box-shadow:0 4px 24px rgba(0,0,0,.08);
+      padding:2rem 2.5rem;
+      max-width:620px; margin:0 auto;
+    }
+    .calc-row { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin-bottom:1.5rem; }
+    .calc-field label { display:block; font-size:.8rem; font-weight:600; color:#475569; margin-bottom:.4rem; }
+    .calc-field input {
+      width:100%; padding:.7rem 1rem; font-size:1rem; border:2px solid #e2e8f0;
+      border-radius:10px; outline:none; transition:border-color .2s; direction:ltr; text-align:left;
+      font-family:inherit;
+    }
+    .calc-field input:focus { border-color:#1a3a5c; }
+    .calc-btn {
+      width:100%; background:#1a3a5c; color:#fff; border:none; padding:.9rem;
+      font-size:1rem; font-weight:700; border-radius:12px; cursor:pointer;
+      transition:background .2s, transform .1s;
+      font-family:inherit;
+    }
+    .calc-btn:hover { background:#253f6a; }
+    .calc-btn:active { transform:scale(.98); }
+    .calc-result { margin-top:1.5rem; display:none; }
+    .calc-result-inner {
+      background:linear-gradient(135deg,#f0f7ff,#e8f0fe);
+      border:1px solid #bfdbfe; border-radius:14px; padding:1.4rem 1.6rem;
+    }
+    .calc-result-row { display:flex; justify-content:space-between; align-items:center; padding:.5rem 0; border-bottom:1px solid rgba(0,0,0,.06); }
+    .calc-result-row:last-child { border:none; }
+    .calc-result-label { font-size:.88rem; color:#475569; }
+    .calc-result-val { font-size:1rem; font-weight:700; color:#1a3a5c; }
+    .calc-result-val.highlight { color:#dc2626; font-size:1.25rem; }
+    .calc-tip {
+      margin-top:1rem; background:#fffbeb; border:1px solid #fde68a;
+      border-radius:10px; padding:.85rem 1rem;
+      font-size:.83rem; color:#78350f; line-height:1.55;
+    }
+
+    /* ── CPI STRIP ── */
+    .cpi-strip {
+      background:#fff; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,.06);
+      padding:1.6rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:.8rem;
+    }
+    .cpi-cell { text-align:center; padding:.6rem; }
+    .cpi-cell-period { font-size:.75rem; color:#94a3b8; margin-bottom:.3rem; }
+    .cpi-cell-val { font-size:1.25rem; font-weight:700; }
+    .cpi-cell-val.pos { color:#dc2626; }
+    .cpi-cell-val.neg { color:#16a34a; }
+    .cpi-cell-val.zero { color:#94a3b8; }
+
+    /* ── FOOTER ── */
+    .data-footer { background:#0f2540; padding:1.5rem 1rem; text-align:center; }
+    .data-footer p { font-size:.8rem; color:rgba(200,220,240,.5); }
+    .data-footer a { color:rgba(200,220,240,.7); text-decoration:none; }
+    .data-footer a:hover { color:#fff; }
+
+    /* ── ERROR STATE ── */
+    .error-banner {
+      background:#fef2f2; border:1px solid #fca5a5; border-radius:10px;
+      padding:.85rem 1rem; font-size:.83rem; color:#991b1b; margin-bottom:1.2rem;
+    }
+
+    /* ── MOBILE ── */
+    @media (min-width:769px) { .dropdown:hover > .dropdown-menu { display:block; } }
+    @media (max-width:768px) {
+      .nav-toggle { display:block; }
+      nav ul { display:none; flex-direction:column; gap:0; position:absolute; top:64px; right:0; left:0; background:#1a3a5c; padding:.5rem 0; box-shadow:0 6px 16px rgba(0,0,0,.35); }
+      nav ul.open { display:flex; }
+      nav ul li { border-bottom:1px solid rgba(255,255,255,.06); }
+      nav ul li a { display:block; padding:.85rem 1.5rem; }
+      .dropdown > a::after { content:' ▾'; }
+      .dropdown-menu { position:static; box-shadow:none; border-radius:0; background:rgba(0,0,0,.25); min-width:unset; display:none; }
+      .dropdown-menu.open { display:block; }
+      .dropdown-menu li a { padding-right:2.5rem; }
+
+      .market-hero h1 { font-size:1.85rem; }
+      .indicators { gap:.8rem; }
+      .ind-card { min-width:140px; padding:1.1rem 1.2rem; }
+      .ind-val { font-size:2rem; }
+      .calc-row { grid-template-columns:1fr; }
+      .calc-card { padding:1.4rem 1.2rem; }
+      .section { padding:3rem 1rem; }
+    }
+    @media (max-width:480px) {
+      .indicators { flex-direction:column; align-items:center; }
+      .ind-card { width:100%; max-width:300px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo"><a href="index.html" style="display:flex;align-items:center;gap:.7rem;text-decoration:none;"><img src="תמונות/logo.png" alt="יחיאל ממן" style="height:40px;width:auto;display:block;"><span style="color:#fff;font-size:1rem;font-weight:700;white-space:nowrap;">יחיאל ממן <span style="opacity:.85;font-weight:400;">| אסטרטגיה פיננסית</span></span></a></div>
+    <ul id="nav-menu">
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="testimonials.html">המלצות</a></li>
+      <li class="dropdown">
+        <a href="#">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="loan-calculator.html">מחשבון הלוואה</a></li>
+          <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+          <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="madad.html">מצפן השוק — ריבית ומדד</a></li>
+          <li><a href="documents-guide.html">הדרכות</a></li>
+          <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
+          <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+          <li><a href="events-list.html">אירועים</a></li>
+        </ul>
+      </li>
+      <li><a href="admin.html">עמוד ניהול</a></li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="market-hero">
+    <div class="hero-inner">
+      <div class="live-badge"><span class="pulse-dot"></span> נתונים חיים מבנק ישראל</div>
+      <h1>מצפן השוק</h1>
+      <p class="hero-sub">ריבית בנק ישראל, מדד המחירים ומסלולי משכנתא — מתעדכן ישירות מ-API רשמי</p>
+      <div class="indicators" id="indicators">
+        <div class="ind-card">
+          <div class="ind-label">ריבית בנק ישראל</div>
+          <div class="ind-val" id="boi-val">—</div>
+          <div class="ind-change same" id="boi-change">מעדכן...</div>
+        </div>
+        <div class="ind-card gold">
+          <div class="ind-label">ריבית פריים</div>
+          <div class="ind-val" id="prime-val">—</div>
+          <div class="ind-sub">ריבית בנק ישראל + 1.5%</div>
+        </div>
+        <div class="ind-card">
+          <div class="ind-label">שינוי מדד — חודש אחרון</div>
+          <div class="ind-val" id="cpi-val">—</div>
+          <div class="ind-sub" id="cpi-sub">מעדכן...</div>
+        </div>
+      </div>
+      <div class="data-ts" id="data-ts"></div>
+    </div>
+  </section>
+
+  <!-- ── RATE CHART ── -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-header">
+        <h2>מסע הריבית — מאפס לשיא ובחזרה</h2>
+        <p>ריבית בנק ישראל | ינואר 2022 – היום</p>
+      </div>
+      <div id="chart-error"></div>
+      <div class="chart-wrap" id="rate-chart">
+        <div class="chart-loading">טוען נתוני ריבית...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CPI STRIP ── -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-header">
+        <h2>מדד המחירים לצרכן — 12 חודשים אחרונים</h2>
+        <p>שינוי חודשי באחוזים | <span id="cpi-strip-period">...</span></p>
+      </div>
+      <div id="cpi-strip-error"></div>
+      <div class="cpi-strip" id="cpi-strip">
+        <div class="chart-loading" style="grid-column:1/-1;padding:2rem;">טוען נתוני מדד...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MORTGAGE TRACKS ── -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-header">
+        <h2>ריביות ממוצעות לפי מסלול</h2>
+        <p>ממוצע מהבנקים בישראל | נתוני <span id="tracks-period">...</span></p>
+      </div>
+      <div id="tracks-error"></div>
+      <div class="tracks-grid" id="tracks-grid">
+        <div class="chart-loading" style="grid-column:1/-1;padding:2rem;">טוען נתוני מסלולים...</div>
+      </div>
+      <p class="tracks-note">* ריביות ממוצע מערכתי. הריבית בפועל תלויה בפרופיל הלווה, גובה ההלוואה ותנאי הבנק.</p>
+    </div>
+  </section>
+
+  <!-- ── CPI CALCULATOR ── -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-header">
+        <h2>מחשבון השפעת המדד על הקרן</h2>
+        <p>כמה יתרת הקרן הצמודה שלך תגדל אם המדד עולה?</p>
+      </div>
+      <div class="calc-card">
+        <div class="calc-row">
+          <div class="calc-field">
+            <label>יתרת קרן צמודה מדד (₪)</label>
+            <input type="number" id="calc-balance" value="500000" min="0" step="10000">
+          </div>
+          <div class="calc-field">
+            <label>שינוי מדד חודשי (%)</label>
+            <input type="number" id="calc-cpi" value="0.4" step="0.1" min="-5" max="10">
+          </div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field">
+            <label>אחוז הלוואה צמודה מסך המשכנתא (%)</label>
+            <input type="number" id="calc-pct" value="33" min="0" max="100">
+          </div>
+          <div class="calc-field">
+            <label>חודשים קדימה</label>
+            <input type="number" id="calc-months" value="12" min="1" max="360">
+          </div>
+        </div>
+        <button class="calc-btn" onclick="runCalc()">חשב השפעה</button>
+        <div class="calc-result" id="calc-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="data-footer">
+    <div class="container">
+      <p>כל הנתונים מגיעים ישירות מ<a href="https://boi.org.il" target="_blank" rel="noopener">בנק ישראל</a> דרך ה-API הרשמי שלהם ומתעדכנים אוטומטית בכל טעינה של הדף.</p>
+    </div>
+  </footer>
+
+  <!-- WhatsApp floating button -->
+  <a href="https://wa.me/972585006050" target="_blank" rel="noopener" class="whatsapp-float" aria-label="צור קשר בוואטסאפ">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="32" height="32" fill="#fff">
+      <path d="M24 4C12.95 4 4 12.95 4 24c0 3.6.97 7 2.64 9.95L4 44l10.35-2.59A19.88 19.88 0 0 0 24 44c11.05 0 20-8.95 20-20S35.05 4 24 4zm0 36a16 16 0 0 1-8.16-2.24l-.58-.35-6.14 1.54 1.57-5.97-.38-.61A15.93 15.93 0 0 1 8 24c0-8.84 7.16-16 16-16s16 7.16 16 16-7.16 16-16 16zm8.77-11.76c-.48-.24-2.84-1.4-3.28-1.56-.44-.16-.76-.24-1.08.24-.32.48-1.24 1.56-1.52 1.88-.28.32-.56.36-1.04.12-.48-.24-2.02-.74-3.85-2.36-1.42-1.26-2.38-2.82-2.66-3.3-.28-.48-.03-.74.21-.98.22-.22.48-.56.72-.84.24-.28.32-.48.48-.8.16-.32.08-.6-.04-.84-.12-.24-1.08-2.6-1.48-3.56-.38-.92-.78-.8-1.08-.8-.28 0-.6-.04-.92-.04s-.84.12-1.28.6c-.44.48-1.68 1.64-1.68 4s1.72 4.64 1.96 4.96c.24.32 3.38 5.16 8.2 7.24 1.14.48 2.04.78 2.74 1 1.15.36 2.2.31 3.02.19.92-.14 2.84-1.16 3.24-2.28.4-1.12.4-2.08.28-2.28-.12-.2-.44-.32-.92-.56z"/>
+    </svg>
+  </a>
+  <style>
+    .whatsapp-float { position:fixed; bottom:28px; left:28px; width:58px; height:58px; background:#25d366; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,.25); z-index:9999; transition:transform .2s,box-shadow .2s; }
+    .whatsapp-float:hover { transform:scale(1.1); box-shadow:0 6px 22px rgba(0,0,0,.32); }
+  </style>
+
+  <script>
+    /* ── NAV ── */
+    var navToggle = document.querySelector('.nav-toggle');
+    var navMenu   = document.getElementById('nav-menu');
+    navToggle.addEventListener('click', function() {
+      navMenu.classList.toggle('open');
+      document.querySelectorAll('.dropdown-menu').forEach(function(m) { m.classList.remove('open'); });
+    });
+    document.querySelectorAll('.dropdown > a').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          var sub = this.parentElement.querySelector('.dropdown-menu');
+          document.querySelectorAll('.dropdown-menu.open').forEach(function(m) {
+            if (m !== sub) m.classList.remove('open');
+          });
+          sub.classList.toggle('open');
+        }
+      });
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown-menu.open').forEach(function(m) { m.classList.remove('open'); });
+      }
+    });
+    document.querySelectorAll('nav ul li:not(.dropdown) > a, .dropdown-menu a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        navMenu.classList.remove('open');
+      });
+    });
+
+    /* ── CONFIG ── */
+    var SUPABASE_URL = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
+    var FN = SUPABASE_URL + '/functions/v1/boi-data';
+
+    var MONTHS_HE = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+
+    /* ── נתונים סטטיים — מוצגים מיד בטעינה ── */
+    /* שינויי ריבית בנק ישראל ידועים מ-2022 */
+    var STATIC_BOI = [
+      {period:'2022-01', value:0.10},
+      {period:'2022-04', value:0.35},
+      {period:'2022-05', value:0.75},
+      {period:'2022-07', value:1.25},
+      {period:'2022-08', value:2.00},
+      {period:'2022-10', value:2.75},
+      {period:'2022-11', value:3.25},
+      {period:'2022-12', value:3.75},
+      {period:'2023-02', value:4.00},
+      {period:'2023-03', value:4.25},
+      {period:'2023-04', value:4.50},
+      {period:'2023-05', value:4.75},
+      {period:'2024-01', value:4.75},
+      {period:'2025-01', value:4.50},
+      {period:'2025-07', value:4.50},
+      {period:'2025-11', value:4.25},
+      {period:'2026-01', value:4.00}
+    ];
+
+    function fmtPeriod(p) {
+      var parts = p.split('-');
+      var y = parts[0], m = parseInt(parts[1], 10) - 1;
+      return MONTHS_HE[m] + ' ' + y;
+    }
+
+    /* ── Edge Function fetch ── */
+    async function fetchFn(params) {
+      var qs = Object.keys(params).map(function(k) {
+        return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+      }).join('&');
+      var res = await fetch(FN + '?' + qs, {
+        signal: AbortSignal.timeout(20000)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var json = await res.json();
+      if (!json.ok) throw new Error(json.error || 'edge function error');
+      return json.data;
+    }
+
+    /* ── CHART BUILDER ── */
+    function buildRateChart(obs) {
+      if (!obs || obs.length < 2) return '<p style="text-align:center;color:#94a3b8;padding:2rem">אין מספיק נתונים</p>';
+
+      // Deduplicate daily to one-per-month (first observation of each month)
+      var monthly = [];
+      var seenMonths = {};
+      obs.forEach(function(o) {
+        var month = o.period.slice(0, 7);
+        if (!seenMonths[month]) {
+          seenMonths[month] = true;
+          monthly.push({ period: month, value: o.value });
+        }
+      });
+      if (monthly.length < 2) return '';
+
+      var W = 820, H = 260;
+      var pad = { top: 16, right: 30, bottom: 46, left: 48 };
+      var pw = W - pad.left - pad.right, ph = H - pad.top - pad.bottom;
+
+      var vals = monthly.map(function(d) { return d.value; });
+      var minV = 0, maxV = Math.max.apply(null, vals) + 0.8;
+
+      // x scale: uniform spacing by index
+      var n = monthly.length;
+      var xPos = function(i) { return pad.left + (i / (n - 1)) * pw; };
+      var yPos = function(v) { return pad.top + ph - ((v - minV) / (maxV - minV)) * ph; };
+
+      // Step path
+      var stepD = '', fillD = '';
+      monthly.forEach(function(d, i) {
+        var x = xPos(i), y = yPos(d.value);
+        if (i === 0) {
+          stepD = 'M ' + x + ' ' + y;
+          fillD = 'M ' + x + ' ' + (pad.top + ph) + ' L ' + x + ' ' + y;
+        } else {
+          stepD += ' H ' + x + ' V ' + y;
+          fillD += ' H ' + x + ' V ' + y;
+        }
+      });
+      fillD += ' H ' + (pad.left + pw) + ' V ' + (pad.top + ph) + ' Z';
+      stepD += ' H ' + (pad.left + pw);
+
+      // Y grid & labels
+      var yGridLines = '';
+      for (var v = 0; v <= Math.ceil(maxV); v++) {
+        var gy = yPos(v);
+        yGridLines += '<line x1="' + pad.left + '" y1="' + gy + '" x2="' + (pad.left + pw) + '" y2="' + gy + '" stroke="#e8ecf0" stroke-width="1"/>';
+        yGridLines += '<text x="' + (pad.left - 6) + '" y="' + (gy + 4) + '" text-anchor="end" font-size="11" fill="#9aa5b4">' + v + '%</text>';
+      }
+
+      // X labels: show year start labels
+      var xLabels = '';
+      var seenYears = {};
+      monthly.forEach(function(d, i) {
+        var year = d.period.slice(0, 4);
+        if (!seenYears[year]) {
+          seenYears[year] = true;
+          var x = xPos(i);
+          xLabels += '<line x1="' + x + '" y1="' + pad.top + '" x2="' + x + '" y2="' + (pad.top + ph) + '" stroke="#dde3ea" stroke-width="1" stroke-dasharray="4,4"/>';
+          xLabels += '<text x="' + x + '" y="' + (H - pad.bottom + 18) + '" text-anchor="middle" font-size="12" fill="#7a8899">' + year + '</text>';
+        }
+      });
+
+      // Change dots (only at rate changes)
+      var dots = '';
+      monthly.forEach(function(d, i) {
+        if (i === 0 || d.value !== monthly[i - 1].value) {
+          var x = xPos(i), y = yPos(d.value);
+          dots += '<circle cx="' + x + '" cy="' + y + '" r="5" fill="#e8a020" stroke="#fff" stroke-width="2"/>';
+          dots += '<title>' + d.period + ': ' + d.value + '%</title>';
+        }
+      });
+
+      // Current rate annotation
+      var lastVal = monthly[monthly.length - 1].value;
+      var lastX = xPos(monthly.length - 1);
+      var lastY = yPos(lastVal);
+
+      return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block" aria-label="גרף ריבית בנק ישראל">'
+        + '<defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">'
+        + '<stop offset="0%" stop-color="#1a3a5c" stop-opacity="0.18"/>'
+        + '<stop offset="100%" stop-color="#1a3a5c" stop-opacity="0.01"/>'
+        + '</linearGradient></defs>'
+        + yGridLines + xLabels
+        + '<path d="' + fillD + '" fill="url(#rg)"/>'
+        + '<path d="' + stepD + '" fill="none" stroke="#1a3a5c" stroke-width="2.5" stroke-linejoin="round"/>'
+        + dots
+        + '<circle cx="' + lastX + '" cy="' + lastY + '" r="6" fill="#1a3a5c" stroke="#fff" stroke-width="2.5"/>'
+        + '<rect x="' + (lastX - 38) + '" y="' + (lastY - 26) + '" width="62" height="20" rx="4" fill="#1a3a5c"/>'
+        + '<text x="' + (lastX - 7) + '" y="' + (lastY - 12) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">' + lastVal + '%</text>'
+        + '</svg>';
+    }
+
+    /* ── CPI STRIP BUILDER ── */
+    function buildCPIStrip(obs) {
+      if (!obs || obs.length < 2) return '';
+      var last12 = obs.slice(-13);
+      var cells = '';
+      for (var i = 1; i < last12.length; i++) {
+        var prev = last12[i - 1].value;
+        var curr = last12[i].value;
+        var chg = ((curr - prev) / prev) * 100;
+        var cls = chg > 0 ? 'pos' : (chg < 0 ? 'neg' : 'zero');
+        var sign = chg > 0 ? '+' : '';
+        cells += '<div class="cpi-cell">'
+          + '<div class="cpi-cell-period">' + fmtPeriod(last12[i].period) + '</div>'
+          + '<div class="cpi-cell-val ' + cls + '">' + sign + chg.toFixed(2) + '%</div>'
+          + '</div>';
+      }
+      var latest = last12[last12.length - 1];
+      var earliest = last12[0];
+      var ytd = ((latest.value - earliest.value) / earliest.value) * 100;
+      document.getElementById('cpi-strip-period').textContent =
+        fmtPeriod(last12[1].period) + ' – ' + fmtPeriod(latest.period);
+      return cells;
+    }
+
+    /* ── TRACKS CARDS ── */
+    var TRACK_META = {
+      'BNK_99034_LR_BIR_MRTG_1804': {
+        abbr: 'קל"צ',
+        name: 'קבועה לא צמודה',
+        desc: 'ריבית קבועה לכל תקופת ההלוואה, אינה צמודה למדד. ודאות מלאה בהחזר החודשי.',
+        badge: 'יציבות מירבית'
+      },
+      'BNK_99034_LR_BIR_MRTG_1902': {
+        abbr: 'מצ"מ',
+        name: 'משתנה צמודה מדד',
+        desc: 'ריבית משתנה (בדר"כ כל 5 שנים) וצמודה למדד המחירים לצרכן.',
+        badge: 'חשיפה למדד'
+      },
+      'BNK_99034_LR_BIR_MRTG_1908': {
+        abbr: 'קצ"מ',
+        name: 'קבועה צמודה מדד',
+        desc: 'ריבית קבועה לאורך חיי ההלוואה, אך הקרן צמודה למדד המחירים לצרכן.',
+        badge: 'ריבית נמוכה, קרן צמודה'
+      }
+    };
+
+    function trackColorClass(rate) {
+      if (rate < 4) return 'green';
+      if (rate < 5.5) return 'yellow';
+      if (rate < 7) return 'orange';
+      return 'red';
+    }
+    function trackBadgeText(cls) {
+      return { green:'ריבית נמוכה', yellow:'ריבית בינונית', orange:'ריבית גבוהה', red:'ריבית גבוהה מאוד' }[cls];
+    }
+
+    function renderTracks(tracksData, boiRate) {
+      var grid = document.getElementById('tracks-grid');
+      var latestPeriod = null;
+      var cards = '';
+
+      Object.keys(TRACK_META).forEach(function(sid) {
+        var meta = TRACK_META[sid];
+        var td = tracksData[sid];
+        var rate = null;
+        if (td && td.obs.length) {
+          var last = td.obs[td.obs.length - 1];
+          rate = last.value;
+          if (!latestPeriod) latestPeriod = last.period;
+        }
+        if (rate === null || rate > 15) return; // skip invalid (like the 21% series)
+
+        var cls = trackColorClass(rate);
+        cards += '<div class="track-card ' + cls + '">'
+          + '<div class="track-name">' + meta.name + '</div>'
+          + '<div class="track-abbr">' + meta.abbr + '</div>'
+          + '<div class="track-rate">' + rate.toFixed(2) + '%</div>'
+          + '<div class="track-desc">' + meta.desc + '</div>'
+          + '<span class="track-badge ' + cls + '">' + trackBadgeText(cls) + '</span>'
+          + '</div>';
+      });
+
+      // Add Prime card (computed)
+      if (boiRate !== null) {
+        var primeRate = boiRate + 1.5;
+        var cls = trackColorClass(primeRate);
+        cards += '<div class="track-card ' + cls + '">'
+          + '<div class="track-name">פריים (משתנה)</div>'
+          + '<div class="track-abbr">מל"צ</div>'
+          + '<div class="track-rate">' + primeRate.toFixed(2) + '%</div>'
+          + '<div class="track-desc">משכנתא על בסיס ריבית פריים (ריבית בנק ישראל + 1.5%). הריבית בפועל: פריים ± מרווח בנקאי.</div>'
+          + '<span class="track-badge ' + cls + '">' + trackBadgeText(cls) + '</span>'
+          + '</div>';
+      }
+
+      grid.innerHTML = cards || '<p style="color:#94a3b8">לא נמצאו נתונים</p>';
+      if (latestPeriod) document.getElementById('tracks-period').textContent = fmtPeriod(latestPeriod);
+    }
+
+    /* ── CALCULATOR ── */
+    function runCalc() {
+      var balance = parseFloat(document.getElementById('calc-balance').value) || 0;
+      var cpiPct  = parseFloat(document.getElementById('calc-cpi').value) || 0;
+      var indexedPct = parseFloat(document.getElementById('calc-pct').value) || 33;
+      var months  = parseInt(document.getElementById('calc-months').value, 10) || 12;
+
+      var indexedBalance = balance * (indexedPct / 100);
+      var factor = Math.pow(1 + cpiPct / 100, months);
+      var newIndexed = indexedBalance * factor;
+      var increase = newIndexed - indexedBalance;
+      var newTotal = balance - indexedBalance + newIndexed;
+
+      var result = document.getElementById('calc-result');
+      result.style.display = 'block';
+      result.innerHTML = '<div class="calc-result-inner">'
+        + '<div class="calc-result-row"><span class="calc-result-label">קרן צמודה נוכחית</span><span class="calc-result-val">₪' + indexedBalance.toLocaleString('he-IL', {maximumFractionDigits:0}) + '</span></div>'
+        + '<div class="calc-result-row"><span class="calc-result-label">קרן צמודה לאחר ' + months + ' חודשים</span><span class="calc-result-val">₪' + newIndexed.toLocaleString('he-IL', {maximumFractionDigits:0}) + '</span></div>'
+        + '<div class="calc-result-row"><span class="calc-result-label">גידול בקרן הצמודה</span><span class="calc-result-val highlight">+₪' + increase.toLocaleString('he-IL', {maximumFractionDigits:0}) + '</span></div>'
+        + '<div class="calc-result-row"><span class="calc-result-label">יתרה כוללת חדשה</span><span class="calc-result-val">₪' + newTotal.toLocaleString('he-IL', {maximumFractionDigits:0}) + '</span></div>'
+        + '</div>'
+        + '<div class="calc-tip">💡 אם ' + indexedPct + '% מהמשכנתא שלך (₪' + indexedBalance.toLocaleString('he-IL', {maximumFractionDigits:0}) + ') צמודה מדד, ומדד של ' + cpiPct + '% בחודש נשמר למשך ' + months + ' חודשים — הקרן תגדל בכ-₪' + Math.round(increase).toLocaleString('he-IL') + '. פנה לייעוץ כדי לבחון מחדש את מבנה המסלולים.</div>';
+    }
+
+    /* ── פונקציות עזר לעדכון תצוגה ── */
+    function applyBoiObs(rateObs, isLive) {
+      if (!rateObs || !rateObs.length) return rateObs;
+      var last = rateObs[rateObs.length - 1];
+      document.getElementById('boi-val').textContent = last.value.toFixed(2) + '%';
+      document.getElementById('prime-val').textContent = (last.value + 1.5).toFixed(2) + '%';
+
+      var prev = null;
+      for (var i = rateObs.length - 2; i >= 0; i--) {
+        if (rateObs[i].value !== last.value) { prev = rateObs[i].value; break; }
+      }
+      var chgEl = document.getElementById('boi-change');
+      if (prev !== null) {
+        var diff = last.value - prev;
+        if (diff > 0) { chgEl.className = 'ind-change up';   chgEl.textContent = '▲ עלתה מ-' + prev.toFixed(2) + '%'; }
+        else          { chgEl.className = 'ind-change down'; chgEl.textContent = '▼ ירדה מ-' + prev.toFixed(2) + '%'; }
+      } else {
+        chgEl.className = 'ind-change same'; chgEl.textContent = 'ללא שינוי אחרון';
+      }
+
+      document.getElementById('rate-chart').innerHTML = buildRateChart(rateObs);
+      document.getElementById('data-ts').textContent = isLive
+        ? 'עדכון חי: ' + new Date().toLocaleString('he-IL')
+        : 'נתונים: בנק ישראל (לפי נתוני פרסום אחרון)';
+      return rateObs;
+    }
+
+    /* ── MAIN LOAD ── */
+    async function init() {
+      // 1. הצג נתונים סטטיים מיד — ללא מצב טעינה
+      var boiObs = applyBoiObs(STATIC_BOI, false);
+      renderTracks({}, STATIC_BOI[STATIC_BOI.length - 1].value);
+
+      // 2. נסה לטעון נתונים חיים מה-Edge Function ברקע
+      var liveBoiRate = STATIC_BOI[STATIC_BOI.length - 1].value;
+
+      // ריבית בנק ישראל
+      try {
+        var rateObs = await fetchFn({ series: 'BR', from: '2022-01-01', key: 'MNT_RIB_BOI_D' });
+        if (rateObs && rateObs.length) {
+          boiObs = applyBoiObs(rateObs, true);
+          liveBoiRate = rateObs[rateObs.length - 1].value;
+        }
+      } catch (e) { /* נשאר עם הנתונים הסטטיים */ }
+
+      // מדד המחירים לצרכן
+      try {
+        var cpiObs = await fetchFn({ series: 'PRI', key: 'BI_CPI_NO_ADMN_M', from: '2023-01' });
+        if (cpiObs && cpiObs.length >= 2) {
+          var lastCPI  = cpiObs[cpiObs.length - 1];
+          var prevCPI  = cpiObs[cpiObs.length - 2];
+          var chg      = ((lastCPI.value - prevCPI.value) / prevCPI.value) * 100;
+          var sign     = chg >= 0 ? '+' : '';
+          document.getElementById('cpi-val').textContent  = sign + chg.toFixed(2) + '%';
+          document.getElementById('cpi-sub').textContent  = fmtPeriod(lastCPI.period);
+          document.getElementById('calc-cpi').value       = chg.toFixed(2);
+          document.getElementById('cpi-strip').innerHTML  = buildCPIStrip(cpiObs);
+        }
+      } catch (e) {
+        document.getElementById('cpi-strip').innerHTML =
+          '<p style="text-align:center;color:#94a3b8;padding:2rem;grid-column:1/-1">' +
+          'נתוני המדד יהיו זמינים לאחר הפעלת Supabase Edge Function.</p>';
+      }
+
+      // מסלולי משכנתא
+      try {
+        var TRACK_IDS = {
+          'BNK_99034_LR_BIR_MRTG_1804': null,
+          'BNK_99034_LR_BIR_MRTG_1902': null
+        };
+        var fetches = Object.keys(TRACK_IDS).map(function(sid) {
+          return fetchFn({ series: 'BIR_MRTG_99', from: '2025-01', key: sid })
+            .then(function(obs) { TRACK_IDS[sid] = obs; })
+            .catch(function() {});
+        });
+        await Promise.all(fetches);
+
+        var tracksData = {};
+        if (TRACK_IDS['BNK_99034_LR_BIR_MRTG_1804'] && TRACK_IDS['BNK_99034_LR_BIR_MRTG_1804'].length)
+          tracksData['BNK_99034_LR_BIR_MRTG_1804'] = { obs: TRACK_IDS['BNK_99034_LR_BIR_MRTG_1804'] };
+        if (TRACK_IDS['BNK_99034_LR_BIR_MRTG_1902'] && TRACK_IDS['BNK_99034_LR_BIR_MRTG_1902'].length)
+          tracksData['BNK_99034_LR_BIR_MRTG_1902'] = { obs: TRACK_IDS['BNK_99034_LR_BIR_MRTG_1902'] };
+
+        if (Object.keys(tracksData).length) renderTracks(tracksData, liveBoiRate);
+      } catch (e) { /* prime card נשאר */ }
+    }
+
+    init();
+  </script>
+</body>
+</html>
