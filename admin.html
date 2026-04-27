@@ -713,18 +713,17 @@
       <label>כותרת <span style="color:red">*</span></label>
       <input type="text" id="guide-title" placeholder="כותרת ההדרכה">
 
-      <label>תקציר <span class="opt">(מוצג על הכרטיס)</span></label>
+      <label>כיתוב <span class="opt">(מוצג על הכרטיס)</span></label>
       <input type="text" id="guide-summary" placeholder="משפט קצר המסכם את ההדרכה...">
 
-      <label>סוג הדרכה</label>
-      <select id="guide-type" onchange="toggleGuideFields(this.value)">
-        <option value="written">📝 הדרכה כתובה</option>
-        <option value="video">🎬 הדרכת וידאו</option>
-        <option value="presentation">📊 מצגת</option>
+      <label>קטגוריה</label>
+      <select id="guide-category">
+        <option value="banks">🏦 הפקת מידע מהבנקים</option>
+        <option value="general">📋 הפקת מידע כללי</option>
       </select>
 
       <div id="guide-body-section">
-        <label>תוכן מלא <span class="opt">(אופציונלי לסוג וידאו / מצגת)</span></label>
+        <label>תוכן מלא <span class="opt">(אופציונלי)</span></label>
         <div class="rte-toolbar">
           <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('bold')"><b>B</b></button>
           <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="document.execCommand('italic')"><i>I</i></button>
@@ -742,8 +741,8 @@
         <div id="guide-body" class="rte-editor" contenteditable="true" dir="rtl" placeholder="כתוב את תוכן ההדרכה כאן..."></div>
       </div>
 
-      <div id="guide-video-section" style="display:none;">
-        <label>קישור וידאו <span class="opt">(YouTube / Vimeo)</span></label>
+      <div id="guide-video-section">
+        <label>קישור וידאו <span class="opt">(YouTube / Vimeo — אופציונלי)</span></label>
         <input type="url" id="guide-video-url" placeholder="https://youtube.com/watch?v=...">
         <div class="or-sep">או העלה סרטון ישירות</div>
         <div class="video-upload-wrap" id="guide-video-wrap" onclick="document.getElementById('guide-video-file').click()">
@@ -756,10 +755,20 @@
         <input type="file" id="guide-video-file" accept="video/mp4,video/mov,video/quicktime,video/webm,video/*" style="display:none">
       </div>
 
-      <div id="guide-presentation-section" style="display:none;">
-        <label>קישור הטמעה של המצגת</label>
+      <div id="guide-presentation-section">
+        <label>מצגת — קישור הטמעה <span class="opt">(Google Slides / Canva — אופציונלי)</span></label>
         <input type="url" id="guide-presentation-url" placeholder="https://docs.google.com/presentation/d/.../embed">
-        <div style="font-size:0.82rem;color:#888;margin-top:4px;">גוגל סליידס: קובץ ← שיתוף ← פרסום באינטרנט ← הטמעה ← העתק את הקישור src מתוך הקוד</div>
+        <div style="font-size:0.82rem;color:#888;margin-top:4px;margin-bottom:12px;">גוגל סליידס: קובץ ← שיתוף ← פרסום באינטרנט ← הטמעה | קנווה: שתף ← הטמע</div>
+
+        <div class="or-sep">או העלה קובץ מצגת / PDF</div>
+        <div class="video-upload-wrap" id="guide-pres-wrap" onclick="document.getElementById('guide-pres-file').click()">
+          <span id="guide-pres-text">📊 לחץ להעלאת קובץ (PDF, PPTX, PPT)</span>
+          <div class="video-preview-bar" id="guide-pres-preview-bar" style="display:none;">
+            <span id="guide-pres-filename" style="font-size:0.85rem;color:var(--navy);padding:6px;"></span>
+          </div>
+          <button type="button" class="v-clear" id="guide-pres-clear" title="הסר" onclick="clearGuidePres(event)">✕</button>
+        </div>
+        <input type="file" id="guide-pres-file" accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" style="display:none">
       </div>
 
       <label>תמונה ראשית <span class="opt">(אופציונלי)</span></label>
@@ -1094,14 +1103,13 @@
     <label>כותרת</label>
     <input type="text" id="guideedit-title" placeholder="כותרת ההדרכה">
 
-    <label>תקציר</label>
+    <label>כיתוב</label>
     <input type="text" id="guideedit-summary" placeholder="תקציר קצר...">
 
-    <label>סוג הדרכה</label>
-    <select id="guideedit-type" onchange="toggleGuideEditFields(this.value)">
-      <option value="written">📝 הדרכה כתובה</option>
-      <option value="video">🎬 הדרכת וידאו</option>
-      <option value="presentation">📊 מצגת</option>
+    <label>קטגוריה</label>
+    <select id="guideedit-category">
+      <option value="banks">🏦 הפקת מידע מהבנקים</option>
+      <option value="general">📋 הפקת מידע כללי</option>
     </select>
 
     <div id="guideedit-body-section">
@@ -1123,8 +1131,8 @@
       <div id="guideedit-body" class="rte-editor" contenteditable="true" dir="rtl"></div>
     </div>
 
-    <div id="guideedit-video-section" style="display:none;">
-      <label>קישור וידאו <span class="opt">(YouTube / Vimeo)</span></label>
+    <div id="guideedit-video-section">
+      <label>קישור וידאו <span class="opt">(YouTube / Vimeo — אופציונלי)</span></label>
       <input type="url" id="guideedit-video-url" placeholder="https://youtube.com/watch?v=...">
       <label>וידאו קיים</label>
       <div id="guideedit-cur-video-wrap" style="display:none;margin-bottom:8px;">
@@ -1145,9 +1153,28 @@
       <input type="file" id="guideedit-video-file" accept="video/mp4,video/mov,video/quicktime,video/webm,video/*" style="display:none">
     </div>
 
-    <div id="guideedit-presentation-section" style="display:none;">
-      <label>קישור הטמעה של המצגת</label>
+    <div id="guideedit-presentation-section">
+      <label>מצגת — קישור הטמעה <span class="opt">(Google Slides / Canva — אופציונלי)</span></label>
       <input type="url" id="guideedit-presentation-url" placeholder="https://docs.google.com/presentation/d/.../embed">
+      <div style="font-size:0.82rem;color:#888;margin-top:4px;margin-bottom:12px;">גוגל סליידס: קובץ ← שיתוף ← פרסום באינטרנט ← הטמעה | קנווה: שתף ← הטמע</div>
+
+      <label>קובץ מצגת קיים</label>
+      <div id="guideedit-cur-pres-wrap" style="display:none;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span id="guideedit-cur-pres-label" style="font-size:0.82rem;color:var(--gray);word-break:break-all;flex:1;"></span>
+          <button type="button" class="btn btn-red" style="padding:4px 12px;font-size:0.78rem;" onclick="deleteGuideEditPres()">🗑 מחק קובץ</button>
+        </div>
+      </div>
+
+      <div class="or-sep">העלה / החלף קובץ מצגת / PDF</div>
+      <div class="video-upload-wrap" id="guideedit-pres-wrap" onclick="document.getElementById('guideedit-pres-file').click()">
+        <span id="guideedit-pres-text">📊 לחץ להעלאת קובץ (PDF, PPTX, PPT)</span>
+        <div class="video-preview-bar" id="guideedit-pres-preview-bar" style="display:none;">
+          <span id="guideedit-pres-filename" style="font-size:0.85rem;color:var(--navy);padding:6px;"></span>
+        </div>
+        <button type="button" class="v-clear" onclick="clearGuideEditPres(event)">✕</button>
+      </div>
+      <input type="file" id="guideedit-pres-file" accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" style="display:none">
     </div>
 
     <label>תמונה <span class="opt">(השאר ריק לשמור קיימת)</span></label>
@@ -1225,6 +1252,7 @@
   const SUPABASE_ANON_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
   const SUPABASE_STORAGE_BUCKET       = 'review-photos';
   const SUPABASE_VIDEO_BUCKET         = 'review-videos';
+  const SUPABASE_PRES_BUCKET          = 'presentations';
   const ADMIN_PASSWORD    = '343436';
 
   /* ================================================================ */
@@ -1280,7 +1308,7 @@
   }
 
   /* ── Tabs ── */
-  const tabData = ['pending','video-add','video-list','feedback','rejected','approved','articles-add','articles-list','events-pending','events-approved','events-rejected','stats'];
+  const tabData = ['pending','video-add','video-list','feedback','rejected','approved','articles-add','articles-list','guides-add','guides-list','events-pending','events-approved','events-rejected','stats'];
   function openTab(name) {
     tabData.forEach(t => {
       document.getElementById(`tab-${t}`).classList.remove('active');
@@ -1982,6 +2010,17 @@
     return `${SUPABASE_URL}/storage/v1/object/public/${ARTICLE_IMAGE_BUCKET}/${path}`;
   }
 
+  async function uploadPresentation(file) {
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const res  = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/${SUPABASE_PRES_BUCKET}/${path}`,
+      { method:'POST', headers:{ 'apikey':SUPABASE_ANON_KEY, 'Authorization':`Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': file.type || 'application/octet-stream', 'x-upsert':'false' }, body:file }
+    );
+    if (!res.ok) { const b = await res.text().catch(()=>''); throw new Error('שגיאה בהעלאת קובץ מצגת: '+b); }
+    return `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_PRES_BUCKET}/${path}`;
+  }
+
   const CAT_LABEL = { rates:'ריביות ועדכונים', tips:'טיפים למשכנתא', market:'שוק הנדל"ן' };
 
   function renderArticleCard(a) {
@@ -2235,17 +2274,6 @@
   const GUIDE_TYPE_LABEL = { written:'הדרכה כתובה', video:'הדרכת וידאו', presentation:'מצגת' };
   const GUIDE_TYPE_ICON  = { written:'📝', video:'🎬', presentation:'📊' };
 
-  function toggleGuideFields(type) {
-    document.getElementById('guide-body-section').style.display        = type === 'presentation' ? 'none' : '';
-    document.getElementById('guide-video-section').style.display       = type === 'video' ? '' : 'none';
-    document.getElementById('guide-presentation-section').style.display = type === 'presentation' ? '' : 'none';
-  }
-
-  function toggleGuideEditFields(type) {
-    document.getElementById('guideedit-body-section').style.display        = type === 'presentation' ? 'none' : '';
-    document.getElementById('guideedit-video-section').style.display       = type === 'video' ? '' : 'none';
-    document.getElementById('guideedit-presentation-section').style.display = type === 'presentation' ? '' : 'none';
-  }
 
   function renderGuideCard(g) {
     const typeLabel = GUIDE_TYPE_LABEL[g.type] || g.type || '';
@@ -2304,6 +2332,13 @@
     document.getElementById('guide-video-text').textContent = '🎬 לחץ להעלאת סרטון';
     document.getElementById('guide-video-wrap').classList.remove('has-file');
   }
+  function clearGuidePres(e) {
+    if (e) e.stopPropagation();
+    document.getElementById('guide-pres-file').value = '';
+    document.getElementById('guide-pres-preview-bar').style.display = 'none';
+    document.getElementById('guide-pres-text').textContent = '📊 לחץ להעלאת קובץ (PDF, PPTX, PPT)';
+    document.getElementById('guide-pres-wrap').classList.remove('has-file');
+  }
 
   document.getElementById('guide-image').addEventListener('change', function() {
     const file = this.files[0]; if (!file) return;
@@ -2326,12 +2361,19 @@
     document.getElementById('guide-video-text').textContent = file.name;
     document.getElementById('guide-video-wrap').classList.add('has-file');
   });
+  document.getElementById('guide-pres-file').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    document.getElementById('guide-pres-filename').textContent = file.name;
+    document.getElementById('guide-pres-preview-bar').style.display = 'flex';
+    document.getElementById('guide-pres-text').textContent = file.name;
+    document.getElementById('guide-pres-wrap').classList.add('has-file');
+  });
 
   document.getElementById('btn-add-guide').addEventListener('click', async function() {
     const title           = document.getElementById('guide-title').value.trim();
     const summary         = document.getElementById('guide-summary').value.trim();
+    const category        = document.getElementById('guide-category').value;
     const body            = document.getElementById('guide-body').innerHTML.trim();
-    const type            = document.getElementById('guide-type').value;
     const videoUrl        = document.getElementById('guide-video-url').value.trim();
     const presentationUrl = document.getElementById('guide-presentation-url').value.trim();
     const published       = document.getElementById('guide-published').checked;
@@ -2340,31 +2382,32 @@
     this.disabled = true;
     this.innerHTML = '<span class="spinner"></span> מפרסם...';
     try {
-      let imageUrl = null, videoFileUrl = null;
+      let imageUrl = null, videoFileUrl = null, presFileUrl = null;
       const imgFile   = document.getElementById('guide-image').files[0];
       const videoFile = document.getElementById('guide-video-file').files[0];
-      if (imgFile)   imageUrl     = await uploadArticleImage(imgFile);
+      const presFile  = document.getElementById('guide-pres-file').files[0];
+      if (imgFile)   imageUrl    = await uploadArticleImage(imgFile);
       if (videoFile) videoFileUrl = await uploadVideo(videoFile);
+      if (presFile)  presFileUrl  = await uploadPresentation(presFile);
 
       await sbInsert('guides', {
         title,
         summary: summary || null,
-        body: (type !== 'presentation' && body) ? body : null,
-        type,
+        category,
+        body: body || null,
         image_url: imageUrl,
-        video_url: (type === 'video' && videoUrl) ? videoUrl : null,
+        video_url: videoUrl || null,
         video_file_url: videoFileUrl,
-        presentation_url: (type === 'presentation' && presentationUrl) ? presentationUrl : null,
+        presentation_url: presentationUrl || null,
+        presentation_file_url: presFileUrl,
         published
       });
 
       showToast('📚 ההדרכה פורסמה!');
       ['guide-title','guide-summary','guide-video-url','guide-presentation-url'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('guide-body').innerHTML = '';
-      document.getElementById('guide-type').value = 'written';
       document.getElementById('guide-published').checked = true;
-      toggleGuideFields('written');
-      clearGuideImage(); clearGuideVideo();
+      clearGuideImage(); clearGuideVideo(); clearGuidePres();
       loadGuides();
     } catch(e) { showToast('שגיאה: ' + e.message); }
     this.disabled = false;
@@ -2380,12 +2423,19 @@
     document.getElementById('guideedit-title').value            = g.title || '';
     document.getElementById('guideedit-summary').value          = g.summary || '';
     document.getElementById('guideedit-body').innerHTML         = g.body || '';
-    document.getElementById('guideedit-type').value             = g.type || 'written';
+    document.getElementById('guideedit-category').value         = g.category || 'general';
     document.getElementById('guideedit-video-url').value        = g.video_url || '';
     document.getElementById('guideedit-presentation-url').value = g.presentation_url || '';
     document.getElementById('guideedit-published').checked      = !!g.published;
 
-    toggleGuideEditFields(g.type || 'written');
+    const curPresWrap = document.getElementById('guideedit-cur-pres-wrap');
+    if (g.presentation_file_url) {
+      document.getElementById('guideedit-cur-pres-label').textContent = g.presentation_file_url.replace(/^https?:\/\/[^/]+\//, '').split('/').pop();
+      curPresWrap.style.display = 'block';
+    } else {
+      curPresWrap.style.display = 'none';
+    }
+    document.getElementById('guideedit-overlay')._deletePres = false;
 
     const curWrap = document.getElementById('guideedit-cur-img-wrap');
     if (g.image_url) { document.getElementById('guideedit-cur-img').src = g.image_url; curWrap.style.display='block'; }
@@ -2419,6 +2469,17 @@
   function deleteGuideEditVideo() {
     document.getElementById('guideedit-cur-video-wrap').style.display = 'none';
     document.getElementById('guideedit-overlay')._deleteVideo = true;
+  }
+  function deleteGuideEditPres() {
+    document.getElementById('guideedit-cur-pres-wrap').style.display = 'none';
+    document.getElementById('guideedit-overlay')._deletePres = true;
+  }
+  function clearGuideEditPres(e) {
+    if (e) e.stopPropagation();
+    document.getElementById('guideedit-pres-file').value = '';
+    document.getElementById('guideedit-pres-preview-bar').style.display = 'none';
+    document.getElementById('guideedit-pres-text').textContent = '📊 לחץ להעלאת קובץ (PDF, PPTX, PPT)';
+    document.getElementById('guideedit-pres-wrap').classList.remove('has-file');
   }
   function clearGuideEditVideo(e) {
     if (e) e.stopPropagation();
@@ -2456,13 +2517,19 @@
     document.getElementById('guideedit-video-text').textContent = file.name;
     document.getElementById('guideedit-video-wrap').classList.add('has-file');
   });
+  document.getElementById('guideedit-pres-file').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    document.getElementById('guideedit-pres-filename').textContent = file.name;
+    document.getElementById('guideedit-pres-preview-bar').style.display = 'flex';
+    document.getElementById('guideedit-pres-text').textContent = file.name;
+    document.getElementById('guideedit-pres-wrap').classList.add('has-file');
+  });
 
   async function saveEditGuide() {
     const id              = document.getElementById('guideedit-id').value;
     const title           = document.getElementById('guideedit-title').value.trim();
     const summary         = document.getElementById('guideedit-summary').value.trim();
     const body            = document.getElementById('guideedit-body').innerHTML.trim();
-    const type            = document.getElementById('guideedit-type').value;
     const videoUrl        = document.getElementById('guideedit-video-url').value.trim();
     const presentationUrl = document.getElementById('guideedit-presentation-url').value.trim();
     const published       = document.getElementById('guideedit-published').checked;
@@ -2472,17 +2539,21 @@
     try {
       const updates = {
         title, summary: summary||null,
-        body: (type !== 'presentation' && body) ? body : null,
-        type,
-        video_url: (type === 'video' && videoUrl) ? videoUrl : null,
-        presentation_url: (type === 'presentation' && presentationUrl) ? presentationUrl : null,
+        category: document.getElementById('guideedit-category').value,
+        body: body || null,
+        video_url: videoUrl || null,
+        presentation_url: presentationUrl || null,
         published
       };
+      const deletePres = document.getElementById('guideedit-overlay')._deletePres;
       if (deleteVideo) { updates.video_url = null; updates.video_file_url = null; }
+      if (deletePres)  { updates.presentation_file_url = null; }
       const imgFile   = document.getElementById('guideedit-image').files[0];
       const videoFile = document.getElementById('guideedit-video-file').files[0];
-      if (imgFile)   updates.image_url      = await uploadArticleImage(imgFile);
-      if (videoFile) updates.video_file_url = await uploadVideo(videoFile);
+      const presFile  = document.getElementById('guideedit-pres-file').files[0];
+      if (imgFile)   updates.image_url             = await uploadArticleImage(imgFile);
+      if (videoFile) updates.video_file_url        = await uploadVideo(videoFile);
+      if (presFile)  updates.presentation_file_url = await uploadPresentation(presFile);
 
       await sbUpdate('guides', id, updates);
       closeEditGuide();

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>הדרכה למסמכים | יחיאל ממן</title>
+  <title>הדרכות | יחיאל ממן</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #f7f8fa; direction: rtl; }
@@ -144,7 +144,7 @@
         <a href="#">מרכז הידע</a>
         <ul class="dropdown-menu">
           <li><a href="articles.html">מאמרים ועדכונים</a></li>
-          <li><a href="documents-guide.html">הדרכה למסמכים</a></li>
+          <li><a href="documents-guide.html">הדרכות</a></li>
           <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
           <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
         <li><a href="events-list.html">אירועים</a></li>
@@ -158,16 +158,15 @@
 
   <!-- PAGE HEADER -->
   <div class="page-header">
-    <h1>הדרכה למסמכים</h1>
-    <p>הדרכות מקצועיות — כתובות, וידאו ומצגות — להכנת תיק המסמכים למשכנתא</p>
+    <h1>הדרכות</h1>
+    <p>הדרכות מקצועיות — כתובות, וידאו ומצגות</p>
   </div>
 
   <!-- FILTER BAR -->
   <div class="filter-bar">
     <button class="filter-btn active" onclick="filterGuides('all', this)">הכל</button>
-    <button class="filter-btn" onclick="filterGuides('written', this)">📝 הדרכות כתובות</button>
-    <button class="filter-btn" onclick="filterGuides('video', this)">🎬 הדרכות וידאו</button>
-    <button class="filter-btn" onclick="filterGuides('presentation', this)">📊 מצגות</button>
+    <button class="filter-btn" onclick="filterGuides('banks', this)">🏦 הפקת מידע מהבנקים</button>
+    <button class="filter-btn" onclick="filterGuides('general', this)">📋 הפקת מידע כללי</button>
   </div>
 
   <!-- READER OVERLAY -->
@@ -204,9 +203,6 @@
     var SUPABASE_URL = 'https://dwlcascxmgspmtpqbfmr.supabase.co';
     var SUPABASE_KEY = 'sb_publishable_1igMwACIF5Fw4W9U7j-cFg_d-x0-vvJ';
 
-    var TYPE_LABEL = { written: 'הדרכה כתובה', video: 'הדרכת וידאו', presentation: 'מצגת' };
-    var TYPE_ICON  = { written: '📝', video: '🎬', presentation: '📊' };
-
     var allGuides = [];
 
     function dateStr(iso) {
@@ -231,20 +227,25 @@
       }).join('');
     }
 
+    var CAT_LABEL = { banks: '🏦 הפקת מידע מהבנקים', general: '📋 הפקת מידע כללי' };
+    var CAT_CLASS = { banks: 'badge-written', general: 'badge-presentation' };
+
     function renderCard(g, idx) {
-      var type  = g.type || 'written';
-      var label = TYPE_LABEL[type] || type;
-      var icon  = TYPE_ICON[type]  || '📝';
+      var cat   = g.category || 'general';
+      var catBadge = '<span class="category-badge ' + (CAT_CLASS[cat]||'badge-written') + '">' + (CAT_LABEL[cat]||cat) + '</span>';
+
+      var contentBadges = '';
+      if (g.video_url || g.video_file_url)                   contentBadges += '<span class="category-badge badge-video">🎬 וידאו</span>';
+      if (g.presentation_url || g.presentation_file_url)     contentBadges += '<span class="category-badge badge-presentation" style="background:#fff4e0;color:#7a5010;">📊 מצגת</span>';
 
       var imgEl = g.image_url
         ? '<img src="' + g.image_url + '" alt="' + (g.title||'') + '" style="width:100%;height:160px;object-fit:cover;display:block;border-radius:12px 12px 0 0;">'
-        : '<div class="article-img type-' + type + '">' + icon + '</div>';
+        : '<div class="article-img type-written">📄</div>';
 
-      return '<div class="article-card" data-type="' + type + '" onclick="openGuide(' + idx + ')">'
+      return '<div class="article-card" data-category="' + cat + '" onclick="openGuide(' + idx + ')">'
         + imgEl
         + '<div class="article-body">'
-        + '<div class="article-meta">'
-        + '<span class="category-badge badge-' + type + '">' + label + '</span>'
+        + '<div class="article-meta">' + catBadge + contentBadges
         + '<span class="article-date">' + dateStr(g.created_at) + '</span>'
         + '</div>'
         + '<h2 class="article-title">' + (g.title || '') + '</h2>'
@@ -256,35 +257,35 @@
     function openGuide(idx) {
       var g = allGuides[idx];
       if (!g) return;
-      var type  = g.type || 'written';
-      var label = TYPE_LABEL[type] || type;
 
       var imgEl = g.image_url
         ? '<img class="reader-img" src="' + g.image_url + '" alt="' + (g.title||'') + '">'
         : '';
 
-      var mainContent = '';
-      if (type === 'video') {
-        if (g.video_file_url) {
-          mainContent = '<div class="reader-video"><video src="' + g.video_file_url + '" controls playsinline preload="metadata" style="width:100%;border-radius:8px;max-height:400px;"></video></div>';
-        } else if (g.video_url) {
-          mainContent = '<div class="reader-video"><iframe src="' + embedUrl(g.video_url) + '" allowfullscreen style="width:100%;height:300px;border:none;border-radius:8px;"></iframe></div>';
-        }
-      } else if (type === 'presentation') {
-        if (g.presentation_url) {
-          mainContent = '<div class="reader-presentation"><iframe src="' + g.presentation_url + '" allowfullscreen></iframe></div>';
-        }
+      var videoEl = '';
+      if (g.video_file_url) {
+        videoEl = '<div class="reader-video"><video src="' + g.video_file_url + '" controls playsinline preload="metadata" style="width:100%;border-radius:8px;max-height:400px;"></video></div>';
+      } else if (g.video_url) {
+        videoEl = '<div class="reader-video"><iframe src="' + embedUrl(g.video_url) + '" allowfullscreen style="width:100%;height:300px;border:none;border-radius:8px;"></iframe></div>';
+      }
+
+      var presentationEl = '';
+      if (g.presentation_file_url) {
+        var purl = g.presentation_file_url;
+        var isPdf = purl.toLowerCase().endsWith('.pdf');
+        var viewSrc = isPdf ? purl : 'https://docs.google.com/viewer?url=' + encodeURIComponent(purl) + '&embedded=true';
+        presentationEl = '<div class="reader-presentation"><iframe src="' + viewSrc + '" allowfullscreen></iframe></div>';
+      } else if (g.presentation_url) {
+        presentationEl = '<div class="reader-presentation"><iframe src="' + g.presentation_url + '" allowfullscreen></iframe></div>';
       }
 
       var html = imgEl
-        + '<div class="reader-meta">'
-        + '<span class="category-badge badge-' + type + '">' + label + '</span>'
-        + '<span class="article-date">' + dateStr(g.created_at) + '</span>'
-        + '</div>'
+        + '<div class="reader-meta"><span class="article-date">' + dateStr(g.created_at) + '</span></div>'
         + '<h1 class="reader-title">' + (g.title || '') + '</h1>'
         + (g.summary ? '<p class="reader-summary">' + g.summary + '</p>' : '')
-        + mainContent
-        + (g.body ? '<div class="reader-body">' + bodyToHtml(g.body) + '</div>' : '');
+        + (g.body ? '<div class="reader-body">' + bodyToHtml(g.body) + '</div>' : '')
+        + videoEl
+        + presentationEl;
 
       document.getElementById('readerTopTitle').textContent = g.title || '';
       document.getElementById('readerContent').innerHTML = html;
@@ -303,11 +304,12 @@
       if (e.key === 'Escape') closeGuide();
     });
 
-    function filterGuides(type, btn) {
+    function filterGuides(filter, btn) {
       document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
       document.querySelectorAll('.article-card').forEach(function(card) {
-        card.classList.toggle('hidden', type !== 'all' && card.dataset.type !== type);
+        var show = filter === 'all' || card.dataset.category === filter;
+        card.classList.toggle('hidden', !show);
       });
     }
 
