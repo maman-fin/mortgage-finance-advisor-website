@@ -63,11 +63,11 @@
     .market-hero .hero-sub { font-size:1.05rem; color:rgba(200,220,240,.7); margin-bottom:2.5rem; }
 
     /* indicator cards */
-    .indicators { display:flex; justify-content:center; gap:1.2rem; flex-wrap:wrap; }
+    .indicators { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
     .ind-card {
       background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
       backdrop-filter:blur(10px);
-      border-radius:16px; padding:1.4rem 2rem; min-width:180px; text-align:center;
+      border-radius:16px; padding:1.2rem 1.6rem; min-width:160px; max-width:220px; text-align:center;
       transition:transform .25s, box-shadow .25s;
     }
     .ind-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,.4); }
@@ -80,6 +80,8 @@
     .ind-change.up { color:#f87171; }
     .ind-change.down { color:#4ade80; }
     .ind-change.same { color:#94a3b8; }
+    .ind-meta { font-size:.72rem; color:rgba(200,220,240,.5); margin-top:.35rem; }
+    .ind-schedule { font-size:.7rem; color:rgba(200,220,240,.35); margin-top:.25rem; border-top:1px solid rgba(255,255,255,.07); padding-top:.35rem; margin-top:.5rem; font-style:italic; }
 
     .data-ts { margin-top:2rem; font-size:.75rem; color:rgba(200,220,240,.35); }
 
@@ -103,33 +105,6 @@
 
     /* annotation tooltip for chart */
     .chart-annotation { font-size:11px; fill:#64748b; }
-
-    /* ── TRACKS ── */
-    .tracks-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2rem; }
-    .track-card {
-      background:#fff; border-radius:16px; padding:1.6rem 1.4rem;
-      box-shadow:0 2px 12px rgba(0,0,0,.06); border-top:4px solid #cbd5e1;
-      transition:transform .2s, box-shadow .2s;
-    }
-    .track-card:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(0,0,0,.1); }
-    .track-card.green { border-color:#22c55e; }
-    .track-card.yellow { border-color:#f59e0b; }
-    .track-card.orange { border-color:#f97316; }
-    .track-card.red { border-color:#ef4444; }
-    .track-name { font-size:.78rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.07em; margin-bottom:.8rem; }
-    .track-abbr { font-size:1.2rem; font-weight:800; color:#1a3a5c; margin-bottom:.3rem; }
-    .track-rate { font-size:2rem; font-weight:800; color:#1a3a5c; line-height:1; margin-bottom:.5rem; font-variant-numeric:tabular-nums; }
-    .track-card.green .track-rate { color:#16a34a; }
-    .track-card.yellow .track-rate { color:#b45309; }
-    .track-card.orange .track-rate { color:#ea580c; }
-    .track-card.red .track-rate { color:#dc2626; }
-    .track-desc { font-size:.8rem; color:#94a3b8; line-height:1.45; }
-    .track-badge { display:inline-block; font-size:.7rem; font-weight:700; padding:.2rem .6rem; border-radius:999px; margin-top:.6rem; }
-    .track-badge.green { background:#dcfce7; color:#15803d; }
-    .track-badge.yellow { background:#fef9c3; color:#854d0e; }
-    .track-badge.orange { background:#ffedd5; color:#9a3412; }
-    .track-badge.red { background:#fee2e2; color:#991b1b; }
-    .tracks-note { font-size:.78rem; color:#94a3b8; margin-top:1.2rem; text-align:center; }
 
     /* ── CALCULATOR ── */
     .calc-card {
@@ -170,17 +145,22 @@
       font-size:.83rem; color:#78350f; line-height:1.55;
     }
 
-    /* ── CPI STRIP ── */
-    .cpi-strip {
-      background:#fff; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,.06);
-      padding:1.6rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:.8rem;
-    }
-    .cpi-cell { text-align:center; padding:.6rem; }
-    .cpi-cell-period { font-size:.75rem; color:#94a3b8; margin-bottom:.3rem; }
-    .cpi-cell-val { font-size:1.25rem; font-weight:700; }
-    .cpi-cell-val.pos { color:#dc2626; }
-    .cpi-cell-val.neg { color:#16a34a; }
-    .cpi-cell-val.zero { color:#94a3b8; }
+    /* ── CPI TABLES ── */
+    .cpi-table-wrap { overflow-x:auto; border-radius:14px; box-shadow:0 2px 16px rgba(0,0,0,.07); }
+    .cpi-table { width:100%; border-collapse:collapse; background:#fff; font-size:.82rem; }
+    .cpi-table th { background:#1a3a5c; color:#fff; padding:.6rem .7rem; text-align:center; font-weight:600; font-size:.77rem; white-space:nowrap; }
+    .cpi-table th.month-th { min-width:68px; }
+    .cpi-table td { padding:.5rem .65rem; text-align:center; border-bottom:1px solid #f1f5f9; white-space:nowrap; }
+    .cpi-table tr:last-child td { border-bottom:none; }
+    .cpi-table tr:hover td { background:#f8fafc; }
+    .cpi-table .year-cell { text-align:right; font-weight:700; color:#1a3a5c; background:#f8fafc; padding-right:1rem; }
+    .cpi-table .annual-cell { background:#eef4ff; font-weight:700; color:#1a3a5c; }
+    .cpi-table .pos { color:#dc2626; font-weight:600; }
+    .cpi-table .neg { color:#16a34a; font-weight:600; }
+    .cpi-table .zero { color:#94a3b8; }
+    .cpi-table .na { color:#d1d5db; }
+    .cpi-table .avg-row td { background:#0f2540; color:#fff; font-weight:700; }
+    .cpi-table .avg-row .year-cell { background:#0f2540; color:#fbbf24; }
 
     /* ── FOOTER ── */
     .data-footer { background:#0f2540; padding:1.5rem 1rem; text-align:center; }
@@ -214,6 +194,8 @@
       .calc-row { grid-template-columns:1fr; }
       .calc-card { padding:1.4rem 1.2rem; }
       .section { padding:3rem 1rem; }
+      .cpi-table { font-size:.73rem; }
+      .cpi-table th, .cpi-table td { padding:.4rem .4rem; }
     }
     @media (max-width:480px) {
       .indicators { flex-direction:column; align-items:center; }
@@ -267,16 +249,28 @@
           <div class="ind-label">ריבית בנק ישראל</div>
           <div class="ind-val" id="boi-val">—</div>
           <div class="ind-change same" id="boi-change">מעדכן...</div>
+          <div class="ind-meta" id="boi-date"></div>
+          <div class="ind-schedule">החלטות ריבית כל ~6 שבועות</div>
         </div>
         <div class="ind-card gold">
           <div class="ind-label">ריבית פריים</div>
           <div class="ind-val" id="prime-val">—</div>
           <div class="ind-sub">ריבית בנק ישראל + 1.5%</div>
+          <div class="ind-schedule">משתנה בהתאם להחלטת בנק ישראל</div>
         </div>
         <div class="ind-card">
-          <div class="ind-label">שינוי מדד — חודש אחרון</div>
+          <div class="ind-label">מדד מחירים לצרכן</div>
           <div class="ind-val" id="cpi-val">—</div>
           <div class="ind-sub" id="cpi-sub">מעדכן...</div>
+          <div class="ind-meta" id="cpi-date"></div>
+          <div class="ind-schedule">מתפרסם ב-15 לכל חודש (חודש קודם)</div>
+        </div>
+        <div class="ind-card">
+          <div class="ind-label">מדד תשומות הבנייה</div>
+          <div class="ind-val" id="cons-val">—</div>
+          <div class="ind-sub" id="cons-sub">מעדכן...</div>
+          <div class="ind-meta" id="cons-date"></div>
+          <div class="ind-schedule">מתפרסם בסוף כל חודש (חודש קודם)</div>
         </div>
       </div>
       <div class="data-ts" id="data-ts"></div>
@@ -297,32 +291,37 @@
     </div>
   </section>
 
-  <!-- ── CPI STRIP ── -->
+  <!-- ── CPI 12 MONTHS ── -->
   <section class="section">
     <div class="container">
       <div class="sec-header">
         <h2>מדד המחירים לצרכן — 12 חודשים אחרונים</h2>
-        <p>שינוי חודשי באחוזים | <span id="cpi-strip-period">...</span></p>
+        <p>שינוי חודשי באחוזים | <span id="cpi-strip-period">מתעדכן...</span></p>
       </div>
       <div id="cpi-strip-error"></div>
-      <div class="cpi-strip" id="cpi-strip">
-        <div class="chart-loading" style="grid-column:1/-1;padding:2rem;">טוען נתוני מדד...</div>
-      </div>
+      <div id="cpi-strip"><div class="chart-loading">טוען נתוני מדד...</div></div>
     </div>
   </section>
 
-  <!-- ── MORTGAGE TRACKS ── -->
+  <!-- ── CPI HISTORY 20 YEARS ── -->
   <section class="section">
     <div class="container">
       <div class="sec-header">
-        <h2>ריביות ממוצעות לפי מסלול</h2>
-        <p>ממוצע מהבנקים בישראל | נתוני <span id="tracks-period">...</span></p>
+        <h2>היסטוריה — מדד המחירים לצרכן לפי שנה</h2>
+        <p>שינוי חודשי באחוזים ● ממוצע שנתי | מקור: בנק ישראל</p>
       </div>
-      <div id="tracks-error"></div>
-      <div class="tracks-grid" id="tracks-grid">
-        <div class="chart-loading" style="grid-column:1/-1;padding:2rem;">טוען נתוני מסלולים...</div>
+      <div id="cpi-history-table" class="cpi-table-wrap"></div>
+    </div>
+  </section>
+
+  <!-- ── CONS HISTORY ── -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-header">
+        <h2>היסטוריה — מדד תשומות הבנייה לפי שנה</h2>
+        <p>שינוי חודשי באחוזים ● ממוצע שנתי | 2012–2025 נתונים קבועים · 2026 מתעדכן חי</p>
       </div>
-      <p class="tracks-note">* ריביות ממוצע מערכתי. הריבית בפועל תלויה בפרופיל הלווה, גובה ההלוואה ותנאי הבנק.</p>
+      <div id="cons-history-table" class="cpi-table-wrap"></div>
     </div>
   </section>
 
@@ -552,103 +551,258 @@
         + '</svg>';
     }
 
-    /* ── CPI STRIP BUILDER ── */
-    function buildCPIStrip(obs) {
-      if (!obs || obs.length < 2) return '';
-      var last12 = obs.slice(-13);
-      var cells = '';
-      for (var i = 1; i < last12.length; i++) {
-        var prev = last12[i - 1].value;
-        var curr = last12[i].value;
-        var chg = ((curr - prev) / prev) * 100;
-        var cls = chg > 0 ? 'pos' : (chg < 0 ? 'neg' : 'zero');
-        var sign = chg > 0 ? '+' : '';
-        cells += '<div class="cpi-cell">'
-          + '<div class="cpi-cell-period">' + fmtPeriod(last12[i].period) + '</div>'
-          + '<div class="cpi-cell-val ' + cls + '">' + sign + chg.toFixed(2) + '%</div>'
-          + '</div>';
-      }
-      var latest = last12[last12.length - 1];
-      var earliest = last12[0];
-      var ytd = ((latest.value - earliest.value) / earliest.value) * 100;
-      document.getElementById('cpi-strip-period').textContent =
-        fmtPeriod(last12[1].period) + ' – ' + fmtPeriod(latest.period);
-      return cells;
-    }
+    /* ── נתוני מדד היסטוריים (סטטי) ── */
+    /* m = [ינו,פבר,מרץ,אפר,מאי,יוני,יולי,אוג,ספט,אוק,נוב,דצמ]  a = שנתי (דצמ/דצמ) */
+    var CPI_ANNUAL = [
+      {y:2012, m:[-.01, .00, .38, .68, .00,-.28, .10, .90,-.20,-.39,-.47, .19], a: .89},
+      {y:2013, m:[-.17, .00, .20, .40,-.07, .49, .09, .20, .00, .29,-.39, .10], a:1.14},
+      {y:2014, m:[-.62,-.20, .30, .10, .10, .29, .10,-.10,-.29, .29,-.20, .00], a:-.23},
+      {y:2015, m:[-.79,-.43, .30, .61, .20, .30, .19,-.16,-.11, .38,-.30,-.10], a: .07},
+      {y:2016, m:[-.50,-.19,-.16, .45, .31, .31, .40,-.30,-.10, .20,-.39, .00], a: .02},
+      {y:2017, m:[-.13, .00, .30, .21, .43,-.60,-.10, .38, .14, .30,-.30, .10], a: .74},
+      {y:2018, m:[-.47, .23, .30, .40, .50, .10,-.01, .10, .10, .30,-.30,-.30], a: .94},
+      {y:2019, m:[-.29, .10, .50, .30, .69,-.62,-.30, .20,-.20, .40,-.40, .00], a: .38},
+      {y:2020, m:[-.42,-.10, .40,-.30,-.30,-.10, .20, .08,-.10, .35,-.20,-.10], a:-.59},
+      {y:2021, m:[-.05, .30, .61, .30, .40, .10, .37, .29, .20, .10,-.21, .16], a:2.59},
+      {y:2022, m:[ .15, .60, .58, .92, .70, .38,1.09,-.28, .14, .51, .19, .00], a:5.10},
+      {y:2023, m:[ .06, .64, .41, .92, .10, .00, .26, .63,-.08, .48,-.18,-.22], a:3.06},
+      {y:2024, m:[ .00, .40, .60, .80, .20, .10, .60, .90,-.20, .50,-.40,-.30], a:3.20},
+      {y:2025, m:[ .60, .00, .50,1.10,-.30, .30, .40, .70,-.60, .50,-.50, .00], a:2.70},
+      {y:2026, m:[-.30, .20, .40,null,null,null,null,null,null,null,null,null], a:null}
+    ];
 
-    /* ── TRACKS CARDS ── */
-    var TRACK_META = {
-      'BNK_99034_LR_BIR_MRTG_1804': {
-        abbr: 'קל"צ',
-        name: 'קבועה לא צמודה',
-        desc: 'ריבית קבועה לכל תקופת ההלוואה, אינה צמודה למדד. ודאות מלאה בהחזר החודשי.',
-        badge: 'יציבות מירבית'
-      },
-      'BNK_99034_LR_BIR_MRTG_1902': {
-        abbr: 'מצ"מ',
-        name: 'משתנה צמודה מדד',
-        desc: 'ריבית משתנה (בדר"כ כל 5 שנים) וצמודה למדד המחירים לצרכן.',
-        badge: 'חשיפה למדד'
-      },
-      'BNK_99034_LR_BIR_MRTG_1908': {
-        abbr: 'קצ"מ',
-        name: 'קבועה צמודה מדד',
-        desc: 'ריבית קבועה לאורך חיי ההלוואה, אך הקרן צמודה למדד המחירים לצרכן.',
-        badge: 'ריבית נמוכה, קרן צמודה'
-      }
-    };
+    /* ── נתוני מדד תשומות הבנייה - סטטי (2012-2025) ── */
+    /* מקור: הלמ"ס דרך moti.org.il | שינוי חודשי % | שנתי = סכום חודשי (מקורב) */
+    var CONS_ANNUAL = [
+      {y:2012, m:[ .30, .50, .30, .70, .10, .30, .30, .40, .00, .00, .30, .10], a:3.30},
+      {y:2013, m:[ .50, .20, .00,-.20, .30, .20, .00, .10, .20, .10, .10, .00], a:1.50},
+      {y:2014, m:[ .30, .00,-.10, .10, .10,-.10,-.10, .10,-.10, .30, .20, .10], a:0.80},
+      {y:2015, m:[ .10,-.10, .20, .00, .00, .00, .10, .20, .10, .10,-.10, .40], a:1.00},
+      {y:2016, m:[ .30,-.20, .00, .30, .20, .10, .40, .00, .30, .00, .20, .00], a:1.60},
+      {y:2017, m:[ .00, .20, .00, .20, .00, .20, .20, .50, .20, .20, .10, .30], a:2.10},
+      {y:2018, m:[ .50, .30, .10, .30, .10, .10, .30, .20, .00, .10, .00, .10], a:2.10},
+      {y:2019, m:[ .60, .10, .00, .10, .10, .00, .00, .10, .00,-.10, .00, .20], a:1.10},
+      {y:2020, m:[ .20, .00, .20,-.10,-.10, .00, .00, .10,-.10,-.10, .00, .40], a:0.50},
+      {y:2021, m:[ .60, .20, .50, .80, .70, .60, .30, .60, .30, .20, .50, .20], a:5.50},
+      {y:2022, m:[ .80, .50,1.00,1.00, .50, .60, .50, .10, .00, .00,-.20, .00], a:4.80},
+      {y:2023, m:[1.20,-.20, .20, .30,-.10, .30,-.20, .10, .10, .20, .10, .00], a:2.00},
+      {y:2024, m:[ .30,-.20, .20,-.10, .50, .40, .40, .20, .40, .20, .30, .30], a:2.90},
+      {y:2025, m:[2.60, .40, .40, .10, .10, .00, .10, .40, .00, .10, .60, .10], a:4.90},
+      {y:2026, m:[ .10, .20,null,null,null,null,null,null,null,null,null,null], a:null}
+    ];
 
-    function trackColorClass(rate) {
-      if (rate < 4) return 'green';
-      if (rate < 5.5) return 'yellow';
-      if (rate < 7) return 'orange';
-      return 'red';
-    }
-    function trackBadgeText(cls) {
-      return { green:'ריבית נמוכה', yellow:'ריבית בינונית', orange:'ריבית גבוהה', red:'ריבית גבוהה מאוד' }[cls];
-    }
+    var MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 
-    function renderTracks(tracksData, boiRate) {
-      var grid = document.getElementById('tracks-grid');
-      var latestPeriod = null;
-      var cards = '';
+    /* ── טבלת 12 חודשים (נתונים חיים) ── */
+    function buildCPI12Table(cpiObs, consObs) {
+      if (!cpiObs || cpiObs.length < 2) return '<p style="color:#94a3b8;padding:1.5rem">אין נתונים זמינים</p>';
+      var last13 = cpiObs.slice(-13);
 
-      Object.keys(TRACK_META).forEach(function(sid) {
-        var meta = TRACK_META[sid];
-        var td = tracksData[sid];
-        var rate = null;
-        if (td && td.obs.length) {
-          var last = td.obs[td.obs.length - 1];
-          rate = last.value;
-          if (!latestPeriod) latestPeriod = last.period;
+      // בנה מפה period → שינוי תשומות בנייה
+      var consMap = {};
+      if (consObs && consObs.length >= 2) {
+        for (var ci = 1; ci < consObs.length; ci++) {
+          var cc = ((consObs[ci].value - consObs[ci-1].value) / consObs[ci-1].value) * 100;
+          consMap[consObs[ci].period] = cc;
         }
-        if (rate === null || rate > 15) return; // skip invalid (like the 21% series)
+      }
+      var hasCons = Object.keys(consMap).length > 0;
 
-        var cls = trackColorClass(rate);
-        cards += '<div class="track-card ' + cls + '">'
-          + '<div class="track-name">' + meta.name + '</div>'
-          + '<div class="track-abbr">' + meta.abbr + '</div>'
-          + '<div class="track-rate">' + rate.toFixed(2) + '%</div>'
-          + '<div class="track-desc">' + meta.desc + '</div>'
-          + '<span class="track-badge ' + cls + '">' + trackBadgeText(cls) + '</span>'
-          + '</div>';
+      var rows = '', sumCpi = 0, sumCons = 0, cntCons = 0;
+
+      for (var i = 1; i < last13.length; i++) {
+        var chg = ((last13[i].value - last13[i-1].value) / last13[i-1].value) * 100;
+        var cls = chg > 0.005 ? 'pos' : (chg < -0.005 ? 'neg' : 'zero');
+        var sign = chg > 0 ? '+' : '';
+        sumCpi += chg;
+
+        var consVal = consMap[last13[i].period];
+        var consCell = '';
+        if (hasCons) {
+          if (consVal !== undefined) {
+            var consCls = consVal > 0.005 ? 'pos' : (consVal < -0.005 ? 'neg' : 'zero');
+            var consSign = consVal > 0 ? '+' : '';
+            consCell = '<td class="' + consCls + '">' + consSign + consVal.toFixed(2) + '%</td>';
+            sumCons += consVal; cntCons++;
+          } else {
+            consCell = '<td class="na">—</td>';
+          }
+        }
+
+        rows += '<tr>'
+          + '<td class="year-cell">' + fmtPeriod(last13[i].period) + '</td>'
+          + '<td class="' + cls + '">' + sign + chg.toFixed(2) + '%</td>'
+          + consCell
+          + '</tr>';
+      }
+
+      var avgCpi = sumCpi / (last13.length - 1);
+      var avgCpiCls = avgCpi > 0.005 ? 'pos' : (avgCpi < -0.005 ? 'neg' : 'zero');
+      var avgCpiSign = avgCpi > 0 ? '+' : '';
+
+      var latest = last13[last13.length - 1];
+      var ytd = ((latest.value - last13[0].value) / last13[0].value) * 100;
+      var ytdSign = ytd >= 0 ? '+' : '';
+
+      var avgConsCell = '', ytdConsCell = '';
+      if (hasCons && cntCons > 0) {
+        var avgCons = sumCons / cntCons;
+        var avgConsCls = avgCons > 0.005 ? 'pos' : (avgCons < -0.005 ? 'neg' : 'zero');
+        avgConsCell = '<td class="' + avgConsCls + '">' + (avgCons>0?'+':'') + avgCons.toFixed(2) + '%</td>';
+        ytdConsCell = '<td class="na">—</td>';
+      }
+
+      document.getElementById('cpi-strip-period').textContent =
+        fmtPeriod(last13[1].period) + ' – ' + fmtPeriod(latest.period);
+
+      var th2 = hasCons ? '<th>מדד תשומות בנייה</th>' : '';
+      return '<div class="cpi-table-wrap"><table class="cpi-table">'
+        + '<thead><tr><th>חודש</th><th>מדד מחירים לצרכן</th>' + th2 + '</tr></thead>'
+        + '<tbody>' + rows
+        + '<tr class="avg-row"><td class="year-cell">ממוצע חודשי</td>'
+        + '<td class="' + avgCpiCls + '">' + avgCpiSign + avgCpi.toFixed(2) + '%</td>'
+        + avgConsCell + '</tr>'
+        + '<tr class="avg-row"><td class="year-cell">סה"כ 12 חודשים</td>'
+        + '<td class="' + (ytd>=0?'pos':'neg') + '">' + ytdSign + ytd.toFixed(2) + '%</td>'
+        + ytdConsCell + '</tr>'
+        + '</tbody></table></div>';
+    }
+
+    /* ── טבלת היסטוריה (נתונים סטטיים) ── */
+    function renderCPIHistoryTable() {
+      var header = '<tr><th>שנה</th>';
+      MONTH_NAMES.forEach(function(m) { header += '<th class="month-th">' + m + '</th>'; });
+      header += '<th>שנתי</th></tr>';
+
+      var rows = '';
+      CPI_ANNUAL.forEach(function(yr) {
+        var rowId = yr.y === 2026 ? ' id="cpi-row-2026"' : '';
+        rows += '<tr' + rowId + '>';
+        rows += '<td class="year-cell">' + yr.y + (yr.y === 2026 ? ' <small style="font-weight:400;opacity:.6">(חי)</small>' : '') + '</td>';
+        yr.m.forEach(function(v) {
+          if (v === null) { rows += '<td class="na">—</td>'; return; }
+          var cls = v > 0.005 ? 'pos' : (v < -0.005 ? 'neg' : 'zero');
+          var sign = v > 0 ? '+' : '';
+          rows += '<td class="' + cls + '">' + sign + v.toFixed(2) + '%</td>';
+        });
+        if (yr.a === null) {
+          rows += '<td class="annual-cell na">—</td>';
+        } else {
+          var ac = yr.a > 0.005 ? 'pos' : (yr.a < -0.005 ? 'neg' : 'zero');
+          var as = yr.a > 0 ? '+' : '';
+          rows += '<td class="annual-cell ' + ac + '">' + as + yr.a.toFixed(2) + '%</td>';
+        }
+        rows += '</tr>';
       });
 
-      // Add Prime card (computed)
-      if (boiRate !== null) {
-        var primeRate = boiRate + 1.5;
-        var cls = trackColorClass(primeRate);
-        cards += '<div class="track-card ' + cls + '">'
-          + '<div class="track-name">פריים (משתנה)</div>'
-          + '<div class="track-abbr">מל"צ</div>'
-          + '<div class="track-rate">' + primeRate.toFixed(2) + '%</div>'
-          + '<div class="track-desc">משכנתא על בסיס ריבית פריים (ריבית בנק ישראל + 1.5%). הריבית בפועל: פריים ± מרווח בנקאי.</div>'
-          + '<span class="track-badge ' + cls + '">' + trackBadgeText(cls) + '</span>'
-          + '</div>';
-      }
+      document.getElementById('cpi-history-table').innerHTML =
+        '<table class="cpi-table"><thead>' + header + '</thead><tbody>' + rows + '</tbody></table>';
+    }
 
-      grid.innerHTML = cards || '<p style="color:#94a3b8">לא נמצאו נתונים</p>';
-      if (latestPeriod) document.getElementById('tracks-period').textContent = fmtPeriod(latestPeriod);
+    /* ── טבלת היסטוריה תשומות בנייה ── */
+    function renderConsHistoryTable() {
+      var header = '<tr><th>שנה</th>';
+      MONTH_NAMES.forEach(function(m) { header += '<th class="month-th">' + m + '</th>'; });
+      header += '<th>שנתי</th></tr>';
+
+      var rows = '';
+      CONS_ANNUAL.forEach(function(yr) {
+        var rowId = yr.y === 2026 ? ' id="cons-row-2026"' : '';
+        rows += '<tr' + rowId + '>';
+        rows += '<td class="year-cell">' + yr.y + (yr.y === 2026 ? ' <small style="font-weight:400;opacity:.6">(חי)</small>' : '') + '</td>';
+        yr.m.forEach(function(v) {
+          if (v === null) { rows += '<td class="na">—</td>'; return; }
+          var cls = v > 0.005 ? 'pos' : (v < -0.005 ? 'neg' : 'zero');
+          rows += '<td class="' + cls + '">' + (v>0?'+':'') + v.toFixed(2) + '%</td>';
+        });
+        if (yr.a === null) {
+          rows += '<td class="annual-cell na">—</td>';
+        } else {
+          var ac = yr.a > 0.005 ? 'pos' : (yr.a < -0.005 ? 'neg' : 'zero');
+          rows += '<td class="annual-cell ' + ac + '">' + (yr.a>0?'+':'') + yr.a.toFixed(2) + '%</td>';
+        }
+        rows += '</tr>';
+      });
+
+      document.getElementById('cons-history-table').innerHTML =
+        '<table class="cpi-table"><thead>' + header + '</thead><tbody>' + rows + '</tbody></table>';
+    }
+
+    function update2026Row(rowId, obs) {
+      // obs = [{period:'2025-12',value:X},{period:'2026-01',value:Y},...]
+      if (!obs || obs.length < 2) return;
+      var row = document.getElementById(rowId);
+      if (!row) return;
+      var cells = row.querySelectorAll('td');
+      for (var i = 1; i < obs.length; i++) {
+        var p = obs[i].period;
+        if (!p.startsWith('2026')) continue;
+        var mIdx = parseInt(p.split('-')[1], 10);
+        if (mIdx < 1 || mIdx > 12) continue;
+        var chg = ((obs[i].value - obs[i-1].value) / obs[i-1].value) * 100;
+        var cls = chg > 0.005 ? 'pos' : (chg < -0.005 ? 'neg' : 'zero');
+        if (cells[mIdx]) {
+          cells[mIdx].className = cls;
+          cells[mIdx].textContent = (chg>0?'+':'') + chg.toFixed(2) + '%';
+        }
+      }
+      if (cells[cells.length-1]) { cells[cells.length-1].className = 'annual-cell na'; cells[cells.length-1].textContent = 'נ.ז.'; }
+    }
+
+    function updateCons2026(obs) { update2026Row('cons-row-2026', obs); }
+    function updateCPI2026(obs)  { update2026Row('cpi-row-2026',  obs); }
+
+    /* ── אתחול כרטיס CPI ורצועת 12 חודשים מנתונים סטטיים ── */
+    function initCPIFromStatic() {
+      var months = [];
+      CPI_ANNUAL.forEach(function(yr) {
+        yr.m.forEach(function(v, mi) {
+          if (v !== null) months.push({ period: yr.y + '-' + (mi < 9 ? '0' : '') + (mi+1), value: v });
+        });
+      });
+      if (months.length < 2) return;
+      var last12 = months.slice(-12);
+      var latest = last12[last12.length - 1];
+
+      // עדכן כרטיס אינדיקטור
+      var MONTHS_FULL = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+      var sign = latest.value >= 0 ? '+' : '';
+      document.getElementById('cpi-val').textContent = sign + latest.value.toFixed(2) + '%';
+      document.getElementById('cpi-sub').textContent = 'לחודש ' + fmtPeriod(latest.period);
+      var pp = latest.period.split('-');
+      var pubM = parseInt(pp[1], 10) + 1, pubY = parseInt(pp[0], 10);
+      if (pubM > 12) { pubM = 1; pubY++; }
+      document.getElementById('cpi-date').textContent = 'פורסם ב-15 ב' + MONTHS_FULL[pubM - 1] + ' ' + pubY;
+      document.getElementById('calc-cpi').value = latest.value.toFixed(2);
+
+      // בנה רצועת 12 חודשים
+      var rows = '', sumCpi = 0;
+      last12.forEach(function(m) {
+        var cls = m.value > 0.005 ? 'pos' : (m.value < -0.005 ? 'neg' : 'zero');
+        var s = m.value > 0 ? '+' : '';
+        sumCpi += m.value;
+        rows += '<tr><td class="year-cell">' + fmtPeriod(m.period) + '</td>'
+          + '<td class="' + cls + '">' + s + m.value.toFixed(2) + '%</td></tr>';
+      });
+      var avgCpi = sumCpi / last12.length;
+      var avgCls = avgCpi > 0.005 ? 'pos' : (avgCpi < -0.005 ? 'neg' : 'zero');
+      var latestYear = parseInt(latest.period.split('-')[0], 10);
+      var ytd = 0;
+      last12.forEach(function(m) {
+        if (parseInt(m.period.split('-')[0], 10) === latestYear) ytd += m.value;
+      });
+      var ytdSign = ytd >= 0 ? '+' : '';
+      document.getElementById('cpi-strip-period').textContent =
+        fmtPeriod(last12[0].period) + ' – ' + fmtPeriod(latest.period);
+      document.getElementById('cpi-strip').innerHTML =
+        '<div class="cpi-table-wrap"><table class="cpi-table">'
+        + '<thead><tr><th>חודש</th><th>מדד מחירים לצרכן</th></tr></thead>'
+        + '<tbody>' + rows
+        + '<tr class="avg-row"><td class="year-cell">ממוצע חודשי</td>'
+        + '<td class="' + avgCls + '">' + (avgCpi>0?'+':'') + avgCpi.toFixed(2) + '%</td></tr>'
+        + '<tr class="avg-row"><td class="year-cell">סה"כ ' + latestYear + '</td>'
+        + '<td class="' + (ytd>=0?'pos':'neg') + '">' + ytdSign + ytd.toFixed(2) + '%</td></tr>'
+        + '</tbody></table></div>';
     }
 
     /* ── CALCULATOR ── */
@@ -676,90 +830,126 @@
     }
 
     /* ── פונקציות עזר לעדכון תצוגה ── */
+    function fmtDate(isoStr) {
+      // "2026-01-08" → "8 בינואר 2026" | "2026-01" → "ינואר 2026"
+      var MONTHS_FULL = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+      var parts = isoStr.split('-');
+      var monthName = MONTHS_FULL[parseInt(parts[1], 10) - 1];
+      if (parts.length >= 3 && parts[2] && parts[2].length === 2) {
+        return parseInt(parts[2], 10) + ' ב' + monthName + ' ' + parts[0];
+      }
+      return monthName + ' ' + parts[0];
+    }
+
     function applyBoiObs(rateObs, isLive) {
       if (!rateObs || !rateObs.length) return rateObs;
       var last = rateObs[rateObs.length - 1];
       document.getElementById('boi-val').textContent = last.value.toFixed(2) + '%';
       document.getElementById('prime-val').textContent = (last.value + 1.5).toFixed(2) + '%';
 
-      var prev = null;
+      // מצא שינוי ריבית קודם + תאריך השינוי האחרון
+      var prev = null, changeDate = null;
       for (var i = rateObs.length - 2; i >= 0; i--) {
-        if (rateObs[i].value !== last.value) { prev = rateObs[i].value; break; }
+        if (rateObs[i].value !== last.value) {
+          prev = rateObs[i].value;
+          // התאריך שבו הריבית קיבלה את הערך הנוכחי = הרשומה הראשונה עם הערך הנוכחי
+          for (var j = i + 1; j < rateObs.length; j++) {
+            if (rateObs[j].value === last.value) { changeDate = rateObs[j].period; break; }
+          }
+          break;
+        }
       }
+
       var chgEl = document.getElementById('boi-change');
       if (prev !== null) {
         var diff = last.value - prev;
         if (diff > 0) { chgEl.className = 'ind-change up';   chgEl.textContent = '▲ עלתה מ-' + prev.toFixed(2) + '%'; }
         else          { chgEl.className = 'ind-change down'; chgEl.textContent = '▼ ירדה מ-' + prev.toFixed(2) + '%'; }
       } else {
-        chgEl.className = 'ind-change same'; chgEl.textContent = 'ללא שינוי אחרון';
+        chgEl.className = 'ind-change same'; chgEl.textContent = 'ללא שינוי';
       }
+
+      var dateEl = document.getElementById('boi-date');
+      if (changeDate) dateEl.textContent = 'עודכן ב-' + fmtDate(changeDate.slice(0, 10));
 
       document.getElementById('rate-chart').innerHTML = buildRateChart(rateObs);
       document.getElementById('data-ts').textContent = isLive
-        ? 'עדכון חי: ' + new Date().toLocaleString('he-IL')
-        : 'נתונים: בנק ישראל (לפי נתוני פרסום אחרון)';
+        ? 'מקור: בנק ישראל | עודכן: ' + new Date().toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'})
+        : 'מקור: בנק ישראל';
       return rateObs;
     }
 
     /* ── MAIN LOAD ── */
     async function init() {
-      // 1. הצג נתונים סטטיים מיד — ללא מצב טעינה
-      var boiObs = applyBoiObs(STATIC_BOI, false);
-      renderTracks({}, STATIC_BOI[STATIC_BOI.length - 1].value);
-
-      // 2. נסה לטעון נתונים חיים מה-Edge Function ברקע
-      var liveBoiRate = STATIC_BOI[STATIC_BOI.length - 1].value;
+      // נתונים סטטיים מיידיים
+      applyBoiObs(STATIC_BOI, false);
+      renderCPIHistoryTable();
+      renderConsHistoryTable();
+      initCPIFromStatic();
 
       // ריבית בנק ישראל
       try {
         var rateObs = await fetchFn({ series: 'BR', from: '2022-01-01', key: 'MNT_RIB_BOI_D' });
-        if (rateObs && rateObs.length) {
-          boiObs = applyBoiObs(rateObs, true);
-          liveBoiRate = rateObs[rateObs.length - 1].value;
-        }
-      } catch (e) { /* נשאר עם הנתונים הסטטיים */ }
+        if (rateObs && rateObs.length) applyBoiObs(rateObs, true);
+      } catch (e) {}
 
-      // מדד המחירים לצרכן
+      // מדד מחירים לצרכן + מדד תשומות בנייה (במקביל)
+      var cpiObs = null, consObs12 = null;
       try {
-        var cpiObs = await fetchFn({ series: 'PRI', key: 'BI_CPI_NO_ADMN_M', from: '2023-01' });
-        if (cpiObs && cpiObs.length >= 2) {
-          var lastCPI  = cpiObs[cpiObs.length - 1];
-          var prevCPI  = cpiObs[cpiObs.length - 2];
-          var chg      = ((lastCPI.value - prevCPI.value) / prevCPI.value) * 100;
-          var sign     = chg >= 0 ? '+' : '';
-          document.getElementById('cpi-val').textContent  = sign + chg.toFixed(2) + '%';
-          document.getElementById('cpi-sub').textContent  = fmtPeriod(lastCPI.period);
-          document.getElementById('calc-cpi').value       = chg.toFixed(2);
-          document.getElementById('cpi-strip').innerHTML  = buildCPIStrip(cpiObs);
-        }
-      } catch (e) {
+        // מדד המחירים לצרכן הכולל — מדד תשומות בנייה מגיע מהלמ"ס בלבד (אין API)
+        var r = await fetchFn({ series: 'PRI', key: 'BI_CPI_M', from: '2024-01' });
+        if (r) cpiObs = r;
+      } catch (e) {}
+
+      var MONTHS_FULL = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+      if (cpiObs && cpiObs.length >= 2) {
+        var lastCPI = cpiObs[cpiObs.length - 1];
+        var prevCPI = cpiObs[cpiObs.length - 2];
+        var chg     = ((lastCPI.value - prevCPI.value) / prevCPI.value) * 100;
+        var sign    = chg >= 0 ? '+' : '';
+        document.getElementById('cpi-val').textContent = sign + chg.toFixed(2) + '%';
+        document.getElementById('cpi-sub').textContent = 'לחודש ' + fmtPeriod(lastCPI.period);
+        var pp = lastCPI.period.split('-');
+        var pubM = parseInt(pp[1], 10) + 1, pubY = parseInt(pp[0], 10);
+        if (pubM > 12) { pubM = 1; pubY++; }
+        document.getElementById('cpi-date').textContent = 'פורסם ב-15 ב' + MONTHS_FULL[pubM - 1] + ' ' + pubY;
+        document.getElementById('calc-cpi').value = chg.toFixed(2);
+        document.getElementById('cpi-strip').innerHTML = buildCPI12Table(cpiObs, null);
+      } else {
         document.getElementById('cpi-strip').innerHTML =
-          '<p style="text-align:center;color:#94a3b8;padding:2rem;grid-column:1/-1">' +
-          'נתוני המדד יהיו זמינים לאחר הפעלת Supabase Edge Function.</p>';
+          '<p style="color:#94a3b8;padding:1.5rem">טעינת הנתונים תדרוש הפעלת Edge Function.</p>';
       }
 
-      // מסלולי משכנתא
+      // כרטיס מדד תשומות בנייה — מהנתונים הסטטיים (הלמ"ס)
+      (function() {
+        // מצא את החודש האחרון עם נתון ב-CONS_ANNUAL
+        var lastYear = null, lastMIdx = -1, lastVal = null;
+        for (var yi = CONS_ANNUAL.length - 1; yi >= 0; yi--) {
+          var yr = CONS_ANNUAL[yi];
+          for (var mi = 11; mi >= 0; mi--) {
+            if (yr.m[mi] !== null) {
+              lastYear = yr.y; lastMIdx = mi; lastVal = yr.m[mi];
+              break;
+            }
+          }
+          if (lastVal !== null) break;
+        }
+        if (lastVal !== null) {
+          var consSign = lastVal >= 0 ? '+' : '';
+          document.getElementById('cons-val').textContent = consSign + lastVal.toFixed(2) + '%';
+          document.getElementById('cons-sub').textContent = 'לחודש ' + MONTH_NAMES[lastMIdx] + ' ' + lastYear;
+          var pubMIdx = (lastMIdx + 1) % 12;
+          var pubY2 = lastMIdx === 11 ? lastYear + 1 : lastYear;
+          document.getElementById('cons-date').textContent = 'פורסם בסוף ' + MONTHS_FULL[pubMIdx] + ' ' + pubY2;
+        }
+      })();
+
+      // עדכון שורת 2026 — רק מדד מחירים (תשומות בנייה: עדכן ידנית ב-CONS_ANNUAL)
       try {
-        var TRACK_IDS = {
-          'BNK_99034_LR_BIR_MRTG_1804': null,
-          'BNK_99034_LR_BIR_MRTG_1902': null
-        };
-        var fetches = Object.keys(TRACK_IDS).map(function(sid) {
-          return fetchFn({ series: 'BIR_MRTG_99', from: '2025-01', key: sid })
-            .then(function(obs) { TRACK_IDS[sid] = obs; })
-            .catch(function() {});
-        });
-        await Promise.all(fetches);
-
-        var tracksData = {};
-        if (TRACK_IDS['BNK_99034_LR_BIR_MRTG_1804'] && TRACK_IDS['BNK_99034_LR_BIR_MRTG_1804'].length)
-          tracksData['BNK_99034_LR_BIR_MRTG_1804'] = { obs: TRACK_IDS['BNK_99034_LR_BIR_MRTG_1804'] };
-        if (TRACK_IDS['BNK_99034_LR_BIR_MRTG_1902'] && TRACK_IDS['BNK_99034_LR_BIR_MRTG_1902'].length)
-          tracksData['BNK_99034_LR_BIR_MRTG_1902'] = { obs: TRACK_IDS['BNK_99034_LR_BIR_MRTG_1902'] };
-
-        if (Object.keys(tracksData).length) renderTracks(tracksData, liveBoiRate);
-      } catch (e) { /* prime card נשאר */ }
+        var obs26 = await fetchFn({ series: 'PRI', key: 'BI_CPI_M', from: '2025-12' });
+        if (obs26) updateCPI2026(obs26);
+      } catch (e) {}
     }
 
     init();
