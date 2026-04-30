@@ -926,7 +926,6 @@
       var pubM = parseInt(pp[1], 10) + 1, pubY = parseInt(pp[0], 10);
       if (pubM > 12) { pubM = 1; pubY++; }
       document.getElementById('cpi-date').textContent = 'פורסם ב-15 ב' + MONTHS_FULL[pubM - 1] + ' ' + pubY;
-      document.getElementById('calc-cpi').value = latest.value.toFixed(2);
       buildConsMapFromStatic();
       buildStrip12();
     }
