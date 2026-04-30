@@ -962,10 +962,11 @@
         avgConsCell = '<td class="' + (avgCons > 0.005 ? 'pos' : avgCons < -0.005 ? 'neg' : 'zero') + '">'
           + (avgCons > 0 ? '+' : '') + avgCons.toFixed(2) + '%</td>';
       } else { avgConsCell = '<td class="na">—</td>'; }
-      var latestYear = parseInt(latest.period.split('-')[0], 10);
-      var ytd = last12.reduce(function(s, m) {
-        return parseInt(m.period.split('-')[0], 10) === latestYear ? s + m.value : s;
-      }, 0);
+      var total12Cpi = sumCpi;
+      var total12Cons = cntCons > 0 ? sumCons : null;
+      var total12ConsCell = total12Cons !== null
+        ? '<td class="' + (total12Cons >= 0 ? 'pos' : 'neg') + '">' + (total12Cons >= 0 ? '+' : '') + total12Cons.toFixed(2) + '%</td>'
+        : '<td class="na">—</td>';
       document.getElementById('cpi-strip-period').textContent =
         fmtPeriod(last12[0].period) + ' – ' + fmtPeriod(latest.period);
       document.getElementById('cpi-strip').innerHTML =
@@ -975,9 +976,9 @@
         + '<tr class="avg-row"><td class="year-cell">ממוצע חודשי</td>'
         + '<td class="' + avgCls + '">' + (avgCpi > 0 ? '+' : '') + avgCpi.toFixed(2) + '%</td>'
         + avgConsCell + '</tr>'
-        + '<tr class="avg-row"><td class="year-cell">סה"כ ' + latestYear + '</td>'
-        + '<td class="' + (ytd >= 0 ? 'pos' : 'neg') + '">' + (ytd >= 0 ? '+' : '') + ytd.toFixed(2) + '%</td>'
-        + '<td class="na">—</td></tr>'
+        + '<tr class="avg-row"><td class="year-cell">סה"כ 12 חודשים</td>'
+        + '<td class="' + (total12Cpi >= 0 ? 'pos' : 'neg') + '">' + (total12Cpi >= 0 ? '+' : '') + total12Cpi.toFixed(2) + '%</td>'
+        + total12ConsCell + '</tr>'
         + '</tbody></table></div>';
     }
 
