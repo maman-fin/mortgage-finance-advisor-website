@@ -1111,11 +1111,45 @@
         }
       })();
 
-      // עדכון שורת 2026 — רק מדד מחירים (תשומות בנייה: עדכן ידנית ב-CONS_ANNUAL)
+      // עדכון שורת 2026 — מדד מחירים לצרכן
       try {
         var obs26 = await fetchFn({ series: 'PRI', key: 'BI_CPI_M', from: '2025-12' });
         if (obs26) updateCPI2026(obs26);
       } catch (e) {}
+
+      // ── מדד תשומות הבנייה — API הלמ"ס ────────────────────────────
+      try {
+        var cbsRaw = await fetchFn({ series: 'CBS', chapter: 'c' });
+        if (cbsRaw && cbsRaw.length) {
+          // cbsRaw = [{period:'YYYY-MM', value: שינוי%}, ...]
+          // עדכן כרטיס אינדיקטור
+          var lastCons = cbsRaw[cbsRaw.length - 1];
+          var csign = lastCons.value >= 0 ? '+' : '';
+          document.getElementById('cons-val').textContent = csign + lastCons.value.toFixed(2) + '%';
+          document.getElementById('cons-sub').textContent = 'לחודש ' + fmtPeriod(lastCons.period);
+          var cpp = lastCons.period.split('-');
+          var cpubM = parseInt(cpp[1], 10), cpubY = parseInt(cpp[0], 10);
+          if (cpubM > 12) { cpubM = 1; cpubY++; }
+          var MONTHS_FULL_L = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+          document.getElementById('cons-date').textContent = 'פורסם בסוף ' + MONTHS_FULL_L[cpubM - 1] + ' ' + cpubY;
+
+          // עדכן שורת 2026 בטבלת היסטוריה
+          var consRow = document.getElementById('cons-row-2026');
+          if (consRow) {
+            var cells = consRow.querySelectorAll('td');
+            cbsRaw.forEach(function(ob) {
+              if (!ob.period.startsWith('2026')) return;
+              var mIdx = parseInt(ob.period.split('-')[1], 10);
+              if (mIdx < 1 || mIdx > 12) return;
+              var cls = ob.value > 0.005 ? 'pos' : (ob.value < -0.005 ? 'neg' : 'zero');
+              if (cells[mIdx]) {
+                cells[mIdx].className = cls;
+                cells[mIdx].textContent = (ob.value > 0 ? '+' : '') + ob.value.toFixed(2) + '%';
+              }
+            });
+          }
+        }
+      } catch (e) { /* fallback לנתונים הסטטיים */ }
     }
 
     init();
