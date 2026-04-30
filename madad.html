@@ -106,45 +106,6 @@
     /* annotation tooltip for chart */
     .chart-annotation { font-size:11px; fill:#64748b; }
 
-    /* ── CALCULATOR ── */
-    .calc-card {
-      background:#fff; border-radius:20px;
-      box-shadow:0 4px 24px rgba(0,0,0,.08);
-      padding:2rem 2.5rem;
-      max-width:620px; margin:0 auto;
-    }
-    .calc-row { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin-bottom:1.5rem; }
-    .calc-field label { display:block; font-size:.8rem; font-weight:600; color:#475569; margin-bottom:.4rem; }
-    .calc-field input {
-      width:100%; padding:.7rem 1rem; font-size:1rem; border:2px solid #e2e8f0;
-      border-radius:10px; outline:none; transition:border-color .2s; direction:ltr; text-align:left;
-      font-family:inherit;
-    }
-    .calc-field input:focus { border-color:#1a3a5c; }
-    .calc-btn {
-      width:100%; background:#1a3a5c; color:#fff; border:none; padding:.9rem;
-      font-size:1rem; font-weight:700; border-radius:12px; cursor:pointer;
-      transition:background .2s, transform .1s;
-      font-family:inherit;
-    }
-    .calc-btn:hover { background:#253f6a; }
-    .calc-btn:active { transform:scale(.98); }
-    .calc-result { margin-top:1.5rem; display:none; }
-    .calc-result-inner {
-      background:linear-gradient(135deg,#f0f7ff,#e8f0fe);
-      border:1px solid #bfdbfe; border-radius:14px; padding:1.4rem 1.6rem;
-    }
-    .calc-result-row { display:flex; justify-content:space-between; align-items:center; padding:.5rem 0; border-bottom:1px solid rgba(0,0,0,.06); }
-    .calc-result-row:last-child { border:none; }
-    .calc-result-label { font-size:.88rem; color:#475569; }
-    .calc-result-val { font-size:1rem; font-weight:700; color:#1a3a5c; }
-    .calc-result-val.highlight { color:#dc2626; font-size:1.25rem; }
-    .calc-tip {
-      margin-top:1rem; background:#fffbeb; border:1px solid #fde68a;
-      border-radius:10px; padding:.85rem 1rem;
-      font-size:.83rem; color:#78350f; line-height:1.55;
-    }
-
     /* ── CPI TABLES ── */
     .cpi-table-wrap { overflow-x:auto; border-radius:14px; box-shadow:0 2px 16px rgba(0,0,0,.07); }
     .cpi-table { width:100%; border-collapse:collapse; background:#fff; font-size:.82rem; }
@@ -191,9 +152,7 @@
       .indicators { gap:.8rem; max-width:100%; }
       .ind-card { padding:1.1rem 1.2rem; }
       .ind-val { font-size:2rem; }
-      .calc-row { grid-template-columns:1fr; }
-      .calc-card { padding:1.4rem 1.2rem; }
-      .section { padding:3rem 1rem; }
+.section { padding:3rem 1rem; }
       .cpi-table { font-size:.73rem; }
       .cpi-table th, .cpi-table td { padding:.4rem .4rem; }
     }
@@ -325,39 +284,6 @@
     </div>
   </section>
 
-  <!-- ── CPI CALCULATOR ── -->
-  <section class="section">
-    <div class="container">
-      <div class="sec-header">
-        <h2>מחשבון השפעת המדד על הקרן</h2>
-        <p>כמה יתרת הקרן הצמודה שלך תגדל אם המדד עולה?</p>
-      </div>
-      <div class="calc-card">
-        <div class="calc-row">
-          <div class="calc-field">
-            <label>יתרת קרן צמודה מדד (₪)</label>
-            <input type="number" id="calc-balance" value="500000" min="0" step="10000">
-          </div>
-          <div class="calc-field">
-            <label>שינוי מדד חודשי (%)</label>
-            <input type="number" id="calc-cpi" value="0.4" step="0.1" min="-5" max="10">
-          </div>
-        </div>
-        <div class="calc-row">
-          <div class="calc-field">
-            <label>אחוז הלוואה צמודה מסך המשכנתא (%)</label>
-            <input type="number" id="calc-pct" value="33" min="0" max="100">
-          </div>
-          <div class="calc-field">
-            <label>חודשים קדימה</label>
-            <input type="number" id="calc-months" value="12" min="1" max="360">
-          </div>
-        </div>
-        <button class="calc-btn" onclick="runCalc()">חשב השפעה</button>
-        <div class="calc-result" id="calc-result"></div>
-      </div>
-    </div>
-  </section>
 
   <!-- ── FOOTER ── -->
   <footer class="data-footer">
@@ -1003,30 +929,6 @@
       document.getElementById('calc-cpi').value = latest.value.toFixed(2);
       buildConsMapFromStatic();
       buildStrip12();
-    }
-
-    /* ── CALCULATOR ── */
-    function runCalc() {
-      var balance = parseFloat(document.getElementById('calc-balance').value) || 0;
-      var cpiPct  = parseFloat(document.getElementById('calc-cpi').value) || 0;
-      var indexedPct = parseFloat(document.getElementById('calc-pct').value) || 33;
-      var months  = parseInt(document.getElementById('calc-months').value, 10) || 12;
-
-      var indexedBalance = balance * (indexedPct / 100);
-      var factor = Math.pow(1 + cpiPct / 100, months);
-      var newIndexed = indexedBalance * factor;
-      var increase = newIndexed - indexedBalance;
-      var newTotal = balance - indexedBalance + newIndexed;
-
-      var result = document.getElementById('calc-result');
-      result.style.display = 'block';
-      result.innerHTML = '<div class="calc-result-inner">'
-        + '<div class="calc-result-row"><span class="calc-result-label">קרן צמודה נוכחית</span><span class="calc-result-val">₪' + indexedBalance.toLocaleString('he-IL', {maximumFractionDigits:0}) + '</span></div>'
-        + '<div class="calc-result-row"><span class="calc-result-label">קרן צמודה לאחר ' + months + ' חודשים</span><span class="calc-result-val">₪' + newIndexed.toLocaleString('he-IL', {maximumFractionDigits:0}) + '</span></div>'
-        + '<div class="calc-result-row"><span class="calc-result-label">גידול בקרן הצמודה</span><span class="calc-result-val highlight">+₪' + increase.toLocaleString('he-IL', {maximumFractionDigits:0}) + '</span></div>'
-        + '<div class="calc-result-row"><span class="calc-result-label">יתרה כוללת חדשה</span><span class="calc-result-val">₪' + newTotal.toLocaleString('he-IL', {maximumFractionDigits:0}) + '</span></div>'
-        + '</div>'
-        + '<div class="calc-tip">💡 אם ' + indexedPct + '% מהמשכנתא שלך (₪' + indexedBalance.toLocaleString('he-IL', {maximumFractionDigits:0}) + ') צמודה מדד, ומדד של ' + cpiPct + '% בחודש נשמר למשך ' + months + ' חודשים — הקרן תגדל בכ-₪' + Math.round(increase).toLocaleString('he-IL') + '. פנה לייעוץ כדי לבחון מחדש את מבנה המסלולים.</div>';
     }
 
     /* ── פונקציות עזר לעדכון תצוגה ── */
