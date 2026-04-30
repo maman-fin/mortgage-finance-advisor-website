@@ -918,8 +918,19 @@
     function updateCons2026(obs) { update2026Row('cons-row-2026', obs); }
     function updateCPI2026(obs)  { update2026Row('cpi-row-2026',  obs); }
 
-    /* ── אתחול כרטיס CPI ורצועת 12 חודשים מנתונים סטטיים ── */
-    function initCPIFromStatic() {
+    /* ── מפת CONS (period→%) — נבנית מסטטי, מתעדכנת מה-CBS API ── */
+    var _consMap = {};
+    function buildConsMapFromStatic() {
+      _consMap = {};
+      CONS_ANNUAL.forEach(function(yr) {
+        yr.m.forEach(function(v, mi) {
+          if (v !== null) _consMap[yr.y + '-' + (mi < 9 ? '0' : '') + (mi+1)] = v;
+        });
+      });
+    }
+
+    /* ── בניית רצועת 12 חודשים (CPI + תשומות בנייה) ── */
+    function buildStrip12() {
       var months = [];
       CPI_ANNUAL.forEach(function(yr) {
         yr.m.forEach(function(v, mi) {
@@ -929,8 +940,57 @@
       if (months.length < 2) return;
       var last12 = months.slice(-12);
       var latest = last12[last12.length - 1];
+      var rows = '', sumCpi = 0, sumCons = 0, cntCons = 0;
+      last12.forEach(function(m) {
+        var cls = m.value > 0.005 ? 'pos' : (m.value < -0.005 ? 'neg' : 'zero');
+        sumCpi += m.value;
+        var cv = _consMap[m.period];
+        var consCell = (cv !== undefined && cv !== null)
+          ? '<td class="' + (cv > 0.005 ? 'pos' : cv < -0.005 ? 'neg' : 'zero') + '">'
+            + (cv > 0 ? '+' : '') + cv.toFixed(2) + '%</td>'
+          : '<td class="na">—</td>';
+        if (cv !== undefined && cv !== null) { sumCons += cv; cntCons++; }
+        rows += '<tr><td class="year-cell">' + fmtPeriod(m.period) + '</td>'
+          + '<td class="' + cls + '">' + (m.value > 0 ? '+' : '') + m.value.toFixed(2) + '%</td>'
+          + consCell + '</tr>';
+      });
+      var avgCpi = sumCpi / last12.length;
+      var avgCls = avgCpi > 0.005 ? 'pos' : (avgCpi < -0.005 ? 'neg' : 'zero');
+      var avgConsCell = '';
+      if (cntCons > 0) {
+        var avgCons = sumCons / cntCons;
+        avgConsCell = '<td class="' + (avgCons > 0.005 ? 'pos' : avgCons < -0.005 ? 'neg' : 'zero') + '">'
+          + (avgCons > 0 ? '+' : '') + avgCons.toFixed(2) + '%</td>';
+      } else { avgConsCell = '<td class="na">—</td>'; }
+      var latestYear = parseInt(latest.period.split('-')[0], 10);
+      var ytd = last12.reduce(function(s, m) {
+        return parseInt(m.period.split('-')[0], 10) === latestYear ? s + m.value : s;
+      }, 0);
+      document.getElementById('cpi-strip-period').textContent =
+        fmtPeriod(last12[0].period) + ' – ' + fmtPeriod(latest.period);
+      document.getElementById('cpi-strip').innerHTML =
+        '<div class="cpi-table-wrap"><table class="cpi-table">'
+        + '<thead><tr><th>חודש</th><th>מדד מחירים לצרכן</th><th>מדד תשומות הבנייה</th></tr></thead>'
+        + '<tbody>' + rows
+        + '<tr class="avg-row"><td class="year-cell">ממוצע חודשי</td>'
+        + '<td class="' + avgCls + '">' + (avgCpi > 0 ? '+' : '') + avgCpi.toFixed(2) + '%</td>'
+        + avgConsCell + '</tr>'
+        + '<tr class="avg-row"><td class="year-cell">סה"כ ' + latestYear + '</td>'
+        + '<td class="' + (ytd >= 0 ? 'pos' : 'neg') + '">' + (ytd >= 0 ? '+' : '') + ytd.toFixed(2) + '%</td>'
+        + '<td class="na">—</td></tr>'
+        + '</tbody></table></div>';
+    }
 
-      // עדכן כרטיס אינדיקטור
+    /* ── אתחול כרטיס CPI + רצועה מנתונים סטטיים ── */
+    function initCPIFromStatic() {
+      var months = [];
+      CPI_ANNUAL.forEach(function(yr) {
+        yr.m.forEach(function(v, mi) {
+          if (v !== null) months.push({ period: yr.y + '-' + (mi < 9 ? '0' : '') + (mi+1), value: v });
+        });
+      });
+      if (months.length < 2) return;
+      var latest = months[months.length - 1];
       var MONTHS_FULL = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
       var sign = latest.value >= 0 ? '+' : '';
       document.getElementById('cpi-val').textContent = sign + latest.value.toFixed(2) + '%';
@@ -940,35 +1000,8 @@
       if (pubM > 12) { pubM = 1; pubY++; }
       document.getElementById('cpi-date').textContent = 'פורסם ב-15 ב' + MONTHS_FULL[pubM - 1] + ' ' + pubY;
       document.getElementById('calc-cpi').value = latest.value.toFixed(2);
-
-      // בנה רצועת 12 חודשים
-      var rows = '', sumCpi = 0;
-      last12.forEach(function(m) {
-        var cls = m.value > 0.005 ? 'pos' : (m.value < -0.005 ? 'neg' : 'zero');
-        var s = m.value > 0 ? '+' : '';
-        sumCpi += m.value;
-        rows += '<tr><td class="year-cell">' + fmtPeriod(m.period) + '</td>'
-          + '<td class="' + cls + '">' + s + m.value.toFixed(2) + '%</td></tr>';
-      });
-      var avgCpi = sumCpi / last12.length;
-      var avgCls = avgCpi > 0.005 ? 'pos' : (avgCpi < -0.005 ? 'neg' : 'zero');
-      var latestYear = parseInt(latest.period.split('-')[0], 10);
-      var ytd = 0;
-      last12.forEach(function(m) {
-        if (parseInt(m.period.split('-')[0], 10) === latestYear) ytd += m.value;
-      });
-      var ytdSign = ytd >= 0 ? '+' : '';
-      document.getElementById('cpi-strip-period').textContent =
-        fmtPeriod(last12[0].period) + ' – ' + fmtPeriod(latest.period);
-      document.getElementById('cpi-strip').innerHTML =
-        '<div class="cpi-table-wrap"><table class="cpi-table">'
-        + '<thead><tr><th>חודש</th><th>מדד מחירים לצרכן</th></tr></thead>'
-        + '<tbody>' + rows
-        + '<tr class="avg-row"><td class="year-cell">ממוצע חודשי</td>'
-        + '<td class="' + avgCls + '">' + (avgCpi>0?'+':'') + avgCpi.toFixed(2) + '%</td></tr>'
-        + '<tr class="avg-row"><td class="year-cell">סה"כ ' + latestYear + '</td>'
-        + '<td class="' + (ytd>=0?'pos':'neg') + '">' + ytdSign + ytd.toFixed(2) + '%</td></tr>'
-        + '</tbody></table></div>';
+      buildConsMapFromStatic();
+      buildStrip12();
     }
 
     /* ── CALCULATOR ── */
@@ -1081,7 +1114,7 @@
         if (pubM > 12) { pubM = 1; pubY++; }
         document.getElementById('cpi-date').textContent = 'פורסם ב-15 ב' + MONTHS_FULL[pubM - 1] + ' ' + pubY;
         document.getElementById('calc-cpi').value = chg.toFixed(2);
-        document.getElementById('cpi-strip').innerHTML = buildCPI12Table(cpiObs, null);
+        buildStrip12();
       }
       // אם ה-API נכשל — הרצועה כבר מולאה מ-initCPIFromStatic(), לא נדרוס אותה
 
@@ -1119,7 +1152,12 @@
       try {
         var cbsRaw = await fetchFn({ series: 'CBS', chapter: 'c' });
         if (cbsRaw && cbsRaw.length) {
-          // cbsRaw = [{period:'YYYY-MM', value: שינוי%}, ...]
+          // עדכן _consMap מהנתונים החיים
+          cbsRaw.forEach(function(ob) { _consMap[ob.period] = ob.value; });
+
+          // בנה מחדש את הרצועה עם נתוני תשומות בנייה חיים
+          buildStrip12();
+
           // עדכן כרטיס אינדיקטור
           var lastCons = cbsRaw[cbsRaw.length - 1];
           var csign = lastCons.value >= 0 ? '+' : '';
