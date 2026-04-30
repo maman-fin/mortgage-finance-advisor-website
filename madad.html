@@ -1082,10 +1082,8 @@
         document.getElementById('cpi-date').textContent = 'פורסם ב-15 ב' + MONTHS_FULL[pubM - 1] + ' ' + pubY;
         document.getElementById('calc-cpi').value = chg.toFixed(2);
         document.getElementById('cpi-strip').innerHTML = buildCPI12Table(cpiObs, null);
-      } else {
-        document.getElementById('cpi-strip').innerHTML =
-          '<p style="color:#94a3b8;padding:1.5rem">טעינת הנתונים תדרוש הפעלת Edge Function.</p>';
       }
+      // אם ה-API נכשל — הרצועה כבר מולאה מ-initCPIFromStatic(), לא נדרוס אותה
 
       // כרטיס מדד תשומות בנייה — מהנתונים הסטטיים (הלמ"ס)
       (function() {
