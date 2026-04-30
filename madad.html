@@ -1149,9 +1149,39 @@
         if (obs26) updateCPI2026(obs26);
       } catch (e) {}
 
-      // ── מדד תשומות הבנייה — API הלמ"ס ────────────────────────────
+      // ── מדד תשומות הבנייה — API הלמ"ס (קריאה ישירה מהדפדפן, CBS חוסם ענן) ──
       try {
-        var cbsRaw = await fetchFn({ series: 'CBS', chapter: 'c' });
+        var cbsRes = await fetch(
+          'https://api.cbs.gov.il/index/data/price_all?chapter=c&format=json&lang=he&download=false',
+          { signal: AbortSignal.timeout(15000) }
+        );
+        if (!cbsRes.ok) throw new Error('CBS ' + cbsRes.status);
+        var cbsJson = await cbsRes.json();
+        // פרסר גמיש — מנסה מספר מבני JSON אפשריים
+        var cbsItems = Array.isArray(cbsJson) ? cbsJson : [];
+        if (!cbsItems.length && cbsJson && typeof cbsJson === 'object') {
+          for (var _k of ['Data','data','items','Items','result','Results']) {
+            if (Array.isArray(cbsJson[_k])) { cbsItems = cbsJson[_k]; break; }
+          }
+        }
+        var cbsRaw = [];
+        cbsItems.forEach(function(item) {
+          var p = item.Period || item.period || item.Date || item.date || '';
+          var v = item.Change1M !== undefined ? item.Change1M
+                : item.change1m !== undefined ? item.change1m
+                : item.PctChange1M !== undefined ? item.PctChange1M
+                : item.ChangeM !== undefined ? item.ChangeM : undefined;
+          if (!p || v === undefined || v === null) return;
+          var m = '';
+          if (/^\d{4}-\d{2}/.test(p))       m = p.slice(0,7);
+          else if (/^\d{2}\/\d{4}$/.test(p)) m = p.slice(3,7)+'-'+p.slice(0,2);
+          else if (/^\d{4}\/\d{2}$/.test(p)) m = p.slice(0,4)+'-'+p.slice(5,7);
+          else if (/^\d{6}$/.test(p))         m = p.slice(0,4)+'-'+p.slice(4,6);
+          if (!m) return;
+          var fv = parseFloat(v);
+          if (!isNaN(fv)) cbsRaw.push({ period: m, value: fv });
+        });
+        cbsRaw.sort(function(a,b){ return a.period < b.period ? -1 : 1; });
         if (cbsRaw && cbsRaw.length) {
           // עדכן _consMap מהנתונים החיים
           cbsRaw.forEach(function(ob) { _consMap[ob.period] = ob.value; });
