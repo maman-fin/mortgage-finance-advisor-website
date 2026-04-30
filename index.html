@@ -193,7 +193,7 @@
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
     }
 
@@ -234,7 +234,7 @@
 
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 2rem;
       counter-reset: step;
     }
@@ -408,6 +408,8 @@
       .hero h1 { font-size: 2rem; }
       .stat-item { padding: 1.5rem 1rem; }
       section { padding: 3rem 1rem; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .steps { grid-template-columns: repeat(2, 1fr); }
 
       /* BUTTONS FULL WIDTH */
       .btn { display: block; text-align: center; width: 100%; }
@@ -431,6 +433,11 @@
         padding-right: 2.5rem;
         border-bottom: 1px solid rgba(255,255,255,0.04);
       }
+    }
+
+    @media (max-width: 480px) {
+      .cards { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
     }
 
     .contact-info h3 {
