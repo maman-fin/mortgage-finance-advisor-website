@@ -930,9 +930,6 @@
         '<div class="cpi-table-wrap"><table class="cpi-table">'
         + '<thead><tr><th>חודש</th><th>מדד מחירים לצרכן</th><th>מדד תשומות הבנייה</th></tr></thead>'
         + '<tbody>' + rows
-        + '<tr class="avg-row"><td class="year-cell">ממוצע חודשי</td>'
-        + '<td class="' + avgCls + '">' + (avgCpi > 0 ? '+' : '') + avgCpi.toFixed(2) + '%</td>'
-        + avgConsCell + '</tr>'
         + '<tr class="avg-row"><td class="year-cell">שינוי מצטבר ב-12 חודשים האחרונים</td>'
         + '<td class="' + (total12Cpi >= 0 ? 'pos' : 'neg') + '">' + (total12Cpi >= 0 ? '+' : '') + total12Cpi.toFixed(2) + '%</td>'
         + total12ConsCell + '</tr>'
