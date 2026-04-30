@@ -573,6 +573,39 @@
       return json.data;
     }
 
+    /* ── נתוני hover לגרף ── */
+    var _boiData = null, _boiLayout = null;
+
+    function boiChartMove(evt) {
+      var svg = document.getElementById('boi-svg');
+      if (!svg || !_boiData) return;
+      var pt = svg.createSVGPoint();
+      pt.x = evt.clientX; pt.y = evt.clientY;
+      var sp = pt.matrixTransform(svg.getScreenCTM().inverse());
+      var L = _boiLayout;
+      var idx = Math.round((sp.x - L.pl) / L.pw * (L.n - 1));
+      idx = Math.max(0, Math.min(L.n - 1, idx));
+      var d = _boiData[idx];
+      var cx = L.pl + (idx / (L.n - 1)) * L.pw;
+      var cy = L.pt + L.ph - ((d.value - L.minV) / (L.maxV - L.minV)) * L.ph;
+      var g = function(id) { return document.getElementById(id); };
+      g('boi-vline').setAttribute('x1', cx); g('boi-vline').setAttribute('x2', cx); g('boi-vline').setAttribute('opacity','1');
+      g('boi-hdot').setAttribute('cx', cx); g('boi-hdot').setAttribute('cy', cy); g('boi-hdot').setAttribute('opacity','1');
+      var tipW = 120, tipH = 42;
+      var tipX = (cx + tipW + 18 < L.W - L.pr) ? cx + 10 : cx - tipW - 10;
+      var tipY = L.pt + 5;
+      g('boi-tbg').setAttribute('x', tipX); g('boi-tbg').setAttribute('y', tipY); g('boi-tbg').setAttribute('opacity','1');
+      var tx = tipX + tipW / 2;
+      g('boi-td').setAttribute('x', tx); g('boi-td').setAttribute('y', tipY + 15); g('boi-td').setAttribute('opacity','1'); g('boi-td').textContent = fmtPeriod(d.period);
+      g('boi-tv').setAttribute('x', tx); g('boi-tv').setAttribute('y', tipY + 32); g('boi-tv').setAttribute('opacity','1'); g('boi-tv').textContent = d.value.toFixed(2) + '%';
+    }
+
+    function boiChartLeave() {
+      ['boi-vline','boi-hdot','boi-tbg','boi-td','boi-tv'].forEach(function(id) {
+        var el = document.getElementById(id); if (el) el.setAttribute('opacity','0');
+      });
+    }
+
     /* ── CHART BUILDER ── */
     function buildRateChart(obs) {
       if (!obs || obs.length < 2) return '<p style="text-align:center;color:#94a3b8;padding:2rem">אין מספיק נתונים</p>';
@@ -592,7 +625,6 @@
       var W = 820, H = 300;
       var pad = { top: 20, right: 30, bottom: 46, left: 52 };
       var pw = W - pad.left - pad.right, ph = H - pad.top - pad.bottom;
-
       var vals = monthly.map(function(d) { return d.value; });
       var minV = 0, maxV = Math.max.apply(null, vals) + 0.5;
 
@@ -656,7 +688,20 @@
       var lastX = xPos(monthly.length - 1);
       var lastY = yPos(lastVal);
 
-      return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block" aria-label="גרף ריבית בנק ישראל">'
+      // שמירת נתונים גלובלית לצורך hover
+      _boiData = monthly;
+      _boiLayout = { W:W, H:H, pl:pad.left, pt:pad.top, pr:pad.right, pb:pad.bottom, pw:pw, ph:ph, n:monthly.length, minV:minV, maxV:maxV };
+
+      // אלמנטי hover (נסתרים בהתחלה)
+      var hoverEls =
+        '<line id="boi-vline" x1="0" y1="' + pad.top + '" x2="0" y2="' + (pad.top+ph) + '" stroke="#1a3a5c" stroke-width="1.5" stroke-dasharray="4,3" opacity="0" pointer-events="none"/>'
+        + '<circle id="boi-hdot" cx="0" cy="0" r="5" fill="#fff" stroke="#1a3a5c" stroke-width="2.5" opacity="0" pointer-events="none"/>'
+        + '<rect id="boi-tbg" x="0" y="0" width="120" height="42" rx="7" fill="#0f2540" opacity="0" pointer-events="none"/>'
+        + '<text id="boi-td" x="0" y="0" text-anchor="middle" font-size="11" fill="#8ab4d4" opacity="0" pointer-events="none"></text>'
+        + '<text id="boi-tv" x="0" y="0" text-anchor="middle" font-size="15" font-weight="700" fill="#fbbf24" opacity="0" pointer-events="none"></text>'
+        + '<rect id="boi-overlay" x="' + pad.left + '" y="' + pad.top + '" width="' + pw + '" height="' + ph + '" fill="transparent" style="cursor:crosshair" onpointermove="boiChartMove(event)" onpointerleave="boiChartLeave()"/>';
+
+      return '<svg id="boi-svg" viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block" aria-label="גרף ריבית בנק ישראל">'
         + '<defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">'
         + '<stop offset="0%" stop-color="#1a3a5c" stop-opacity="0.18"/>'
         + '<stop offset="100%" stop-color="#1a3a5c" stop-opacity="0.01"/>'
@@ -668,6 +713,7 @@
         + '<circle cx="' + lastX + '" cy="' + lastY + '" r="6" fill="#1a3a5c" stroke="#fff" stroke-width="2.5"/>'
         + '<rect x="' + (lastX - 38) + '" y="' + (lastY - 26) + '" width="62" height="20" rx="4" fill="#1a3a5c"/>'
         + '<text x="' + (lastX - 7) + '" y="' + (lastY - 12) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">' + lastVal + '%</text>'
+        + hoverEls
         + '</svg>';
     }
 
