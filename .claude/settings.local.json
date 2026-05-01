@@ -12,7 +12,29 @@
       "Bash(sed -n '59,70p' c:/Users/Yechiel/mortgage-advisor/index.html)",
       "Bash(python3 -c ' *)",
       "WebFetch(domain:boi.org.il)",
-      "WebFetch(domain:api.cbs.gov.il)"
+      "WebFetch(domain:api.cbs.gov.il)",
+      "Bash(git commit -m ' *)",
+      "WebSearch",
+      "WebFetch(domain:moti.org.il)",
+      "WebFetch(domain:hamadad.cbs.gov.il)",
+      "WebFetch(domain:opendata.cbs.gov.il)",
+      "WebFetch(domain:hedva.cbs.gov.il)",
+      "WebFetch(domain:www.madad.co.il)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:glama.ai)",
+      "WebFetch(domain:mashcantaman.co.il)",
+      "WebFetch(domain:www.supermarker.themarker.com)",
+      "WebFetch(domain:www.hon.co.il)",
+      "WebFetch(domain:www.bankleumi.co.il)",
+      "WebFetch(domain:www.mizrahi-tefahot.co.il)",
+      "Bash(npx supabase *)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_3e6e1085c1d5f9452234f528efff8735ba233a20 npx supabase functions deploy boi-data --project-ref dwlcascxmgspmtpqbfmr --no-verify-jwt)",
+      "Bash(git commit *)",
+      "Bash(curl -s \"https://dwlcascxmgspmtpqbfmr.supabase.co/functions/v1/boi-data?series=CBS&chapter=c\")",
+      "Bash(ls -la favicon*)",
+      "Bash(ls *.ico)",
+      "Bash(grep -v \"\\\\.html$\\\\|\\\\.git\\\\|node_modules\\\\|תמונות\")"
     ]
   }
 }
