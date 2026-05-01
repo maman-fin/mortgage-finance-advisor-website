@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>צמוד מדד מול לא צמוד — יחיאל ממן</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f8fa; color: #1e293b; direction: rtl; }
+
+    /* ── NAV ── */
+    nav {
+      background: #1a3a5c; padding: .9rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.18);
+    }
+    nav .logo a { display:flex; align-items:center; gap:.7rem; text-decoration:none; }
+    nav .logo img { height:40px; width:auto; }
+    nav .logo span { color:#fff; font-size:1rem; font-weight:700; white-space:nowrap; }
+    nav ul { list-style:none; display:flex; gap:1.6rem; align-items:center; }
+    nav ul li a { color:rgba(255,255,255,.88); text-decoration:none; font-size:.92rem; transition:color .2s; }
+    nav ul li a:hover { color:#fff; }
+    .dropdown { position:relative; }
+    .dropdown-menu {
+      display:none; position:absolute; top:100%; right:0;
+      background:#fff; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,.14);
+      padding:.5rem 0; min-width:210px; flex-direction:column; gap:0;
+    }
+    .dropdown:hover .dropdown-menu { display:flex; }
+    .dropdown-menu li a { color:#1a3a5c !important; padding:.55rem 1.2rem; display:block; font-size:.88rem; }
+    .dropdown-menu li a:hover { background:#f1f5f9; }
+    .nav-toggle { display:none; background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer; }
+    @media(max-width:768px){
+      nav ul { display:none; }
+      .nav-toggle { display:block; }
+    }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 1rem; }
+    .section { padding: 4rem 1rem; }
+    .section:nth-child(even) { background: #fff; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #0f2540 0%, #1a3a5c 60%, #1e4976 100%);
+      padding: 3.5rem 1rem 3rem; text-align: center; color: #fff;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 20px; padding: .3rem .9rem; font-size: .8rem;
+      color: rgba(255,255,255,.85); margin-bottom: 1.2rem;
+    }
+    .hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: .8rem; line-height: 1.25; }
+    .hero h1 span.tag-linked   { color: #fbbf24; }
+    .hero h1 span.tag-unlinked { color: #67e8f9; }
+    .hero p { font-size: 1.05rem; color: rgba(255,255,255,.78); max-width: 580px; margin: 0 auto; line-height: 1.65; }
+
+    /* ── SECTION HEADER ── */
+    .sec-header { margin-bottom: 2.5rem; }
+    .sec-header h2 { font-size: 1.6rem; color: #1a3a5c; font-weight: 800; margin-bottom: .4rem; }
+    .sec-header p { color: #64748b; font-size: .95rem; }
+
+    /* ── EXPLANATION BOX ── */
+    .explain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
+    @media(max-width:640px){ .explain-grid { grid-template-columns: 1fr; } }
+    .explain-card {
+      background: #fff; border-radius: 16px; padding: 1.6rem 1.8rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,.07); border-top: 4px solid transparent;
+    }
+    .explain-card.linked   { border-top-color: #f59e0b; }
+    .explain-card.unlinked { border-top-color: #3b82f6; }
+    .explain-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .8rem; }
+    .explain-card.linked h3   { color: #b45309; }
+    .explain-card.unlinked h3 { color: #1d4ed8; }
+    .explain-card p { font-size: .88rem; color: #475569; line-height: 1.7; }
+
+    /* ── MECHANISM VISUAL ── */
+    .mechanism-wrap {
+      background: #fff; border-radius: 20px; padding: 2rem 2rem 1.5rem;
+      box-shadow: 0 2px 20px rgba(0,0,0,.08); margin-bottom: 2rem;
+    }
+    .mechanism-title { font-size: 1rem; font-weight: 700; color: #1a3a5c; margin-bottom: 1.5rem; text-align: center; }
+    .mechanism-steps { display: flex; align-items: flex-end; justify-content: center; gap: 0; flex-wrap: wrap; }
+    .mech-col { display: flex; flex-direction: column; align-items: center; width: 140px; }
+    .mech-year { font-size: .8rem; color: #64748b; font-weight: 700; margin-bottom: .6rem; letter-spacing:.05em; }
+    .mech-bars { display: flex; flex-direction: column-reverse; align-items: center; width: 90px; gap: 0; position: relative; }
+    .mech-bar-base {
+      width: 90px; background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+      border-radius: 6px 6px 0 0; display: flex; align-items: center;
+      justify-content: center; color: #fff; font-size: .72rem; font-weight: 600;
+      padding: .3rem; text-align: center; line-height: 1.3;
+    }
+    .mech-bar-inflate {
+      width: 90px; background: linear-gradient(180deg, #fbbf24, #f59e0b);
+      display: flex; align-items: center; justify-content: center;
+      color: #78350f; font-size: .68rem; font-weight: 700;
+      text-align: center; line-height: 1.3; padding: .3rem;
+    }
+    .mech-payment {
+      margin-top: .8rem; background: #f0fdf4; border: 1.5px solid #86efac;
+      border-radius: 8px; padding: .4rem .7rem; font-size: .82rem;
+      font-weight: 700; color: #166534; text-align: center; width: 100%;
+    }
+    .mech-payment.growing { background: #fff7ed; border-color: #fdba74; color: #9a3412; }
+    .mech-arrow { font-size: 1.8rem; color: #94a3b8; margin: 0 .3rem 2.5rem; align-self: center; }
+    .mech-note {
+      text-align: center; font-size: .8rem; color: #64748b; margin-top: 1rem;
+      background: #fefce8; border: 1px solid #fde68a; border-radius: 8px; padding: .6rem 1rem;
+    }
+
+    /* ── WHY EXPLANATION STEPS ── */
+    .why-steps { counter-reset: step; display: flex; flex-direction: column; gap: 1rem; }
+    .why-step {
+      display: flex; gap: 1rem; align-items: flex-start;
+      background: #f8fafc; border-radius: 12px; padding: 1rem 1.2rem;
+    }
+    .why-step-num {
+      counter-increment: step;
+      width: 32px; height: 32px; border-radius: 50%; background: #1a3a5c;
+      color: #fff; font-weight: 800; font-size: .9rem;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .why-step-num::after { content: counter(step); }
+    .why-step p { font-size: .9rem; color: #334155; line-height: 1.65; padding-top: .2rem; }
+    .why-step p strong { color: #b45309; }
+
+    /* ── INPUTS ── */
+    .inputs-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+    @media(max-width:640px){ .inputs-grid { grid-template-columns: 1fr 1fr; } }
+    .input-field label { display: block; font-size: .8rem; font-weight: 600; color: #475569; margin-bottom: .35rem; }
+    .input-field input {
+      width: 100%; padding: .65rem .9rem; font-size: .95rem;
+      border: 2px solid #e2e8f0; border-radius: 10px; outline: none;
+      font-family: inherit; direction: ltr; text-align: right;
+      transition: border-color .2s;
+    }
+    .input-field input:focus { border-color: #1a3a5c; }
+
+    /* ── REPAYMENT TOGGLE ── */
+    .repay-toggle { display: flex; background: #e2e8f0; border-radius: 10px; padding: 4px; width: fit-content; margin-bottom: 1.5rem; gap: 4px; }
+    .repay-btn {
+      padding: .5rem 1.4rem; border-radius: 8px; border: none; cursor: pointer;
+      font-size: .88rem; font-weight: 600; font-family: inherit;
+      background: transparent; color: #64748b; transition: all .2s;
+    }
+    .repay-btn.active { background: #1a3a5c; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+
+    /* ── INFLATION TABS ── */
+    .inf-tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.8rem; }
+    .inf-tab {
+      padding: .45rem 1.1rem; border-radius: 20px; border: 2px solid #e2e8f0;
+      font-size: .85rem; font-weight: 600; cursor: pointer; font-family: inherit;
+      background: #fff; color: #64748b; transition: all .2s;
+    }
+    .inf-tab.active { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
+    .inf-custom { padding: .4rem .8rem; border: 2px solid #e2e8f0; border-radius: 20px; font-size: .85rem; width: 90px; outline: none; font-family: inherit; direction: ltr; text-align: center; }
+    .inf-custom:focus { border-color: #1a3a5c; }
+
+    /* ── METRIC CARDS ── */
+    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    @media(max-width:640px){ .metrics-grid { grid-template-columns: 1fr; } }
+    .metric-card {
+      background: #fff; border-radius: 16px; padding: 1.3rem 1.4rem;
+      box-shadow: 0 2px 14px rgba(0,0,0,.07);
+    }
+    .metric-label { font-size: .78rem; color: #64748b; font-weight: 600; margin-bottom: .9rem; text-align: center; }
+    .metric-row { display: flex; justify-content: space-between; align-items: center; padding: .35rem 0; border-bottom: 1px solid #f1f5f9; }
+    .metric-row:last-child { border: none; }
+    .metric-track { font-size: .78rem; color: #64748b; }
+    .metric-val { font-size: 1rem; font-weight: 700; }
+    .val-linked   { color: #b45309; }
+    .val-unlinked { color: #1d4ed8; }
+    .metric-diff {
+      text-align: center; margin-top: .7rem; font-size: .78rem;
+      padding: .3rem .6rem; border-radius: 6px; font-weight: 600;
+    }
+    .diff-linked-wins  { background: #fef9c3; color: #854d0e; }
+    .diff-unlinked-wins{ background: #dbeafe; color: #1e40af; }
+
+    /* ── INSIGHT BOX ── */
+    .insight-box {
+      background: linear-gradient(135deg, #0f2540, #1a3a5c);
+      border-radius: 16px; padding: 1.5rem 2rem; color: #fff;
+      display: flex; gap: 1.5rem; align-items: center; margin-bottom: 2rem; flex-wrap: wrap;
+    }
+    .insight-icon { font-size: 2rem; flex-shrink: 0; }
+    .insight-text h3 { font-size: 1rem; font-weight: 700; margin-bottom: .3rem; }
+    .insight-text p { font-size: .88rem; color: rgba(255,255,255,.8); line-height: 1.6; }
+    .insight-text strong { color: #fbbf24; }
+
+    /* ── CHART ── */
+    .chart-title { font-size: .95rem; font-weight: 700; color: #1a3a5c; margin-bottom: .5rem; }
+    .chart-legend { display: flex; gap: 1.2rem; margin-bottom: .8rem; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: #475569; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media(max-width:700px){ .charts-grid { grid-template-columns: 1fr; } }
+    .chart-wrap {
+      background: #fff; border-radius: 16px; padding: 1.4rem 1.2rem;
+      box-shadow: 0 2px 14px rgba(0,0,0,.07);
+    }
+
+    /* ── FOOTER ── */
+    .page-footer { background: #0f2540; padding: 1.5rem 1rem; text-align: center; }
+    .page-footer p { color: rgba(255,255,255,.55); font-size: .82rem; }
+    .page-footer a { color: rgba(255,255,255,.7); }
+
+    /* ── WhatsApp ── */
+    .whatsapp-float {
+      position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 999;
+      background: #25d366; border-radius: 50%; width: 56px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(37,211,102,.45); transition: transform .2s;
+    }
+    .whatsapp-float:hover { transform: scale(1.1); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo"><a href="index.html"><img src="תמונות/logo.png" alt="יחיאל ממן"><span>יחיאל ממן <span style="opacity:.85;font-weight:400;">| אסטרטגיה פיננסית</span></span></a></div>
+    <ul>
+      <li><a href="index.html#services">שירותים</a></li>
+      <li><a href="index.html#process">תהליך</a></li>
+      <li><a href="testimonials.html">המלצות</a></li>
+      <li class="dropdown"><a href="#">מחשבונים</a>
+        <ul class="dropdown-menu">
+          <li><a href="calculator.html">מחשבון משכנתא</a></li>
+          <li><a href="loan-calculator.html">מחשבון הלוואה</a></li>
+          <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+          <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+          <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        </ul>
+      </li>
+      <li class="dropdown"><a href="#">מרכז הידע</a>
+        <ul class="dropdown-menu">
+          <li><a href="articles.html">מאמרים ועדכונים</a></li>
+          <li><a href="madad.html">מצפן השוק — ריבית ומדד</a></li>
+          <li><a href="madad-vs.html">צמוד מול לא צמוד</a></li>
+          <li><a href="documents-guide.html">הדרכות</a></li>
+          <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
+          <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+          <li><a href="events-list.html">אירועים</a></li>
+        </ul>
+      </li>
+      <li><a href="index.html#contact">צור קשר</a></li>
+    </ul>
+    <button class="nav-toggle">☰</button>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🏠 מדריך משכנתא</div>
+    <h1><span class="tag-linked">צמוד מדד</span> מול <span class="tag-unlinked">לא צמוד</span> —<br>למה ההחזר החודשי עולה?</h1>
+    <p>הסבר ויזואלי: כיצד האינפלציה מנפחת את קרן ההלוואה, ולמה זה גורם לכך שהתשלום החודשי שלך חייב לעלות עם הזמן.</p>
+  </div>
+
+  <!-- SECTION 1: EXPLANATION -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-header">
+        <h2>מה ההבדל בין שני המסלולים?</h2>
+        <p>שאלת ה"צמוד או לא צמוד" היא אחת ההחלטות החשובות ביותר בבניית תמהיל משכנתא</p>
+      </div>
+
+      <div class="explain-grid">
+        <div class="explain-card linked">
+          <h3>📈 מסלול צמוד מדד</h3>
+          <p>
+            הריבית נמוכה יחסית — אבל <strong>קרן ההלוואה מתעדכנת כל חודש</strong> לפי עליית המדד.
+            אם המדד עלה ב-0.3% השנה, קרן ההלוואה שלך גדלה ב-0.3% × יתרת הקרן.
+            <br><br>
+            התשלום הראשון נראה נמוך ומפתה — אבל הוא <strong>יעלה עם כל עלייה של המדד</strong>,
+            לאורך כל חיי ההלוואה.
+          </p>
+        </div>
+        <div class="explain-card unlinked">
+          <h3>🔒 מסלול לא צמוד (נומינלי)</h3>
+          <p>
+            הריבית גבוהה יותר — אבל <strong>קרן ההלוואה קבועה</strong>. לא משנה מה קורה לאינפלציה,
+            יתרת הקרן לא מתנפחת.
+            <br><br>
+            התשלום בשפיצר קבוע לחלוטין לאורך כל התקופה — <strong>ודאות מלאה</strong>.
+            בקרן שווה — התשלום יורד בקו ישר ומסתיים בקרן קטנה.
+          </p>
+        </div>
+      </div>
+
+      <!-- MECHANISM VISUAL -->
+      <div class="mechanism-wrap">
+        <div class="mechanism-title">כך עובד ניפוח הקרן — מה שהבנק עושה כל חודש במסלול הצמוד</div>
+
+        <div class="mechanism-steps">
+          <!-- Year 0 -->
+          <div class="mech-col">
+            <div class="mech-year">תחילת הלוואה</div>
+            <div class="mech-bars">
+              <div class="mech-bar-base" style="height:120px">קרן: ₪800,000</div>
+            </div>
+            <div class="mech-payment">תשלום: ₪3,680/חודש</div>
+          </div>
+
+          <div class="mech-arrow">←</div>
+
+          <!-- Year 5 -->
+          <div class="mech-col">
+            <div class="mech-year">אחרי 5 שנים</div>
+            <div class="mech-bars">
+              <div class="mech-bar-inflate" style="height:26px">הצמדה: +₪21,000</div>
+              <div class="mech-bar-base" style="height:104px">קרן: ₪703,000</div>
+            </div>
+            <div class="mech-payment growing">תשלום: ₪4,150/חודש ↑</div>
+          </div>
+
+          <div class="mech-arrow">←</div>
+
+          <!-- Year 10 -->
+          <div class="mech-col">
+            <div class="mech-year">אחרי 10 שנים</div>
+            <div class="mech-bars">
+              <div class="mech-bar-inflate" style="height:40px">הצמדה: +₪38,000</div>
+              <div class="mech-bar-base" style="height:80px">קרן: ₪565,000</div>
+            </div>
+            <div class="mech-payment growing">תשלום: ₪4,690/חודש ↑</div>
+          </div>
+
+          <div class="mech-arrow">←</div>
+
+          <!-- Year 20 -->
+          <div class="mech-col">
+            <div class="mech-year">אחרי 20 שנה</div>
+            <div class="mech-bars">
+              <div class="mech-bar-inflate" style="height:70px">הצמדה: +₪57,000</div>
+              <div class="mech-bar-base" style="height:16px" style="min-height:16px">קרן: ₪0</div>
+            </div>
+            <div class="mech-payment growing">תשלום: ₪5,990/חודש ↑</div>
+          </div>
+        </div>
+
+        <div class="mech-note">
+          💡 הנחה: הלוואה ₪800,000 ל-20 שנה, ריבית צמודה 3.5%, מדד שנתי 2.5% — ערכים להמחשה בלבד
+        </div>
+      </div>
+
+      <!-- WHY STEPS -->
+      <div class="sec-header" style="margin-bottom:1.2rem">
+        <h2>למה ההחזר החודשי חייב לעלות?</h2>
+        <p>3 צעדים שהבנק עושה בכל חודש במסלול הצמוד</p>
+      </div>
+      <div class="why-steps">
+        <div class="why-step">
+          <div class="why-step-num"></div>
+          <p><strong>הבנק מנפח את הקרן:</strong> לפני שמחשבים את התשלום, הבנק מכפיל את יתרת הקרן שלך במדד החודשי. אם המדד עלה 0.25% — קרן של ₪700,000 הופכת ל-₪701,750. זה קורה <em>לפני</em> שאתה משלם כלום.</p>
+        </div>
+        <div class="why-step">
+          <div class="why-step-num"></div>
+          <p><strong>הריבית מחושבת על הקרן המנופחת:</strong> הריבית החודשית מחושבת על ₪701,750 — לא על ₪700,000. כלומר, גם תשלום הריבית גדל בגלל ניפוח הקרן.</p>
+        </div>
+        <div class="why-step">
+          <div class="why-step-num"></div>
+          <p><strong>התשלום מתעדכן בהתאם:</strong> כדי לסיים את ההלוואה בדיוק בסוף התקופה שנקבעה, <strong>התשלום החודשי חייב לעלות בכל פעם שהמדד עולה.</strong> המדד מצטבר — וכך גם התשלום. אחרי 20 שנה של מדד 2.5%, התשלום הנומינלי גדל בכ-63%.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: CALCULATOR -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-header">
+        <h2>מחשבון השוואה אינטראקטיבי</h2>
+        <p>שנה את הפרמטרים וראה את ההשפעה בזמן אמת</p>
+      </div>
+
+      <!-- Inputs -->
+      <div class="inputs-grid">
+        <div class="input-field">
+          <label>סכום הלוואה (₪)</label>
+          <input type="number" id="inp-amount" value="800000" step="50000" min="100000">
+        </div>
+        <div class="input-field">
+          <label>תקופה (שנים)</label>
+          <input type="number" id="inp-years" value="20" min="5" max="30">
+        </div>
+        <div class="input-field">
+          <label>ריבית מסלול <span style="color:#b45309">צמוד</span> (%)</label>
+          <input type="number" id="inp-rate-linked" value="3.5" step="0.1" min="0.5" max="10">
+        </div>
+        <div class="input-field">
+          <label>ריבית מסלול <span style="color:#1d4ed8">לא צמוד</span> (%)</label>
+          <input type="number" id="inp-rate-unlinked" value="5.5" step="0.1" min="0.5" max="15">
+        </div>
+      </div>
+
+      <!-- Repayment type -->
+      <div style="margin-bottom:.6rem;font-size:.82rem;font-weight:600;color:#475569;">שיטת החזר</div>
+      <div class="repay-toggle">
+        <button class="repay-btn active" id="btn-spitzer" onclick="setRepay('spitzer')">שפיצר (תשלום שווה)</button>
+        <button class="repay-btn" id="btn-ks" onclick="setRepay('ks')">קרן שווה</button>
+      </div>
+
+      <!-- Inflation tabs -->
+      <div style="margin-bottom:.6rem;font-size:.82rem;font-weight:600;color:#475569;">תרחיש אינפלציה שנתית</div>
+      <div class="inf-tabs">
+        <button class="inf-tab" id="tab-low" onclick="setInf('low')">נמוך — 1.5%</button>
+        <button class="inf-tab active" id="tab-mid" onclick="setInf('mid')">בינוני — 2.5%</button>
+        <button class="inf-tab" id="tab-high" onclick="setInf('high')">גבוה — 4%</button>
+        <span style="display:flex;align-items:center;gap:.4rem;">
+          <button class="inf-tab" id="tab-custom" onclick="setInf('custom')">אחר —</button>
+          <input class="inf-custom" type="number" id="inp-custom" value="3" step="0.1" min="0" max="15" oninput="setInf('custom')">
+          <span style="font-size:.82rem;color:#64748b">%</span>
+        </span>
+      </div>
+
+      <!-- Metric cards -->
+      <div class="metrics-grid" id="metrics"></div>
+
+      <!-- Insight box -->
+      <div class="insight-box" id="insight-box"></div>
+
+      <!-- Charts -->
+      <div class="charts-grid">
+        <div class="chart-wrap">
+          <div class="chart-title">יתרת קרן לאורך הזמן</div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> צמוד מדד</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> לא צמוד</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ef4444;border-radius:2px;height:3px;width:16px;"></div> סכום מקורי</div>
+          </div>
+          <div id="chart-balance"></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title">החזר חודשי לאורך הזמן</div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> צמוד מדד</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> לא צמוד</div>
+          </div>
+          <div id="chart-payment"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <div class="container">
+      <p>המחשבון נועד להמחשה בלבד ואינו מהווה ייעוץ פיננסי. <a href="index.html#contact">לייעוץ אישי →</a></p>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/972585006050" target="_blank" rel="noopener" class="whatsapp-float">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="30" height="30" fill="#fff">
+      <path d="M24 4C12.95 4 4 12.95 4 24c0 3.6.97 7 2.64 9.95L4 44l10.35-2.59A19.88 19.88 0 0 0 24 44c11.05 0 20-8.95 20-20S35.05 4 24 4zm0 36a16 16 0 0 1-8.16-2.24l-.58-.35-6.14 1.54 1.57-5.97-.38-.61A15.93 15.93 0 0 1 8 24c0-8.84 7.16-16 16-16s16 7.16 16 16-7.16 16-16 16zm8.77-11.76c-.48-.24-2.84-1.4-3.28-1.56-.44-.16-.76-.24-1.08.24-.32.48-1.24 1.56-1.52 1.88-.28.32-.56.36-1.04.12-.48-.24-2.02-.74-3.85-2.36-1.42-1.26-2.38-2.82-2.66-3.3-.28-.48-.03-.74.21-.98.22-.22.48-.56.72-.84.24-.28.32-.48.48-.8.16-.32.08-.6-.04-.84-.12-.24-1.08-2.6-1.48-3.56-.38-.92-.78-.8-1.08-.8-.28 0-.6-.04-.92-.04s-.84.12-1.28.6c-.44.48-1.68 1.64-1.68 4s1.72 4.64 1.96 4.96c.24.32 3.38 5.16 8.2 7.24 1.14.48 2.04.78 2.74 1 1.15.36 2.2.31 3.02.19.92-.14 2.84-1.16 3.24-2.28.4-1.12.4-2.08.28-2.28-.12-.2-.44-.32-.92-.56z"/>
+    </svg>
+  </a>
+
+  <script>
+    var repayType = 'spitzer';
+    var infRate   = 0.025;
+    var infKey    = 'mid';
+
+    function setRepay(t) {
+      repayType = t;
+      document.getElementById('btn-spitzer').classList.toggle('active', t === 'spitzer');
+      document.getElementById('btn-ks').classList.toggle('active', t === 'ks');
+      update();
+    }
+
+    function setInf(key) {
+      infKey = key;
+      ['low','mid','high','custom'].forEach(function(k) {
+        document.getElementById('tab-'+k).classList.toggle('active', k === key);
+      });
+      if (key === 'low')    infRate = 0.015;
+      if (key === 'mid')    infRate = 0.025;
+      if (key === 'high')   infRate = 0.04;
+      if (key === 'custom') infRate = parseFloat(document.getElementById('inp-custom').value) / 100 || 0.025;
+      update();
+    }
+
+    /* ── simulation ── */
+    function simulate(P, n, r_annual, cpi_annual, isLinked, isSpitzer) {
+      var r = r_annual / 12;
+      var m = Math.pow(1 + cpi_annual, 1/12) - 1;
+      var balance = P;
+      var payments = [], balances = [P];
+
+      if (!isLinked && isSpitzer) {
+        var pmt = r > 0 ? P * r / (1 - Math.pow(1+r, -n)) : P/n;
+        for (var k = 0; k < n; k++) {
+          payments.push(pmt);
+          balance = balance*(1+r) - pmt;
+          balances.push(Math.max(0, balance));
+        }
+
+      } else if (!isLinked && !isSpitzer) {
+        var prin = P / n;
+        for (var k = 0; k < n; k++) {
+          payments.push(prin + balance*r);
+          balance -= prin;
+          balances.push(Math.max(0, balance));
+        }
+
+      } else if (isLinked && isSpitzer) {
+        var real_r = (1+r)/(1+m) - 1;
+        var base = Math.abs(real_r) > 0.0000001
+          ? P * real_r / (1 - Math.pow(1+real_r, -n))
+          : P / n;
+        var cpi_cum = 1;
+        for (var k = 0; k < n; k++) {
+          balance *= (1+m);
+          cpi_cum *= (1+m);
+          var pmt = base * cpi_cum;
+          var interest = balance * r;
+          balance -= (pmt - interest);
+          payments.push(pmt);
+          balances.push(balance);
+        }
+
+      } else { // linked + ks
+        var realPrin = P / n;
+        var realBal  = P;
+        var cpi_cum  = 1;
+        for (var k = 0; k < n; k++) {
+          cpi_cum *= (1+m);
+          var nomBal  = realBal * cpi_cum;
+          var nomPrin = realPrin * cpi_cum;
+          payments.push(nomPrin + nomBal * r);
+          realBal -= realPrin;
+          balances.push(Math.max(0, realBal) * cpi_cum);
+        }
+      }
+      return { payments: payments, balances: balances, total: payments.reduce(function(s,v){return s+v;}, 0) };
+    }
+
+    /* ── break-even CPI ── */
+    function breakEvenCPI(P, n, r_linked, r_unlinked, isSpitzer) {
+      var lo = 0, hi = 0.15;
+      for (var i = 0; i < 60; i++) {
+        var mid = (lo+hi)/2;
+        var lk = simulate(P, n, r_linked, mid, true, isSpitzer).total;
+        var ul = simulate(P, n, r_unlinked, 0, false, isSpitzer).total;
+        if (lk < ul) lo = mid; else hi = mid;
+      }
+      return (lo+hi)/2;
+    }
+
+    /* ── format ── */
+    function fmt(v) { return '₪' + Math.round(v).toLocaleString('he-IL'); }
+    function fmtPct(v) { return (v*100).toFixed(1) + '%'; }
+
+    /* ── SVG chart ── */
+    function buildChart(linked_data, unlinked_data, n, label_y, refLine) {
+      var W = 520, H = 220;
+      var pad = { top:12, right:12, bottom:36, left:62 };
+      var pw = W-pad.left-pad.right, ph = H-pad.top-pad.bottom;
+
+      // sample every 3 months for performance
+      var step = Math.max(1, Math.floor(n/80));
+      var ld = [], ud = [];
+      for (var i = 0; i <= n; i += step) {
+        ld.push(linked_data[Math.min(i, linked_data.length-1)]);
+        ud.push(unlinked_data[Math.min(i, unlinked_data.length-1)]);
+      }
+      var allVals = ld.concat(ud);
+      if (refLine !== undefined) allVals.push(refLine);
+      var minV = 0;
+      var maxV = Math.max.apply(null, allVals) * 1.05;
+
+      var ns = ld.length;
+      var xp = function(i) { return pad.left + (i/(ns-1))*pw; };
+      var yp = function(v) { return pad.top + ph - (v/maxV)*ph; };
+
+      // paths
+      function makePath(arr, color) {
+        var d = '';
+        arr.forEach(function(v,i) {
+          d += (i===0?'M ':'L ') + xp(i).toFixed(1) + ' ' + yp(v).toFixed(1) + ' ';
+        });
+        return '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2.2" stroke-linejoin="round"/>';
+      }
+
+      // fill under linked (inflation zone above ref)
+      var fillAbove = '';
+      if (refLine !== undefined) {
+        var refY = yp(refLine);
+        var abovePts = [];
+        ld.forEach(function(v,i) { if(v > refLine) abovePts.push({i:i,v:v}); });
+        if (abovePts.length > 1) {
+          var fd = 'M ' + xp(abovePts[0].i) + ' ' + refY;
+          abovePts.forEach(function(p) { fd += ' L '+xp(p.i)+' '+yp(p.v); });
+          fd += ' L '+xp(abovePts[abovePts.length-1].i)+' '+refY+' Z';
+          fillAbove = '<path d="' + fd + '" fill="rgba(239,68,68,.15)"/>';
+        }
+      }
+
+      // Y grid & labels
+      var yLines = '';
+      var yStep = maxV > 1000000 ? 200000 : maxV > 500000 ? 100000 : maxV > 10000 ? 2000 : 1;
+      var nSteps = Math.floor(maxV / yStep);
+      if (nSteps > 6) yStep *= 2;
+      for (var v = 0; v <= maxV; v += yStep) {
+        var gy = yp(v);
+        yLines += '<line x1="'+pad.left+'" y1="'+gy+'" x2="'+(pad.left+pw)+'" y2="'+gy+'" stroke="#e8ecf0" stroke-width="1"/>';
+        var lbl = v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? Math.round(v/1000)+'K' : v.toFixed(0);
+        yLines += '<text x="'+(pad.left-5)+'" y="'+(gy+4)+'" text-anchor="end" font-size="10" fill="#94a3b8">'+lbl+'</text>';
+      }
+
+      // X labels (years)
+      var xLabels = '';
+      var yr_n = Math.floor(n/12);
+      var xInterval = yr_n <= 10 ? 2 : yr_n <= 20 ? 5 : 10;
+      for (var y = 0; y <= yr_n; y += xInterval) {
+        var mi = Math.min(Math.round(y/yr_n*(ns-1)), ns-1);
+        var xv = xp(mi);
+        xLabels += '<line x1="'+xv+'" y1="'+pad.top+'" x2="'+xv+'" y2="'+(pad.top+ph)+'" stroke="#dde3ea" stroke-width="1" stroke-dasharray="3,3"/>';
+        xLabels += '<text x="'+xv+'" y="'+(H-pad.bottom+16)+'" text-anchor="middle" font-size="10" fill="#7a8899">שנה '+y+'</text>';
+      }
+
+      // Ref line
+      var refSvg = '';
+      if (refLine !== undefined) {
+        var ry = yp(refLine);
+        refSvg = '<line x1="'+pad.left+'" y1="'+ry+'" x2="'+(pad.left+pw)+'" y2="'+ry+'" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="6,3"/>';
+        refSvg += '<text x="'+(pad.left+4)+'" y="'+(ry-4)+'" font-size="9" fill="#ef4444">סכום מקורי</text>';
+      }
+
+      return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'
+        + yLines + xLabels
+        + fillAbove
+        + refSvg
+        + makePath(ld, '#f59e0b')
+        + makePath(ud, '#3b82f6')
+        + '</svg>';
+    }
+
+    /* ── main update ── */
+    function update() {
+      var P  = parseFloat(document.getElementById('inp-amount').value)       || 800000;
+      var Y  = parseFloat(document.getElementById('inp-years').value)        || 20;
+      var rL = parseFloat(document.getElementById('inp-rate-linked').value)  / 100 || 0.035;
+      var rU = parseFloat(document.getElementById('inp-rate-unlinked').value)/ 100 || 0.055;
+      var n  = Math.round(Y * 12);
+      var isSz = repayType === 'spitzer';
+
+      var lk = simulate(P, n, rL, infRate, true,  isSz);
+      var ul = simulate(P, n, rU, 0,       false, isSz);
+
+      var midIdx = Math.floor(n/2);
+
+      // metric cards
+      var metrics = [
+        { label: 'תשלום חודשי — חודש ראשון',   lkV: lk.payments[0],      ulV: ul.payments[0] },
+        { label: 'תשלום חודשי — אחרי '+Math.round(Y/2)+' שנים', lkV: lk.payments[midIdx], ulV: ul.payments[midIdx] },
+        { label: 'סך תשלומים כולל',             lkV: lk.total,            ulV: ul.total }
+      ];
+
+      var mHtml = '';
+      metrics.forEach(function(m) {
+        var lkWins = m.lkV < m.ulV;
+        var diff = Math.abs(m.lkV - m.ulV);
+        var diffPct = (diff / m.ulV * 100).toFixed(1);
+        var diffCls = lkWins ? 'diff-linked-wins' : 'diff-unlinked-wins';
+        var diffTxt = lkWins
+          ? 'הצמוד זול ב-' + fmt(diff) + ' (' + diffPct + '%)'
+          : 'הצמוד יקר ב-' + fmt(diff) + ' (' + diffPct + '%)';
+        mHtml += '<div class="metric-card">'
+          + '<div class="metric-label">' + m.label + '</div>'
+          + '<div class="metric-row"><span class="metric-track">🟡 צמוד מדד</span><span class="metric-val val-linked">' + fmt(m.lkV) + '</span></div>'
+          + '<div class="metric-row"><span class="metric-track">🔵 לא צמוד</span><span class="metric-val val-unlinked">' + fmt(m.ulV) + '</span></div>'
+          + '<div class="metric-diff ' + diffCls + '">' + diffTxt + '</div>'
+          + '</div>';
+      });
+      document.getElementById('metrics').innerHTML = mHtml;
+
+      // last payment insight
+      var lastLk = lk.payments[n-1], lastUl = ul.payments[n-1];
+      var be = breakEvenCPI(P, n, rL, rU, isSz);
+
+      var winner = lk.total < ul.total ? 'הצמוד' : 'הלא-צמוד';
+      var saving  = Math.abs(lk.total - ul.total);
+      document.getElementById('insight-box').innerHTML =
+        '<div class="insight-icon">💡</div>'
+        + '<div class="insight-text">'
+        + '<h3>תובנה — בתרחיש המדד ' + fmtPct(infRate) + '</h3>'
+        + '<p>המסלול <strong>' + winner + '</strong> זול יותר בסה"כ ב-<strong>' + fmt(saving) + '</strong> לאורך כל התקופה.'
+        + (isSz ? ' התשלום הצמוד עולה מ-' + fmt(lk.payments[0]) + ' ל-' + fmt(lastLk) + ' (גידול של ' + Math.round((lastLk/lk.payments[0]-1)*100) + '%).' : '')
+        + '<br>נקודת האיזון: מדד שנתי מעל <strong>' + fmtPct(be) + '</strong> הופך את המסלול הצמוד ליקר יותר.</p>'
+        + '</div>';
+
+      // charts — sample to yearly
+      var bal_lk = [], bal_ul = [], pay_lk = [], pay_ul = [];
+      for (var i = 0; i <= n; i++) {
+        bal_lk.push(lk.balances[i]);
+        bal_ul.push(ul.balances[i]);
+      }
+      for (var i = 0; i < n; i++) {
+        pay_lk.push(lk.payments[i]);
+        pay_ul.push(ul.payments[i]);
+      }
+
+      document.getElementById('chart-balance').innerHTML =
+        buildChart(bal_lk, bal_ul, n, 'balance', P);
+      document.getElementById('chart-payment').innerHTML =
+        buildChart(pay_lk, pay_ul, n, 'payment');
+    }
+
+    // inputs auto-update
+    ['inp-amount','inp-years','inp-rate-linked','inp-rate-unlinked'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', update);
+    });
+
+    // init
+    setInf('mid');
+  </script>
+</body>
+</html>
