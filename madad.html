@@ -785,25 +785,36 @@
       header += '<th>שנתי</th></tr>';
 
       var rows = '';
+      var annualSum = 0, annualCnt = 0;
       CPI_ANNUAL.forEach(function(yr) {
-        var rowId = yr.y === 2026 ? ' id="cpi-row-2026"' : '';
-        rows += '<tr' + rowId + '>';
-        rows += '<td class="year-cell">' + yr.y + (yr.y === 2026 ? ' <small style="font-weight:400;opacity:.6">(חי)</small>' : '') + '</td>';
+        if (yr.y === 2026) return; // 2026 מוצג בכרטיס החי — לא בטבלה
+        rows += '<tr>';
+        rows += '<td class="year-cell">' + yr.y + '</td>';
         yr.m.forEach(function(v) {
           if (v === null) { rows += '<td class="na">—</td>'; return; }
           var cls = v > 0.005 ? 'pos' : (v < -0.005 ? 'neg' : 'zero');
-          var sign = v > 0 ? '+' : '';
-          rows += '<td class="' + cls + '">' + sign + v.toFixed(2) + '%</td>';
+          rows += '<td class="' + cls + '">' + (v>0?'+':'') + v.toFixed(2) + '%</td>';
         });
         if (yr.a === null) {
           rows += '<td class="annual-cell na">—</td>';
         } else {
           var ac = yr.a > 0.005 ? 'pos' : (yr.a < -0.005 ? 'neg' : 'zero');
-          var as = yr.a > 0 ? '+' : '';
-          rows += '<td class="annual-cell ' + ac + '">' + as + yr.a.toFixed(2) + '%</td>';
+          rows += '<td class="annual-cell ' + ac + '">' + (yr.a>0?'+':'') + yr.a.toFixed(2) + '%</td>';
+          annualSum += yr.a; annualCnt++;
         }
         rows += '</tr>';
       });
+
+      // שורת ממוצע שנתי
+      if (annualCnt > 0) {
+        var avg = annualSum / annualCnt;
+        var avgCls = avg > 0.005 ? 'pos' : (avg < -0.005 ? 'neg' : 'zero');
+        rows += '<tr class="avg-row">';
+        rows += '<td class="year-cell">ממוצע ' + (CPI_ANNUAL[0].y) + '–' + (CPI_ANNUAL[CPI_ANNUAL.length-2].y) + '</td>';
+        MONTH_NAMES.forEach(function() { rows += '<td>—</td>'; });
+        rows += '<td class="annual-cell ' + avgCls + '">' + (avg>0?'+':'') + avg.toFixed(2) + '%</td>';
+        rows += '</tr>';
+      }
 
       document.getElementById('cpi-history-table').innerHTML =
         '<table class="cpi-table"><thead>' + header + '</thead><tbody>' + rows + '</tbody></table>';
@@ -816,10 +827,11 @@
       header += '<th>שנתי</th></tr>';
 
       var rows = '';
+      var annualSum = 0, annualCnt = 0;
       CONS_ANNUAL.forEach(function(yr) {
-        var rowId = yr.y === 2026 ? ' id="cons-row-2026"' : '';
-        rows += '<tr' + rowId + '>';
-        rows += '<td class="year-cell">' + yr.y + (yr.y === 2026 ? ' <small style="font-weight:400;opacity:.6">(חי)</small>' : '') + '</td>';
+        if (yr.y === 2026) return; // 2026 מוצג בכרטיס החי — לא בטבלה
+        rows += '<tr>';
+        rows += '<td class="year-cell">' + yr.y + '</td>';
         yr.m.forEach(function(v) {
           if (v === null) { rows += '<td class="na">—</td>'; return; }
           var cls = v > 0.005 ? 'pos' : (v < -0.005 ? 'neg' : 'zero');
@@ -830,9 +842,21 @@
         } else {
           var ac = yr.a > 0.005 ? 'pos' : (yr.a < -0.005 ? 'neg' : 'zero');
           rows += '<td class="annual-cell ' + ac + '">' + (yr.a>0?'+':'') + yr.a.toFixed(2) + '%</td>';
+          annualSum += yr.a; annualCnt++;
         }
         rows += '</tr>';
       });
+
+      // שורת ממוצע שנתי
+      if (annualCnt > 0) {
+        var avg = annualSum / annualCnt;
+        var avgCls = avg > 0.005 ? 'pos' : (avg < -0.005 ? 'neg' : 'zero');
+        rows += '<tr class="avg-row">';
+        rows += '<td class="year-cell">ממוצע ' + (CONS_ANNUAL[0].y) + '–' + (CONS_ANNUAL[CONS_ANNUAL.length-2].y) + '</td>';
+        MONTH_NAMES.forEach(function() { rows += '<td>—</td>'; });
+        rows += '<td class="annual-cell ' + avgCls + '">' + (avg>0?'+':'') + avg.toFixed(2) + '%</td>';
+        rows += '</tr>';
+      }
 
       document.getElementById('cons-history-table').innerHTML =
         '<table class="cpi-table"><thead>' + header + '</thead><tbody>' + rows + '</tbody></table>';
