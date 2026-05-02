@@ -290,60 +290,11 @@
         </div>
       </div>
 
-      <!-- MECHANISM VISUAL -->
+      <!-- MECHANISM VISUAL — דינמי לפי קלטי המשתמש -->
       <div class="mechanism-wrap">
         <div class="mechanism-title">כך עובד ניפוח הקרן — מה שהבנק עושה כל חודש במסלול הצמוד</div>
-
-        <div class="mechanism-steps">
-          <!-- Year 0 -->
-          <div class="mech-col">
-            <div class="mech-year">תחילת הלוואה</div>
-            <div class="mech-bars">
-              <div class="mech-bar-base" style="height:120px">קרן: ₪800,000</div>
-            </div>
-            <div class="mech-payment">תשלום: ₪3,680/חודש</div>
-          </div>
-
-          <div class="mech-arrow">←</div>
-
-          <!-- Year 5 -->
-          <div class="mech-col">
-            <div class="mech-year">אחרי 5 שנים</div>
-            <div class="mech-bars">
-              <div class="mech-bar-inflate" style="height:26px">הצמדה: +₪21,000</div>
-              <div class="mech-bar-base" style="height:104px">קרן: ₪703,000</div>
-            </div>
-            <div class="mech-payment growing">תשלום: ₪4,150/חודש ↑</div>
-          </div>
-
-          <div class="mech-arrow">←</div>
-
-          <!-- Year 10 -->
-          <div class="mech-col">
-            <div class="mech-year">אחרי 10 שנים</div>
-            <div class="mech-bars">
-              <div class="mech-bar-inflate" style="height:40px">הצמדה: +₪38,000</div>
-              <div class="mech-bar-base" style="height:80px">קרן: ₪565,000</div>
-            </div>
-            <div class="mech-payment growing">תשלום: ₪4,690/חודש ↑</div>
-          </div>
-
-          <div class="mech-arrow">←</div>
-
-          <!-- Year 20 -->
-          <div class="mech-col">
-            <div class="mech-year">אחרי 20 שנה</div>
-            <div class="mech-bars">
-              <div class="mech-bar-inflate" style="height:70px">הצמדה: +₪57,000</div>
-              <div class="mech-bar-base" style="height:16px" style="min-height:16px">קרן: ₪0</div>
-            </div>
-            <div class="mech-payment growing">תשלום: ₪5,990/חודש ↑</div>
-          </div>
-        </div>
-
-        <div class="mech-note">
-          💡 הנחה: הלוואה ₪800,000 ל-20 שנה, ריבית צמודה 3.5%, מדד שנתי 2.5% — ערכים להמחשה בלבד
-        </div>
+        <div class="mechanism-steps" id="mech-steps"></div>
+        <div class="mech-note" id="mech-note"></div>
       </div>
 
       <!-- WHY STEPS -->
@@ -481,59 +432,62 @@
       update();
     }
 
-    /* ── simulation ── */
+    /* ── simulation ──
+       הלוואה צמודה: הריבית המצוטטת היא ריאלית (כפי שנוהגים הבנקים בישראל).
+       החישוב מתבצע ביחידות אינדקס (ריאלי), והתשלום הנומינלי גדל עם המדד.
+       הלוואה לא צמודה: ריבית נומינלית, תשלום קבוע (שפיצר) או יורד (קרן שווה).
+    ── */
     function simulate(P, n, r_annual, cpi_annual, isLinked, isSpitzer) {
-      var r = r_annual / 12;
-      var m = Math.pow(1 + cpi_annual, 1/12) - 1;
-      var balance = P;
+      var r = r_annual / 12;                          // ריאלי (צמוד) / נומינלי (לא צמוד)
+      var m = Math.pow(1 + cpi_annual, 1/12) - 1;    // מדד חודשי
+
       var payments = [], balances = [P];
 
       if (!isLinked && isSpitzer) {
-        var pmt = r > 0 ? P * r / (1 - Math.pow(1+r, -n)) : P/n;
-        for (var k = 0; k < n; k++) {
+        // לא צמוד שפיצר — תשלום קבוע
+        var pmt = r > 0 ? P*r/(1-Math.pow(1+r,-n)) : P/n;
+        var bal = P;
+        for (var k=0; k<n; k++) {
           payments.push(pmt);
-          balance = balance*(1+r) - pmt;
-          balances.push(Math.max(0, balance));
+          bal = bal*(1+r) - pmt;
+          balances.push(Math.max(0, bal));
         }
 
       } else if (!isLinked && !isSpitzer) {
-        var prin = P / n;
-        for (var k = 0; k < n; k++) {
-          payments.push(prin + balance*r);
-          balance -= prin;
-          balances.push(Math.max(0, balance));
+        // לא צמוד קרן שווה — קרן קבועה + ריבית יורדת
+        var prin = P/n, bal = P;
+        for (var k=0; k<n; k++) {
+          payments.push(prin + bal*r);
+          bal -= prin;
+          balances.push(Math.max(0, bal));
         }
 
       } else if (isLinked && isSpitzer) {
-        var real_r = (1+r)/(1+m) - 1;
-        var base = Math.abs(real_r) > 0.0000001
-          ? P * real_r / (1 - Math.pow(1+real_r, -n))
-          : P / n;
-        var cpi_cum = 1;
-        for (var k = 0; k < n; k++) {
-          balance *= (1+m);
-          cpi_cum *= (1+m);
-          var pmt = base * cpi_cum;
-          var interest = balance * r;
-          balance -= (pmt - interest);
-          payments.push(pmt);
-          balances.push(balance);
+        // צמוד שפיצר — חישוב ביחידות ריאליות (index units)
+        // תשלום ריאלי קבוע; תשלום נומינלי גדל עם המדד
+        var basePmt = r > 0 ? P*r/(1-Math.pow(1+r,-n)) : P/n;
+        var realBal = P, cpiCum = 1;
+        for (var k=0; k<n; k++) {
+          cpiCum    *= (1+m);
+          var intReal = realBal * r;           // ריבית ריאלית
+          realBal    -= (basePmt - intReal);   // הקטנת יתרה ריאלית
+          payments.push(basePmt * cpiCum);     // תשלום נומינלי = ריאלי × מדד מצטבר
+          balances.push(Math.max(0, realBal) * cpiCum);  // יתרה נומינלית
         }
 
-      } else { // linked + ks
-        var realPrin = P / n;
-        var realBal  = P;
-        var cpi_cum  = 1;
-        for (var k = 0; k < n; k++) {
-          cpi_cum *= (1+m);
-          var nomBal  = realBal * cpi_cum;
-          var nomPrin = realPrin * cpi_cum;
-          payments.push(nomPrin + nomBal * r);
+      } else {
+        // צמוד קרן שווה — קרן ריאלית קבועה; תשלום נומינלי גדל עם המדד
+        var realPrin = P/n, realBal = P, cpiCum = 1;
+        for (var k=0; k<n; k++) {
+          cpiCum    *= (1+m);
+          var intReal = realBal * r;
+          var pmtReal = realPrin + intReal;
+          payments.push(pmtReal * cpiCum);
           realBal -= realPrin;
-          balances.push(Math.max(0, realBal) * cpi_cum);
+          balances.push(Math.max(0, realBal) * cpiCum);
         }
       }
-      return { payments: payments, balances: balances, total: payments.reduce(function(s,v){return s+v;}, 0) };
+      return { payments: payments, balances: balances, total: payments.reduce(function(s,v){return s+v;},0) };
     }
 
     /* ── break-even CPI ── */
@@ -691,21 +645,45 @@
         + '<br>נקודת האיזון: מדד שנתי מעל <strong>' + fmtPct(be) + '</strong> הופך את המסלול הצמוד ליקר יותר.</p>'
         + '</div>';
 
-      // charts — sample to yearly
-      var bal_lk = [], bal_ul = [], pay_lk = [], pay_ul = [];
-      for (var i = 0; i <= n; i++) {
-        bal_lk.push(lk.balances[i]);
-        bal_ul.push(ul.balances[i]);
-      }
-      for (var i = 0; i < n; i++) {
-        pay_lk.push(lk.payments[i]);
-        pay_ul.push(ul.payments[i]);
-      }
+      // ── דיאגרמת מנגנון דינמית ──
+      (function() {
+        var snapYears = [0, Math.round(Y*0.25), Math.round(Y*0.5), Y];
+        var maxBal = Math.max.apply(null, lk.balances.concat(ul.balances));
+        var BAR_MAX = 120;
+        var html = '';
+        snapYears.forEach(function(yr, si) {
+          var idx = Math.min(yr * 12, n);
+          var nomBal   = lk.balances[idx];
+          var realBal  = nomBal / Math.pow(1 + infRate, yr);  // ריאלי (קירוב)
+          var inflation = nomBal - realBal;
+          var pmt      = idx < n ? lk.payments[Math.min(idx, n-1)] : lk.payments[n-1];
+          var realH    = Math.max(8, Math.round((realBal / P) * BAR_MAX));
+          var infH     = Math.max(0, Math.round((inflation / P) * BAR_MAX));
 
+          if (si > 0) html += '<div class="mech-arrow">←</div>';
+          html += '<div class="mech-col">'
+            + '<div class="mech-year">' + (yr === 0 ? 'תחילת הלוואה' : 'אחרי ' + yr + ' שנים') + '</div>'
+            + '<div class="mech-bars">';
+          if (infH > 0) {
+            html += '<div class="mech-bar-inflate" style="height:' + infH + 'px">הצמדה: +' + fmt(inflation) + '</div>';
+          }
+          html += '<div class="mech-bar-base" style="height:' + realH + 'px">קרן: ' + fmt(realBal) + '</div>';
+          html += '</div>'
+            + '<div class="mech-payment' + (yr > 0 ? ' growing' : '') + '">'
+            + fmt(pmt) + '/חודש' + (yr > 0 ? ' ↑' : '')
+            + '</div></div>';
+        });
+        document.getElementById('mech-steps').innerHTML = html;
+        document.getElementById('mech-note').innerHTML =
+          '💡 הנחה: הלוואה ' + fmt(P) + ' ל-' + Y + ' שנים, ריבית צמודה (ריאלית) '
+          + fmtPct(rL) + ', מדד שנתי ' + fmtPct(infRate);
+      })();
+
+      // charts
       document.getElementById('chart-balance').innerHTML =
-        buildChart(bal_lk, bal_ul, n, 'balance', P);
+        buildChart(lk.balances, ul.balances, n, 'balance', P);
       document.getElementById('chart-payment').innerHTML =
-        buildChart(pay_lk, pay_ul, n, 'payment');
+        buildChart(lk.payments, ul.payments, n, 'payment');
     }
 
     // inputs auto-update
