@@ -193,14 +193,13 @@
     .insight-text strong { color: #fbbf24; }
 
     /* ── CHART ── */
-    .chart-title { font-size: .95rem; font-weight: 700; color: #1a3a5c; margin-bottom: .5rem; }
-    .chart-legend { display: flex; gap: 1.2rem; margin-bottom: .8rem; flex-wrap: wrap; }
+    .chart-title { font-size: .95rem; font-weight: 700; color: #1a3a5c; margin-bottom: .4rem; }
+    .chart-legend { display: flex; gap: 1.2rem; margin-bottom: .7rem; flex-wrap: wrap; }
     .legend-item { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: #475569; }
     .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    @media(max-width:700px){ .charts-grid { grid-template-columns: 1fr; } }
+    .charts-grid { display: flex; flex-direction: column; gap: 1.4rem; max-width: 860px; margin: 0 auto; }
     .chart-wrap {
-      background: #fff; border-radius: 16px; padding: 1.4rem 1.2rem;
+      background: #fff; border-radius: 16px; padding: 1.4rem 1.4rem 1rem;
       box-shadow: 0 2px 14px rgba(0,0,0,.07);
     }
 
@@ -506,89 +505,132 @@
     function fmt(v) { return '₪' + Math.round(v).toLocaleString('he-IL'); }
     function fmtPct(v) { return (v*100).toFixed(1) + '%'; }
 
-    /* ── SVG chart ── */
-    function buildChart(linked_data, unlinked_data, n, label_y, refLine) {
-      var W = 520, H = 220;
-      var pad = { top:12, right:12, bottom:36, left:62 };
-      var pw = W-pad.left-pad.right, ph = H-pad.top-pad.bottom;
+    /* ── נתוני hover לגרפים ── */
+    var _chartStore = {};
 
-      // sample every 3 months for performance
-      var step = Math.max(1, Math.floor(n/80));
-      var ld = [], ud = [];
-      for (var i = 0; i <= n; i += step) {
-        ld.push(linked_data[Math.min(i, linked_data.length-1)]);
-        ud.push(unlinked_data[Math.min(i, unlinked_data.length-1)]);
+    function chartHover(evt, cid) {
+      var svg = document.getElementById(cid+'-svg');
+      if (!svg || !_chartStore[cid]) return;
+      var pt = svg.createSVGPoint(); pt.x = evt.clientX; pt.y = evt.clientY;
+      var sp = pt.matrixTransform(svg.getScreenCTM().inverse());
+      var D = _chartStore[cid];
+      var idx = Math.round((sp.x - D.pl) / D.pw * D.n);
+      idx = Math.max(0, Math.min(D.n, idx));
+      var lkV = D.lk[idx], ulV = D.ul[idx];
+      var cx  = D.pl + (idx / D.n) * D.pw;
+      var lkY = D.pt + D.ph - (lkV / D.maxV) * D.ph;
+      var ulY = D.pt + D.ph - (ulV / D.maxV) * D.ph;
+      var yr  = Math.round(idx / 12);
+      var g = function(id){ return document.getElementById(id); };
+      var s1 = function(id,a,v){ var el=g(id); if(el){el.setAttribute(a,v);} };
+      s1(cid+'-vl','x1',cx); s1(cid+'-vl','x2',cx); s1(cid+'-vl','opacity','1');
+      s1(cid+'-dlk','cx',cx); s1(cid+'-dlk','cy',lkY); s1(cid+'-dlk','opacity','1');
+      s1(cid+'-dul','cx',cx); s1(cid+'-dul','cy',ulY); s1(cid+'-dul','opacity','1');
+      var tw=160, th=64;
+      var tx = (cx+tw+16 < D.W-D.pr) ? cx+10 : cx-tw-10;
+      var ty = D.pt + 4;
+      s1(cid+'-tbg','x',tx); s1(cid+'-tbg','y',ty); s1(cid+'-tbg','opacity','1');
+      var tcx = tx+tw/2;
+      var setTxt = function(id,x,y,txt){ var el=g(id); if(el){el.setAttribute('x',x);el.setAttribute('y',y);el.setAttribute('opacity','1');el.textContent=txt;} };
+      setTxt(cid+'-tyr', tcx, ty+15, 'שנה '+yr);
+      setTxt(cid+'-tlk', tcx, ty+33, 'צמוד: '+fmt(lkV));
+      setTxt(cid+'-tul', tcx, ty+51, 'לא צמוד: '+fmt(ulV));
+    }
+
+    function chartLeave(cid) {
+      ['-vl','-dlk','-dul','-tbg','-tyr','-tlk','-tul'].forEach(function(s){
+        var el=document.getElementById(cid+s); if(el) el.setAttribute('opacity','0');
+      });
+    }
+
+    /* ── SVG chart builder ── */
+    function buildChart(ldFull, udFull, n, cid, refLine) {
+      var W=820, H=260;
+      var pad={top:16,right:20,bottom:40,left:70};
+      var pw=W-pad.left-pad.right, ph=H-pad.top-pad.bottom;
+
+      // sample for rendering
+      var step=Math.max(1,Math.floor(n/140)), ldS=[], udS=[];
+      for(var i=0;i<=n;i+=step){
+        ldS.push(ldFull[Math.min(i,ldFull.length-1)]);
+        udS.push(udFull[Math.min(i,udFull.length-1)]);
       }
-      var allVals = ld.concat(ud);
-      if (refLine !== undefined) allVals.push(refLine);
-      var minV = 0;
-      var maxV = Math.max.apply(null, allVals) * 1.05;
+      var ns=ldS.length;
 
-      var ns = ld.length;
-      var xp = function(i) { return pad.left + (i/(ns-1))*pw; };
-      var yp = function(v) { return pad.top + ph - (v/maxV)*ph; };
+      var allV=ldS.concat(udS);
+      if(refLine!==undefined) allV.push(refLine);
+      var maxV=Math.max.apply(null,allV.filter(function(v){return isFinite(v)&&!isNaN(v);})) * 1.05;
+
+      // store full data for hover
+      _chartStore[cid]={lk:ldFull,ul:udFull,n:n,maxV:maxV,W:W,H:H,pl:pad.left,pt:pad.top,pr:pad.right,pw:pw,ph:ph};
+
+      var xpS=function(i){return pad.left+(i/(ns-1))*pw;};
+      var yp =function(v){return pad.top+ph-(v/maxV)*ph;};
+      var xpF=function(i){return pad.left+(i/n)*pw;};
 
       // paths
-      function makePath(arr, color) {
-        var d = '';
-        arr.forEach(function(v,i) {
-          d += (i===0?'M ':'L ') + xp(i).toFixed(1) + ' ' + yp(v).toFixed(1) + ' ';
-        });
-        return '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2.2" stroke-linejoin="round"/>';
+      function mkPath(arr,col){
+        var d=''; arr.forEach(function(v,i){d+=(i===0?'M ':'L ')+xpS(i).toFixed(1)+' '+yp(v).toFixed(1)+' ';});
+        return '<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.5" stroke-linejoin="round"/>';
       }
 
-      // fill under linked (inflation zone above ref)
-      var fillAbove = '';
-      if (refLine !== undefined) {
-        var refY = yp(refLine);
-        var abovePts = [];
-        ld.forEach(function(v,i) { if(v > refLine) abovePts.push({i:i,v:v}); });
-        if (abovePts.length > 1) {
-          var fd = 'M ' + xp(abovePts[0].i) + ' ' + refY;
-          abovePts.forEach(function(p) { fd += ' L '+xp(p.i)+' '+yp(p.v); });
-          fd += ' L '+xp(abovePts[abovePts.length-1].i)+' '+refY+' Z';
-          fillAbove = '<path d="' + fd + '" fill="rgba(239,68,68,.15)"/>';
+      // fill above ref
+      var fillAbove='';
+      if(refLine!==undefined){
+        var refY=yp(refLine);
+        var abv=ldS.filter(function(v){return v>refLine;});
+        if(abv.length>1){
+          var ai=ldS.reduce(function(acc,v,i){if(v>refLine)acc.push(i);return acc;},[]);
+          var fd='M '+xpS(ai[0])+' '+refY;
+          ai.forEach(function(i){fd+=' L '+xpS(i)+' '+yp(ldS[i]);});
+          fd+=' L '+xpS(ai[ai.length-1])+' '+refY+' Z';
+          fillAbove='<path d="'+fd+'" fill="rgba(239,68,68,.12)"/>';
         }
       }
 
-      // Y grid & labels
-      var yLines = '';
-      var yStep = maxV > 1000000 ? 200000 : maxV > 500000 ? 100000 : maxV > 10000 ? 2000 : 1;
-      var nSteps = Math.floor(maxV / yStep);
-      if (nSteps > 6) yStep *= 2;
-      for (var v = 0; v <= maxV; v += yStep) {
-        var gy = yp(v);
-        yLines += '<line x1="'+pad.left+'" y1="'+gy+'" x2="'+(pad.left+pw)+'" y2="'+gy+'" stroke="#e8ecf0" stroke-width="1"/>';
-        var lbl = v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? Math.round(v/1000)+'K' : v.toFixed(0);
-        yLines += '<text x="'+(pad.left-5)+'" y="'+(gy+4)+'" text-anchor="end" font-size="10" fill="#94a3b8">'+lbl+'</text>';
+      // Y grid
+      var yLines='';
+      var yStep=maxV>1000000?200000:maxV>500000?100000:maxV>10000?2000:1;
+      while(Math.floor(maxV/yStep)>7) yStep*=2;
+      for(var v=0;v<=maxV;v+=yStep){
+        var gy=yp(v);
+        yLines+='<line x1="'+pad.left+'" y1="'+gy+'" x2="'+(pad.left+pw)+'" y2="'+gy+'" stroke="#e8ecf0" stroke-width="1"/>';
+        var lbl=v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':v.toFixed(0);
+        yLines+='<text x="'+(pad.left-6)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="#94a3b8">'+lbl+'</text>';
       }
 
-      // X labels (years)
-      var xLabels = '';
-      var yr_n = Math.floor(n/12);
-      var xInterval = yr_n <= 10 ? 2 : yr_n <= 20 ? 5 : 10;
-      for (var y = 0; y <= yr_n; y += xInterval) {
-        var mi = Math.min(Math.round(y/yr_n*(ns-1)), ns-1);
-        var xv = xp(mi);
-        xLabels += '<line x1="'+xv+'" y1="'+pad.top+'" x2="'+xv+'" y2="'+(pad.top+ph)+'" stroke="#dde3ea" stroke-width="1" stroke-dasharray="3,3"/>';
-        xLabels += '<text x="'+xv+'" y="'+(H-pad.bottom+16)+'" text-anchor="middle" font-size="10" fill="#7a8899">שנה '+y+'</text>';
+      // X labels
+      var xLbl=''; var yrN=Math.floor(n/12);
+      var xInt=yrN<=10?2:yrN<=20?5:10;
+      for(var y=0;y<=yrN;y+=xInt){
+        var xv=xpF(y*12);
+        xLbl+='<line x1="'+xv+'" y1="'+pad.top+'" x2="'+xv+'" y2="'+(pad.top+ph)+'" stroke="#dde3ea" stroke-width="1" stroke-dasharray="3,3"/>';
+        xLbl+='<text x="'+xv+'" y="'+(H-pad.bottom+16)+'" text-anchor="middle" font-size="11" fill="#7a8899">שנה '+y+'</text>';
       }
 
       // Ref line
-      var refSvg = '';
-      if (refLine !== undefined) {
-        var ry = yp(refLine);
-        refSvg = '<line x1="'+pad.left+'" y1="'+ry+'" x2="'+(pad.left+pw)+'" y2="'+ry+'" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="6,3"/>';
-        refSvg += '<text x="'+(pad.left+4)+'" y="'+(ry-4)+'" font-size="9" fill="#ef4444">סכום מקורי</text>';
+      var refSvg='';
+      if(refLine!==undefined){
+        var ry=yp(refLine);
+        refSvg='<line x1="'+pad.left+'" y1="'+ry+'" x2="'+(pad.left+pw)+'" y2="'+ry+'" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="6,3"/>';
+        refSvg+='<text x="'+(pad.left+4)+'" y="'+(ry-4)+'" font-size="10" fill="#ef4444">סכום מקורי</text>';
       }
 
-      return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'
-        + yLines + xLabels
-        + fillAbove
-        + refSvg
-        + makePath(ld, '#f59e0b')
-        + makePath(ud, '#3b82f6')
-        + '</svg>';
+      // Hover elements
+      var hov=
+        '<line id="'+cid+'-vl" x1="0" y1="'+pad.top+'" x2="0" y2="'+(pad.top+ph)+'" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3" opacity="0" pointer-events="none"/>'
+        +'<circle id="'+cid+'-dlk" cx="0" cy="0" r="5" fill="#f59e0b" stroke="#fff" stroke-width="2" opacity="0" pointer-events="none"/>'
+        +'<circle id="'+cid+'-dul" cx="0" cy="0" r="5" fill="#3b82f6" stroke="#fff" stroke-width="2" opacity="0" pointer-events="none"/>'
+        +'<rect id="'+cid+'-tbg" x="0" y="0" width="160" height="64" rx="8" fill="#0f2540" opacity="0" pointer-events="none"/>'
+        +'<text id="'+cid+'-tyr" x="0" y="0" text-anchor="middle" font-size="11" fill="#8ab4d4" opacity="0" pointer-events="none"></text>'
+        +'<text id="'+cid+'-tlk" x="0" y="0" text-anchor="middle" font-size="12" font-weight="700" fill="#fbbf24" opacity="0" pointer-events="none"></text>'
+        +'<text id="'+cid+'-tul" x="0" y="0" text-anchor="middle" font-size="12" font-weight="700" fill="#93c5fd" opacity="0" pointer-events="none"></text>'
+        +'<rect id="'+cid+'-ov" x="'+pad.left+'" y="'+pad.top+'" width="'+pw+'" height="'+ph+'" fill="transparent" style="cursor:crosshair" onpointermove="chartHover(event,\''+cid+'\')" onpointerleave="chartLeave(\''+cid+'\')" />';
+
+      return '<svg id="'+cid+'-svg" viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'
+        +yLines+xLbl+fillAbove+refSvg
+        +mkPath(ldS,'#f59e0b')+mkPath(udS,'#3b82f6')
+        +hov+'</svg>';
     }
 
     /* ── main update ── */
@@ -681,9 +723,9 @@
 
       // charts
       document.getElementById('chart-balance').innerHTML =
-        buildChart(lk.balances, ul.balances, n, 'balance', P);
+        buildChart(lk.balances, ul.balances, n, 'bal', P);
       document.getElementById('chart-payment').innerHTML =
-        buildChart(lk.payments, ul.payments, n, 'payment');
+        buildChart(lk.payments, ul.payments, n, 'pay');
     }
 
     // inputs auto-update
