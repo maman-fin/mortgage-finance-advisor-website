@@ -135,6 +135,9 @@
     .cpi-table .na { color:#d1d5db; }
     .cpi-table .avg-row td { background:#0f2540; color:#fff; font-weight:700; }
     .cpi-table .avg-row .year-cell { background:#0f2540; color:#fbbf24; }
+    .cpi-table .yr-new td { border-top:2px solid #c7d9f5; }
+    .cpi-table .yr-2025 .year-cell { color:#64748b; }
+    .cpi-table .yr-2026 .year-cell { color:#1a3a5c; }
 
     /* ── FOOTER ── */
     .data-footer { background:#0f2540; padding:1.5rem 1rem; text-align:center; }
@@ -908,8 +911,11 @@
       if (months.length < 2) return;
       var last12 = months.slice(-12);
       var latest = last12[last12.length - 1];
-      var rows = '', sumCpi = 0, sumCons = 0, cntCons = 0;
+      var rows = '', sumCpi = 0, sumCons = 0, cntCons = 0, prevYr = null;
       last12.forEach(function(m) {
+        var yr = m.period.split('-')[0];
+        var isNew = yr !== prevYr;
+        prevYr = yr;
         var cls = m.value > 0.005 ? 'pos' : (m.value < -0.005 ? 'neg' : 'zero');
         sumCpi += m.value;
         var cv = _consMap[m.period];
@@ -918,7 +924,8 @@
             + (cv > 0 ? '+' : '') + cv.toFixed(2) + '%</td>'
           : '<td class="na">—</td>';
         if (cv !== undefined && cv !== null) { sumCons += cv; cntCons++; }
-        rows += '<tr><td class="year-cell">' + fmtPeriod(m.period) + '</td>'
+        var rowCls = 'yr-' + yr + (isNew ? ' yr-new' : '');
+        rows += '<tr class="' + rowCls + '"><td class="year-cell">' + fmtPeriod(m.period) + '</td>'
           + '<td class="' + cls + '">' + (m.value > 0 ? '+' : '') + m.value.toFixed(2) + '%</td>'
           + consCell + '</tr>';
       });
