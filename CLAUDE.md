@@ -58,3 +58,77 @@ Public pages fetch data from Supabase at load time and render into the DOM. No r
 - `SUPABASE_URL` and `SUPABASE_KEY` are repeated in every file — update all files when changing.
 - The admin password is set in `admin.html` (search for `ADMIN_PASSWORD`).
 - `SITE_URL` in `admin.html` controls the share link sent to customers for the review form.
+
+## Visual Design System
+
+All pages — existing and new — must use the same design tokens and structural patterns. Never introduce new fonts, colors, or layout conventions.
+
+### `<head>` boilerplate (must appear in every HTML file)
+```html
+<link rel="icon" type="image/png" href="תמונות/logo_main.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#1a3a5c">
+```
+
+### Color palette
+| Token | Value | Usage |
+|---|---|---|
+| Primary dark blue | `#1a3a5c` | Nav, headings, buttons, card headers |
+| Secondary blue | `#2a6496` | Gradients, accents, links |
+| Dark navy | `#142d48` | Dropdown menu background |
+| Background | `#f7f8fa` | Page body |
+| Text primary | `#222` | Body text |
+| Text secondary | `#444` | Paragraphs inside cards |
+| Accent / CTA | `#e8a020` | CTA buttons, highlights |
+| CTA hover | `#c98010` | CTA button hover state |
+| Footer bg | `#111e2e` | Footer |
+
+### Typography
+- **Font stack:** `'Segoe UI', Arial, sans-serif`
+- **Direction:** RTL (`dir="rtl"` on `<html>`)
+- **Page title h1:** `font-size: 2.2rem` (mobile: `1.6rem`), white, inside `.page-header`
+- **Section label:** `font-size: 1.25rem; font-weight: 800; color: #1a3a5c`
+- **Card/box headings:** `font-size: 1.1rem; color: #1a3a5c`
+- **Body text:** `font-size: 0.91–0.93rem; line-height: 1.55–1.7`
+
+### Page header (blue gradient banner — every public page must have one)
+```css
+.page-header {
+  background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%);
+  color: #fff; text-align: center; padding: 3.5rem 1rem 3rem;
+}
+.page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.page-header p  { opacity: 0.85; font-size: 1rem; max-width: 600px; margin: 0 auto; }
+```
+
+### Content width
+All main content wraps in `.content-wrap { max-width: 860px; margin: 2.5rem auto 1rem; padding: 0 1rem; }`.
+
+### Section label pattern
+```html
+<div class="section-label">🔍 כותרת</div>
+```
+Renders as bold colored heading with a horizontal rule extending to the right.
+
+### Common components (copy CSS from an existing page, do not reinvent)
+- `.intro-box` — white card with blue-right border, for explanatory text
+- `.bank-card` / `.bank-card-header` / `.bank-card-body` — collapsible card with dark header
+- `.channel-tabs` / `.channel-tab` / `.channel-content` — tab switcher inside a card
+- `.step-list` — numbered step list with circular counters
+- `.note-box` — amber warning/info box
+- `.phone-box` — green phone-number box
+- `.info-list` — icon + text list
+- `.video-section` — white card with amber-right border, for YouTube embeds
+- `.cta-section` — full-width dark blue CTA strip (always appears before footer)
+
+### Footer (identical on every page)
+```html
+<footer>
+  <span>© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות | האתר אינו מהווה ייעוץ פיננסי מחייב
+</footer>
+```
+
+### Mobile breakpoint
+All responsive overrides go inside `@media (max-width: 768px)`. Nav collapses to hamburger at this breakpoint.
