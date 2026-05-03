@@ -132,3 +132,18 @@ Renders as bold colored heading with a horizontal rule extending to the right.
 
 ### Mobile breakpoint
 All responsive overrides go inside `@media (max-width: 768px)`. Nav collapses to hamburger at this breakpoint.
+
+### Dropdown hover — CRITICAL
+The `@media` rule for desktop dropdown hover **must be written as a separate top-level rule**, never nested inside `.dropdown-menu {}`. Nesting it breaks hover in most browsers.
+
+```css
+/* CORRECT */
+.dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 220px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+@media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } }
+
+/* WRONG — do not do this */
+.dropdown-menu { display: none; ...
+  @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } } ... }
+```
+
+Mobile dropdown (open/close on tap) is handled by JS — the CSS rule above is for desktop hover only.

@@ -24,8 +24,8 @@
     .nav-toggle:focus, .nav-toggle:active { outline: none; background: none; color: #fff; }
     .dropdown { position: relative; }
     .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
-    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0;
-    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } } background: #142d48; min-width: 220px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 220px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } }
 
     .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
     .dropdown-menu li:last-child a { border-bottom: none; }
@@ -65,7 +65,7 @@
 
     /* ── CHANNEL TABS ── */
     .channel-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
-    .channel-tab { background: #f0f4f9; border: 1px solid #c8d8ec; border-radius: 20px; padding: 0.35rem 0.9rem; font-size: 0.82rem; font-weight: 700; color: #1a3a5c; cursor: pointer; transition: all 0.18s; user-select: none; }
+    .channel-tab { background: #f0f4f9; border: 1px solid #c8d8ec; border-radius: 20px; padding: 0.35rem 0.9rem; font-size: 0.82rem; font-weight: 700; color: #1a3a5c; cursor: pointer; transition: all 0.18s; user-select: none; touch-action: manipulation; }
     .channel-tab.active, .channel-tab:hover { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
     .channel-content { display: none; }
     .channel-content.active { display: block; }
@@ -210,9 +210,9 @@
       </div>
       <div class="bank-card-body open">
         <div class="channel-tabs">
-          <div class="channel-tab active" onclick="switchTab(this, 'pension-online')">דרך האתר (מומלץ)</div>
-          <div class="channel-tab" onclick="switchTab(this, 'pension-phone')">דרך הטלפון</div>
-          <div class="channel-tab" onclick="switchTab(this, 'pension-info')">מה כולל הדוח?</div>
+          <div class="channel-tab active" data-target="pension-online">דרך האתר (מומלץ)</div>
+          <div class="channel-tab" data-target="pension-phone">דרך הטלפון</div>
+          <div class="channel-tab" data-target="pension-info">מה כולל הדוח?</div>
         </div>
 
         <div class="channel-content active" id="pension-online">
@@ -269,13 +269,16 @@
   </footer>
 
   <script>
-    function switchTab(tab, contentId) {
-      var card = tab.closest('.bank-card-body');
-      card.querySelectorAll('.channel-tab').forEach(function(t) { t.classList.remove('active'); });
-      card.querySelectorAll('.channel-content').forEach(function(c) { c.classList.remove('active'); });
-      tab.classList.add('active');
-      document.getElementById(contentId).classList.add('active');
-    }
+    document.querySelectorAll('.channel-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var targetId = this.getAttribute('data-target');
+        var card = this.closest('.bank-card-body');
+        card.querySelectorAll('.channel-tab').forEach(function(t) { t.classList.remove('active'); });
+        card.querySelectorAll('.channel-content').forEach(function(c) { c.classList.remove('active'); });
+        this.classList.add('active');
+        document.getElementById(targetId).classList.add('active');
+      });
+    });
 
     var navToggle = document.querySelector('.nav-toggle');
     var navMenu = document.querySelector('nav ul');
