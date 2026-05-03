@@ -11,32 +11,23 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f8fa; color: #1e293b; direction: rtl; }
 
-    /* ── NAV ── */
-    nav {
-      background: #1a3a5c; padding: .9rem 1.5rem;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.18);
-    }
-    nav .logo a { display:flex; align-items:center; gap:.7rem; text-decoration:none; }
-    nav .logo img { height:40px; width:auto; }
-    nav .logo span { color:#fff; font-size:1rem; font-weight:700; white-space:nowrap; }
-    nav ul { list-style:none; display:flex; gap:1.6rem; align-items:center; }
-    nav ul li a { color:rgba(255,255,255,.88); text-decoration:none; font-size:.92rem; transition:color .2s; }
-    nav ul li a:hover { color:#fff; }
+    /* ── NAV (זהה ל-index.html) ── */
+    nav { background:#1a3a5c; padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:64px; position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+    nav .logo { color:#fff; font-size:1.3rem; font-weight:700; }
+    nav .logo a { color:inherit; text-decoration:none; }
+    nav ul { list-style:none; display:flex; gap:2rem; }
+    nav ul a { color:#cde; text-decoration:none; font-size:0.95rem; transition:color 0.2s; }
+    nav ul a:hover { color:#fff; }
+    .nav-toggle { display:none; background:none; border:none; color:#fff; font-size:1.6rem; cursor:pointer; padding:0.4rem 0.5rem; line-height:1; -webkit-tap-highlight-color:transparent; }
+    .nav-toggle:focus, .nav-toggle:active { outline:none; background:none; color:#fff; }
     .dropdown { position:relative; }
-    .dropdown-menu {
-      display:none; position:absolute; top:100%; right:0;
-      background:#fff; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,.14);
-      padding:.5rem 0; min-width:210px; flex-direction:column; gap:0;
-    }
-    .dropdown:hover .dropdown-menu { display:flex; }
-    .dropdown-menu li a { color:#1a3a5c !important; padding:.55rem 1.2rem; display:block; font-size:.88rem; }
-    .dropdown-menu li a:hover { background:#f1f5f9; }
-    .nav-toggle { display:none; background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer; }
-    @media(max-width:768px){
-      nav ul { display:none; }
-      .nav-toggle { display:block; }
-    }
+    .dropdown > a::after { content:' ▾'; font-size:0.75em; opacity:0.8; }
+    .dropdown-menu { display:none; position:absolute; top:100%; right:0; background:#142d48; min-width:200px; box-shadow:0 6px 16px rgba(0,0,0,0.35); border-radius:0 0 8px 8px; list-style:none; padding:0.3rem 0; z-index:200; }
+    .dropdown-menu li a { display:block; padding:0.65rem 1.1rem; color:#cde; text-decoration:none; font-size:0.92rem; border-bottom:1px solid rgba(255,255,255,0.06); white-space:nowrap; transition:color 0.2s,background 0.2s; }
+    .dropdown-menu li:last-child a { border-bottom:none; }
+    .dropdown-menu li a:hover { color:#fff; background:rgba(255,255,255,0.1); }
+    @media(min-width:769px){ .dropdown:hover > .dropdown-menu { display:block; } }
+    @media(max-width:768px){ nav { padding:0 1rem; } .nav-toggle { display:block; } nav ul { display:none; } }
 
     /* ── LAYOUT ── */
     .container { max-width: 960px; margin: 0 auto; padding: 0 1rem; }
@@ -44,20 +35,11 @@
     .section:nth-child(even) { background: #fff; }
 
     /* ── HERO ── */
-    .hero {
-      background: linear-gradient(135deg, #0f2540 0%, #1a3a5c 60%, #1e4976 100%);
-      padding: 3.5rem 1rem 3rem; text-align: center; color: #fff;
-    }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: .5rem;
-      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
-      border-radius: 20px; padding: .3rem .9rem; font-size: .8rem;
-      color: rgba(255,255,255,.85); margin-bottom: 1.2rem;
-    }
-    .hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: .8rem; line-height: 1.25; }
-    .hero h1 span.tag-linked   { color: #fbbf24; }
-    .hero h1 span.tag-unlinked { color: #67e8f9; }
-    .hero p { font-size: 1.05rem; color: rgba(255,255,255,.78); max-width: 580px; margin: 0 auto; line-height: 1.65; }
+    .hero { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 6rem 1rem 5rem; }
+    .hero h1 { font-size: 2.8rem; margin-bottom: 1rem; line-height: 1.3; }
+    .hero p { font-size: 1.2rem; opacity: 0.88; max-width: 600px; margin: 0 auto 2rem; }
+    .btn { display: inline-block; background: #e8a020; color: #fff; padding: 0.85rem 2.2rem; border-radius: 6px; text-decoration: none; font-size: 1.1rem; font-weight: 700; transition: background 0.2s, transform 0.1s; }
+    .btn:hover { background: #c98010; transform: translateY(-1px); }
 
     /* ── SECTION HEADER ── */
     .sec-header { margin-bottom: 2.5rem; }
@@ -221,7 +203,7 @@
 <body>
 
   <nav>
-    <div class="logo"><a href="index.html"><img src="תמונות/logo.png" alt="יחיאל ממן"><span>יחיאל ממן <span style="opacity:.85;font-weight:400;">| אסטרטגיה פיננסית</span></span></a></div>
+    <div class="logo"><a href="index.html" style="display:flex;align-items:center;gap:0.7rem;text-decoration:none;"><img src="תמונות/logo.png" alt="יחיאל ממן" style="height:40px;width:auto;display:block;"><span style="color:#fff;font-size:1rem;font-weight:700;white-space:nowrap;">יחיאל ממן <span style="opacity:0.85;font-weight:400;">| אסטרטגיה פיננסית</span></span></a></div>
     <ul>
       <li><a href="index.html#services">שירותים</a></li>
       <li><a href="index.html#process">תהליך</a></li>
@@ -248,15 +230,15 @@
       </li>
       <li><a href="index.html#contact">צור קשר</a></li>
     </ul>
-    <button class="nav-toggle">☰</button>
+    <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
   </nav>
 
   <!-- HERO -->
-  <div class="hero">
-    <div class="hero-badge">🏠 מדריך משכנתא</div>
-    <h1><span class="tag-linked">צמוד מדד</span> מול <span class="tag-unlinked">לא צמוד</span> —<br>למה ההחזר החודשי עולה?</h1>
+  <section class="hero">
+    <h1>צמוד מדד מול לא צמוד —<br>למה ההחזר החודשי עולה?</h1>
     <p>הסבר ויזואלי: כיצד האינפלציה מנפחת את קרן ההלוואה, ולמה זה גורם לכך שהתשלום החודשי שלך חייב לעלות עם הזמן.</p>
-  </div>
+    <a href="index.html#contact" class="btn">לייעוץ ראשוני חינם</a>
+  </section>
 
   <!-- SECTION 1: EXPLANATION -->
   <section class="section">

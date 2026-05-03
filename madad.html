@@ -810,8 +810,8 @@
         var avg = annualSum / annualCnt;
         var avgCls = avg > 0.005 ? 'pos' : (avg < -0.005 ? 'neg' : 'zero');
         rows += '<tr class="avg-row">';
-        rows += '<td class="year-cell">ממוצע ' + (CPI_ANNUAL[0].y) + '–' + (CPI_ANNUAL[CPI_ANNUAL.length-2].y) + '</td>';
-        MONTH_NAMES.forEach(function() { rows += '<td>—</td>'; });
+        rows += '<td class="year-cell">ממוצע שנתי</td>';
+        MONTH_NAMES.forEach(function() { rows += '<td></td>'; });
         rows += '<td class="annual-cell ' + avgCls + '">' + (avg>0?'+':'') + avg.toFixed(2) + '%</td>';
         rows += '</tr>';
       }
@@ -852,8 +852,8 @@
         var avg = annualSum / annualCnt;
         var avgCls = avg > 0.005 ? 'pos' : (avg < -0.005 ? 'neg' : 'zero');
         rows += '<tr class="avg-row">';
-        rows += '<td class="year-cell">ממוצע ' + (CONS_ANNUAL[0].y) + '–' + (CONS_ANNUAL[CONS_ANNUAL.length-2].y) + '</td>';
-        MONTH_NAMES.forEach(function() { rows += '<td>—</td>'; });
+        rows += '<td class="year-cell">ממוצע שנתי</td>';
+        MONTH_NAMES.forEach(function() { rows += '<td></td>'; });
         rows += '<td class="annual-cell ' + avgCls + '">' + (avg>0?'+':'') + avg.toFixed(2) + '%</td>';
         rows += '</tr>';
       }
