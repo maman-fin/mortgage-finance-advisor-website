@@ -212,8 +212,8 @@
 
       <div>
         <div class="shared-field-label">הון עצמי ראשוני <span class="shared-field-note">(לא חל על ליסינג)</span></div>
-        <div class="shared-field-row"><input type="number" id="g_equity" value="0" min="0" max="400000" step="1000" oninput="syncSlider('g_equity','sl_g_equity');calc()"><div class="shared-field-unit">₪</div></div>
-        <input type="range" class="shared-slider" id="sl_g_equity" min="0" max="400000" step="1000" value="0" oninput="syncInput('sl_g_equity','g_equity');calc()">
+        <div class="shared-field-row"><input type="number" id="g_equity" value="50000" min="0" max="400000" step="1000" oninput="syncSlider('g_equity','sl_g_equity');calc()"><div class="shared-field-unit">₪</div></div>
+        <input type="range" class="shared-slider" id="sl_g_equity" min="0" max="400000" step="1000" value="50000" oninput="syncInput('sl_g_equity','g_equity');calc()">
       </div>
 
       <div>
@@ -242,7 +242,7 @@
       <label class="opt-check-label"><input type="checkbox" id="chk_electric" checked onchange="toggleOption('electric',this.checked)"><span style="color:#1a6e3c;">⚡ רכב חשמלי</span></label>
       <label class="opt-check-label"><input type="checkbox" id="chk_leasing" checked onchange="toggleOption('leasing',this.checked)"><span style="color:#1a3a5c;">📋 ליסינג תפעולי</span></label>
       <label class="opt-check-label"><input type="checkbox" id="chk_used1" checked onchange="toggleOption('used1',this.checked)"><span style="color:#7b3a00;">🚗 יד שניה א'</span></label>
-      <label class="opt-check-label"><input type="checkbox" id="chk_used2" onchange="toggleOption('used2',this.checked)"><span style="color:#5a1f6e;">🚘 יד שניה ב'</span></label>
+      <label class="opt-check-label"><input type="checkbox" id="chk_used2" checked onchange="toggleOption('used2',this.checked)"><span style="color:#5a1f6e;">🚘 יד שניה ב'</span></label>
     </div>
   </div>
 
@@ -442,7 +442,7 @@
     </div>
 
     <!-- ===== USED 2 ===== -->
-    <div class="opt-card card-used2" id="card_used2" style="display:none">
+    <div class="opt-card card-used2" id="card_used2">
       <div class="opt-card-header">🚘 <input class="card-name-input" id="name_used2" type="text" value="יד שניה ב'" oninput="calc()"></div>
       <div class="opt-card-body">
         <div class="section-mini">רכישה ומימון</div>
@@ -556,7 +556,7 @@
 
   // STATE
   let years = 3;
-  const active = { electric: true, leasing: true, used1: true, used2: false };
+  const active = { electric: true, leasing: true, used1: true, used2: true };
   let barChartInst, lineChartInst;
 
   // HELPERS
