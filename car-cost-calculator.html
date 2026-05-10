@@ -45,13 +45,25 @@
     .period-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
     .period-btn { padding: 0.55rem 1.5rem; border: 2px solid #d0d8e4; border-radius: 8px; background: #fff; font-size: 0.95rem; cursor: pointer; color: #444; font-family: inherit; transition: all 0.18s; }
     .period-btn.active { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
-    .gc-divider { border: none; border-top: 1px solid #eef0f4; margin: 0.8rem 0 1rem; }
+    .gc-divider { border: none; border-top: 1px solid #eef0f4; margin: 1rem 0; }
+
+    /* SHARED FIELDS GRID */
+    .shared-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 2rem; margin-bottom: 0.5rem; }
+    .shared-field-label { font-size: 0.82rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.22rem; display: flex; align-items: center; gap: 0.35rem; }
+    .shared-field-note { font-size: 0.75rem; color: #888; font-weight: 400; }
+    .shared-field-row { display: flex; align-items: center; border: 1px solid #d0d8e4; border-radius: 7px; overflow: hidden; background: #fff; transition: border-color 0.2s; }
+    .shared-field-row:focus-within { border-color: #2a6496; }
+    .shared-field-row input[type="number"] { flex: 1; border: none; padding: 0.5rem 0.7rem; font-size: 0.95rem; direction: rtl; font-family: inherit; background: transparent; outline: none; min-width: 0; }
+    .shared-field-unit { background: #f0f4f8; border-right: 1px solid #d0d8e4; padding: 0.5rem 0.6rem; font-size: 0.8rem; color: #666; white-space: nowrap; }
+    .shared-slider { width: 100%; accent-color: #1a3a5c; cursor: pointer; margin-top: 0.15rem; }
+
+    /* OPTION CHECKS */
     .option-checks { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .opt-check-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.97rem; font-weight: 600; user-select: none; }
     .opt-check-label input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #1a3a5c; }
 
     /* OPTIONS GRID */
-    .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1.4rem; margin-bottom: 2rem; }
+    .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 1.4rem; margin-bottom: 2rem; }
 
     /* OPTION CARD */
     .opt-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 14px rgba(0,0,0,0.07); overflow: hidden; }
@@ -98,12 +110,17 @@
     .comp-table tr.monthly-row td.row-header { color: #555; font-size: 0.82rem; font-weight: 600; }
     .comp-table tr.yearly-row td { font-weight: 700; color: #1a6e3c; background: #f0faf4 !important; }
     .comp-table tr.yearly-row td.row-header { color: #555; font-weight: 600; }
+    .comp-table tr.loan-row td { font-weight: 700; color: #2a6496; background: #eef4fb !important; }
+    .comp-table tr.loan-row td.row-header { color: #555; font-weight: 600; }
+    .comp-table tr.cashflow-row td { font-weight: 800; color: #fff; background: #1a6e3c !important; font-size: 1rem; }
+    .comp-table tr.cashflow-row td.row-header { color: #1a3a5c; background: #e6f4ec !important; font-weight: 700; font-style: normal; }
     .comp-table th.col-electric { background: #1a6e3c; }
     .comp-table th.col-leasing { background: #1a3a5c; }
     .comp-table th.col-used1 { background: #7b3a00; }
     .comp-table th.col-used2 { background: #5a1f6e; }
     .comp-table .winner-cell { box-shadow: inset 0 0 0 2px #e8a020; }
     .empty-msg { text-align: center; color: #aaa; padding: 2rem; font-size: 0.95rem; }
+    .table-note { font-size: 0.75rem; color: #888; margin-top: 0.5rem; font-style: italic; }
     .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     .chart-box-title { font-size: 0.88rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.6rem; }
     .chart-container { position: relative; height: 280px; }
@@ -128,6 +145,7 @@
       .dropdown-menu li a { padding-right: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
       .page-header { padding: 1.5rem 1rem 1.2rem; }
       .page-header h1 { font-size: 1.6rem; }
+      .shared-fields { grid-template-columns: 1fr; }
       .options-grid { grid-template-columns: 1fr; }
       .charts-row { grid-template-columns: 1fr; }
     }
@@ -187,6 +205,37 @@
       <button class="period-btn" data-years="5" onclick="setPeriod(this)">5 שנים</button>
       <button class="period-btn" data-years="8" onclick="setPeriod(this)">8 שנים</button>
     </div>
+
+    <hr class="gc-divider">
+    <div style="font-size:0.83rem;font-weight:600;color:#555;margin-bottom:0.8rem;">🔧 נתונים משותפים לכל האפשרויות:</div>
+    <div class="shared-fields">
+
+      <div>
+        <div class="shared-field-label">הון עצמי ראשוני <span class="shared-field-note">(לא חל על ליסינג)</span></div>
+        <div class="shared-field-row"><input type="number" id="g_equity" value="0" min="0" max="400000" step="1000" oninput="syncSlider('g_equity','sl_g_equity');calc()"><div class="shared-field-unit">₪</div></div>
+        <input type="range" class="shared-slider" id="sl_g_equity" min="0" max="400000" step="1000" value="0" oninput="syncInput('sl_g_equity','g_equity');calc()">
+      </div>
+
+      <div>
+        <div class="shared-field-label">תקופת הלוואה <span class="shared-field-note">(לא חל על ליסינג)</span></div>
+        <div class="shared-field-row"><input type="number" id="g_term" value="60" min="12" max="120" step="12" oninput="syncSlider('g_term','sl_g_term');calc()"><div class="shared-field-unit">חודש</div></div>
+        <input type="range" class="shared-slider" id="sl_g_term" min="12" max="120" step="12" value="60" oninput="syncInput('sl_g_term','g_term');calc()">
+      </div>
+
+      <div>
+        <div class="shared-field-label">קילומטראז' שנתי ממוצע</div>
+        <div class="shared-field-row"><input type="number" id="g_km" value="15000" min="5000" max="50000" step="500" oninput="syncSlider('g_km','sl_g_km');calc()"><div class="shared-field-unit">ק"מ</div></div>
+        <input type="range" class="shared-slider" id="sl_g_km" min="5000" max="50000" step="500" value="15000" oninput="syncInput('sl_g_km','g_km');calc()">
+      </div>
+
+      <div>
+        <div class="shared-field-label">מחיר דלק ממוצע <span class="shared-field-note">(לרכבי בנזין)</span></div>
+        <div class="shared-field-row"><input type="number" id="g_fuel" value="7" min="4" max="14" step="0.1" oninput="syncSlider('g_fuel','sl_g_fuel');calc()"><div class="shared-field-unit">₪/ל'</div></div>
+        <input type="range" class="shared-slider" id="sl_g_fuel" min="4" max="14" step="0.1" value="7" oninput="syncInput('sl_g_fuel','g_fuel');calc()">
+      </div>
+
+    </div>
+
     <hr class="gc-divider">
     <div style="font-size:0.83rem;font-weight:600;color:#555;margin-bottom:0.7rem;">בחר אפשרויות להשוואה:</div>
     <div class="option-checks">
@@ -207,13 +256,8 @@
         <div class="section-mini">רכישה ומימון</div>
         <div class="field">
           <label>מחיר הרכב (₪)</label>
-          <div class="field-row"><input type="number" id="el_price" value="150000" min="30000" max="400000" step="1000" oninput="syncSlider('el_price','sl_el_price');clampEquity('el');calc()"><div class="field-unit">₪</div></div>
-          <div class="slider-row"><input type="range" id="sl_el_price" min="30000" max="400000" step="1000" value="150000" oninput="syncInput('sl_el_price','el_price');clampEquity('el');calc()"></div>
-        </div>
-        <div class="field">
-          <label>הון עצמי (₪)</label>
-          <div class="field-row"><input type="number" id="el_equity" value="0" min="0" max="150000" step="1000" oninput="syncSlider('el_equity','sl_el_equity');calc()"><div class="field-unit">₪</div></div>
-          <div class="slider-row"><input type="range" id="sl_el_equity" min="0" max="150000" step="1000" value="0" oninput="syncInput('sl_el_equity','el_equity');calc()"></div>
+          <div class="field-row"><input type="number" id="el_price" value="150000" min="30000" max="400000" step="1000" oninput="syncSlider('el_price','sl_el_price');calc()"><div class="field-unit">₪</div></div>
+          <div class="slider-row"><input type="range" id="sl_el_price" min="30000" max="400000" step="1000" value="150000" oninput="syncInput('sl_el_price','el_price');calc()"></div>
         </div>
         <div class="computed-row">
           <span class="c-label">יתרה למימון</span><span class="c-value" id="el_loan_val">150,000 ₪</span>
@@ -227,30 +271,25 @@
         <hr class="field-divider">
         <div class="section-mini">ירידת ערך</div>
         <div class="radio-group">
-          <label><input type="radio" name="el_depr" value="sale" checked onchange="toggleDepr('el')"> מחיר מכירה צפוי</label>
-          <label><input type="radio" name="el_depr" value="pct" onchange="toggleDepr('el')"> % ירידה שנתי</label>
+          <label><input type="radio" name="el_depr" value="sale" onchange="toggleDepr('el')"> מחיר מכירה צפוי</label>
+          <label><input type="radio" name="el_depr" value="pct" checked onchange="toggleDepr('el')"> % ירידה שנתי</label>
         </div>
-        <div class="field" id="el_sale_field">
+        <div class="field" id="el_sale_field" style="display:none">
           <label>מחיר מכירה צפוי בסוף תקופה (₪)</label>
           <div class="field-row"><input type="number" id="el_sale" value="90000" min="0" max="400000" step="1000" oninput="syncSlider('el_sale','sl_el_sale');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_el_sale" min="0" max="400000" step="1000" value="90000" oninput="syncInput('sl_el_sale','el_sale');calc()"></div>
         </div>
-        <div id="el_pct_field" style="display:none">
+        <div id="el_pct_field">
           <div class="field">
             <label>ירידת ערך שנתית (%)</label>
-            <div class="field-row"><input type="number" id="el_depr_pct" value="12" min="1" max="30" step="0.5" oninput="syncSlider('el_depr_pct','sl_el_depr_pct');calc()"><div class="field-unit">%</div></div>
-            <div class="slider-row"><input type="range" id="sl_el_depr_pct" min="1" max="30" step="0.5" value="12" oninput="syncInput('sl_el_depr_pct','el_depr_pct');calc()"></div>
+            <div class="field-row"><input type="number" id="el_depr_pct" value="20" min="1" max="30" step="0.5" oninput="syncSlider('el_depr_pct','sl_el_depr_pct');calc()"><div class="field-unit">%</div></div>
+            <div class="slider-row"><input type="range" id="sl_el_depr_pct" min="1" max="30" step="0.5" value="20" oninput="syncInput('sl_el_depr_pct','el_depr_pct');calc()"></div>
           </div>
           <div class="computed-row"><span class="c-label">שווי צפוי בסוף תקופה</span><span class="c-value" id="el_residual_val">—</span></div>
         </div>
 
         <hr class="field-divider">
         <div class="section-mini">צריכת חשמל</div>
-        <div class="field">
-          <label>קילומטראז' שנתי (ק"מ)</label>
-          <div class="field-row"><input type="number" id="el_km" value="15000" min="5000" max="50000" step="500" oninput="syncSlider('el_km','sl_el_km');calc()"><div class="field-unit">ק"מ</div></div>
-          <div class="slider-row"><input type="range" id="sl_el_km" min="5000" max="50000" step="500" value="15000" oninput="syncInput('sl_el_km','el_km');calc()"></div>
-        </div>
         <div class="field">
           <label>צריכה (ק"מ לק"ו)</label>
           <div class="field-row"><input type="number" id="el_kwh" value="6" min="3" max="15" step="0.5" oninput="syncSlider('el_kwh','sl_el_kwh');calc()"><div class="field-unit">ק"מ/ק"ו</div></div>
@@ -271,13 +310,13 @@
         <div class="section-mini">עלויות שוטפות</div>
         <div class="field">
           <label>ביטוח שנתי (₪)</label>
-          <div class="field-row"><input type="number" id="el_ins" value="4000" min="500" max="15000" step="100" oninput="syncSlider('el_ins','sl_el_ins');calc()"><div class="field-unit">₪/שנה</div></div>
-          <div class="slider-row"><input type="range" id="sl_el_ins" min="500" max="15000" step="100" value="4000" oninput="syncInput('sl_el_ins','el_ins');calc()"></div>
+          <div class="field-row"><input type="number" id="el_ins" value="6000" min="500" max="15000" step="100" oninput="syncSlider('el_ins','sl_el_ins');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="slider-row"><input type="range" id="sl_el_ins" min="500" max="15000" step="100" value="6000" oninput="syncInput('sl_el_ins','el_ins');calc()"></div>
         </div>
         <div class="field">
           <label>אגרת רישוי / טסט (₪)</label>
-          <div class="field-row"><input type="number" id="el_lic" value="700" min="0" max="3000" step="50" oninput="syncSlider('el_lic','sl_el_lic');calc()"><div class="field-unit">₪/שנה</div></div>
-          <div class="slider-row"><input type="range" id="sl_el_lic" min="0" max="3000" step="50" value="700" oninput="syncInput('sl_el_lic','el_lic');calc()"></div>
+          <div class="field-row"><input type="number" id="el_lic" value="1300" min="0" max="3000" step="50" oninput="syncSlider('el_lic','sl_el_lic');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="slider-row"><input type="range" id="sl_el_lic" min="0" max="3000" step="50" value="1300" oninput="syncInput('sl_el_lic','el_lic');calc()"></div>
         </div>
         <div class="field">
           <label>טיפולים ותקלות (₪)</label>
@@ -301,41 +340,31 @@
         <hr class="field-divider">
         <div class="section-mini">צריכת דלק</div>
         <div class="field">
-          <label>קילומטראז' שנתי (ק"מ)</label>
-          <div class="field-row"><input type="number" id="ls_km" value="15000" min="5000" max="50000" step="500" oninput="syncSlider('ls_km','sl_ls_km');calc()"><div class="field-unit">ק"מ</div></div>
-          <div class="slider-row"><input type="range" id="sl_ls_km" min="5000" max="50000" step="500" value="15000" oninput="syncInput('sl_ls_km','ls_km');calc()"></div>
-        </div>
-        <div class="field">
           <label>צריכת דלק (ק"מ לליטר)</label>
           <div class="field-row"><input type="number" id="ls_eff" value="12" min="5" max="25" step="0.5" oninput="syncSlider('ls_eff','sl_ls_eff');calc()"><div class="field-unit">ק"מ/ל'</div></div>
           <div class="slider-row"><input type="range" id="sl_ls_eff" min="5" max="25" step="0.5" value="12" oninput="syncInput('sl_ls_eff','ls_eff');calc()"></div>
         </div>
-        <div class="field">
-          <label>מחיר ליטר דלק (₪)</label>
-          <div class="field-row"><input type="number" id="ls_fuel" value="7" min="4" max="12" step="0.1" oninput="syncSlider('ls_fuel','sl_ls_fuel');calc()"><div class="field-unit">₪/ל'</div></div>
-          <div class="slider-row"><input type="range" id="sl_ls_fuel" min="4" max="12" step="0.1" value="7" oninput="syncInput('sl_ls_fuel','ls_fuel');calc()"></div>
-        </div>
 
         <hr class="field-divider">
         <div class="section-mini">עלויות שוטפות</div>
-        <label class="check-inline"><input type="checkbox" id="ls_ins_inc" onchange="toggleIncluded('ls_ins_inc','ls_ins_field');calc()"> ביטוח כלול במחיר הליסינג</label>
-        <div id="ls_ins_field">
+        <label class="check-inline"><input type="checkbox" id="ls_ins_inc" checked onchange="toggleIncluded('ls_ins_inc','ls_ins_field');calc()"> ביטוח כלול במחיר הליסינג</label>
+        <div id="ls_ins_field" style="display:none">
           <div class="field">
             <label>ביטוח שנתי (₪)</label>
             <div class="field-row"><input type="number" id="ls_ins" value="5000" min="500" max="15000" step="100" oninput="syncSlider('ls_ins','sl_ls_ins');calc()"><div class="field-unit">₪/שנה</div></div>
             <div class="slider-row"><input type="range" id="sl_ls_ins" min="500" max="15000" step="100" value="5000" oninput="syncInput('sl_ls_ins','ls_ins');calc()"></div>
           </div>
         </div>
-        <label class="check-inline"><input type="checkbox" id="ls_lic_inc" onchange="toggleIncluded('ls_lic_inc','ls_lic_field');calc()"> אגרת רישוי כלולה במחיר הליסינג</label>
-        <div id="ls_lic_field">
+        <label class="check-inline"><input type="checkbox" id="ls_lic_inc" checked onchange="toggleIncluded('ls_lic_inc','ls_lic_field');calc()"> אגרת רישוי כלולה במחיר הליסינג</label>
+        <div id="ls_lic_field" style="display:none">
           <div class="field">
             <label>אגרת רישוי / טסט (₪)</label>
-            <div class="field-row"><input type="number" id="ls_lic" value="700" min="0" max="3000" step="50" oninput="syncSlider('ls_lic','sl_ls_lic');calc()"><div class="field-unit">₪/שנה</div></div>
-            <div class="slider-row"><input type="range" id="sl_ls_lic" min="0" max="3000" step="50" value="700" oninput="syncInput('sl_ls_lic','ls_lic');calc()"></div>
+            <div class="field-row"><input type="number" id="ls_lic" value="1300" min="0" max="3000" step="50" oninput="syncSlider('ls_lic','sl_ls_lic');calc()"><div class="field-unit">₪/שנה</div></div>
+            <div class="slider-row"><input type="range" id="sl_ls_lic" min="0" max="3000" step="50" value="1300" oninput="syncInput('sl_ls_lic','ls_lic');calc()"></div>
           </div>
         </div>
-        <label class="check-inline"><input type="checkbox" id="ls_mnt_inc" onchange="toggleIncluded('ls_mnt_inc','ls_mnt_field');calc()"> טיפולים ותקלות כלולים בליסינג</label>
-        <div id="ls_mnt_field">
+        <label class="check-inline"><input type="checkbox" id="ls_mnt_inc" checked onchange="toggleIncluded('ls_mnt_inc','ls_mnt_field');calc()"> טיפולים ותקלות כלולים בליסינג</label>
+        <div id="ls_mnt_field" style="display:none">
           <div class="field">
             <label>טיפולים ותקלות (₪)</label>
             <div class="field-row"><input type="number" id="ls_mnt" value="2500" min="0" max="10000" step="100" oninput="syncSlider('ls_mnt','sl_ls_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
@@ -352,13 +381,8 @@
         <div class="section-mini">רכישה ומימון</div>
         <div class="field">
           <label>מחיר הרכב (₪)</label>
-          <div class="field-row"><input type="number" id="u1_price" value="80000" min="20000" max="300000" step="1000" oninput="syncSlider('u1_price','sl_u1_price');clampEquity('u1');calc()"><div class="field-unit">₪</div></div>
-          <div class="slider-row"><input type="range" id="sl_u1_price" min="20000" max="300000" step="1000" value="80000" oninput="syncInput('sl_u1_price','u1_price');clampEquity('u1');calc()"></div>
-        </div>
-        <div class="field">
-          <label>הון עצמי (₪)</label>
-          <div class="field-row"><input type="number" id="u1_equity" value="0" min="0" max="80000" step="1000" oninput="syncSlider('u1_equity','sl_u1_equity');calc()"><div class="field-unit">₪</div></div>
-          <div class="slider-row"><input type="range" id="sl_u1_equity" min="0" max="80000" step="1000" value="0" oninput="syncInput('sl_u1_equity','u1_equity');calc()"></div>
+          <div class="field-row"><input type="number" id="u1_price" value="80000" min="20000" max="300000" step="1000" oninput="syncSlider('u1_price','sl_u1_price');calc()"><div class="field-unit">₪</div></div>
+          <div class="slider-row"><input type="range" id="sl_u1_price" min="20000" max="300000" step="1000" value="80000" oninput="syncInput('sl_u1_price','u1_price');calc()"></div>
         </div>
         <div class="computed-row">
           <span class="c-label">יתרה למימון</span><span class="c-value" id="u1_loan_val">80,000 ₪</span>
@@ -372,15 +396,15 @@
         <hr class="field-divider">
         <div class="section-mini">ירידת ערך</div>
         <div class="radio-group">
-          <label><input type="radio" name="u1_depr" value="sale" checked onchange="toggleDepr('u1')"> מחיר מכירה צפוי</label>
-          <label><input type="radio" name="u1_depr" value="pct" onchange="toggleDepr('u1')"> % ירידה שנתי</label>
+          <label><input type="radio" name="u1_depr" value="sale" onchange="toggleDepr('u1')"> מחיר מכירה צפוי</label>
+          <label><input type="radio" name="u1_depr" value="pct" checked onchange="toggleDepr('u1')"> % ירידה שנתי</label>
         </div>
-        <div class="field" id="u1_sale_field">
+        <div class="field" id="u1_sale_field" style="display:none">
           <label>מחיר מכירה צפוי בסוף תקופה (₪)</label>
           <div class="field-row"><input type="number" id="u1_sale" value="50000" min="0" max="300000" step="1000" oninput="syncSlider('u1_sale','sl_u1_sale');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_u1_sale" min="0" max="300000" step="1000" value="50000" oninput="syncInput('sl_u1_sale','u1_sale');calc()"></div>
         </div>
-        <div id="u1_pct_field" style="display:none">
+        <div id="u1_pct_field">
           <div class="field">
             <label>ירידת ערך שנתית (%)</label>
             <div class="field-row"><input type="number" id="u1_depr_pct" value="15" min="1" max="30" step="0.5" oninput="syncSlider('u1_depr_pct','sl_u1_depr_pct');calc()"><div class="field-unit">%</div></div>
@@ -392,19 +416,9 @@
         <hr class="field-divider">
         <div class="section-mini">צריכת דלק</div>
         <div class="field">
-          <label>קילומטראז' שנתי (ק"מ)</label>
-          <div class="field-row"><input type="number" id="u1_km" value="15000" min="5000" max="50000" step="500" oninput="syncSlider('u1_km','sl_u1_km');calc()"><div class="field-unit">ק"מ</div></div>
-          <div class="slider-row"><input type="range" id="sl_u1_km" min="5000" max="50000" step="500" value="15000" oninput="syncInput('sl_u1_km','u1_km');calc()"></div>
-        </div>
-        <div class="field">
           <label>צריכת דלק (ק"מ לליטר)</label>
-          <div class="field-row"><input type="number" id="u1_eff" value="10" min="5" max="25" step="0.5" oninput="syncSlider('u1_eff','sl_u1_eff');calc()"><div class="field-unit">ק"מ/ל'</div></div>
-          <div class="slider-row"><input type="range" id="sl_u1_eff" min="5" max="25" step="0.5" value="10" oninput="syncInput('sl_u1_eff','u1_eff');calc()"></div>
-        </div>
-        <div class="field">
-          <label>מחיר ליטר דלק (₪)</label>
-          <div class="field-row"><input type="number" id="u1_fuel" value="7" min="4" max="12" step="0.1" oninput="syncSlider('u1_fuel','sl_u1_fuel');calc()"><div class="field-unit">₪/ל'</div></div>
-          <div class="slider-row"><input type="range" id="sl_u1_fuel" min="4" max="12" step="0.1" value="7" oninput="syncInput('sl_u1_fuel','u1_fuel');calc()"></div>
+          <div class="field-row"><input type="number" id="u1_eff" value="12" min="5" max="25" step="0.5" oninput="syncSlider('u1_eff','sl_u1_eff');calc()"><div class="field-unit">ק"מ/ל'</div></div>
+          <div class="slider-row"><input type="range" id="sl_u1_eff" min="5" max="25" step="0.5" value="12" oninput="syncInput('sl_u1_eff','u1_eff');calc()"></div>
         </div>
 
         <hr class="field-divider">
@@ -416,8 +430,8 @@
         </div>
         <div class="field">
           <label>אגרת רישוי / טסט (₪)</label>
-          <div class="field-row"><input type="number" id="u1_lic" value="700" min="0" max="3000" step="50" oninput="syncSlider('u1_lic','sl_u1_lic');calc()"><div class="field-unit">₪/שנה</div></div>
-          <div class="slider-row"><input type="range" id="sl_u1_lic" min="0" max="3000" step="50" value="700" oninput="syncInput('sl_u1_lic','u1_lic');calc()"></div>
+          <div class="field-row"><input type="number" id="u1_lic" value="1300" min="0" max="3000" step="50" oninput="syncSlider('u1_lic','sl_u1_lic');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="slider-row"><input type="range" id="sl_u1_lic" min="0" max="3000" step="50" value="1300" oninput="syncInput('sl_u1_lic','u1_lic');calc()"></div>
         </div>
         <div class="field">
           <label>טיפולים ותקלות (₪)</label>
@@ -434,13 +448,8 @@
         <div class="section-mini">רכישה ומימון</div>
         <div class="field">
           <label>מחיר הרכב (₪)</label>
-          <div class="field-row"><input type="number" id="u2_price" value="120000" min="20000" max="300000" step="1000" oninput="syncSlider('u2_price','sl_u2_price');clampEquity('u2');calc()"><div class="field-unit">₪</div></div>
-          <div class="slider-row"><input type="range" id="sl_u2_price" min="20000" max="300000" step="1000" value="120000" oninput="syncInput('sl_u2_price','u2_price');clampEquity('u2');calc()"></div>
-        </div>
-        <div class="field">
-          <label>הון עצמי (₪)</label>
-          <div class="field-row"><input type="number" id="u2_equity" value="0" min="0" max="120000" step="1000" oninput="syncSlider('u2_equity','sl_u2_equity');calc()"><div class="field-unit">₪</div></div>
-          <div class="slider-row"><input type="range" id="sl_u2_equity" min="0" max="120000" step="1000" value="0" oninput="syncInput('sl_u2_equity','u2_equity');calc()"></div>
+          <div class="field-row"><input type="number" id="u2_price" value="120000" min="20000" max="300000" step="1000" oninput="syncSlider('u2_price','sl_u2_price');calc()"><div class="field-unit">₪</div></div>
+          <div class="slider-row"><input type="range" id="sl_u2_price" min="20000" max="300000" step="1000" value="120000" oninput="syncInput('sl_u2_price','u2_price');calc()"></div>
         </div>
         <div class="computed-row">
           <span class="c-label">יתרה למימון</span><span class="c-value" id="u2_loan_val">120,000 ₪</span>
@@ -454,15 +463,15 @@
         <hr class="field-divider">
         <div class="section-mini">ירידת ערך</div>
         <div class="radio-group">
-          <label><input type="radio" name="u2_depr" value="sale" checked onchange="toggleDepr('u2')"> מחיר מכירה צפוי</label>
-          <label><input type="radio" name="u2_depr" value="pct" onchange="toggleDepr('u2')"> % ירידה שנתי</label>
+          <label><input type="radio" name="u2_depr" value="sale" onchange="toggleDepr('u2')"> מחיר מכירה צפוי</label>
+          <label><input type="radio" name="u2_depr" value="pct" checked onchange="toggleDepr('u2')"> % ירידה שנתי</label>
         </div>
-        <div class="field" id="u2_sale_field">
+        <div class="field" id="u2_sale_field" style="display:none">
           <label>מחיר מכירה צפוי בסוף תקופה (₪)</label>
           <div class="field-row"><input type="number" id="u2_sale" value="75000" min="0" max="300000" step="1000" oninput="syncSlider('u2_sale','sl_u2_sale');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_u2_sale" min="0" max="300000" step="1000" value="75000" oninput="syncInput('sl_u2_sale','u2_sale');calc()"></div>
         </div>
-        <div id="u2_pct_field" style="display:none">
+        <div id="u2_pct_field">
           <div class="field">
             <label>ירידת ערך שנתית (%)</label>
             <div class="field-row"><input type="number" id="u2_depr_pct" value="15" min="1" max="30" step="0.5" oninput="syncSlider('u2_depr_pct','sl_u2_depr_pct');calc()"><div class="field-unit">%</div></div>
@@ -474,19 +483,9 @@
         <hr class="field-divider">
         <div class="section-mini">צריכת דלק</div>
         <div class="field">
-          <label>קילומטראז' שנתי (ק"מ)</label>
-          <div class="field-row"><input type="number" id="u2_km" value="15000" min="5000" max="50000" step="500" oninput="syncSlider('u2_km','sl_u2_km');calc()"><div class="field-unit">ק"מ</div></div>
-          <div class="slider-row"><input type="range" id="sl_u2_km" min="5000" max="50000" step="500" value="15000" oninput="syncInput('sl_u2_km','u2_km');calc()"></div>
-        </div>
-        <div class="field">
           <label>צריכת דלק (ק"מ לליטר)</label>
           <div class="field-row"><input type="number" id="u2_eff" value="12" min="5" max="25" step="0.5" oninput="syncSlider('u2_eff','sl_u2_eff');calc()"><div class="field-unit">ק"מ/ל'</div></div>
           <div class="slider-row"><input type="range" id="sl_u2_eff" min="5" max="25" step="0.5" value="12" oninput="syncInput('sl_u2_eff','u2_eff');calc()"></div>
-        </div>
-        <div class="field">
-          <label>מחיר ליטר דלק (₪)</label>
-          <div class="field-row"><input type="number" id="u2_fuel" value="7" min="4" max="12" step="0.1" oninput="syncSlider('u2_fuel','sl_u2_fuel');calc()"><div class="field-unit">₪/ל'</div></div>
-          <div class="slider-row"><input type="range" id="sl_u2_fuel" min="4" max="12" step="0.1" value="7" oninput="syncInput('sl_u2_fuel','u2_fuel');calc()"></div>
         </div>
 
         <hr class="field-divider">
@@ -498,8 +497,8 @@
         </div>
         <div class="field">
           <label>אגרת רישוי / טסט (₪)</label>
-          <div class="field-row"><input type="number" id="u2_lic" value="700" min="0" max="3000" step="50" oninput="syncSlider('u2_lic','sl_u2_lic');calc()"><div class="field-unit">₪/שנה</div></div>
-          <div class="slider-row"><input type="range" id="sl_u2_lic" min="0" max="3000" step="50" value="700" oninput="syncInput('sl_u2_lic','u2_lic');calc()"></div>
+          <div class="field-row"><input type="number" id="u2_lic" value="1300" min="0" max="3000" step="50" oninput="syncSlider('u2_lic','sl_u2_lic');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="slider-row"><input type="range" id="sl_u2_lic" min="0" max="3000" step="50" value="1300" oninput="syncInput('sl_u2_lic','u2_lic');calc()"></div>
         </div>
         <div class="field">
           <label>טיפולים ותקלות (₪)</label>
@@ -517,6 +516,8 @@
     <div class="comp-table-wrap">
       <table class="comp-table" id="compTable"></table>
     </div>
+    <div class="table-note" id="tableNote"></div>
+    <br>
     <div class="charts-row">
       <div>
         <div class="chart-box-title">עלות חודשית ממוצעת לפי רכיב</div>
@@ -563,6 +564,12 @@
   const gc = id => document.getElementById(id).checked;
   const fmtN = n => Math.round(n).toLocaleString('he-IL');
 
+  // Global shared values
+  const gEquity = () => gv('g_equity');
+  const gTerm   = () => Math.max(gv('g_term'), 1);
+  const gKm     = () => gv('g_km');
+  const gFuel   = () => gv('g_fuel');
+
   function syncInput(slId, inId) {
     document.getElementById(inId).value = document.getElementById(slId).value;
   }
@@ -571,13 +578,6 @@
     if (!sl) return;
     const v = parseFloat(document.getElementById(inId).value);
     if (!isNaN(v)) sl.value = Math.min(Math.max(v, parseFloat(sl.min)), parseFloat(sl.max));
-  }
-  function clampEquity(p) {
-    const price = gv(`${p}_price`);
-    const eqIn = document.getElementById(`${p}_equity`);
-    const eqSl = document.getElementById(`sl_${p}_equity`);
-    eqIn.max = price; eqSl.max = price;
-    if (parseFloat(eqIn.value) > price) { eqIn.value = price; eqSl.value = price; }
   }
 
   function setPeriod(btn) {
@@ -596,7 +596,7 @@
   function toggleDepr(p) {
     const method = document.querySelector(`input[name="${p}_depr"]:checked`).value;
     document.getElementById(`${p}_sale_field`).style.display = method === 'sale' ? '' : 'none';
-    document.getElementById(`${p}_pct_field`).style.display = method === 'pct' ? '' : 'none';
+    document.getElementById(`${p}_pct_field`).style.display  = method === 'pct'  ? '' : 'none';
     calc();
   }
 
@@ -605,10 +605,14 @@
   }
 
   // COMPUTATION
-  function loanInterest(principal, annualRatePct, months) {
-    if (principal <= 0 || annualRatePct <= 0) return 0;
+  function shpitzerPayment(principal, annualRatePct, months) {
+    if (principal <= 0 || annualRatePct <= 0) return principal > 0 ? principal / months : 0;
     const r = annualRatePct / 100 / 12;
-    const pmt = principal * r * Math.pow(1 + r, months) / (Math.pow(1 + r, months) - 1);
+    return principal * r * Math.pow(1 + r, months) / (Math.pow(1 + r, months) - 1);
+  }
+
+  function loanInterest(principal, annualRatePct, months) {
+    const pmt = shpitzerPayment(principal, annualRatePct, months);
     return pmt * months - principal;
   }
 
@@ -623,55 +627,87 @@
   }
 
   function computeElectric() {
-    const price = gv('el_price');
-    const equity = Math.min(gv('el_equity'), price);
-    const loan = price - equity;
+    const price    = gv('el_price');
+    const equity   = Math.min(gEquity(), price);
+    const loan     = price - equity;
     document.getElementById('el_loan_val').textContent = fmtN(loan) + ' ₪';
     document.getElementById('el_rate_field').style.display = loan > 0 ? '' : 'none';
-    const interest = loanInterest(loan, gv('el_rate'), years * 12);
-    const residual = getResidual(price, 'el');
-    const depreciation = Math.max(price - residual, 0);
-    const kwh = gv('el_kwh');
-    const energy = kwh > 0 ? (gv('el_km') / kwh) * gv('el_elec') * years : 0;
+
+    const annualRate = gv('el_rate');
+    const pmt        = shpitzerPayment(loan, annualRate, gTerm());
+    const interest   = loanInterest(loan, annualRate, gTerm());
+    const residual   = getResidual(price, 'el');
+    const deprec     = Math.max(price - residual, 0);
+
+    const kwh        = gv('el_kwh');
+    const energyAnn  = kwh > 0 ? (gKm() / kwh) * gv('el_elec') : 0;
+    const energy     = energyAnn * years;
+
+    const charging   = gv('el_charging');
+    const insAnn     = gv('el_ins');
+    const licAnn     = gv('el_lic');
+    const mntAnn     = gv('el_mnt');
+
+    const cashFlowMonthly = pmt + energyAnn / 12 + insAnn / 12 + licAnn / 12 + mntAnn / 12 + charging / (years * 12);
+
     return {
-      leasing: 0, depreciation, interest, energy,
-      insurance: gv('el_ins') * years,
-      license: gv('el_lic') * years,
-      maintenance: gv('el_mnt') * years,
-      charging: gv('el_charging'),
+      leasing: 0, depreciation: deprec, interest, energy,
+      insurance: insAnn * years, license: licAnn * years, maintenance: mntAnn * years, charging,
+      loanPaymentMonthly: pmt,
+      cashFlowMonthly,
     };
   }
 
   function computeLeasing() {
-    const eff = gv('ls_eff');
-    const energy = eff > 0 ? (gv('ls_km') / eff) * gv('ls_fuel') * years : 0;
+    const monthly     = gv('ls_monthly');
+    const eff         = gv('ls_eff');
+    const energyAnn   = eff > 0 ? (gKm() / eff) * gFuel() : 0;
+    const insIncluded = gc('ls_ins_inc');
+    const licIncluded = gc('ls_lic_inc');
+    const mntIncluded = gc('ls_mnt_inc');
+    const insAnn      = insIncluded ? 0 : gv('ls_ins');
+    const licAnn      = licIncluded ? 0 : gv('ls_lic');
+    const mntAnn      = mntIncluded ? 0 : gv('ls_mnt');
+
+    const cashFlowMonthly = monthly + energyAnn / 12 + insAnn / 12 + licAnn / 12 + mntAnn / 12;
+
     return {
-      leasing: gv('ls_monthly') * 12 * years,
-      depreciation: 0, interest: 0, energy,
-      insurance: gc('ls_ins_inc') ? 0 : gv('ls_ins') * years,
-      license: gc('ls_lic_inc') ? 0 : gv('ls_lic') * years,
-      maintenance: gc('ls_mnt_inc') ? 0 : gv('ls_mnt') * years,
-      charging: 0,
+      leasing: monthly * 12 * years,
+      depreciation: 0, interest: 0, energy: energyAnn * years,
+      insurance: insAnn * years, license: licAnn * years, maintenance: mntAnn * years, charging: 0,
+      loanPaymentMonthly: 0,
+      cashFlowMonthly,
     };
   }
 
   function computeUsed(p) {
-    const price = gv(`${p}_price`);
-    const equity = Math.min(gv(`${p}_equity`), price);
-    const loan = price - equity;
+    const price  = gv(`${p}_price`);
+    const equity = Math.min(gEquity(), price);
+    const loan   = price - equity;
     document.getElementById(`${p}_loan_val`).textContent = fmtN(loan) + ' ₪';
     document.getElementById(`${p}_rate_field`).style.display = loan > 0 ? '' : 'none';
-    const interest = loanInterest(loan, gv(`${p}_rate`), years * 12);
-    const residual = getResidual(price, p);
-    const depreciation = Math.max(price - residual, 0);
-    const eff = gv(`${p}_eff`);
-    const energy = eff > 0 ? (gv(`${p}_km`) / eff) * gv(`${p}_fuel`) * years : 0;
+
+    const annualRate = gv(`${p}_rate`);
+    const pmt        = shpitzerPayment(loan, annualRate, gTerm());
+    const interest   = loanInterest(loan, annualRate, gTerm());
+    const residual   = getResidual(price, p);
+    const deprec     = Math.max(price - residual, 0);
+
+    const eff        = gv(`${p}_eff`);
+    const energyAnn  = eff > 0 ? (gKm() / eff) * gFuel() : 0;
+    const energy     = energyAnn * years;
+
+    const insAnn     = gv(`${p}_ins`);
+    const licAnn     = gv(`${p}_lic`);
+    const mntAnn     = gv(`${p}_mnt`);
+
+    const cashFlowMonthly = pmt + energyAnn / 12 + insAnn / 12 + licAnn / 12 + mntAnn / 12;
+
     return {
-      leasing: 0, depreciation, interest, energy,
-      insurance: gv(`${p}_ins`) * years,
-      license: gv(`${p}_lic`) * years,
-      maintenance: gv(`${p}_mnt`) * years,
-      charging: 0,
+      leasing: 0, depreciation: deprec, interest, energy,
+      insurance: insAnn * years, license: licAnn * years, maintenance: mntAnn * years, charging: 0,
+      loanPaymentMonthly: pmt,
+      cashFlowMonthly,
     };
   }
 
@@ -681,15 +717,13 @@
 
   function getName(key) {
     if (key === 'electric') return '⚡ חשמלי';
-    if (key === 'leasing') return '📋 ליסינג';
-    if (key === 'used1') return document.getElementById('name_used1').value || 'יד שניה א\'';
-    if (key === 'used2') return document.getElementById('name_used2').value || 'יד שניה ב\'';
+    if (key === 'leasing')  return '📋 ליסינג';
+    if (key === 'used1')    return document.getElementById('name_used1').value || 'יד שניה א\'';
+    if (key === 'used2')    return document.getElementById('name_used2').value || 'יד שניה ב\'';
   }
 
   const COL_CLASS = { electric: 'col-electric', leasing: 'col-leasing', used1: 'col-used1', used2: 'col-used2' };
-  const COLORS = {
-    electric: '#1a6e3c', leasing: '#1a3a5c', used1: '#7b3a00', used2: '#5a1f6e'
-  };
+  const COLORS    = { electric: '#1a6e3c', leasing: '#1a3a5c', used1: '#7b3a00', used2: '#5a1f6e' };
   const COMP_COLORS = ['#1a6e3c', '#2a6496', '#c87f00', '#c0392b', '#5a1f6e', '#16a085'];
 
   function calc() {
@@ -704,24 +738,27 @@
 
   function renderTable(results) {
     const table = document.getElementById('compTable');
-    const keys = Object.keys(results);
+    const keys  = Object.keys(results);
     if (keys.length === 0) {
       table.innerHTML = `<tr><td class="empty-msg">בחר לפחות אפשרות אחת להשוואה</td></tr>`;
+      document.getElementById('tableNote').textContent = '';
       return;
     }
-    const totals = {};
+
+    const totals   = {};
     keys.forEach(k => totals[k] = total(results[k]));
     const minTotal = Math.min(...Object.values(totals));
+    const months   = years * 12;
 
     const rows = [
-      { label: 'עלות ליסינג לתקופה', key: 'leasing', show: k => results[k].leasing > 0 },
-      { label: 'ירידת ערך לתקופה', key: 'depreciation', show: k => results[k].leasing === 0 },
-      { label: 'עלות מימון (ריבית)', key: 'interest' },
-      { label: 'עלות אנרגיה לתקופה', key: 'energy' },
-      { label: 'ביטוח לתקופה', key: 'insurance' },
-      { label: 'אגרת רישוי לתקופה', key: 'license' },
-      { label: 'טיפולים ותקלות לתקופה', key: 'maintenance' },
-      { label: 'עמדת טעינה (חד-פעמי)', key: 'charging', show: k => results[k].charging > 0 },
+      { label: 'עלות ליסינג לתקופה',       key: 'leasing',      show: k => results[k].leasing > 0 },
+      { label: 'ירידת ערך לתקופה',          key: 'depreciation', show: k => results[k].leasing === 0 },
+      { label: 'עלות מימון (ריבית)',         key: 'interest' },
+      { label: 'עלות אנרגיה לתקופה',        key: 'energy' },
+      { label: 'ביטוח לתקופה',              key: 'insurance' },
+      { label: 'אגרת רישוי לתקופה',         key: 'license' },
+      { label: 'טיפולים ותקלות לתקופה',     key: 'maintenance' },
+      { label: 'עמדת טעינה (חד-פעמי)',      key: 'charging',     show: k => results[k].charging > 0 },
     ];
 
     let html = '<thead><tr><th class="row-header">רכיב עלות</th>';
@@ -732,7 +769,7 @@
     html += '</tr></thead><tbody>';
 
     rows.forEach(row => {
-      const showFn = row.show || (() => true);
+      const showFn     = row.show || (() => true);
       const anyVisible = keys.some(k => showFn(k) && results[k][row.key] > 0);
       if (!anyVisible) return;
       html += `<tr><td class="row-header">${row.label}</td>`;
@@ -743,39 +780,56 @@
       html += '</tr>';
     });
 
+    // Total
     html += `<tr class="total-row"><td class="row-header">סה"כ לתקופה (${years} שנים)</td>`;
     keys.forEach(k => {
-      const winner = totals[k] === minTotal;
-      html += `<td class="${winner ? 'winner-cell' : ''}">${fmtN(totals[k])} ₪</td>`;
+      html += `<td class="${totals[k] === minTotal ? 'winner-cell' : ''}">${fmtN(totals[k])} ₪</td>`;
     });
     html += '</tr>';
 
+    // Monthly nominal
     html += '<tr class="monthly-row"><td class="row-header">עלות חודשית ממוצעת</td>';
-    keys.forEach(k => { html += `<td>${fmtN(totals[k] / (years * 12))} ₪</td>`; });
+    keys.forEach(k => { html += `<td>${fmtN(totals[k] / months)} ₪</td>`; });
     html += '</tr>';
 
+    // Yearly nominal
     html += '<tr class="yearly-row"><td class="row-header">עלות שנתית ממוצעת</td>';
     keys.forEach(k => { html += `<td>${fmtN(totals[k] / years)} ₪</td>`; });
+    html += '</tr>';
+
+    // Monthly loan repayment
+    html += '<tr class="loan-row"><td class="row-header">החזר חודשי של הלוואה</td>';
+    keys.forEach(k => {
+      const v = results[k].loanPaymentMonthly;
+      html += `<td>${v > 0 ? fmtN(v) + ' ₪' : '—'}</td>`;
+    });
+    html += '</tr>';
+
+    // Cash flow monthly
+    html += '<tr class="cashflow-row"><td class="row-header">עלות תזרימית חודשית *</td>';
+    keys.forEach(k => { html += `<td>${fmtN(results[k].cashFlowMonthly)} ₪</td>`; });
     html += '</tr></tbody>';
 
     table.innerHTML = html;
+    document.getElementById('tableNote').textContent =
+      '* תזרימי = תשלום חודשי בפועל — החזר הלוואה (שפיצר) + הוצאות שוטפות. לרכב ממומן, ייתכן שהתשלום החודשי גבוה מהעלות הממוצעת כי ההלוואה נפרסת על תקופה שונה מתקופת ההשוואה.';
   }
 
   function renderCharts(results) {
-    const keys = Object.keys(results);
-
-    // Stacked bar — monthly average per component
-    const compDefs = [
-      { key: 'leasing', label: 'ליסינג' },
-      { key: 'depreciation', label: 'ירידת ערך' },
-      { key: 'interest', label: 'ריבית' },
-      { key: 'energy', label: 'אנרגיה' },
-      { key: 'insurance', label: 'ביטוח' },
-      { key: 'license', label: 'רישוי' },
-      { key: 'maintenance', label: 'טיפולים' },
-      { key: 'charging', label: 'עמדת טעינה' },
-    ];
+    const keys   = Object.keys(results);
     const months = years * 12;
+
+    const compDefs = [
+      { key: 'leasing',     label: 'ליסינג' },
+      { key: 'depreciation',label: 'ירידת ערך' },
+      { key: 'interest',    label: 'ריבית' },
+      { key: 'energy',      label: 'אנרגיה' },
+      { key: 'insurance',   label: 'ביטוח' },
+      { key: 'license',     label: 'רישוי' },
+      { key: 'maintenance', label: 'טיפולים' },
+      { key: 'charging',    label: 'עמדת טעינה' },
+    ];
+
     const barDatasets = compDefs.map((cd, i) => ({
       label: cd.label,
       data: keys.map(k => Math.round(results[k][cd.key] / months)),
@@ -798,8 +852,7 @@
       }
     });
 
-    // Line — cumulative cost per year
-    const lineLabels = ['התחלה', ...Array.from({ length: years }, (_, i) => `שנה ${i + 1}`)];
+    const lineLabels   = ['התחלה', ...Array.from({ length: years }, (_, i) => `שנה ${i + 1}`)];
     const lineDatasets = keys.map(k => {
       const tot = total(results[k]);
       return {
@@ -826,6 +879,7 @@
     });
   }
 
+  // Sync card visibility with checkbox state on load (handles browser form-state restore)
   ['electric', 'leasing', 'used1', 'used2'].forEach(opt => {
     const on = document.getElementById(`chk_${opt}`).checked;
     active[opt] = on;
