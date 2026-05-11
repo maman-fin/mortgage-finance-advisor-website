@@ -1764,10 +1764,8 @@ function importJSON(file) {
   reader.readAsText(file);
 }
 
-// Init: try load from storage, otherwise use defaults
 window.addEventListener('load', () => {
-  const loaded = loadFromStorage();
-  if (!loaded) setSaveStatus('פגישה חדשה', '');
+  setSaveStatus('פגישה חדשה', '');
 });
 </script>
 </body>
