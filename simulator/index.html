@@ -16,9 +16,32 @@
     body { font-family:'Segoe UI',Arial,sans-serif; background:#f7f8fa; color:#222; direction:rtl; }
 
     /* NAV */
-    nav { background:#1a3a5c; padding:0 2rem; display:flex; align-items:center; height:64px; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
-    .nav-logo { color:#fff; font-size:1rem; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:0.7rem; }
-    .nav-logo img { height:40px; }
+    nav { background:#1a3a5c; padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:64px; position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+    nav .logo { color:#fff; font-size:1.3rem; font-weight:700; }
+    nav .logo a { color:inherit; text-decoration:none; }
+    nav ul { list-style:none; display:flex; gap:2rem; }
+    nav ul a { color:#cde; text-decoration:none; font-size:0.95rem; transition:color 0.2s; }
+    nav ul a:hover, nav ul a.active { color:#fff; }
+    .nav-toggle { display:none; background:none; border:none; color:#fff; font-size:1.6rem; cursor:pointer; padding:0.4rem 0.5rem; line-height:1; -webkit-tap-highlight-color:transparent; }
+    .nav-toggle:focus, .nav-toggle:active { outline:none; background:none; color:#fff; }
+    .dropdown { position:relative; }
+    .dropdown > a::after { content:' ▾'; font-size:0.75em; opacity:0.8; }
+    .dropdown-menu { display:none; position:absolute; top:100%; right:0; background:#142d48; min-width:220px; box-shadow:0 6px 16px rgba(0,0,0,0.35); border-radius:0 0 8px 8px; list-style:none; padding:0.3rem 0; z-index:200; }
+    .dropdown-menu li a { display:block; padding:0.65rem 1.1rem; color:#cde; text-decoration:none; font-size:0.92rem; border-bottom:1px solid rgba(255,255,255,0.06); white-space:nowrap; transition:color 0.2s, background 0.2s; }
+    .dropdown-menu li:last-child a { border-bottom:none; }
+    .dropdown-menu li a:hover { color:#fff; background:rgba(255,255,255,0.1); }
+    @media (min-width:769px) { .dropdown:hover > .dropdown-menu { display:block; } }
+
+    @media (max-width:768px) {
+      nav { padding:0 1rem; }
+      .nav-toggle { display:block; }
+      nav ul { display:none; position:absolute; top:64px; right:0; left:0; flex-direction:column; gap:0; background:#1a3a5c; box-shadow:0 4px 8px rgba(0,0,0,0.2); z-index:99; }
+      nav ul.open { display:flex; }
+      nav ul li a { display:block; padding:0.85rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.08); font-size:1rem; }
+      .dropdown-menu { position:static; display:none; box-shadow:none; border-radius:0; background:rgba(0,0,0,0.2); min-width:unset; }
+      .dropdown-menu.open { display:block; }
+      .dropdown-menu li a { padding-right:2.5rem; border-bottom:1px solid rgba(255,255,255,0.04); }
+    }
 
     /* WIZARD HEADER */
     .wizard-header { background:linear-gradient(135deg,#1a3a5c 0%,#2a6496 100%); color:#fff; padding:2rem 1rem 1.5rem; text-align:center; }
@@ -164,6 +187,21 @@
     .step { display:none; }
     .step.active { display:block; }
 
+    /* PLAN DEBT TABLE */
+    .plan-action-select { min-width:130px; border:1px solid #d0d8e4; border-radius:5px; padding:0.28rem 0.4rem; font-family:inherit; font-size:0.82rem; background:#fff; }
+    .plan-param-input   { width:90px; border:1px solid #d0d8e4; border-radius:5px; padding:0.28rem 0.4rem; font-family:inherit; font-size:0.82rem; direction:ltr; text-align:right; }
+    .plan-param-input:disabled { background:#f5f5f5; color:#aaa; }
+
+    /* SESSION BAR */
+    .session-bar { background:#fff; border-bottom:1px solid #e0e6ee; padding:0.55rem 1.5rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:64px; z-index:90; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+    .sb-status { font-size:0.82rem; color:#888; }
+    .sb-status.saved { color:#1a7a40; font-weight:600; }
+    .sb-status.unsaved { color:#c87f00; }
+    .sb-btn { padding:0.38rem 0.9rem; border:1px solid #d0d8e4; border-radius:7px; background:#f5f7fa; font-size:0.83rem; cursor:pointer; font-family:inherit; font-weight:600; transition:all 0.18s; color:#1a3a5c; }
+    .sb-btn:hover { background:#dde8f2; }
+    .sb-btn-primary { background:#1a3a5c; color:#fff; border-color:#1a3a5c; }
+    .sb-btn-primary:hover { background:#2a6496; }
+
     /* PRINT */
     @media print {
       nav, .step-indicators, .wizard-nav, .mode-toggle, .import-zone, .add-row-btn { display:none !important; }
@@ -183,10 +221,39 @@
 <body>
 
 <nav>
-  <a class="nav-logo" href="../index.html">
-    <img src="../תמונות/logo.png" alt="יחיאל ממן">
-    <span style="color:#fff;">יחיאל ממן <span style="opacity:0.8;font-weight:400;">| סימולטור הבראה</span></span>
-  </a>
+  <div class="logo"><a href="../index.html" style="display:flex;align-items:center;gap:0.7rem;text-decoration:none;"><img src="../תמונות/logo.png" alt="יחיאל ממן" style="height:40px;width:auto;display:block;"><span style="color:#fff;font-size:1rem;font-weight:700;white-space:nowrap;">יחיאל ממן <span style="opacity:0.85;font-weight:400;">| אסטרטגיה פיננסית</span></span></a></div>
+  <ul id="navMenu">
+    <li><a href="../index.html#services">שירותים</a></li>
+    <li><a href="../index.html#process">תהליך</a></li>
+    <li><a href="../testimonials.html">המלצות</a></li>
+    <li class="dropdown">
+      <a href="#">מחשבונים</a>
+      <ul class="dropdown-menu">
+        <li><a href="../calculator.html">מחשבון משכנתא</a></li>
+        <li><a href="../loan-calculator.html">מחשבון הלוואה</a></li>
+        <li><a href="../repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+        <li><a href="../payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+        <li><a href="../compound-interest.html">מחשבון ריבית דריבית</a></li>
+        <li><a href="../madad-vs.html">מחשבון השפעת מדד על המשכנתא</a></li>
+        <li><a href="../car-cost-calculator.html">השוואת עלות אחזקת רכב</a></li>
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="#">מרכז הידע</a>
+      <ul class="dropdown-menu">
+        <li><a href="../articles.html">מאמרים ועדכונים</a></li>
+        <li><a href="../madad.html">מצפן השוק — ריבית ומדד</a></li>
+        <li><a href="../documents-guide.html">הדרכות</a></li>
+        <li><a href="../balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
+        <li><a href="../credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+        <li><a href="../pension-report.html">דו"ח המסלקה הפנסיונית</a></li>
+        <li><a href="../events-list.html">אירועים</a></li>
+      </ul>
+    </li>
+    <li><a href="../admin.html">עמוד ניהול</a></li>
+    <li><a href="../index.html#contact">צור קשר</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="פתח תפריט">☰</button>
 </nav>
 
 <div class="wizard-header">
@@ -197,9 +264,19 @@
 <div class="step-indicators" id="stepIndicators">
   <div class="step-ind active" onclick="goStep(0)"><div class="si-num">1</div><span>פרטי משפחה</span></div>
   <div class="step-ind"        onclick="goStep(1)"><div class="si-num">2</div><span>תקציב</span></div>
-  <div class="step-ind"        onclick="goStep(2)"><div class="si-num">3</div><span>מקורות מימון</span></div>
-  <div class="step-ind"        onclick="goStep(3)"><div class="si-num">4</div><span>חובות</span></div>
-  <div class="step-ind"        onclick="goStep(4)"><div class="si-num">5</div><span>תוצאות</span></div>
+  <div class="step-ind"        onclick="goStep(2)"><div class="si-num">3</div><span>חובות</span></div>
+  <div class="step-ind"        onclick="goStep(3)"><div class="si-num">4</div><span>מקורות מימון</span></div>
+  <div class="step-ind"        onclick="goStep(4)"><div class="si-num">5</div><span>תכנון הבראה</span></div>
+  <div class="step-ind"        onclick="goStep(5)"><div class="si-num">6</div><span>תוצאות</span></div>
+</div>
+
+<div class="session-bar">
+  <span class="sb-status" id="saveStatus">לא נשמר</span>
+  <div style="display:flex;gap:0.5rem;align-items:center;">
+    <button class="sb-btn" onclick="document.getElementById('importFileInput').click()">📂 טען קובץ</button>
+    <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importJSON(this.files[0]);this.value=''">
+    <button class="sb-btn sb-btn-primary" onclick="exportJSON()">💾 שמור קובץ</button>
+  </div>
 </div>
 
 <div class="wizard-body">
@@ -267,7 +344,63 @@
   </div>
 
   <!-- ===== STEP 3: מקורות מימון ===== -->
+  <!-- ===== STEP 3: חובות ===== -->
   <div class="step" id="step2">
+    <div class="card">
+      <div class="card-title">📋 רשימת חובות</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="debtModeImport" onclick="setDebtMode('import')">📂 ייבוא מקובץ</button>
+        <button class="mode-btn" id="debtModeManual" onclick="setDebtMode('manual')">✏️ הזנה ידנית</button>
+      </div>
+
+      <div id="debtImportArea">
+        <div class="import-zone" id="debtDropZone" onclick="document.getElementById('debtFile').click()">
+          <input type="file" id="debtFile" accept=".xlsx,.xls" onchange="importDebts(this)">
+          <div class="iz-icon">📂</div>
+          <div class="iz-label">לחץ לבחירת קובץ ייצוא חובות</div>
+          <div class="iz-sub">קובץ XLSX מיוצא ממערכת ניהול חובות</div>
+        </div>
+        <div id="debtImportStatus" style="display:none" class="note-box"></div>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="debts-table" id="debtsTable">
+          <thead>
+            <tr>
+              <th>שם הנושה</th>
+              <th>קטגוריה</th>
+              <th>יתרה (₪)</th>
+              <th style="text-align:center">בהסדר</th>
+              <th>ריבית %</th>
+              <th>חודשים</th>
+              <th>החזר חודשי</th>
+              <th>הערות</th>
+            </tr>
+          </thead>
+          <tbody id="debtsBody"></tbody>
+          <tfoot id="debtsFoot">
+            <tr>
+              <td colspan="2" style="font-weight:700;text-align:right;">סה"כ</td>
+              <td id="debtsTotalBalance" style="font-weight:700;">0 ₪</td>
+              <td colspan="3"></td>
+              <td id="debtsTotalMonthly" style="font-weight:700;">0 ₪</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addDebtRow()">+ הוסף חוב</button>
+    </div>
+
+    <div class="wizard-nav">
+      <button class="btn btn-secondary" onclick="goStep(1)">→ חזרה</button>
+      <button class="btn btn-primary" onclick="goStep(3)">המשך למקורות מימון ←</button>
+    </div>
+  </div>
+
+  <!-- ===== STEP 4: מקורות מימון ===== -->
+  <div class="step" id="step3">
 
     <div class="card">
       <div class="card-title">💰 כספים זמינים (חסכונות, קרנות)</div>
@@ -329,73 +462,139 @@
     </div>
 
     <div class="wizard-nav">
-      <button class="btn btn-secondary" onclick="goStep(1)">→ חזרה</button>
-      <button class="btn btn-primary" onclick="goStep(3)">המשך לחובות ←</button>
+      <button class="btn btn-secondary" onclick="goStep(2)">→ חזרה</button>
+      <button class="btn btn-primary" onclick="goStep(4); renderPlanningTable()">המשך לתכנון הבראה ←</button>
     </div>
   </div>
 
-  <!-- ===== STEP 4: חובות ===== -->
-  <div class="step" id="step3">
+  <!-- ===== STEP 5: תכנון הבראה ===== -->
+  <div class="step" id="step4plan">
     <div class="card">
-      <div class="card-title">📋 רשימת חובות</div>
-
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="debtModeImport" onclick="setDebtMode('import')">📂 ייבוא מקובץ</button>
-        <button class="mode-btn" id="debtModeManual" onclick="setDebtMode('manual')">✏️ הזנה ידנית</button>
-      </div>
-
-      <div id="debtImportArea">
-        <div class="import-zone" id="debtDropZone" onclick="document.getElementById('debtFile').click()">
-          <input type="file" id="debtFile" accept=".xlsx,.xls" onchange="importDebts(this)">
-          <div class="iz-icon">📂</div>
-          <div class="iz-label">לחץ לבחירת קובץ ייצוא חובות</div>
-          <div class="iz-sub">קובץ XLSX מיוצא ממערכת ניהול חובות</div>
-        </div>
-        <div id="debtImportStatus" style="display:none" class="note-box"></div>
-      </div>
-
-      <div class="note-box" style="margin-top:1rem;">
-        💡 לכל חוב בחר פעולה: <strong>ללא שינוי</strong> — ממשיך כרגיל | <strong>פרעון מלא</strong> — נפרע מיידי מכספים זמינים | <strong>הקפאה</strong> — מוקפא לפרק זמן | <strong>פריסה מחדש</strong> — החזר חדש על פני תקופה | <strong>ויתור חלקי/מלא</strong> — נושה מוותר
-      </div>
+      <div class="card-title">🗓️ תכנון תקציב ההבראה</div>
+      <p style="font-size:0.85rem;color:#666;margin-bottom:1.2rem;">הגדר עד 3 תקציבים מוצעים לתקופות שונות. הכנסות/הוצאות מוצעות נלקחות מהתקציב שהוזן — ניתן לשנות.</p>
 
       <div style="overflow-x:auto;">
-        <table class="debts-table" id="debtsTable">
+        <table class="budget-table" id="planTable" style="min-width:600px;">
+          <thead>
+            <tr>
+              <th style="width:20%"></th>
+              <th style="width:18%;background:#555;text-align:center">תקציב נוכחי</th>
+              <th style="width:18%;background:#1a6e3c;text-align:center">תקציב מוצע 1</th>
+              <th style="width:18%;background:#2a6496;text-align:center">תקציב מוצע 2</th>
+              <th style="width:18%;background:#7b3a00;text-align:center">תקציב מוצע 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:700;color:#1a3a5c;">הכנסות</td>
+              <td style="text-align:center" id="plan_cur_income">—</td>
+              <td style="text-align:center;font-weight:600;color:#1a6e3c;" id="plan_p1_income">—</td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_income" oninput="syncP3('income',this.value);updatePlanRow()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_income" oninput="updatePlanRow()"></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;color:#1a3a5c;">הוצאות</td>
+              <td style="text-align:center" id="plan_cur_exp">—</td>
+              <td style="text-align:center;font-weight:600;color:#1a6e3c;" id="plan_p1_exp">—</td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_exp" oninput="syncP3('exp',this.value);updatePlanRow()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_exp" oninput="updatePlanRow()"></td>
+            </tr>
+            <tr style="background:#f5f8fc;">
+              <td style="font-weight:700;color:#1a3a5c;">הפרש</td>
+              <td style="text-align:center;font-weight:700;" id="plan_cur_diff">—</td>
+              <td style="text-align:center;font-weight:700;" id="plan_p1_diff">—</td>
+              <td style="text-align:center;font-weight:700;" id="plan_p2_diff">—</td>
+              <td style="text-align:center;font-weight:700;" id="plan_p3_diff">—</td>
+            </tr>
+            <tr>
+              <td style="color:#555;">מחודש</td>
+              <td></td>
+              <td style="text-align:center;color:#888;">1</td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_from" value="13" min="1" oninput="updatePlanFromTo()"></td>
+              <td style="text-align:center" id="plan_p3_from_display" style="color:#888;">—</td>
+            </tr>
+            <tr>
+              <td style="color:#555;">עד חודש</td>
+              <td></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p1_to" value="12" min="1" oninput="updatePlanFromTo()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_to" value="24" min="1" oninput="updatePlanFromTo()"></td>
+              <td style="text-align:center;color:#888;">999</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note-box" style="margin-top:1rem;" id="planNote"></div>
+    </div>
+
+    <!-- גרפי מצב -->
+    <div class="card">
+      <div class="card-title">📊 תמונת מצב — לפני ואחרי ההבראה</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#c0392b;margin-bottom:0.5rem;">לפני הבראה</div>
+          <div class="chart-container" style="height:300px;"><canvas id="planBeforeChart"></canvas></div>
+        </div>
+        <div>
+          <div class="chart-container" style="height:300px;"><canvas id="planAfterChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- כספים זמינים -->
+    <div class="card">
+      <div class="card-title">💵 כספים זמינים לתכנון ההבראה</div>
+      <div id="planFundsSummary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.8rem;"></div>
+    </div>
+
+    <!-- תכנון חובות -->
+    <div class="card">
+      <div class="card-title">📋 תכנון טיפול בחובות</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.7rem;margin-bottom:1rem;">
+        <div class="note-box" style="margin:0;flex:1;">
+          💡 <strong>פרעון מלא</strong> — הזן סכום פירעון מהכספים הזמינים | <strong>פריסה מחדש</strong> — הזן תקופה חדשה בחודשים | <strong>ויתור חלקי</strong> — הזן סכום ויתור (₪)
+        </div>
+        <div style="background:#1a3a5c;color:#fff;border-radius:10px;padding:0.7rem 1.2rem;text-align:center;min-width:180px;white-space:nowrap;">
+          <div style="font-size:0.75rem;opacity:0.8;margin-bottom:0.2rem;">יתרה פנויה לפירעון</div>
+          <div style="font-size:1.3rem;font-weight:800;" id="availableRemaining">—</div>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="debts-table" id="planDebtsTable">
           <thead>
             <tr>
               <th>שם הנושה</th>
-              <th>קטגוריה</th>
               <th>יתרה (₪)</th>
-              <th>ריבית</th>
+              <th>ריבית %</th>
               <th>חודשים</th>
-              <th>החזר חודשי</th>
+              <th>החזר נוכחי</th>
               <th>פעולה</th>
-              <th>פרמטר</th>
-              <th>תשלום חדש</th>
+              <th>סכום / פרמטר</th>
+              <th>החזר חדש</th>
             </tr>
           </thead>
-          <tbody id="debtsBody"></tbody>
-          <tfoot id="debtsFoot">
+          <tbody id="planDebtsBody"></tbody>
+          <tfoot>
             <tr>
-              <td colspan="2" style="font-weight:700;text-align:right;">סה"כ</td>
-              <td id="debtsTotalBalance" style="font-weight:700;">0 ₪</td>
+              <td style="font-weight:700;text-align:right;">סה"כ</td>
+              <td id="planTotalBalance" style="font-weight:700;">—</td>
               <td colspan="2"></td>
-              <td id="debtsTotalMonthly" style="font-weight:700;">0 ₪</td>
+              <td id="planTotalMonthly" style="font-weight:700;">—</td>
               <td colspan="2"></td>
-              <td id="debtsTotalNew" style="font-weight:700;">0 ₪</td>
+              <td id="planTotalNew" style="font-weight:700;color:#1a7a40;">—</td>
             </tr>
           </tfoot>
         </table>
       </div>
-      <button class="add-row-btn" onclick="addDebtRow()">+ הוסף חוב</button>
     </div>
 
     <div class="wizard-nav">
-      <button class="btn btn-secondary" onclick="goStep(2)">→ חזרה</button>
-      <button class="btn btn-success" onclick="goStep(4); runCalc()">חשב תוצאות ✓</button>
+      <button class="btn btn-secondary" onclick="goStep(3)">→ חזרה</button>
+      <button class="btn btn-success" onclick="goStep(5); runCalc()">חשב תוצאות ✓</button>
     </div>
   </div>
 
-  <!-- ===== STEP 5: תוצאות ===== -->
+  <!-- ===== STEP 6: תוצאות ===== -->
   <div class="step" id="step4">
 
     <div class="card">
@@ -436,7 +635,7 @@
     </div>
 
     <div class="wizard-nav">
-      <button class="btn btn-secondary" onclick="goStep(3)">→ חזרה לעריכה</button>
+      <button class="btn btn-secondary" onclick="goStep(4); renderPlanningTable()">→ חזרה לתכנון</button>
       <button class="btn btn-primary" onclick="runCalc()">🔄 חשב מחדש</button>
     </div>
   </div>
@@ -457,6 +656,19 @@ const state = {
   debts: [],  // {name, category, balance, interest, paymentsLeft, monthly, notes, action, actionParam}
 };
 
+// ===================== NAV =====================
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navMenu').classList.toggle('open');
+});
+document.querySelectorAll('.dropdown > a').forEach(a => {
+  a.addEventListener('click', e => {
+    if (window.innerWidth <= 768) {
+      e.preventDefault();
+      a.parentElement.querySelector('.dropdown-menu').classList.toggle('open');
+    }
+  });
+});
+
 // ===================== INIT =====================
 window.onload = () => {
   const now = new Date();
@@ -471,6 +683,7 @@ window.onload = () => {
 
 function updateFamilyName() {
   state.family = document.getElementById('familyName').value;
+  scheduleAutoSave();
 }
 
 // ===================== WIZARD NAV =====================
@@ -482,6 +695,7 @@ function goStep(n) {
     else if (i < n) ind.classList.add('done');
   });
   state.step = n;
+  if (n === 4) renderPlanningTable();
   window.scrollTo(0, 0);
 }
 
@@ -510,11 +724,11 @@ const INCOME_GROUPS  = ['שכר','קצבאות','הכנסות שונות'];
 function initBudget() {
   const defaultBudget = [
     {name:'הכנסות',group:'הכנסות',type:'income',isGroup:true,current:0,proposed:0},
-    {name:'שכר ומשכורת',group:'שכר',type:'income',isGroup:false,current:0,proposed:0},
+    {name:'שכר ומשכורת',group:'שכר',type:'income',isGroup:false,current:2000,proposed:2000},
     {name:'קצבאות',group:'קצבאות',type:'income',isGroup:false,current:0,proposed:0},
     {name:'הכנסות אחרות',group:'הכנסות שונות',type:'income',isGroup:false,current:0,proposed:0},
     {name:'הוצאות',group:'הוצאות',type:'expense',isGroup:true,current:0,proposed:0},
-    {name:'מזון ופארמה',group:'מזון ופארמה',type:'expense',isGroup:false,current:0,proposed:0},
+    {name:'מזון ופארמה',group:'מזון ופארמה',type:'expense',isGroup:false,current:1000,proposed:1000},
     {name:'פנאי ובילוי',group:'פנאי, בילוי ותחביבים',type:'expense',isGroup:false,current:0,proposed:0},
     {name:'ביגוד והנעלה',group:'ביגוד והנעלה',type:'expense',isGroup:false,current:0,proposed:0},
     {name:'תכולת בית',group:'תכולת בית',type:'expense',isGroup:false,current:0,proposed:0},
@@ -661,16 +875,22 @@ function initFunds() {
 }
 
 function addFundRow(source='') {
-  const i = state.funds.length;
   state.funds.push({source, total:0, withdrawal:0, date:'', notes:''});
-  const tr = document.createElement('tr');
+  renderFundRow(state.funds.length - 1);
+}
+
+function renderFundRow(i) {
+  const f = state.funds[i];
+  const existing = document.getElementById(`fundRow${i}`);
+  const tr = existing || document.createElement('tr');
+  tr.id = `fundRow${i}`;
   tr.innerHTML = `
-    <td><input placeholder="שם המקור" value="${source}" oninput="state.funds[${i}].source=this.value"></td>
-    <td style="text-align:center"><input type="number" placeholder="0" onchange="state.funds[${i}].total=parseNum(this.value);updateFundTotals()"></td>
-    <td style="text-align:center"><input type="number" placeholder="0" onchange="state.funds[${i}].withdrawal=parseNum(this.value);updateFundTotals()"></td>
-    <td style="text-align:center"><input type="month" onchange="state.funds[${i}].date=this.value"></td>
-    <td><input placeholder="הערות" oninput="state.funds[${i}].notes=this.value"></td>`;
-  document.getElementById('fundsBody').appendChild(tr);
+    <td><input placeholder="שם המקור" value="${f.source||''}" oninput="state.funds[${i}].source=this.value;scheduleAutoSave()"></td>
+    <td style="text-align:center"><input type="number" value="${f.total||''}" placeholder="0" onchange="state.funds[${i}].total=parseNum(this.value);updateFundTotals()"></td>
+    <td style="text-align:center"><input type="number" value="${f.withdrawal||''}" placeholder="0" onchange="state.funds[${i}].withdrawal=parseNum(this.value);updateFundTotals()"></td>
+    <td style="text-align:center"><input type="month" value="${f.date||''}" onchange="state.funds[${i}].date=this.value;scheduleAutoSave()"></td>
+    <td><input placeholder="הערות" value="${f.notes||''}" oninput="state.funds[${i}].notes=this.value;scheduleAutoSave()"></td>`;
+  if (!existing) document.getElementById('fundsBody').appendChild(tr);
 }
 
 function updateFundTotals() {
@@ -678,26 +898,37 @@ function updateFundTotals() {
   const totWith = state.funds.reduce((s,f)=>s+f.withdrawal,0);
   document.getElementById('fundsTotalAmt').textContent = fmtNIS(totAmt);
   document.getElementById('fundsTotalWithdraw').textContent = fmtNIS(totWith);
+  scheduleAutoSave();
 }
 
 // ===================== LOANS =====================
-function initLoans() { addLoanRow(); addLoanRow(); }
+function initLoans() {
+  state.loans.push({name:'הלוואה לדוגמא', amount:10000, grace:0, rate:6, months:60, notes:''});
+  renderLoanRow(0);
+  calcLoanPmt(0);
+  addLoanRow();
+}
 
 function addLoanRow() {
-  const i = state.loans.length;
   state.loans.push({name:'', amount:0, grace:0, rate:0, months:0, notes:''});
-  const tr = document.createElement('tr');
+  renderLoanRow(state.loans.length - 1);
+}
+
+function renderLoanRow(i) {
+  const l = state.loans[i];
+  const existing = document.getElementById(`loanRow${i}`);
+  const tr = existing || document.createElement('tr');
   tr.id = `loanRow${i}`;
   tr.innerHTML = `
     <td style="text-align:center;color:#888">${i+1}</td>
-    <td><input placeholder="שם ההלוואה" oninput="state.loans[${i}].name=this.value"></td>
-    <td><input type="number" placeholder="0" onchange="state.loans[${i}].amount=parseNum(this.value);calcLoanPmt(${i})"></td>
-    <td><input type="number" placeholder="0" min="0" onchange="state.loans[${i}].grace=parseNum(this.value);calcLoanPmt(${i})"></td>
-    <td><input type="number" placeholder="0" step="0.1" onchange="state.loans[${i}].rate=parseNum(this.value);calcLoanPmt(${i})"></td>
-    <td><input type="number" placeholder="0" onchange="state.loans[${i}].months=parseNum(this.value);calcLoanPmt(${i})"></td>
-    <td class="pmt-cell" id="loanPmt${i}">—</td>
-    <td><input placeholder="הערות" oninput="state.loans[${i}].notes=this.value"></td>`;
-  document.getElementById('loansBody').appendChild(tr);
+    <td><input placeholder="שם ההלוואה" value="${l.name||''}" oninput="state.loans[${i}].name=this.value;scheduleAutoSave()"></td>
+    <td><input type="number" value="${l.amount||''}" placeholder="0" onchange="state.loans[${i}].amount=parseNum(this.value);calcLoanPmt(${i})"></td>
+    <td><input type="number" value="${l.grace||''}" placeholder="0" min="0" onchange="state.loans[${i}].grace=parseNum(this.value);calcLoanPmt(${i})"></td>
+    <td><input type="number" value="${l.rate||''}" placeholder="0" step="0.1" onchange="state.loans[${i}].rate=parseNum(this.value);calcLoanPmt(${i})"></td>
+    <td><input type="number" value="${l.months||''}" placeholder="0" onchange="state.loans[${i}].months=parseNum(this.value);calcLoanPmt(${i})"></td>
+    <td class="pmt-cell" id="loanPmt${i}">${l.pmt ? fmtNIS(Math.round(l.pmt)) : '—'}</td>
+    <td><input placeholder="הערות" value="${l.notes||''}" oninput="state.loans[${i}].notes=this.value;scheduleAutoSave()"></td>`;
+  if (!existing) document.getElementById('loansBody').appendChild(tr);
 }
 
 function calcLoanPmt(i) {
@@ -724,7 +955,12 @@ const DEBT_ACTIONS = ['ללא שינוי','פרעון מלא','הקפאה','פר
 const ACTION_PARAM_LABEL = {'הקפאה':'חודשי הקפאה','פריסה מחדש':'חודשים חדשים','ויתור חלקי':'סכום ויתור (₪)','פרעון מלא':'סכום (₪)'};
 const CATEGORY_BADGE = {'בנק - הלוואה':'badge-bank','כרטיס אשראי':'badge-cc','משפחה קרובה':'badge-family'};
 
-function initDebts() { addDebtRow(); addDebtRow(); addDebtRow(); }
+function initDebts() {
+  state.debts.push({name:'חוב לדוגמא', category:'בנק - הלוואה', balance:10000, arranged:true, interest:5, paymentsLeft:36, monthly:300, notes:'', action:'ללא שינוי', actionParam:0});
+  renderDebtRow(0);
+  addDebtRow();
+  addDebtRow();
+}
 
 function setDebtMode(mode) {
   state.debtMode = mode;
@@ -765,6 +1001,7 @@ async function importDebts(input) {
         name,
         category: row[1] ? String(row[1]).trim() : '',
         balance: parseNum(row[7] || row[2]) || parseNum(row[2]),
+        arranged: true,
         interest: parseNum(row[4]) || 0,
         paymentsLeft: parseNum(row[5]) || 0,
         monthly: parseNum(row[6]) || 0,
@@ -791,24 +1028,21 @@ async function importDebts(input) {
 
 function addDebtRow() {
   const i = state.debts.length;
-  state.debts.push({name:'', category:'', balance:0, interest:0, paymentsLeft:0, monthly:0, notes:'', action:'ללא שינוי', actionParam:0});
+  state.debts.push({name:'', category:'', balance:0, arranged:true, interest:0, paymentsLeft:0, monthly:0, notes:'', action:'ללא שינוי', actionParam:0});
   renderDebtRow(i);
 }
 
 function renderDebtRow(i) {
   const d = state.debts[i];
-  const badgeClass = CATEGORY_BADGE[d.category] || 'badge-other';
-  const newPmt = calcDebtNewPmt(d);
-  const paramLabel = ACTION_PARAM_LABEL[d.action] || '';
-  const showParam = !!paramLabel;
-
+  const arr = d.arranged !== false; // default true
+  const dis = arr ? '' : 'disabled style="background:#f5f5f5;color:#aaa;"';
   const existing = document.getElementById(`debtRow${i}`);
   const tr = existing || document.createElement('tr');
   tr.id = `debtRow${i}`;
   tr.innerHTML = `
     <td><input placeholder="שם הנושה" value="${d.name}" oninput="state.debts[${i}].name=this.value;updateDebtTotals()"></td>
     <td>
-      <select onchange="state.debts[${i}].category=this.value;renderDebtRow(${i})">
+      <select onchange="state.debts[${i}].category=this.value">
         <option ${!d.category?'selected':''}>בחר</option>
         <option ${d.category==='בנק - הלוואה'?'selected':''}>בנק - הלוואה</option>
         <option ${d.category==='כרטיס אשראי'?'selected':''}>כרטיס אשראי</option>
@@ -816,18 +1050,15 @@ function renderDebtRow(i) {
         <option ${d.category==='אחר'?'selected':''}>אחר</option>
       </select>
     </td>
-    <td><input type="number" value="${d.balance||''}" placeholder="0" onchange="state.debts[${i}].balance=parseNum(this.value);renderDebtRow(${i});updateDebtTotals()"></td>
-    <td><input type="number" value="${d.interest||''}" placeholder="%" step="0.1" style="width:60px" onchange="state.debts[${i}].interest=parseNum(this.value);renderDebtRow(${i})"></td>
-    <td><input type="number" value="${d.paymentsLeft||''}" placeholder="חודשים" style="width:70px" onchange="state.debts[${i}].paymentsLeft=parseNum(this.value);renderDebtRow(${i})"></td>
-    <td><input type="number" value="${d.monthly||''}" placeholder="₪" onchange="state.debts[${i}].monthly=parseNum(this.value);renderDebtRow(${i});updateDebtTotals()"></td>
-    <td>
-      <select class="action-select" onchange="state.debts[${i}].action=this.value;state.debts[${i}].actionParam=0;renderDebtRow(${i});updateDebtTotals()">
-        ${DEBT_ACTIONS.map(a=>`<option ${d.action===a?'selected':''}>${a}</option>`).join('')}
-      </select>
+    <td><input type="number" value="${d.balance||''}" placeholder="0" onchange="state.debts[${i}].balance=parseNum(this.value);updateDebtTotals()"></td>
+    <td style="text-align:center">
+      <input type="checkbox" ${arr?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:#1a3a5c;"
+        onchange="state.debts[${i}].arranged=this.checked;if(!this.checked){state.debts[${i}].interest=0;state.debts[${i}].paymentsLeft=0;state.debts[${i}].monthly=0;}renderDebtRow(${i});updateDebtTotals()">
     </td>
-    <td>${showParam ? `<div style="font-size:0.75rem;color:#888;margin-bottom:2px">${paramLabel}</div>
-      <input type="number" value="${d.actionParam||''}" placeholder="0" onchange="state.debts[${i}].actionParam=parseNum(this.value);renderDebtRow(${i});updateDebtTotals()">` : '—'}</td>
-    <td style="font-weight:700;color:${newPmt>0?'#1a3a5c':'#1a7a40'}">${newPmt === null ? '—' : fmtNIS(Math.round(newPmt))}</td>`;
+    <td><input type="number" value="${arr?(d.interest||''):''}" placeholder="%" step="0.1" style="width:60px" ${dis} onchange="state.debts[${i}].interest=parseNum(this.value)"></td>
+    <td><input type="number" value="${arr?(d.paymentsLeft||''):''}" placeholder="חודשים" style="width:70px" ${dis} onchange="state.debts[${i}].paymentsLeft=parseNum(this.value)"></td>
+    <td><input type="number" value="${arr?(d.monthly||''):''}" placeholder="₪" ${dis} onchange="state.debts[${i}].monthly=parseNum(this.value);updateDebtTotals()"></td>
+    <td><input placeholder="הערות" value="${d.notes||''}" oninput="state.debts[${i}].notes=this.value" style="width:100%;border:1px solid #d0d8e4;border-radius:5px;padding:0.28rem 0.4rem;font-family:inherit;font-size:0.82rem;"></td>`;
   if (!existing) document.getElementById('debtsBody').appendChild(tr);
 }
 
@@ -849,10 +1080,347 @@ function calcDebtNewPmt(d) {
 function updateDebtTotals() {
   const totalBal = state.debts.reduce((s,d)=>s+d.balance,0);
   const totalMon = state.debts.reduce((s,d)=>s+d.monthly,0);
-  const totalNew = state.debts.reduce((s,d)=>s+(calcDebtNewPmt(d)||0),0);
   document.getElementById('debtsTotalBalance').textContent = fmtNIS(totalBal);
   document.getElementById('debtsTotalMonthly').textContent = fmtNIS(totalMon);
-  document.getElementById('debtsTotalNew').textContent = fmtNIS(Math.round(totalNew));
+  scheduleAutoSave();
+}
+
+// ===================== PLANNING TABLE =====================
+function renderPlanningTable() {
+  const curIncome = state.budget.filter(b=>b.type==='income'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
+  const curExp    = state.budget.filter(b=>b.type==='expense'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
+  const propIncome = state.budget.filter(b=>b.type==='income'&&!b.isGroup).reduce((s,b)=>s+b.proposed,0);
+  const propExp    = state.budget.filter(b=>b.type==='expense'&&!b.isGroup).reduce((s,b)=>s+b.proposed,0);
+
+  document.getElementById('plan_cur_income').textContent = fmtNIS(curIncome);
+  document.getElementById('plan_cur_exp').textContent    = fmtNIS(curExp);
+  const curDiff = curIncome - curExp;
+  const el = document.getElementById('plan_cur_diff');
+  el.textContent = fmtNIS(curDiff);
+  el.style.color = curDiff >= 0 ? '#1a7a40' : '#c0392b';
+
+  // עמודה 1 — נלקחת מהתקציב המוצע, לא ניתנת לעריכה
+  document.getElementById('plan_p1_income').textContent = fmtNIS(propIncome);
+  document.getElementById('plan_p1_exp').textContent    = fmtNIS(propExp);
+  // עמודה 2 — תמיד ממשיכה מעמודה 1 (ניתנת לשינוי ידני אחר כך)
+  const fillIncome = propIncome || curIncome;
+  const fillExp    = propExp    || curExp;
+  document.getElementById('plan_p2_income').value = fillIncome;
+  document.getElementById('plan_p2_exp').value    = fillExp;
+  // עמודה 3 — ממשיכה מעמודה 2
+  document.getElementById('plan_p3_income').value = fillIncome;
+  document.getElementById('plan_p3_exp').value    = fillExp;
+  updatePlanRow();
+  updatePlanFromTo();
+  renderPlanningExtras();
+}
+
+// ===================== PLANNING CHARTS + FUNDS + DEBT ACTIONS =====================
+let planBeforeChartInst = null, planAfterChartInst = null;
+
+function renderPlanningExtras() {
+  renderPlanFunds();
+  renderPlanDebts();
+  updateAvailableRemaining();
+  renderPlanCharts();
+}
+
+function renderPlanFunds() {
+  const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
+  const [sy, sm] = startDate.split('-').map(Number);
+  const startDateObj = new Date(sy, sm-1, 1);
+
+  const savingsImmediate = state.funds.reduce((s,f) => {
+    const fd = f.date ? new Date(f.date + '-01') : null;
+    return s + ((!fd || fd <= startDateObj) ? f.withdrawal : 0);
+  }, 0);
+  const savingsFuture = state.funds.reduce((s,f) => {
+    const fd = f.date ? new Date(f.date + '-01') : null;
+    return s + ((fd && fd > startDateObj) ? f.withdrawal : 0);
+  }, 0);
+  const loansTotal = state.loans.reduce((s,l) => s + l.amount, 0);
+  const total = savingsImmediate + loansTotal;
+
+  document.getElementById('planFundsSummary').innerHTML = `
+    <div class="sum-box"><div class="sb-label">חסכונות זמינים מיידית</div><div class="sb-value">${fmtNIS(savingsImmediate)}</div></div>
+    <div class="sum-box"><div class="sb-label">חסכונות עתידיים</div><div class="sb-value">${fmtNIS(savingsFuture)}</div></div>
+    <div class="sum-box"><div class="sb-label">הלוואות חדשות</div><div class="sb-value">${fmtNIS(loansTotal)}</div></div>
+    <div class="sum-box highlight"><div class="sb-label">סה"כ זמין לפרעון מיידי</div><div class="sb-value">${fmtNIS(total)}</div></div>`;
+}
+
+const PLAN_ACTIONS = ['ללא שינוי','פרעון מלא','פריסה מחדש','ויתור חלקי'];
+
+function calcPlanDebtNewPmt(d) {
+  if (!d.planAction || d.planAction === 'ללא שינוי') return d.monthly;
+  if (d.planAction === 'פרעון מלא') return 0;
+  if (d.planAction === 'פריסה מחדש') {
+    const months = d.planParam || d.paymentsLeft || 36;
+    return pmt(d.interest, months, d.balance);
+  }
+  if (d.planAction === 'ויתור חלקי') {
+    const newBal = Math.max(d.balance - (d.planParam||0), 0);
+    return pmt(d.interest, d.paymentsLeft || 36, newBal);
+  }
+  return d.monthly;
+}
+
+function renderPlanDebts() {
+  const tbody = document.getElementById('planDebtsBody');
+  tbody.innerHTML = '';
+  state.debts.forEach((d,i) => {
+    if (!d.planAction) d.planAction = 'ללא שינוי';
+    if (!d.planParam)  d.planParam  = 0;
+    renderPlanDebtRow(i);
+  });
+  updatePlanDebtTotals();
+}
+
+function renderPlanDebtRow(i) {
+  const d = state.debts[i];
+  const action = d.planAction || 'ללא שינוי';
+  const newPmt = calcPlanDebtNewPmt(d);
+  const needsParam = action === 'פריסה מחדש' || action === 'ויתור חלקי' || action === 'פרעון מלא';
+  const paramLabel = action === 'פריסה מחדש' ? 'חודשים חדשים' :
+                     action === 'ויתור חלקי'  ? 'סכום ויתור (₪)' :
+                     action === 'פרעון מלא'   ? 'סכום פירעון (₪)' : '';
+  const defaultParam = action === 'פרעון מלא' && !d.planParam ? d.balance : (d.planParam || '');
+
+  const existing = document.getElementById(`planDebtRow${i}`);
+  const tr = existing || document.createElement('tr');
+  tr.id = `planDebtRow${i}`;
+  tr.innerHTML = `
+    <td style="font-weight:600">${d.name || '—'}</td>
+    <td>${fmtNIS(d.balance)}</td>
+    <td>${d.interest ? d.interest + '%' : '—'}</td>
+    <td>${d.paymentsLeft || '—'}</td>
+    <td>${fmtNIS(d.monthly)}</td>
+    <td><select class="plan-action-select" onchange="state.debts[${i}].planAction=this.value;state.debts[${i}].planParam=0;renderPlanDebtRow(${i});updatePlanDebtTotals();updateAvailableRemaining();renderPlanCharts()">
+      ${PLAN_ACTIONS.map(a=>`<option ${action===a?'selected':''}>${a}</option>`).join('')}
+    </select></td>
+    <td>${needsParam ? `<div style="font-size:0.72rem;color:#888;margin-bottom:2px">${paramLabel}</div>
+      <input class="plan-param-input" type="number" value="${defaultParam}" placeholder="0"
+        onchange="state.debts[${i}].planParam=parseNum(this.value);renderPlanDebtRow(${i});updatePlanDebtTotals();updateAvailableRemaining();renderPlanCharts()">` : '—'}</td>
+    <td style="font-weight:700;color:${newPmt<d.monthly?'#1a7a40':'#1a3a5c'}">${fmtNIS(Math.round(newPmt))}</td>`;
+  if (!existing) document.getElementById('planDebtsBody').appendChild(tr);
+}
+
+function getTotalAvailable() {
+  const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
+  const [sy, sm] = startDate.split('-').map(Number);
+  const startDateObj = new Date(sy, sm-1, 1);
+  const savingsImm = state.funds.reduce((s,f) => {
+    const fd = f.date ? new Date(f.date + '-01') : null;
+    return s + ((!fd || fd <= startDateObj) ? f.withdrawal : 0);
+  }, 0);
+  const loansTotal = state.loans.reduce((s,l) => s + l.amount, 0);
+  return savingsImm + loansTotal;
+}
+
+function updateAvailableRemaining() {
+  const total = getTotalAvailable();
+  const used  = state.debts.reduce((s,d) => {
+    if ((d.planAction || 'ללא שינוי') === 'פרעון מלא') {
+      return s + (d.planParam > 0 ? d.planParam : d.balance);
+    }
+    return s;
+  }, 0);
+  const remaining = total - used;
+  const el = document.getElementById('availableRemaining');
+  if (el) {
+    el.textContent = fmtNIS(Math.round(remaining));
+    el.closest('div[style]').style.background = remaining < 0 ? '#8e0000' : '#1a3a5c';
+  }
+}
+
+function updatePlanDebtTotals() {
+  const totBal = state.debts.reduce((s,d)=>s+d.balance,0);
+  const totMon = state.debts.reduce((s,d)=>s+d.monthly,0);
+  const totNew = state.debts.reduce((s,d)=>s+calcPlanDebtNewPmt(d),0);
+  document.getElementById('planTotalBalance').textContent = fmtNIS(totBal);
+  document.getElementById('planTotalMonthly').textContent = fmtNIS(totMon);
+  document.getElementById('planTotalNew').textContent = fmtNIS(Math.round(totNew));
+}
+
+function simulateDebts(debtList, months) {
+  const debts = debtList.map(d => ({
+    balance: d.balance || 0,
+    monthly: d.monthly || 0,
+    interest: d.interest || 0,
+    paymentsLeft: d.paymentsLeft || 0,
+  }));
+  const payments = [];
+  for (let m = 0; m < months; m++) {
+    let total = 0;
+    debts.forEach(d => {
+      if (d.balance <= 0 || d.paymentsLeft <= 0) return;
+      const r = d.interest / 100 / 12;
+      const interestCharge = d.balance * r;
+      const payment = Math.min(d.monthly, d.balance + interestCharge);
+      d.balance = Math.max(d.balance - (payment - interestCharge), 0);
+      d.paymentsLeft--;
+      if (d.balance < 0.5) { d.balance = 0; d.paymentsLeft = 0; }
+      total += payment;
+    });
+    payments.push(Math.round(total));
+  }
+  return payments;
+}
+
+function renderPlanCharts() {
+  const MONTHS = 100;
+  const labels = Array.from({length: MONTHS}, (_, i) => i + 1);
+  const tickCb = (_, idx) => idx % 4 === 0 ? idx + 1 : '';
+
+  // Budget values
+  const curIncome = state.budget.filter(b=>b.type==='income'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
+  const curExp    = state.budget.filter(b=>b.type==='expense'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
+  const curAvail  = Math.round(curIncome - curExp);
+
+  // Simulate BEFORE — no actions, current debts
+  const beforePayments = simulateDebts(state.debts, MONTHS);
+  const beforeLine = new Array(MONTHS).fill(curAvail);
+
+  // Simulate AFTER — apply planAction to each debt
+  const afterDebtList = state.debts.map(d => {
+    const action = d.planAction || 'ללא שינוי';
+    const param  = d.planParam  || 0;
+    let balance  = d.balance    || 0;
+    let monthly  = d.monthly    || 0;
+    let paymentsLeft = d.paymentsLeft || 0;
+    let initialCapital = 0;
+    if (action === 'פרעון מלא') {
+      initialCapital = balance; balance = 0; monthly = 0; paymentsLeft = 0;
+    } else if (action === 'פריסה מחדש') {
+      const newN = param || paymentsLeft || 36;
+      monthly = pmt(d.interest || 0, newN, balance);
+      paymentsLeft = newN;
+    } else if (action === 'ויתור חלקי') {
+      balance = Math.max(balance - param, 0);
+      monthly = pmt(d.interest || 0, paymentsLeft || 36, balance);
+    }
+    return { balance, monthly, interest: d.interest || 0, paymentsLeft, initialCapital };
+  });
+  const afterDebtPayments = simulateDebts(afterDebtList, MONTHS);
+  const capitalFunded     = new Array(MONTHS).fill(0);
+  const totalInitialCap   = afterDebtList.reduce((s,d)=>s+d.initialCapital,0);
+  if (totalInitialCap > 0) capitalFunded[0] = Math.round(totalInitialCap);
+
+  // New loan payments per month
+  const newLoanPayments = Array.from({length: MONTHS}, (_, m) => {
+    return Math.round(state.loans.reduce((s, l) => {
+      if (!l.amount || !l.months) return s;
+      const grace = l.grace || 0;
+      if (m < grace || m >= grace + l.months) return s;
+      return s + (l.pmt || pmt(l.rate, l.months, l.amount));
+    }, 0));
+  });
+
+  // Combined after payments = debts + new loans
+  const afterPayments = afterDebtPayments.map((v, i) => v + newLoanPayments[i]);
+
+  // After available — phased
+  const phases   = getPlanPhases();
+  const afterLine = labels.map(m => {
+    const ph = phases.find(p => m >= p.from && m <= p.to) || phases[phases.length-1];
+    return Math.round(ph.income - ph.expenses);
+  });
+
+  const chartOpts = (titleText, subtitleText, subtitleColor) => ({
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      title:    { display: true, text: titleText,    color: '#222', font: { size: 13, weight: 'bold' }, padding: { bottom: 2 } },
+      subtitle: { display: true, text: subtitleText, color: subtitleColor, font: { size: 12, weight: 'bold' }, padding: { bottom: 6 } },
+      legend:   { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } },
+    },
+    scales: {
+      x: { title: { display: true, text: 'חודשים', font: { size: 11 } }, ticks: { callback: tickCb } },
+      y: { title: { display: true, text: "ש\"ח", font: { size: 11 } }, ticks: { callback: v => fmtN(v) } },
+    }
+  });
+
+  if (planBeforeChartInst) planBeforeChartInst.destroy();
+  planBeforeChartInst = new Chart(document.getElementById('planBeforeChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'התפתחות החזר החודשי', data: beforePayments, backgroundColor: '#4472C4bb', borderWidth: 0, order: 2 },
+        { label: 'סכום פנוי להחזר חובות', data: beforeLine, type: 'line',
+          borderColor: '#FF0000', borderWidth: 2, pointRadius: 0, fill: false, order: 1 },
+      ]
+    },
+    options: chartOpts('התפתחות החזר חודשי לפי חודשים', 'לפני הבראה', '#FF0000'),
+  });
+
+  if (planAfterChartInst) planAfterChartInst.destroy();
+  planAfterChartInst = new Chart(document.getElementById('planAfterChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'החזר חובות מקוריים',    data: afterDebtPayments, backgroundColor: '#4472C4', borderWidth: 0, stack: 'debt', order: 3 },
+        { label: 'החזר הלוואות חדשות',    data: newLoanPayments,   backgroundColor: '#ED7D31', borderWidth: 0, stack: 'debt', order: 2 },
+        { label: 'סכום פנוי להחזר חובות', data: afterLine, type: 'line',
+          borderColor: '#FF0000', borderWidth: 2, pointRadius: 0, fill: false, order: 1 },
+      ]
+    },
+    options: {
+      ...chartOpts('התפתחות החזר חודשי לפי חודשים', 'אחרי הבראה', '#1a7a40'),
+      scales: {
+        x: { stacked: true, title: { display: true, text: 'חודשים', font: { size: 11 } }, ticks: { callback: tickCb } },
+        y: { stacked: true, title: { display: true, text: "ש\"ח", font: { size: 11 } }, ticks: { callback: v => fmtN(v) } },
+      }
+    },
+  });
+}
+
+function syncP3(field, val) {
+  document.getElementById(`plan_p3_${field}`).value = val;
+}
+
+function getPlanVal(p, field) {
+  const el = document.getElementById(`plan_p${p}_${field}`);
+  return p === 1 ? parseNum(el.textContent) : parseNum(el.value);
+}
+
+function updatePlanRow() {
+  [1,2,3].forEach(p => {
+    const inc = getPlanVal(p, 'income');
+    const exp = getPlanVal(p, 'exp');
+    const diff = inc - exp;
+    const el = document.getElementById(`plan_p${p}_diff`);
+    el.textContent = fmtNIS(diff);
+    el.style.color = diff >= 0 ? '#1a7a40' : '#c0392b';
+  });
+  updatePlanNote();
+  renderPlanCharts();
+}
+
+function updatePlanFromTo() {
+  const p1to = parseNum(document.getElementById('plan_p1_to').value) || 12;
+  const p2from = p1to + 1;
+  document.getElementById('plan_p2_from').value = p2from;
+  const p2to = parseNum(document.getElementById('plan_p2_to').value) || 24;
+  const p3from = p2to + 1;
+  document.getElementById('plan_p3_from_display').textContent = p3from;
+  updatePlanNote();
+}
+
+function updatePlanNote() {
+  const p1to = parseNum(document.getElementById('plan_p1_to').value) || 12;
+  const p2to = parseNum(document.getElementById('plan_p2_to').value) || 24;
+  document.getElementById('planNote').textContent =
+    `📅 תקציב מוצע 1: חודשים 1–${p1to} | תקציב מוצע 2: חודשים ${p1to+1}–${p2to} | תקציב מוצע 3: חודשים ${p2to+1}–999`;
+}
+
+function getPlanPhases() {
+  const p1to = parseNum(document.getElementById('plan_p1_to').value) || 12;
+  const p2to = parseNum(document.getElementById('plan_p2_to').value) || 24;
+  return [
+    { income: getPlanVal(1,'income'), expenses: getPlanVal(1,'exp'), from: 1, to: p1to },
+    { income: getPlanVal(2,'income'), expenses: getPlanVal(2,'exp'), from: p1to+1, to: p2to },
+    { income: getPlanVal(3,'income'), expenses: getPlanVal(3,'exp'), from: p2to+1, to: 999 },
+  ];
 }
 
 // ===================== CALCULATIONS =====================
@@ -863,11 +1431,12 @@ function runCalc() {
   const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
   const [sy, sm] = startDate.split('-').map(Number);
 
-  // Budget
+  // Budget — current
   const incomeNow = state.budget.filter(b=>b.type==='income'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
   const expNow    = state.budget.filter(b=>b.type==='expense'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
-  const incomeNew = state.budget.filter(b=>b.type==='income'&&!b.isGroup).reduce((s,b)=>s+b.proposed,0);
-  const expNew    = state.budget.filter(b=>b.type==='expense'&&!b.isGroup).reduce((s,b)=>s+b.proposed,0);
+  // Phases from planning step
+  const phases = getPlanPhases();
+  const getBudget = m => phases.find(p => m >= p.from && m <= p.to) || phases[phases.length-1];
 
   // Available immediately
   const startDateObj = new Date(sy, sm-1, 1);
@@ -945,10 +1514,13 @@ function runCalc() {
 
     const totalDebt = debtPmt + newLoanPmt;
     const totalBalance = currentBalances.reduce((s,d)=>s+Math.max(d.balance,0),0);
+    const phase = getBudget(m+1);
+    const phaseIncome = phase.income;
+    const phaseExp    = phase.expenses;
     const netBefore = incomeNow - expNow - state.debts.reduce((s,d)=>s+d.monthly,0);
-    const netAfter  = incomeNew - expNew - totalDebt;
+    const netAfter  = phaseIncome - phaseExp - totalDebt;
 
-    monthlyCF.push({ m: m+1, dateStr, incomeNew, expNew, totalDebt, netAfter, totalBalance, netBefore });
+    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, netBefore });
     debtBalanceByMonth.push(totalBalance);
     debtMonthlyByMonth.push(totalDebt);
   }
@@ -1033,6 +1605,170 @@ function runCalc() {
   });
   document.getElementById('monthlyBody').innerHTML = tableHtml;
 }
+
+// ===================== SAVE / LOAD / EXPORT / IMPORT =====================
+const STORAGE_KEY = 'simulator_havraa_v1';
+let autoSaveTimer = null;
+
+function scheduleAutoSave() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(saveToStorage, 1000);
+  setSaveStatus('לא נשמר', 'unsaved');
+}
+
+function setSaveStatus(text, cls) {
+  const el = document.getElementById('saveStatus');
+  if (!el) return;
+  el.textContent = text;
+  el.className = 'sb-status ' + (cls || '');
+}
+
+function getFullState() {
+  return {
+    v: 1,
+    ts: new Date().toISOString(),
+    family:    document.getElementById('familyName').value,
+    startDate: document.getElementById('startDate').value,
+    budget:    state.budget,
+    funds:     state.funds,
+    loans:     state.loans,
+    debts:     state.debts,
+    planning: {
+      p1to:     document.getElementById('plan_p1_to')?.value     || '12',
+      p2to:     document.getElementById('plan_p2_to')?.value     || '24',
+      p2income: document.getElementById('plan_p2_income')?.value || '',
+      p2exp:    document.getElementById('plan_p2_exp')?.value    || '',
+      p3income: document.getElementById('plan_p3_income')?.value || '',
+      p3exp:    document.getElementById('plan_p3_exp')?.value    || '',
+    }
+  };
+}
+
+function saveToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(getFullState()));
+    const now = new Date().toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
+    setSaveStatus(`נשמר אוטומטית ${now}`, 'saved');
+  } catch(e) { setSaveStatus('שגיאה בשמירה', ''); }
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    restoreFullState(JSON.parse(raw));
+    return true;
+  } catch(e) { return false; }
+}
+
+function restoreFullState(data) {
+  if (!data || data.v !== 1) return;
+
+  // Basic fields
+  document.getElementById('familyName').value = data.family || '';
+  document.getElementById('startDate').value  = data.startDate || '';
+  state.family = data.family || '';
+
+  // Budget
+  if (data.budget?.length) {
+    state.budget = data.budget;
+    renderBudgetTable();
+  }
+
+  // Funds
+  if (data.funds?.length) {
+    state.funds = [];
+    document.getElementById('fundsBody').innerHTML = '';
+    data.funds.forEach(f => {
+      state.funds.push({...f});
+      renderFundRow(state.funds.length - 1);
+    });
+    updateFundTotals();
+  }
+
+  // Loans
+  if (data.loans?.length) {
+    state.loans = [];
+    document.getElementById('loansBody').innerHTML = '';
+    data.loans.forEach(l => {
+      state.loans.push({...l});
+      renderLoanRow(state.loans.length - 1);
+      calcLoanPmt(state.loans.length - 1);
+    });
+    updateLoanTotals();
+  }
+
+  // Debts
+  if (data.debts?.length) {
+    state.debts = [];
+    document.getElementById('debtsBody').innerHTML = '';
+    data.debts.forEach(d => {
+      state.debts.push({...d});
+      renderDebtRow(state.debts.length - 1);
+    });
+    updateDebtTotals();
+  }
+
+  // Planning DOM values (restored lazily when step 4 opens)
+  if (data.planning) {
+    state._savedPlanning = data.planning;
+  }
+
+  const ts = data.ts ? new Date(data.ts).toLocaleString('he-IL') : '';
+  setSaveStatus(`נטען — ${ts}`, 'saved');
+}
+
+// Restore planning DOM values when entering step 4
+const _origRenderPlanning = window.renderPlanningTable;
+window.renderPlanningTable = function() {
+  _origRenderPlanning?.();
+  if (state._savedPlanning) {
+    const p = state._savedPlanning;
+    if (p.p1to)     document.getElementById('plan_p1_to').value     = p.p1to;
+    if (p.p2to)     document.getElementById('plan_p2_to').value     = p.p2to;
+    if (p.p2income) document.getElementById('plan_p2_income').value = p.p2income;
+    if (p.p2exp)    document.getElementById('plan_p2_exp').value    = p.p2exp;
+    if (p.p3income) document.getElementById('plan_p3_income').value = p.p3income;
+    if (p.p3exp)    document.getElementById('plan_p3_exp').value    = p.p3exp;
+    updatePlanFromTo();
+    updatePlanRow();
+    delete state._savedPlanning;
+  }
+};
+
+function exportJSON() {
+  const data = getFullState();
+  const name = (data.family || 'ללא_שם').replace(/\s+/g, '_');
+  const date = new Date().toISOString().slice(0,10);
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `הבראה_${name}_${date}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+  setSaveStatus('קובץ נשמר ✓', 'saved');
+}
+
+function importJSON(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      restoreFullState(JSON.parse(e.target.result));
+    } catch(err) {
+      alert('שגיאה בקריאת הקובץ: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Init: try load from storage, otherwise use defaults
+window.addEventListener('load', () => {
+  const loaded = loadFromStorage();
+  if (!loaded) setSaveStatus('פגישה חדשה', '');
+});
 </script>
 </body>
 </html>
