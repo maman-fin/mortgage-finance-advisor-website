@@ -898,7 +898,7 @@
     function fmtInput(el) {
       var digits = el.value.replace(/[^\d]/g, '');
       if (!digits) { el.value = ''; return; }
-      el.value = parseInt(digits, 10).toLocaleString('en-US');
+      el.value = parseInt(digits, 10).toLocaleString('he-IL');
     }
     function parseInput(id) {
       return parseFloat((document.getElementById(id).value || '').replace(/,/g, '')) || 0;
@@ -963,7 +963,7 @@
 
     function syncLoanAmount() {
       const val = parseInput('propertyValue') - parseInput('downPayment');
-      if (val > 0) loanAmt.value = val.toLocaleString('en-US');
+      if (val > 0) loanAmt.value = val.toLocaleString('he-IL');
       calculate();
     }
     propVal.addEventListener('input', syncLoanAmount);

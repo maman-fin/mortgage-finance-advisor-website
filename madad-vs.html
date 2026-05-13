@@ -318,7 +318,7 @@
       <div class="inputs-grid">
         <div class="input-field">
           <label>סכום הלוואה (₪)</label>
-          <input type="number" id="inp-amount" value="800000" step="50000" min="100000">
+          <input type="text" inputmode="numeric" id="inp-amount" value="800,000" oninput="fmtInput(this);update()">
         </div>
         <div class="input-field">
           <label>תקופה (שנים)</label>
@@ -491,6 +491,7 @@
 
     /* ── format ── */
     function fmt(v) { return '₪' + Math.round(v).toLocaleString('he-IL'); }
+    function fmtInput(el) { var d = el.value.replace(/[^\d]/g,''); el.value = d ? parseInt(d,10).toLocaleString('he-IL') : ''; }
     function fmtPct(v) { return (v*100).toFixed(1) + '%'; }
 
     /* ── נתוני hover לגרפים ── */
@@ -623,7 +624,7 @@
 
     /* ── main update ── */
     function update() {
-      var P  = parseFloat(document.getElementById('inp-amount').value)       || 800000;
+      var P  = parseFloat(String(document.getElementById('inp-amount').value).replace(/,/g,'')) || 800000;
       var Y  = parseFloat(document.getElementById('inp-years').value)        || 20;
       var rL = parseFloat(document.getElementById('inp-rate-linked').value)  / 100 || 0.035;
       var rU = parseFloat(document.getElementById('inp-rate-unlinked').value)/ 100 || 0.055;

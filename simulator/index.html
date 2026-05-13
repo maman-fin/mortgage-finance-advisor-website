@@ -110,8 +110,8 @@
     .debts-table td { padding:0.4rem 0.6rem; border-bottom:1px solid #f0f2f5; vertical-align:middle; }
     .debts-table tr:nth-child(even) td { background:#fafbfd; }
     .debts-table select { border:1px solid #d0d8e4; border-radius:5px; padding:0.28rem 0.4rem; font-family:inherit; font-size:0.82rem; background:#fff; }
-    .debts-table input[type="number"] { width:90px; border:1px solid #d0d8e4; border-radius:5px; padding:0.28rem 0.4rem; font-family:inherit; font-size:0.82rem; direction:ltr; text-align:right; }
-    .debts-table input[type="number"]:disabled { background:#f5f5f5; color:#aaa; }
+    .debts-table input[type="number"], .debts-table input[type="text"] { width:90px; border:1px solid #d0d8e4; border-radius:5px; padding:0.28rem 0.4rem; font-family:inherit; font-size:0.82rem; direction:ltr; text-align:right; }
+    .debts-table input[type="number"]:disabled, .debts-table input[type="text"]:disabled { background:#f5f5f5; color:#aaa; }
     .debts-table .action-select { min-width:130px; }
     .debt-badge { display:inline-block; padding:0.15rem 0.5rem; border-radius:10px; font-size:0.72rem; font-weight:700; }
     .badge-bank { background:#dde8f2; color:#1a3a5c; }
@@ -120,8 +120,8 @@
     .badge-other { background:#f5f0ff; color:#5a1f6e; }
 
     /* LOANS TABLE */
-    .loans-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
-    .loans-table th { background:#2a6496; color:#fff; padding:0.45rem 0.7rem; text-align:center; white-space:nowrap; }
+    .loans-table { width:100%; border-collapse:collapse; font-size:0.85rem; table-layout:fixed; }
+    .loans-table th { background:#2a6496; color:#fff; padding:0.45rem 0.5rem; text-align:center; white-space:normal; line-height:1.3; }
     .loans-table td { padding:0.38rem 0.5rem; border-bottom:1px solid #f0f2f5; text-align:center; }
     .loans-table input[type="number"] { width:100%; border:1px solid #d0d8e4; border-radius:5px; padding:0.3rem 0.4rem; font-family:inherit; font-size:0.84rem; text-align:center; direction:ltr; }
     .loans-table input:focus { border-color:#2a6496; outline:none; }
@@ -132,8 +132,17 @@
     .funds-table { width:100%; border-collapse:collapse; font-size:0.87rem; margin-bottom:0.5rem; }
     .funds-table th { background:#1a6e3c; color:#fff; padding:0.45rem 0.7rem; text-align:right; }
     .funds-table td { padding:0.4rem 0.6rem; border-bottom:1px solid #f0f2f5; }
-    .funds-table input { width:100%; border:1px solid #d0d8e4; border-radius:5px; padding:0.3rem 0.5rem; font-family:inherit; font-size:0.85rem; }
-    .funds-table input:focus { border-color:#2a6496; outline:none; }
+    .funds-table input:not([type="month"]) { width:100%; border:1px solid #d0d8e4; border-radius:5px; padding:0.3rem 0.5rem; font-family:inherit; font-size:0.85rem; }
+    .funds-table input:not([type="month"]):focus { border-color:#2a6496; outline:none; }
+    .month-wrap { position:relative; display:flex; align-items:center; border:1px solid #d0d8e4; border-radius:5px; background:#fff; overflow:hidden; }
+    .month-wrap:focus-within { border-color:#2a6496; }
+    .month-wrap input[type="date"] { flex:1; border:none; background:transparent; padding:0.3rem 0.5rem; font-family:inherit; font-size:0.85rem; outline:none; min-width:0; cursor:pointer; color:transparent; }
+    .month-wrap input[type="date"]:focus,
+    .month-wrap input[type="date"].has-val { color:inherit; }
+    .month-wrap input[type="date"]::-webkit-calendar-picker-indicator { display:none; }
+    .month-ph { position:absolute; right:6px; top:50%; transform:translateY(-50%); color:#bbb; font-size:0.8rem; pointer-events:none; white-space:nowrap; }
+    .date-cal-btn { flex-shrink:0; padding:2px 6px; cursor:pointer; font-size:1rem; opacity:0.55; transition:opacity 0.15s; user-select:none; border-right:1px solid #e8eef4; background:#f7f8fa; }
+    .date-cal-btn:hover { opacity:1; background:#eef2f8; }
     .funds-table tfoot td { font-weight:700; background:#f5f8fc; border-top:2px solid #1a6e3c; }
 
     /* SUMMARY BOXES */
@@ -165,6 +174,103 @@
     /* ADD ROW BUTTON */
     .add-row-btn { display:inline-flex; align-items:center; gap:0.3rem; padding:0.35rem 0.8rem; background:#f0f4f8; border:1px dashed #2a6496; border-radius:6px; color:#2a6496; font-size:0.82rem; font-weight:600; cursor:pointer; font-family:inherit; margin-top:0.5rem; }
     .add-row-btn:hover { background:#dde8f2; }
+    .del-btn { background:none; border:none; color:#c0392b; cursor:pointer; font-size:1rem; padding:2px 6px; border-radius:4px; opacity:0.45; line-height:1; font-family:inherit; }
+    .del-btn:hover { opacity:1; background:#fdecea; }
+    .imm-check-label { display:flex; align-items:center; gap:5px; cursor:pointer; font-size:0.82rem; color:#444; white-space:nowrap; justify-content:center; }
+    .imm-check-label input[type="checkbox"] { accent-color:#1a6e3c; width:15px; height:15px; cursor:pointer; }
+    .ffp-section { grid-column:1/-1; margin-top:1.4rem; border-top:1px solid #e0e8f0; padding-top:1.1rem; }
+    .ffp-title { font-size:0.92rem; font-weight:700; color:#1a3a5c; margin-bottom:0.8rem; }
+    .ffp-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .ffp-row { display:flex; align-items:center; gap:1rem; background:#f5f8fc; border:1px solid #dde8f2; border-radius:8px; padding:0.65rem 1rem; flex-wrap:wrap; }
+    .ffp-info { display:flex; gap:0.6rem; align-items:center; flex-shrink:0; }
+    .ffp-src { font-weight:700; color:#1a3a5c; font-size:0.88rem; }
+    .ffp-amt { color:#1a6e3c; font-weight:700; font-size:0.88rem; }
+    .ffp-av { font-size:0.78rem; color:#888; background:#e8f0f8; border-radius:4px; padding:2px 7px; }
+    .ffp-controls { display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; }
+    .ffp-sel { border:1px solid #d0d8e4; border-radius:6px; padding:0.3rem 0.5rem; font-family:inherit; font-size:0.83rem; background:#fff; color:#1a3a5c; }
+    .ffp-date-wrap { display:flex; align-items:center; gap:0.4rem; font-size:0.82rem; color:#555; }
+    .ffp-date-wrap .month-wrap { min-width:155px; }
+    /* ── Plan funds two-section table ── */
+    .pf-section { margin-bottom:0.9rem; border-radius:8px; overflow:hidden; border:1px solid #dde8f2; }
+    .pf-section-hdr { display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0.9rem; font-size:0.88rem; font-weight:700; color:#fff; }
+    .pf-section-hdr.imm { background:#1a3a5c; }
+    .pf-section-hdr.fut { background:#1a6e3c; }
+    .pf-section-hdr span { font-size:0.78rem; font-weight:400; opacity:0.9; }
+    .pf-table { width:100%; border-collapse:collapse; font-size:0.83rem; background:#fff; }
+    .pf-table th { background:#f0f4f8; color:#555; padding:0.32rem 0.7rem; text-align:right; font-weight:600; font-size:0.76rem; }
+    .pf-table td { padding:0.32rem 0.7rem; border-bottom:1px solid #f0f2f5; }
+    .pf-table tr:last-child td { border-bottom:none; }
+    .pf-neg { color:#c0392b; font-weight:700; }
+    .pf-ok  { color:#1a6e3c; }
+    /* ── Detail row (fund picker / waiver toggle) ── */
+    .plan-detail-cell { padding:0 !important; }
+    .plan-detail-box { background:#f0f6ff; border-top:1px solid #c5d8ec; padding:0.7rem 1rem; }
+    .pd-label { font-size:0.78rem; font-weight:700; color:#1a3a5c; margin-left:0.5rem; }
+    .fpk-title { font-size:0.82rem; font-weight:700; color:#1a3a5c; margin-bottom:0.55rem; }
+    .fpk-fund { display:flex; align-items:flex-start; gap:0.6rem; padding:0.4rem 0; border-bottom:1px dashed #c5d8ec; }
+    .fpk-fund:last-child { border-bottom:none; }
+    .fpk-fund input[type="checkbox"] { margin-top:3px; accent-color:#1a6e3c; cursor:pointer; flex-shrink:0; }
+    .fpk-fund-name { font-weight:700; font-size:0.84rem; color:#1a3a5c; }
+    .fpk-fund-meta { font-size:0.75rem; color:#666; display:flex; gap:0.5rem; margin-top:1px; flex-wrap:wrap; }
+    .fpk-avail { color:#1a6e3c; font-weight:600; }
+    .fpk-controls { display:flex; gap:0.5rem; align-items:center; margin-top:5px; flex-wrap:wrap; }
+    .fpk-controls label { font-size:0.73rem; color:#555; }
+    .fpk-controls input[type="text"] { border:1px solid #c5d8ec; border-radius:5px; padding:0.22rem 0.5rem; font-size:0.82rem; font-family:inherit; width:110px; direction:ltr; text-align:right; }
+    .fpk-remain { font-size:0.72rem; color:#2a6496; }
+    .fpk-remain.neg { color:#c0392b; }
+    .fpk-pool-bar { font-size:0.8rem; color:#444; display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center; }
+    /* ── Waiver mode toggle ── */
+    .wmt-wrap { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:4px; }
+    .wmt-btn { padding:0.28rem 0.8rem; border:1px solid #c5d8ec; border-radius:5px; font-size:0.77rem; cursor:pointer; font-family:inherit; background:#fff; color:#444; transition:all 0.15s; }
+    .wmt-btn.active { background:#1a3a5c; color:#fff; border-color:#1a3a5c; }
+    /* ── Debt split ── */
+    .split-btn { background:none; border:1px solid #2a6496; color:#2a6496; border-radius:5px; padding:2px 7px; font-size:0.72rem; font-family:inherit; cursor:pointer; transition:all 0.15s; white-space:nowrap; margin-top:4px; display:inline-block; }
+    .split-btn:hover { background:#2a6496; color:#fff; }
+    .split-btn.unsplit { border-color:#c0392b; color:#c0392b; }
+    .split-btn.unsplit:hover { background:#c0392b; color:#fff; }
+    /* ── Planning table hierarchy ── */
+    .debt-group-row td { border-top:3px solid #1a3a5c !important; }
+    .plan-parent-split td { background:#edf3fa !important; }
+    .split-part-row { background:#fff !important; }
+    .split-part-row td { border-top:1px solid #dde8f2 !important; background:#fff !important; }
+    .split-part-row td:first-child { border-right:4px solid #2a6496 !important; }
+    .split-part-row td:first-child::before { content:none; }
+    .split-part-label { font-size:0.72rem; color:#fff; font-weight:700; display:inline-block;
+      background:#2a6496; border-radius:4px; padding:1px 6px; margin-bottom:3px; letter-spacing:0.02em; }
+    .plan-detail-cell { padding:0 !important; }
+    .plan-detail-cell td { border-top:none !important; }
+    .plan-detail-box { background:#f7f9fc; border-right:3px solid #c5d8ec; padding:6px 12px; }
+    .fpk-pool-bar { background:transparent; padding:0; }
+    /* ── Future funds modal ── */
+    .ff-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2000; display:flex; align-items:center; justify-content:center; padding:1rem; }
+    .ff-box { background:#fff; border-radius:16px; box-shadow:0 8px 40px rgba(0,0,0,0.22); max-width:540px; width:100%; max-height:90vh; display:flex; flex-direction:column; overflow:hidden; }
+    .ff-header { background:linear-gradient(135deg,#1a3a5c,#2a6496); color:#fff; padding:1.2rem 1.5rem; flex-shrink:0; }
+    .ff-header-icon { font-size:1.5rem; margin-bottom:0.3rem; }
+    .ff-header-title { font-size:1.05rem; font-weight:700; }
+    .ff-header-sub { font-size:0.82rem; opacity:0.85; margin-top:0.2rem; }
+    .ff-body { padding:1.2rem 1.5rem; overflow-y:auto; flex:1; }
+    .ff-question { font-size:0.95rem; color:#1a3a5c; font-weight:600; margin-bottom:1.2rem; line-height:1.5; }
+    .ff-fund-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .ffl-row { border:1px solid #dde8f2; border-radius:10px; overflow:hidden; }
+    .ffl-top { display:flex; align-items:center; gap:0.8rem; padding:0.75rem 1rem; cursor:pointer; }
+    .ffl-top:hover { background:#f5f8fc; }
+    .ffl-top input[type="checkbox"] { width:17px; height:17px; accent-color:#1a6e3c; cursor:pointer; flex-shrink:0; }
+    .ffl-name { font-weight:700; font-size:0.9rem; color:#1a3a5c; }
+    .ffl-meta { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; margin-top:2px; }
+    .ffl-total { color:#1a6e3c; font-weight:700; font-size:0.85rem; }
+    .ffl-date { font-size:0.78rem; color:#888; background:#f0f4f8; border-radius:4px; padding:2px 7px; }
+    .ffl-remain-badge { font-size:0.75rem; font-weight:600; color:#2a6496; }
+    .ffl-controls { background:#f7f9fc; border-top:1px solid #e8eef4; padding:0.75rem 1rem; display:flex; flex-wrap:wrap; gap:0.7rem; align-items:flex-end; }
+    .ffl-field { display:flex; flex-direction:column; gap:3px; }
+    .ffl-field label { font-size:0.75rem; font-weight:600; color:#555; }
+    .ffl-field input[type="text"] { border:1px solid #d0d8e4; border-radius:6px; padding:0.35rem 0.6rem; font-size:0.88rem; font-family:inherit; width:130px; direction:ltr; text-align:right; }
+    .ffl-field input:focus { border-color:#2a6496; outline:none; }
+    .ffl-remain-line { font-size:0.75rem; color:#2a6496; margin-top:2px; height:14px; }
+    .ff-footer { padding:1rem 1.5rem; border-top:1px solid #eef0f4; display:flex; gap:0.7rem; justify-content:flex-end; flex-shrink:0; }
+    .ff-btn-yes { background:#1a6e3c; color:#fff; border:none; border-radius:8px; padding:0.6rem 1.4rem; font-size:0.92rem; font-weight:700; cursor:pointer; font-family:inherit; transition:background 0.2s; }
+    .ff-btn-yes:hover { background:#155c31; }
+    .ff-btn-no { background:#f0f4f8; color:#444; border:1px solid #d0d8e4; border-radius:8px; padding:0.6rem 1.2rem; font-size:0.92rem; cursor:pointer; font-family:inherit; transition:background 0.2s; }
+    .ff-btn-no:hover { background:#dde8f2; }
 
     /* NOTE BOX */
     .note-box { background:#fff8e6; border:1px solid #f0d080; border-radius:8px; padding:0.75rem 1rem; font-size:0.82rem; color:#7a5c10; margin-bottom:1rem; }
@@ -376,6 +482,7 @@
               <th>חודשים</th>
               <th>החזר חודשי</th>
               <th>הערות</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="debtsBody"></tbody>
@@ -385,7 +492,7 @@
               <td id="debtsTotalBalance" style="font-weight:700;">0 ₪</td>
               <td colspan="3"></td>
               <td id="debtsTotalMonthly" style="font-weight:700;">0 ₪</td>
-              <td></td>
+              <td colspan="2"></td>
             </tr>
           </tfoot>
         </table>
@@ -409,10 +516,10 @@
           <thead>
             <tr>
               <th>מקור</th>
-              <th style="text-align:center">סכום כולל (₪)</th>
-              <th style="text-align:center">סכום למשיכה (₪)</th>
+              <th style="text-align:center">סכום (₪)</th>
               <th style="text-align:center">מועד משיכה</th>
               <th style="text-align:center">הערות</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="fundsBody"></tbody>
@@ -420,9 +527,7 @@
             <tr>
               <td>סה"כ</td>
               <td style="text-align:center" id="fundsTotalAmt">0 ₪</td>
-              <td style="text-align:center" id="fundsTotalWithdraw">0 ₪</td>
-              <td></td>
-              <td></td>
+              <td colspan="3"></td>
             </tr>
           </tfoot>
         </table>
@@ -434,16 +539,28 @@
       <div class="card-title">🏦 הלוואות חדשות</div>
       <div style="overflow-x:auto;">
         <table class="loans-table" id="loansTable">
+          <colgroup>
+            <col style="width:30px">
+            <col>
+            <col style="width:115px">
+            <col style="width:62px">
+            <col style="width:68px">
+            <col style="width:62px">
+            <col style="width:88px">
+            <col>
+            <col style="width:34px">
+          </colgroup>
           <thead>
             <tr>
               <th>#</th>
               <th>שם / מטרה</th>
               <th>סכום (₪)</th>
-              <th>גרייס (חודשים)</th>
-              <th>ריבית שנתית (%)</th>
-              <th>תקופה (חודשים)</th>
+              <th>גרייס</th>
+              <th>ריבית %</th>
+              <th>תקופה</th>
               <th>החזר חודשי</th>
               <th>הערות</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="loansBody"></tbody>
@@ -453,7 +570,7 @@
               <td id="loansTotalAmt" style="font-weight:700;">0 ₪</td>
               <td colspan="3"></td>
               <td id="loansTotalPmt" style="font-weight:700;">0 ₪</td>
-              <td></td>
+              <td colspan="2"></td>
             </tr>
           </tfoot>
         </table>
@@ -625,6 +742,7 @@
               <th>הכנסות</th>
               <th>הוצאות</th>
               <th>החזר חובות</th>
+              <th>פירעון עתידי</th>
               <th>תזרים נטו</th>
               <th>יתרת חובות</th>
             </tr>
@@ -651,7 +769,7 @@ const state = {
   budgetMode: 'import',
   debtMode: 'import',
   budget: [], // {name, group, type:'expense'|'income'|'debt', current:0, proposed:0}
-  funds: [],  // {source, total, withdrawal, date, notes}
+  funds: [],  // {source, total, date, notes}
   loans: [],  // {name, amount, grace, rate, months, notes}
   debts: [],  // {name, category, balance, interest, paymentsLeft, monthly, notes, action, actionParam}
 };
@@ -702,6 +820,7 @@ function goStep(n) {
 // ===================== HELPERS =====================
 const fmtN = n => isNaN(n) ? '—' : Math.round(n).toLocaleString('he-IL');
 const fmtNIS = n => isNaN(n) ? '—' : fmtN(n) + ' ₪';
+function fmtMoneyInput(el) { var d = el.value.replace(/[^\d]/g,''); el.value = d ? parseInt(d,10).toLocaleString('he-IL') : ''; }
 const parseNum = s => parseFloat(String(s).replace(/,/g,'')) || 0;
 function pmt(rate, nper, pv) {
   if (!pv || !nper) return 0;
@@ -875,7 +994,7 @@ function initFunds() {
 }
 
 function addFundRow(source='') {
-  state.funds.push({source, total:0, withdrawal:0, date:'', notes:''});
+  state.funds.push({source, total:0, immediate:true, date:'', notes:''});
   renderFundRow(state.funds.length - 1);
 }
 
@@ -886,18 +1005,30 @@ function renderFundRow(i) {
   tr.id = `fundRow${i}`;
   tr.innerHTML = `
     <td><input placeholder="שם המקור" value="${f.source||''}" oninput="state.funds[${i}].source=this.value;scheduleAutoSave()"></td>
-    <td style="text-align:center"><input type="number" value="${f.total||''}" placeholder="0" onchange="state.funds[${i}].total=parseNum(this.value);updateFundTotals()"></td>
-    <td style="text-align:center"><input type="number" value="${f.withdrawal||''}" placeholder="0" onchange="state.funds[${i}].withdrawal=parseNum(this.value);updateFundTotals()"></td>
-    <td style="text-align:center"><input type="month" value="${f.date||''}" onchange="state.funds[${i}].date=this.value;scheduleAutoSave()"></td>
-    <td><input placeholder="הערות" value="${f.notes||''}" oninput="state.funds[${i}].notes=this.value;scheduleAutoSave()"></td>`;
+    <td style="text-align:center"><input type="text" inputmode="numeric" value="${f.total?parseInt(f.total).toLocaleString('he-IL'):''}" placeholder="0" oninput="fmtMoneyInput(this)" onchange="state.funds[${i}].total=parseNum(this.value);updateFundTotals()"></td>
+    <td style="text-align:center;min-width:160px">
+      <label class="imm-check-label">
+        <input type="checkbox" ${f.immediate!==false?'checked':''}
+               onchange="state.funds[${i}].immediate=this.checked;if(this.checked){state.funds[${i}].date='';state.funds[${i}].planUsage='none';state.funds[${i}].planDate='';}renderFundRow(${i});renderPlanningExtras();scheduleAutoSave()">
+        זמין מיידי
+      </label>
+      ${f.immediate!==false ? '' : `<div class="month-wrap" style="margin-top:5px">
+        <input type="date" id="fundDate${i}" value="${f.date||''}" class="${f.date?'has-val':''}"
+               onfocus="this.classList.add('has-val');this.nextElementSibling.style.opacity='0'"
+               onblur="if(!this.value){this.classList.remove('has-val');this.nextElementSibling.style.opacity='1'}"
+               onchange="state.funds[${i}].date=this.value;this.nextElementSibling.style.opacity=this.value?'0':'1';renderPlanningExtras();scheduleAutoSave()">
+        <span class="month-ph" style="opacity:${f.date?'0':'1'}">יום / חודש / שנה</span>
+        <span class="date-cal-btn" onclick="try{document.getElementById('fundDate${i}').showPicker()}catch(e){document.getElementById('fundDate${i}').focus()}">📅</span>
+      </div>`}
+    </td>
+    <td><input placeholder="הערות" value="${f.notes||''}" oninput="state.funds[${i}].notes=this.value;scheduleAutoSave()"></td>
+    <td style="text-align:center"><button class="del-btn" onclick="removeFundRow(${i})" title="מחק שורה">✕</button></td>`;
   if (!existing) document.getElementById('fundsBody').appendChild(tr);
 }
 
 function updateFundTotals() {
   const totAmt = state.funds.reduce((s,f)=>s+f.total,0);
-  const totWith = state.funds.reduce((s,f)=>s+f.withdrawal,0);
   document.getElementById('fundsTotalAmt').textContent = fmtNIS(totAmt);
-  document.getElementById('fundsTotalWithdraw').textContent = fmtNIS(totWith);
   scheduleAutoSave();
 }
 
@@ -927,7 +1058,8 @@ function renderLoanRow(i) {
     <td><input type="number" value="${l.rate||''}" placeholder="0" step="0.1" onchange="state.loans[${i}].rate=parseNum(this.value);calcLoanPmt(${i})"></td>
     <td><input type="number" value="${l.months||''}" placeholder="0" onchange="state.loans[${i}].months=parseNum(this.value);calcLoanPmt(${i})"></td>
     <td class="pmt-cell" id="loanPmt${i}">${l.pmt ? fmtNIS(Math.round(l.pmt)) : '—'}</td>
-    <td><input placeholder="הערות" value="${l.notes||''}" oninput="state.loans[${i}].notes=this.value;scheduleAutoSave()"></td>`;
+    <td><input placeholder="הערות" value="${l.notes||''}" oninput="state.loans[${i}].notes=this.value;scheduleAutoSave()"></td>
+    <td style="text-align:center"><button class="del-btn" onclick="removeLoanRow(${i})" title="מחק שורה">✕</button></td>`;
   if (!existing) document.getElementById('loansBody').appendChild(tr);
 }
 
@@ -1028,7 +1160,7 @@ async function importDebts(input) {
 
 function addDebtRow() {
   const i = state.debts.length;
-  state.debts.push({name:'', category:'', balance:0, arranged:true, interest:0, paymentsLeft:0, monthly:0, notes:'', action:'ללא שינוי', actionParam:0});
+  state.debts.push({name:'', category:'', balance:0, arranged:true, interest:0, paymentsLeft:0, monthly:0, notes:'', action:'ללא שינוי', actionParam:0, planAction:'ללא שינוי', planParam:0, futureFundAllocations:[], partialWaiverMode:'reducePmt', splitEnabled:false, splitAmount1:0, splitAction1:'ללא שינוי', splitParam1:0, splitWaiverMode1:'reducePmt', splitFundAllocs1:[], splitAction2:'ללא שינוי', splitParam2:0, splitWaiverMode2:'reducePmt', splitFundAllocs2:[]});
   renderDebtRow(i);
 }
 
@@ -1050,16 +1182,37 @@ function renderDebtRow(i) {
         <option ${d.category==='אחר'?'selected':''}>אחר</option>
       </select>
     </td>
-    <td><input type="number" value="${d.balance||''}" placeholder="0" onchange="state.debts[${i}].balance=parseNum(this.value);updateDebtTotals()"></td>
+    <td><input type="text" inputmode="numeric" value="${d.balance?parseInt(d.balance).toLocaleString('he-IL'):''}" placeholder="0" oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].balance=parseNum(this.value);updateDebtTotals()"></td>
     <td style="text-align:center">
       <input type="checkbox" ${arr?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:#1a3a5c;"
         onchange="state.debts[${i}].arranged=this.checked;if(!this.checked){state.debts[${i}].interest=0;state.debts[${i}].paymentsLeft=0;state.debts[${i}].monthly=0;}renderDebtRow(${i});updateDebtTotals()">
     </td>
     <td><input type="number" value="${arr?(d.interest||''):''}" placeholder="%" step="0.1" style="width:60px" ${dis} onchange="state.debts[${i}].interest=parseNum(this.value)"></td>
     <td><input type="number" value="${arr?(d.paymentsLeft||''):''}" placeholder="חודשים" style="width:70px" ${dis} onchange="state.debts[${i}].paymentsLeft=parseNum(this.value)"></td>
-    <td><input type="number" value="${arr?(d.monthly||''):''}" placeholder="₪" ${dis} onchange="state.debts[${i}].monthly=parseNum(this.value);updateDebtTotals()"></td>
-    <td><input placeholder="הערות" value="${d.notes||''}" oninput="state.debts[${i}].notes=this.value" style="width:100%;border:1px solid #d0d8e4;border-radius:5px;padding:0.28rem 0.4rem;font-family:inherit;font-size:0.82rem;"></td>`;
+    <td><input type="text" inputmode="numeric" value="${arr&&d.monthly?parseInt(d.monthly).toLocaleString('he-IL'):''}" placeholder="₪" ${dis} oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].monthly=parseNum(this.value);if(!this.value||parseNum(this.value)===0){state.debts[${i}].arranged=false;renderDebtRow(${i});}updateDebtTotals()"></td>
+    <td><input placeholder="הערות" value="${d.notes||''}" oninput="state.debts[${i}].notes=this.value" style="width:100%;border:1px solid #d0d8e4;border-radius:5px;padding:0.28rem 0.4rem;font-family:inherit;font-size:0.82rem;"></td>
+    <td style="text-align:center"><button class="del-btn" onclick="removeDebtRow(${i})" title="מחק שורה">✕</button></td>`;
   if (!existing) document.getElementById('debtsBody').appendChild(tr);
+}
+
+function removeFundRow(i) {
+  state.funds.splice(i, 1);
+  document.getElementById('fundsBody').innerHTML = '';
+  state.funds.forEach((_, idx) => renderFundRow(idx));
+  updateFundTotals();
+  renderPlanningExtras();
+}
+function removeLoanRow(i) {
+  state.loans.splice(i, 1);
+  document.getElementById('loansBody').innerHTML = '';
+  state.loans.forEach((_, idx) => { renderLoanRow(idx); calcLoanPmt(idx); });
+  updateLoanTotals();
+}
+function removeDebtRow(i) {
+  state.debts.splice(i, 1);
+  document.getElementById('debtsBody').innerHTML = '';
+  state.debts.forEach((_, idx) => renderDebtRow(idx));
+  updateDebtTotals();
 }
 
 function calcDebtNewPmt(d) {
@@ -1126,50 +1279,473 @@ function renderPlanningExtras() {
 }
 
 function renderPlanFunds() {
-  const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
-  const [sy, sm] = startDate.split('-').map(Number);
-  const startDateObj = new Date(sy, sm-1, 1);
-
-  const savingsImmediate = state.funds.reduce((s,f) => {
-    const fd = f.date ? new Date(f.date + '-01') : null;
-    return s + ((!fd || fd <= startDateObj) ? f.withdrawal : 0);
+  const allocMap = getAllocMap();
+  const immFunds  = state.funds.filter(f => f.immediate!==false);
+  const futFunds  = state.funds.filter(f => f.immediate===false);
+  const immTotal  = immFunds.reduce((s,f)=>s+f.total,0) + state.loans.reduce((s,l)=>s+l.amount,0);
+  const immUsed   = state.debts.reduce((s,d) => {
+    const a = d.planAction||'ללא שינוי';
+    if (a==='פרעון מלא'||a==='פירעון מיידי מלא') return s + (d.planParam||d.balance);
+    if (a==='פירעון מיידי חלקי') return s + (d.planParam||0);
+    return s;
   }, 0);
-  const savingsFuture = state.funds.reduce((s,f) => {
-    const fd = f.date ? new Date(f.date + '-01') : null;
-    return s + ((fd && fd > startDateObj) ? f.withdrawal : 0);
-  }, 0);
-  const loansTotal = state.loans.reduce((s,l) => s + l.amount, 0);
-  const total = savingsImmediate + loansTotal;
+  const immRemain = immTotal - immUsed;
 
-  document.getElementById('planFundsSummary').innerHTML = `
-    <div class="sum-box"><div class="sb-label">חסכונות זמינים מיידית</div><div class="sb-value">${fmtNIS(savingsImmediate)}</div></div>
-    <div class="sum-box"><div class="sb-label">חסכונות עתידיים</div><div class="sb-value">${fmtNIS(savingsFuture)}</div></div>
-    <div class="sum-box"><div class="sb-label">הלוואות חדשות</div><div class="sb-value">${fmtNIS(loansTotal)}</div></div>
-    <div class="sum-box highlight"><div class="sb-label">סה"כ זמין לפרעון מיידי</div><div class="sb-value">${fmtNIS(total)}</div></div>`;
+  // Immediate section
+  const immRows = [
+    ...immFunds.map(f=>`<tr><td>${f.source||'—'}</td><td style="text-align:left">${fmtNIS(f.total)}</td></tr>`),
+    ...state.loans.filter(l=>l.amount>0).map(l=>`<tr><td>${l.name||'הלוואה חדשה'} <span style="font-size:0.72rem;color:#888">(הלוואה)</span></td><td style="text-align:left">${fmtNIS(l.amount)}</td></tr>`)
+  ].join('');
+  const immHtml = `<div class="pf-section">
+    <div class="pf-section-hdr imm">⚡ כספים זמינים מיידית</div>
+    <table class="pf-table">
+      <thead><tr><th>מקור</th><th>סכום</th></tr></thead>
+      <tbody>${immRows||'<tr><td colspan="2" style="color:#aaa;text-align:center">אין כספים מיידיים</td></tr>'}</tbody>
+      <tfoot><tr style="font-weight:700;background:#e8f0fb;border-top:2px solid #1a3a5c">
+        <td>סה"כ</td>
+        <td style="text-align:left">${fmtNIS(immTotal)}</td>
+      </tr>
+      <tr style="font-size:0.82rem;background:#e8f0fb">
+        <td style="color:#555">מוקצה</td>
+        <td style="text-align:left;color:#1a3a5c;font-weight:700">${fmtNIS(immUsed)}</td>
+      </tr>
+      <tr style="font-size:0.82rem;background:#e8f0fb">
+        <td style="color:#555">יתרה</td>
+        <td style="text-align:left;font-weight:700" class="${immRemain<0?'pf-neg':'pf-ok'}">${fmtNIS(immRemain)}</td>
+      </tr></tfoot>
+    </table>
+  </div>`;
+
+  // Future section
+  let futHtml = '';
+  if (futFunds.length > 0) {
+    const sd = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
+    const [sy, sm] = sd.split('-').map(Number);
+    const monthsUntil = f => {
+      if (!f.date) return null;
+      const [fy, fm] = f.date.split('-').map(Number);
+      return (fy - sy) * 12 + (fm - sm);
+    };
+    const futRows = futFunds.map(f => {
+      const fi = state.funds.indexOf(f);
+      const allocated = allocMap[fi]||0;
+      const remain = f.total - allocated;
+      const mu = monthsUntil(f);
+      const muTxt = mu !== null ? `<span style="font-size:0.78rem;color:#2a6496;font-weight:600">בעוד ${mu} חודשים</span>` : '—';
+      return `<tr><td>${f.source||'—'}</td><td>${fmtNIS(f.total)}</td><td>${f.date||'—'}</td>
+        <td>${muTxt}</td>
+        <td>${allocated>0?fmtNIS(allocated):'—'}</td>
+        <td class="${remain<f.total?'pf-ok':''} ${remain<0?'pf-neg':''}">${fmtNIS(remain)}</td></tr>`;
+    }).join('');
+    const futTotal  = futFunds.reduce((s,f)=>s+f.total,0);
+    const futAlloc  = futFunds.reduce((s,f)=>{const fi=state.funds.indexOf(f);return s+(allocMap[fi]||0);},0);
+    const futRemain = futTotal - futAlloc;
+    futHtml = `<div class="pf-section">
+      <div class="pf-section-hdr fut">📅 כספים עתידיים</div>
+      <table class="pf-table">
+        <thead><tr><th>מקור</th><th>סכום</th><th>תאריך</th><th>זמינות</th><th>מוקצה</th><th>יתרה</th></tr></thead>
+        <tbody>${futRows}</tbody>
+        <tfoot><tr style="font-weight:700;background:#e8f5ee;border-top:2px solid #1a6e3c">
+          <td>סה"כ</td><td>${fmtNIS(futTotal)}</td><td></td><td></td>
+          <td>${fmtNIS(futAlloc)}</td>
+          <td class="${futRemain<0?'pf-neg':'pf-ok'}">${fmtNIS(futRemain)}</td>
+        </tr></tfoot>
+      </table>
+    </div>`;
+  }
+
+  document.getElementById('planFundsSummary').innerHTML = immHtml + futHtml;
 }
 
-const PLAN_ACTIONS = ['ללא שינוי','פרעון מלא','פריסה מחדש','ויתור חלקי'];
+function calcEndEarlyMonths(balance, monthly, interest) {
+  if (!monthly || monthly <= 0 || balance <= 0) return 0;
+  const r = (interest || 0) / 100 / 12;
+  if (r === 0) return Math.ceil(balance / monthly);
+  if (monthly <= balance * r + 0.01) return 999;
+  return Math.ceil(-Math.log(1 - r * balance / monthly) / Math.log(1 + r));
+}
+
+function getAllocMap() {
+  const map = {};
+  state.debts.forEach(d => {
+    (d.futureFundAllocations||[]).forEach(a => { map[a.fundIdx]=(map[a.fundIdx]||0)+a.amount; });
+    if (d.splitEnabled) {
+      (d.splitFundAllocs1||[]).forEach(a => { map[a.fundIdx]=(map[a.fundIdx]||0)+a.amount; });
+      (d.splitFundAllocs2||[]).forEach(a => { map[a.fundIdx]=(map[a.fundIdx]||0)+a.amount; });
+    }
+  });
+  return map;
+}
+
+function getImmPoolAtPosition(debtIdx, splitPart) {
+  const pool = getTotalAvailable();
+  let used = 0;
+  const addPart = (planAction, planParam, balance) => {
+    if (planAction==='פרעון מלא'||planAction==='פירעון מיידי מלא') used += planParam||balance;
+    else if (planAction==='פירעון מיידי חלקי') used += planParam||0;
+  };
+  for (let i = 0; i < state.debts.length; i++) {
+    const d = state.debts[i];
+    if (i < debtIdx) {
+      if (d.splitEnabled) {
+        [1,2].forEach(p => { const vd=getSplitVirtual(d,p); addPart(vd.planAction,vd.planParam,vd.balance); });
+      } else { addPart(d.planAction||'ללא שינוי', d.planParam, d.balance); }
+    } else if (i === debtIdx) {
+      if (splitPart === undefined) {
+        addPart(d.planAction||'ללא שינוי', d.planParam, d.balance);
+      } else {
+        const partsToAdd = splitPart === 1 ? [1] : [1, 2];
+        partsToAdd.forEach(p => { const vd=getSplitVirtual(d,p); addPart(vd.planAction,vd.planParam,vd.balance); });
+      }
+      break;
+    }
+  }
+  return { pool, used, remaining: pool - used };
+}
+
+function getImmPoolUsed(excludeIdx) {
+  return state.debts.reduce((s,d,i) => {
+    if (i === excludeIdx) return s;
+    if (d.splitEnabled) {
+      const calcPart = (vd) => {
+        const a = vd.planAction;
+        if (a==='פרעון מלא'||a==='פירעון מיידי מלא') return vd.planParam||vd.balance;
+        if (a==='פירעון מיידי חלקי') return vd.planParam||0;
+        return 0;
+      };
+      return s + calcPart(getSplitVirtual(d,1)) + calcPart(getSplitVirtual(d,2));
+    }
+    const a = d.planAction||'ללא שינוי';
+    if (a === 'פרעון מלא' || a === 'פירעון מיידי מלא') return s + (d.planParam||d.balance);
+    if (a === 'פירעון מיידי חלקי') return s + (d.planParam||0);
+    return s;
+  }, 0);
+}
 
 function calcPlanDebtNewPmt(d) {
-  if (!d.planAction || d.planAction === 'ללא שינוי') return d.monthly;
-  if (d.planAction === 'פרעון מלא') return 0;
-  if (d.planAction === 'פריסה מחדש') {
-    const months = d.planParam || d.paymentsLeft || 36;
-    return pmt(d.interest, months, d.balance);
+  const action = d.planAction || 'ללא שינוי';
+  if (action === 'ללא שינוי') return d.monthly;
+  if (action === 'פרעון מלא' || action === 'ויתור מלא' || action === 'פירעון מיידי מלא' || action === 'פירעון עתידי מלא') return 0;
+  if (action === 'פריסה מחדש') {
+    return pmt(d.interest, d.planParam || d.paymentsLeft || 36, d.balance);
   }
-  if (d.planAction === 'ויתור חלקי') {
+  if (action === 'ויתור חלקי') {
+    const newBal = Math.max(d.balance - (d.planParam||0), 0);
+    if (d.partialWaiverMode === 'endEarly') return d.monthly;
+    return pmt(d.interest, d.paymentsLeft || 36, newBal);
+  }
+  if (action === 'פירעון מיידי חלקי') {
     const newBal = Math.max(d.balance - (d.planParam||0), 0);
     return pmt(d.interest, d.paymentsLeft || 36, newBal);
+  }
+  if (action === 'פירעון עתידי חלקי') {
+    const totalAlloc = (d.futureFundAllocations||[]).reduce((s,a)=>s+a.amount,0);
+    const newBal = Math.max(d.balance - totalAlloc, 0);
+    return newBal > 0 ? pmt(d.interest, d.paymentsLeft || 36, newBal) : 0;
   }
   return d.monthly;
 }
 
+function toggleFundAlloc(debtIdx, fundIdx, checked, debtBalance) {
+  const d = state.debts[debtIdx];
+  if (!d.futureFundAllocations) d.futureFundAllocations = [];
+  if (checked) {
+    const f = state.funds[fundIdx];
+    const allocMap = getAllocMap();
+    const available = f.total - (allocMap[fundIdx]||0);
+    const amount = Math.max(0, Math.min(available, debtBalance||0));
+    d.futureFundAllocations.push({fundIdx, amount});
+  } else {
+    d.futureFundAllocations = d.futureFundAllocations.filter(a => a.fundIdx !== fundIdx);
+  }
+  renderPlanDebtRow(debtIdx);
+  renderPlanFunds();
+  updatePlanDebtTotals();
+  updateAvailableRemaining();
+  renderPlanCharts();
+}
+
+function updateFundAllocAmount(debtIdx, fundIdx, available) {
+  const d = state.debts[debtIdx];
+  const alloc = (d.futureFundAllocations||[]).find(a => a.fundIdx === fundIdx);
+  if (!alloc) return;
+  const el = document.getElementById(`fpkAmt${debtIdx}_${fundIdx}`);
+  if (!el) return;
+  alloc.amount = Math.min(parseNum(el.value), available);
+  const remEl = document.getElementById(`fpkRemain${debtIdx}_${fundIdx}`);
+  if (remEl) {
+    const r = available - alloc.amount;
+    remEl.className = 'fpk-remain' + (r < 0 ? ' neg' : '');
+    remEl.textContent = r > 0 ? 'יתרה: ' + fmtNIS(r) : r < 0 ? 'חורג ב-' + fmtNIS(-r) : '';
+  }
+  renderPlanFunds();
+  updatePlanDebtTotals();
+  renderPlanCharts();
+}
+
+function renderPlanDetail(i, action, splitPart) {
+  const d = state.debts[i];
+  if (action === 'ויתור חלקי') {
+    const mode = d.partialWaiverMode || 'reducePmt';
+    const newBal = Math.max(d.balance - (d.planParam||0), 0);
+    const earlyMonths = mode === 'endEarly' ? calcEndEarlyMonths(newBal, d.monthly, d.interest) : 0;
+    return `<div class="fpk-pool-bar"><span class="pd-label">אפקט הויתור:</span>
+      <div class="wmt-wrap">
+        <button class="wmt-btn${mode==='reducePmt'?' active':''}"
+                onclick="state.debts[${i}].partialWaiverMode='reducePmt';renderPlanDebtRow(${i});updatePlanDebtTotals();renderPlanCharts()">
+          הקטן החזר חודשי
+        </button>
+        <button class="wmt-btn${mode==='endEarly'?' active':''}"
+                onclick="state.debts[${i}].partialWaiverMode='endEarly';renderPlanDebtRow(${i});updatePlanDebtTotals();renderPlanCharts()">
+          סיים מוקדם יותר${mode==='endEarly'&&earlyMonths<999?' ('+earlyMonths+' חודשים)':''}
+        </button>
+      </div></div>`;
+  }
+  if (action === 'פירעון מיידי מלא' || action === 'פירעון מיידי חלקי') {
+    const {pool, used, remaining} = getImmPoolAtPosition(i, splitPart);
+    return `<div class="fpk-pool-bar" style="padding:4px 8px;font-size:0.8rem;">
+      <span>זמין: ${fmtNIS(pool)}</span>
+      <span style="color:#888">|</span><span>מוקצה: ${fmtNIS(used)}</span>
+      <span style="color:#888">|</span><span class="${remaining<0?'pf-neg':'pf-ok'}">יתרה: ${fmtNIS(remaining)}</span></div>`;
+  }
+  if (action.includes('עתידי')) {
+    const futureFunds = state.funds.map((f,fi)=>({f,fi})).filter(({f})=>f.immediate===false&&f.total>0);
+    if (!futureFunds.length) return `<div class="fpk-pool-bar" style="color:#888">אין כספים עתידיים — הוסף בשלב מקורות המימון</div>`;
+    const allocMap = getAllocMap();
+    const totalAlloc = (d.futureFundAllocations||[]).reduce((s,a)=>s+a.amount,0);
+    const covered = totalAlloc >= d.balance;
+    const rows = futureFunds.map(({f,fi}) => {
+      const myAlloc = (d.futureFundAllocations||[]).find(a=>a.fundIdx===fi);
+      const otherAlloc = (allocMap[fi]||0) - (myAlloc?myAlloc.amount:0);
+      const available = f.total - otherAlloc;
+      const checked = !!myAlloc;
+      const amount = myAlloc ? myAlloc.amount : Math.min(available, d.balance||0);
+      const remain = available - (checked ? amount : 0);
+      return `<div class="fpk-fund">
+        <input type="checkbox" ${checked?'checked':''} ${available<=0&&!checked?'disabled':''}
+               onchange="toggleFundAlloc(${i},${fi},this.checked,${d.balance||0})">
+        <div style="flex:1">
+          <div class="fpk-fund-name">${f.source||'מקור'}</div>
+          <div class="fpk-fund-meta">
+            <span class="fpk-avail">זמין: ${fmtNIS(available)}</span>
+            <span>📅 ${f.date}</span>
+          </div>
+          ${checked ? `<div class="fpk-controls">
+            <label>סכום:</label>
+            <input type="text" inputmode="numeric" id="fpkAmt${i}_${fi}"
+                   value="${Math.round(amount).toLocaleString('he-IL')}"
+                   oninput="fmtMoneyInput(this);updateFundAllocAmount(${i},${fi},${available})">
+            <span class="fpk-remain${remain<0?' neg':''}" id="fpkRemain${i}_${fi}">${remain>0?'יתרה: '+fmtNIS(remain):remain<0?'חורג ב-'+fmtNIS(-remain):''}</span>
+          </div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div>
+      <div class="fpk-title">📅 בחר קרנות לפירעון:
+        <span style="font-size:0.76rem;font-weight:400;color:${covered?'#1a7a40':'#c0392b'}">
+          מוקצה ${fmtNIS(totalAlloc)} מתוך ${fmtNIS(d.balance)} ${covered?'✓':'— חסר '+fmtNIS(d.balance-totalAlloc)}
+        </span>
+      </div>${rows}</div>`;
+  }
+  return '';
+}
+
+// ── Split helpers ──────────────────────────────────────────────────────────
+function getSplitVirtual(d, part) {
+  const p1Bal = Math.min(d.splitAmount1||0, d.balance||0);
+  const p2Bal = Math.max((d.balance||0) - p1Bal, 0);
+  const balance = part === 1 ? p1Bal : p2Bal;
+  const monthly = balance > 0 && d.balance > 0 ? pmt(d.interest||0, d.paymentsLeft||36, balance) : 0;
+  return {
+    name: d.name, balance, interest: d.interest, paymentsLeft: d.paymentsLeft, monthly,
+    planAction:  part===1 ? (d.splitAction1 ||'ללא שינוי') : (d.splitAction2 ||'ללא שינוי'),
+    planParam:   part===1 ? (d.splitParam1  ||0)           : (d.splitParam2  ||0),
+    partialWaiverMode: part===1 ? (d.splitWaiverMode1||'reducePmt') : (d.splitWaiverMode2||'reducePmt'),
+    futureFundAllocations: part===1 ? (d.splitFundAllocs1||[]) : (d.splitFundAllocs2||[])
+  };
+}
+
+function enableSplit(i) {
+  const d = state.debts[i];
+  d.splitEnabled   = true;
+  d.splitAmount1   = Math.round((d.balance||0) / 2);
+  d.splitAction1   = d.planAction || 'ללא שינוי';
+  d.splitParam1    = d.planParam  || 0;
+  d.splitWaiverMode1 = d.partialWaiverMode || 'reducePmt';
+  d.splitFundAllocs1 = [...(d.futureFundAllocations||[])];
+  d.splitAction2   = 'ללא שינוי';
+  d.splitParam2    = 0;
+  d.splitWaiverMode2 = 'reducePmt';
+  d.splitFundAllocs2 = [];
+  renderPlanDebtRow(i);
+  updatePlanDebtTotals(); updateAvailableRemaining(); renderPlanFunds(); renderPlanCharts();
+}
+
+function disableSplit(i) {
+  const d = state.debts[i];
+  d.splitEnabled = false;
+  [`planDebtSplit1_${i}`,`planDebtSplitD1_${i}`,`planDebtSplit2_${i}`,`planDebtSplitD2_${i}`]
+    .forEach(id => { const el=document.getElementById(id); if(el) el.remove(); });
+  renderPlanDebtRow(i);
+  updatePlanDebtTotals(); updateAvailableRemaining(); renderPlanFunds(); renderPlanCharts();
+}
+
+function toggleSplitFundAlloc(di, part, fi, checked, debtBal) {
+  const d = state.debts[di];
+  const key = `splitFundAllocs${part}`;
+  if (!d[key]) d[key] = [];
+  if (checked) {
+    const allocMap = getAllocMap();
+    const available = state.funds[fi].total - (allocMap[fi]||0);
+    d[key].push({fundIdx:fi, amount:Math.max(0,Math.min(available,debtBal||0))});
+  } else {
+    d[key] = d[key].filter(a=>a.fundIdx!==fi);
+  }
+  renderPlanDebtRow(di); renderPlanFunds(); updatePlanDebtTotals(); updateAvailableRemaining(); renderPlanCharts();
+}
+
+function updateSplitFundAllocAmount(di, part, fi, available) {
+  const d = state.debts[di];
+  const key = `splitFundAllocs${part}`;
+  const alloc = (d[key]||[]).find(a=>a.fundIdx===fi);
+  if (!alloc) return;
+  const el = document.getElementById(`spkAmt${di}_${part}_${fi}`);
+  if (!el) return;
+  alloc.amount = Math.min(parseNum(el.value), available);
+  const remEl = document.getElementById(`spkRemain${di}_${part}_${fi}`);
+  if (remEl) {
+    const r = available - alloc.amount;
+    remEl.className = 'fpk-remain'+(r<0?' neg':'');
+    remEl.textContent = r>0?'יתרה: '+fmtNIS(r):r<0?'חורג ב-'+fmtNIS(-r):'';
+  }
+  renderPlanFunds(); updatePlanDebtTotals(); renderPlanCharts();
+}
+
+function renderSplitPartDetail(i, part, vd, action) {
+  const d = state.debts[i];
+  const REFRESH = `renderPlanDebtRow(${i});updatePlanDebtTotals();updateAvailableRemaining();renderPlanFunds();renderPlanCharts()`;
+  if (action === 'ויתור חלקי') {
+    const mode = part===1 ? (d.splitWaiverMode1||'reducePmt') : (d.splitWaiverMode2||'reducePmt');
+    const nb = Math.max(vd.balance-(vd.planParam||0),0);
+    const em = mode==='endEarly' ? calcEndEarlyMonths(nb,vd.monthly,vd.interest) : 0;
+    return `<div class="fpk-pool-bar"><span class="pd-label">אפקט הויתור:</span><div class="wmt-wrap">
+      <button class="wmt-btn${mode==='reducePmt'?' active':''}" onclick="state.debts[${i}].splitWaiverMode${part}='reducePmt';${REFRESH}">הקטן החזר חודשי</button>
+      <button class="wmt-btn${mode==='endEarly'?' active':''}" onclick="state.debts[${i}].splitWaiverMode${part}='endEarly';${REFRESH}">סיים מוקדם${mode==='endEarly'&&em<999?' ('+em+' ח)':''}</button>
+    </div></div>`;
+  }
+  if (action.includes('מיידי')) {
+    const {pool, used, remaining} = getImmPoolAtPosition(i, part);
+    return `<div class="fpk-pool-bar" style="padding:4px 8px;font-size:0.8rem;">
+      <span>זמין: ${fmtNIS(pool)}</span>
+      <span style="color:#888">|</span><span>מוקצה: ${fmtNIS(used)}</span>
+      <span style="color:#888">|</span><span class="${remaining<0?'pf-neg':'pf-ok'}">יתרה: ${fmtNIS(remaining)}</span></div>`;
+  }
+  if (action.includes('עתידי')) {
+    const futureFunds = state.funds.map((f,fi)=>({f,fi})).filter(({f})=>f.immediate===false&&f.total>0);
+    if (!futureFunds.length) return `<div class="fpk-pool-bar" style="color:#888">אין כספים עתידיים</div>`;
+    const allocMap = getAllocMap();
+    const myAllocs = part===1?(d.splitFundAllocs1||[]):(d.splitFundAllocs2||[]);
+    const totalAlloc = myAllocs.reduce((s,a)=>s+a.amount,0);
+    const covered = totalAlloc>=vd.balance;
+    const rows = futureFunds.map(({f,fi})=>{
+      const myA=myAllocs.find(a=>a.fundIdx===fi);
+      const oa=(allocMap[fi]||0)-(myA?myA.amount:0);
+      const avail=f.total-oa, checked=!!myA;
+      const amt=myA?myA.amount:Math.min(avail,vd.balance||0);
+      const rem=avail-(checked?amt:0);
+      return `<div class="fpk-fund">
+        <input type="checkbox" ${checked?'checked':''} ${avail<=0&&!checked?'disabled':''}
+               onchange="toggleSplitFundAlloc(${i},${part},${fi},this.checked,${vd.balance||0})">
+        <div style="flex:1"><div class="fpk-fund-name">${f.source||'מקור'}</div>
+          <div class="fpk-fund-meta"><span class="fpk-avail">זמין: ${fmtNIS(avail)}</span><span>📅 ${f.date}</span></div>
+          ${checked?`<div class="fpk-controls"><label>סכום:</label>
+            <input type="text" inputmode="numeric" id="spkAmt${i}_${part}_${fi}"
+                   value="${Math.round(amt).toLocaleString('he-IL')}"
+                   oninput="fmtMoneyInput(this);updateSplitFundAllocAmount(${i},${part},${fi},${avail})">
+            <span class="fpk-remain${rem<0?' neg':''}" id="spkRemain${i}_${part}_${fi}">${rem>0?'יתרה: '+fmtNIS(rem):rem<0?'חורג ב-'+fmtNIS(-rem):''}</span>
+          </div>`:''}
+        </div></div>`;
+    }).join('');
+    return `<div><div class="fpk-title">📅 קרנות לפירעון חלק ${part===1?'א':'ב'}':
+      <span style="font-size:0.76rem;color:${covered?'#1a7a40':'#c0392b'}">${fmtNIS(totalAlloc)} / ${fmtNIS(vd.balance)} ${covered?'✓':'חסר '+fmtNIS(vd.balance-totalAlloc)}</span>
+    </div>${rows}</div>`;
+  }
+  return '';
+}
+
+function renderSplitPartRow(i, part) {
+  const d = state.debts[i];
+  const vd = getSplitVirtual(d, part);
+  const action = vd.planAction;
+  const newPmt = calcPlanDebtNewPmt(vd);
+  const needsParam = ['פריסה מחדש','ויתור חלקי','פירעון מיידי חלקי','פירעון מיידי מלא'].includes(action);
+  const paramLabel = action==='פריסה מחדש'?'חודשים':action==='ויתור חלקי'?'סכום ויתור':(action==='פירעון מיידי חלקי'||action==='פירעון מיידי מלא')?'סכום פירעון (₪)':'';
+  const paramVal = part===1?(d.splitParam1||''):(d.splitParam2||'');
+  const REFRESH = `renderPlanDebtRow(${i});updatePlanDebtTotals();updateAvailableRemaining();renderPlanFunds();renderPlanCharts()`;
+
+  const rowId = `planDebtSplit${part}_${i}`;
+  let tr = document.getElementById(rowId);
+  if (!tr) {
+    tr = document.createElement('tr'); tr.id = rowId;
+    const anchor = part===1
+      ? document.getElementById(`planDebtDetail${i}`)
+      : document.getElementById(`planDebtSplitD1_${i}`);
+    if (anchor?.nextSibling) anchor.parentNode.insertBefore(tr, anchor.nextSibling);
+    else document.getElementById('planDebtsBody').appendChild(tr);
+  }
+  tr.className = 'split-part-row';
+  tr.innerHTML = `
+    <td><span class="split-part-label">חלק ${part===1?'א':'ב'}'</span></td>
+    <td>${part===1
+      ? `<input type="text" inputmode="numeric" class="plan-param-input"
+               value="${Math.round(vd.balance).toLocaleString('he-IL')}"
+               oninput="fmtMoneyInput(this)"
+               onchange="state.debts[${i}].splitAmount1=parseNum(this.value);${REFRESH}">`
+      : `<span style="font-size:0.84rem;color:#555">${fmtNIS(vd.balance)} <span style="font-size:0.7rem;color:#999">(יתרה)</span></span>`
+    }</td>
+    <td>${d.interest?d.interest+'%':'—'}</td>
+    <td>${d.paymentsLeft||'—'}</td>
+    <td>${fmtNIS(Math.round(vd.monthly))}</td>
+    <td><select class="plan-action-select"
+            onchange="state.debts[${i}].splitAction${part}=this.value;state.debts[${i}].splitParam${part}=(this.value==='פירעון מיידי מלא'?${vd.balance}:0);${REFRESH}">
+        ${PLAN_ACTIONS.map(a=>`<option ${action===a?'selected':''}>${a}</option>`).join('')}
+    </select></td>
+    <td>${needsParam?`<div style="font-size:0.72rem;color:#888;margin-bottom:2px">${paramLabel}</div>
+      <input class="plan-param-input" type="text" inputmode="numeric" value="${paramVal}" placeholder="0"
+             oninput="fmtMoneyInput(this);state.debts[${i}].splitParam${part}=parseNum(this.value);updatePlanDebtTotals();updateAvailableRemaining();renderPlanFunds()"
+             onchange="renderPlanDebtRow(${i});renderPlanCharts()">` : '—'}</td>
+    <td style="font-weight:700;color:${newPmt<vd.monthly?'#1a7a40':'#1a3a5c'}">${fmtNIS(Math.round(newPmt))}</td>`;
+
+  const detId = `planDebtSplitD${part}_${i}`;
+  let trD = document.getElementById(detId);
+  if (!trD) {
+    trD = document.createElement('tr'); trD.id = detId;
+    if (tr.nextSibling) tr.parentNode.insertBefore(trD, tr.nextSibling);
+    else document.getElementById('planDebtsBody').appendChild(trD);
+  }
+  trD.className = 'split-part-row';
+  const showDet = action.includes('מיידי')||action.includes('עתידי')||action==='ויתור חלקי';
+  trD.innerHTML = showDet
+    ? `<td colspan="8" class="plan-detail-cell"><div class="plan-detail-box">${renderSplitPartDetail(i,part,vd,action)}</div></td>`
+    : '';
+}
+
+const PLAN_ACTIONS = [
+  'ללא שינוי', 'פריסה מחדש', 'ויתור מלא', 'ויתור חלקי',
+  'פירעון מיידי מלא', 'פירעון מיידי חלקי',
+  'פירעון עתידי מלא', 'פירעון עתידי חלקי'
+];
+
 function renderPlanDebts() {
-  const tbody = document.getElementById('planDebtsBody');
-  tbody.innerHTML = '';
+  document.getElementById('planDebtsBody').innerHTML = '';
   state.debts.forEach((d,i) => {
     if (!d.planAction) d.planAction = 'ללא שינוי';
-    if (!d.planParam)  d.planParam  = 0;
+    if (!d.planParam) d.planParam = 0;
+    if (!d.futureFundAllocations) d.futureFundAllocations = [];
+    if (!d.partialWaiverMode) d.partialWaiverMode = 'reducePmt';
+    if (!d.splitFundAllocs1) d.splitFundAllocs1 = [];
+    if (!d.splitFundAllocs2) d.splitFundAllocs2 = [];
+    if (d.splitEnabled === undefined) d.splitEnabled = false;
     renderPlanDebtRow(i);
   });
   updatePlanDebtTotals();
@@ -1177,51 +1753,96 @@ function renderPlanDebts() {
 
 function renderPlanDebtRow(i) {
   const d = state.debts[i];
+
+  // ── SPLIT mode ──
+  if (d.splitEnabled) {
+    const tot = calcPlanDebtNewPmt(getSplitVirtual(d,1)) + calcPlanDebtNewPmt(getSplitVirtual(d,2));
+    let trMain = document.getElementById(`planDebtRow${i}`);
+    if (!trMain) { trMain=document.createElement('tr'); trMain.id=`planDebtRow${i}`; document.getElementById('planDebtsBody').appendChild(trMain); }
+    trMain.className = (i > 0 ? 'debt-group-row ' : '') + 'plan-parent-split';
+    trMain.innerHTML = `
+      <td style="font-weight:700">${d.name||'—'} <span style="font-size:0.7rem;color:#2a6496;font-weight:400">(מפוצל)</span></td>
+      <td>${fmtNIS(d.balance)}</td>
+      <td>${d.interest?d.interest+'%':'—'}</td>
+      <td>${d.paymentsLeft||'—'}</td>
+      <td>${fmtNIS(d.monthly)}</td>
+      <td colspan="2" style="text-align:center">
+        <button class="split-btn unsplit" onclick="disableSplit(${i})">✕ בטל פיצול</button>
+      </td>
+      <td style="font-weight:700;color:#1a3a5c">${fmtNIS(Math.round(tot))}</td>`;
+    let trDet = document.getElementById(`planDebtDetail${i}`);
+    if (!trDet) { trDet=document.createElement('tr'); trDet.id=`planDebtDetail${i}`; document.getElementById('planDebtsBody').appendChild(trDet); }
+    trDet.innerHTML = '';
+    renderSplitPartRow(i, 1);
+    renderSplitPartRow(i, 2);
+    return;
+  }
+
+  // Remove any lingering split rows
+  [`planDebtSplit1_${i}`,`planDebtSplitD1_${i}`,`planDebtSplit2_${i}`,`planDebtSplitD2_${i}`]
+    .forEach(id => { const el=document.getElementById(id); if(el) el.remove(); });
+
   const action = d.planAction || 'ללא שינוי';
   const newPmt = calcPlanDebtNewPmt(d);
-  const needsParam = action === 'פריסה מחדש' || action === 'ויתור חלקי' || action === 'פרעון מלא';
-  const paramLabel = action === 'פריסה מחדש' ? 'חודשים חדשים' :
-                     action === 'ויתור חלקי'  ? 'סכום ויתור (₪)' :
-                     action === 'פרעון מלא'   ? 'סכום פירעון (₪)' : '';
-  const defaultParam = action === 'פרעון מלא' && !d.planParam ? d.balance : (d.planParam || '');
+  const REFRESH = `state.debts[${i}].planParam=(this.value==='פירעון מיידי מלא'?${d.balance}:0);if(!state.debts[${i}].futureFundAllocations)state.debts[${i}].futureFundAllocations=[];renderPlanDebtRow(${i});updatePlanDebtTotals();updateAvailableRemaining();renderPlanFunds();renderPlanCharts()`;
 
-  const existing = document.getElementById(`planDebtRow${i}`);
-  const tr = existing || document.createElement('tr');
-  tr.id = `planDebtRow${i}`;
-  tr.innerHTML = `
-    <td style="font-weight:600">${d.name || '—'}</td>
+  const needsParam = ['פריסה מחדש','ויתור חלקי','פירעון מיידי חלקי'].includes(action);
+  const paramLabel = action==='פריסה מחדש' ? 'חודשים חדשים' :
+                     action==='ויתור חלקי'  ? 'סכום ויתור (₪)' :
+                     action==='פירעון מיידי חלקי' ? 'סכום לפירעון (₪)' : '';
+  const defaultParam = !d.planParam && (action==='פירעון מיידי חלקי'||action==='פירעון מיידי מלא') ? d.balance : (d.planParam||'');
+  const pmtColor = newPmt < d.monthly ? '#1a7a40' : '#1a3a5c';
+
+  let trMain = document.getElementById(`planDebtRow${i}`);
+  if (!trMain) { trMain = document.createElement('tr'); trMain.id = `planDebtRow${i}`; document.getElementById('planDebtsBody').appendChild(trMain); }
+  trMain.className = i > 0 ? 'debt-group-row' : '';
+  trMain.innerHTML = `
+    <td style="font-weight:600">${d.name||'—'}</td>
     <td>${fmtNIS(d.balance)}</td>
-    <td>${d.interest ? d.interest + '%' : '—'}</td>
-    <td>${d.paymentsLeft || '—'}</td>
+    <td>${d.interest?d.interest+'%':'—'}</td>
+    <td>${d.paymentsLeft||'—'}</td>
     <td>${fmtNIS(d.monthly)}</td>
-    <td><select class="plan-action-select" onchange="state.debts[${i}].planAction=this.value;state.debts[${i}].planParam=0;renderPlanDebtRow(${i});updatePlanDebtTotals();updateAvailableRemaining();renderPlanCharts()">
+    <td><select class="plan-action-select" onchange="state.debts[${i}].planAction=this.value;${REFRESH}">
       ${PLAN_ACTIONS.map(a=>`<option ${action===a?'selected':''}>${a}</option>`).join('')}
-    </select></td>
+    </select>
+    ${d.balance>0?`<button class="split-btn" title="פצל ל-2" onclick="enableSplit(${i})">✂</button>`:''}
+    </td>
     <td>${needsParam ? `<div style="font-size:0.72rem;color:#888;margin-bottom:2px">${paramLabel}</div>
-      <input class="plan-param-input" type="number" value="${defaultParam}" placeholder="0"
-        onchange="state.debts[${i}].planParam=parseNum(this.value);renderPlanDebtRow(${i});updatePlanDebtTotals();updateAvailableRemaining();renderPlanCharts()">` : '—'}</td>
-    <td style="font-weight:700;color:${newPmt<d.monthly?'#1a7a40':'#1a3a5c'}">${fmtNIS(Math.round(newPmt))}</td>`;
-  if (!existing) document.getElementById('planDebtsBody').appendChild(tr);
+      <input class="plan-param-input" type="text" inputmode="numeric" value="${defaultParam}" placeholder="0"
+        oninput="fmtMoneyInput(this);state.debts[${i}].planParam=parseNum(this.value);updatePlanDebtTotals();updateAvailableRemaining();renderPlanFunds()"
+        onchange="renderPlanDebtRow(${i});renderPlanCharts()">` : '—'}</td>
+    <td style="font-weight:700;color:${pmtColor}">${fmtNIS(Math.round(newPmt))}</td>`;
+
+  let trDetail = document.getElementById(`planDebtDetail${i}`);
+  if (!trDetail) { trDetail = document.createElement('tr'); trDetail.id = `planDebtDetail${i}`; document.getElementById('planDebtsBody').appendChild(trDetail); }
+  const showDetail = action.includes('מיידי') || action.includes('עתידי') || action==='ויתור חלקי';
+  if (showDetail) {
+    trDetail.innerHTML = `<td colspan="8" class="plan-detail-cell"><div class="plan-detail-box">${renderPlanDetail(i,action)}</div></td>`;
+  } else {
+    trDetail.innerHTML = '';
+  }
 }
 
 function getTotalAvailable() {
-  const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
-  const [sy, sm] = startDate.split('-').map(Number);
-  const startDateObj = new Date(sy, sm-1, 1);
-  const savingsImm = state.funds.reduce((s,f) => {
-    const fd = f.date ? new Date(f.date + '-01') : null;
-    return s + ((!fd || fd <= startDateObj) ? f.withdrawal : 0);
-  }, 0);
-  const loansTotal = state.loans.reduce((s,l) => s + l.amount, 0);
-  return savingsImm + loansTotal;
+  const savingsImm = state.funds.reduce((s,f) => s + (f.immediate!==false ? f.total : 0), 0);
+  return savingsImm + state.loans.reduce((s,l) => s + l.amount, 0);
 }
 
 function updateAvailableRemaining() {
   const total = getTotalAvailable();
-  const used  = state.debts.reduce((s,d) => {
-    if ((d.planAction || 'ללא שינוי') === 'פרעון מלא') {
-      return s + (d.planParam > 0 ? d.planParam : d.balance);
+  const used = state.debts.reduce((s,d) => {
+    if (d.splitEnabled) {
+      const usePart = (vd) => {
+        const a=vd.planAction;
+        if (a==='פרעון מלא'||a==='פירעון מיידי מלא') return vd.planParam||vd.balance;
+        if (a==='פירעון מיידי חלקי') return vd.planParam||0;
+        return 0;
+      };
+      return s + usePart(getSplitVirtual(d,1)) + usePart(getSplitVirtual(d,2));
     }
+    const a = d.planAction||'ללא שינוי';
+    if (a==='פרעון מלא'||a==='פירעון מיידי מלא') return s + (d.planParam||d.balance);
+    if (a==='פירעון מיידי חלקי') return s + (d.planParam||0);
     return s;
   }, 0);
   const remaining = total - used;
@@ -1235,7 +1856,9 @@ function updateAvailableRemaining() {
 function updatePlanDebtTotals() {
   const totBal = state.debts.reduce((s,d)=>s+d.balance,0);
   const totMon = state.debts.reduce((s,d)=>s+d.monthly,0);
-  const totNew = state.debts.reduce((s,d)=>s+calcPlanDebtNewPmt(d),0);
+  const totNew = state.debts.reduce((s,d) => d.splitEnabled
+    ? s+calcPlanDebtNewPmt(getSplitVirtual(d,1))+calcPlanDebtNewPmt(getSplitVirtual(d,2))
+    : s+calcPlanDebtNewPmt(d), 0);
   document.getElementById('planTotalBalance').textContent = fmtNIS(totBal);
   document.getElementById('planTotalMonthly').textContent = fmtNIS(totMon);
   document.getElementById('planTotalNew').textContent = fmtNIS(Math.round(totNew));
@@ -1266,44 +1889,119 @@ function simulateDebts(debtList, months) {
   return payments;
 }
 
+function simulateDebtsWithFunds(debtList, months, startYear, startMonth) {
+  const debts = debtList.map(d => ({
+    balance:d.balance||0, monthly:d.monthly||0, interest:d.interest||0, paymentsLeft:d.paymentsLeft||0,
+    allocs:d.futureFundAllocations||[], planAction:d.planAction||'ללא שינוי'
+  }));
+  const payments = [], balances = [], injections = [];
+  const injTotalByMonth = new Array(months).fill(0);
+
+  for (let m = 0; m < months; m++) {
+    const curYear  = startYear  + Math.floor((startMonth - 1 + m) / 12);
+    const curMonth = ((startMonth - 1 + m) % 12) + 1;
+    // Apply per-debt future allocations
+    debts.forEach(d => {
+      if (!d.planAction.includes('עתידי')) return;
+      (d.allocs||[]).forEach(alloc => {
+        const f = state.funds[alloc.fundIdx];
+        if (!f || !f.date) return;
+        const [fy, fm] = f.date.split('-').map(Number);
+        if (fy !== curYear || fm !== curMonth) return;
+        const repay = Math.min(alloc.amount, d.balance);
+        d.balance = Math.max(d.balance - repay, 0);
+        injTotalByMonth[m] = (injTotalByMonth[m]||0) + repay;
+        if (d.planAction === 'פירעון עתידי מלא' || d.balance < 1) {
+          d.balance = 0; d.monthly = 0; d.paymentsLeft = 0;
+        } else if (d.balance > 0 && d.paymentsLeft > 0) {
+          d.monthly = pmt(d.interest||0, d.paymentsLeft, d.balance);
+        }
+      });
+    });
+    if (injTotalByMonth[m] > 0) injections.push({m, amount: injTotalByMonth[m]});
+
+    let total = 0;
+    debts.forEach(d => {
+      if (d.balance <= 0 || d.paymentsLeft <= 0) return;
+      const r = d.interest / 100 / 12;
+      const interest = d.balance * r;
+      const payment = Math.min(d.monthly, d.balance + interest);
+      d.balance = Math.max(d.balance - (payment - interest), 0);
+      d.paymentsLeft--;
+      if (d.balance < 0.5) { d.balance = 0; d.paymentsLeft = 0; }
+      total += payment;
+    });
+    payments.push(Math.round(total));
+    balances.push(debts.reduce((s,d) => s + d.balance, 0));
+  }
+  return { payments, balances, injections };
+}
+
 function renderPlanCharts() {
   const MONTHS = 100;
   const labels = Array.from({length: MONTHS}, (_, i) => i + 1);
   const tickCb = (_, idx) => idx % 4 === 0 ? idx + 1 : '';
+
+  const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
+  const [sy, sm] = startDate.split('-').map(Number);
 
   // Budget values
   const curIncome = state.budget.filter(b=>b.type==='income'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
   const curExp    = state.budget.filter(b=>b.type==='expense'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
   const curAvail  = Math.round(curIncome - curExp);
 
+  // Expand split debts
+  const planDebts = [];
+  state.debts.forEach(d => {
+    if (d.splitEnabled && (d.splitAmount1||0) > 0) {
+      planDebts.push(getSplitVirtual(d,1));
+      const vd2 = getSplitVirtual(d,2);
+      if (vd2.balance > 0) planDebts.push(vd2);
+    } else {
+      planDebts.push(d);
+    }
+  });
+
   // Simulate BEFORE — no actions, current debts
-  const beforePayments = simulateDebts(state.debts, MONTHS);
+  const beforePayments = simulateDebts(planDebts, MONTHS);
   const beforeLine = new Array(MONTHS).fill(curAvail);
 
   // Simulate AFTER — apply planAction to each debt
-  const afterDebtList = state.debts.map(d => {
+  const afterDebtList = planDebts.map(d => {
     const action = d.planAction || 'ללא שינוי';
     const param  = d.planParam  || 0;
     let balance  = d.balance    || 0;
     let monthly  = d.monthly    || 0;
     let paymentsLeft = d.paymentsLeft || 0;
     let initialCapital = 0;
-    if (action === 'פרעון מלא') {
-      initialCapital = balance; balance = 0; monthly = 0; paymentsLeft = 0;
+    if (action === 'פרעון מלא' || action === 'פירעון מיידי מלא') {
+      const repayFull = Math.min(param||balance, balance);
+      initialCapital = repayFull; balance = Math.max(balance - repayFull, 0);
+      if (balance < 1) { balance = 0; monthly = 0; paymentsLeft = 0; }
+      else if (paymentsLeft > 0) monthly = pmt(d.interest||0, paymentsLeft, balance);
+    } else if (action === 'פירעון מיידי חלקי') {
+      const repay = Math.min(param, balance);
+      initialCapital = repay; balance = Math.max(balance - repay, 0);
+      if (balance > 0 && paymentsLeft > 0) monthly = pmt(d.interest||0, paymentsLeft, balance);
     } else if (action === 'פריסה מחדש') {
       const newN = param || paymentsLeft || 36;
-      monthly = pmt(d.interest || 0, newN, balance);
-      paymentsLeft = newN;
+      monthly = pmt(d.interest || 0, newN, balance); paymentsLeft = newN;
+    } else if (action === 'ויתור מלא') {
+      balance = 0; monthly = 0; paymentsLeft = 0;
     } else if (action === 'ויתור חלקי') {
       balance = Math.max(balance - param, 0);
-      monthly = pmt(d.interest || 0, paymentsLeft || 36, balance);
+      if (d.partialWaiverMode !== 'endEarly') monthly = pmt(d.interest||0, paymentsLeft||36, balance);
     }
-    return { balance, monthly, interest: d.interest || 0, paymentsLeft, initialCapital };
+    // פירעון עתידי — handled in simulateDebtsWithFunds via futureFundAllocations
+    return { balance, monthly, interest: d.interest || 0, paymentsLeft, initialCapital, futureFundAllocations: d.futureFundAllocations||[], planAction: action };
   });
-  const afterDebtPayments = simulateDebts(afterDebtList, MONTHS);
+  const afterSim          = simulateDebtsWithFunds(afterDebtList, MONTHS, sy, sm);
+  const afterDebtPayments = afterSim.payments;
+  const afterDebtBalances = afterSim.balances;
   const capitalFunded     = new Array(MONTHS).fill(0);
   const totalInitialCap   = afterDebtList.reduce((s,d)=>s+d.initialCapital,0);
   if (totalInitialCap > 0) capitalFunded[0] = Math.round(totalInitialCap);
+  afterSim.injections.forEach(inj => { capitalFunded[inj.m] = (capitalFunded[inj.m]||0) + inj.amount; });
 
   // New loan payments per month
   const newLoanPayments = Array.from({length: MONTHS}, (_, m) => {
@@ -1360,15 +2058,22 @@ function renderPlanCharts() {
       datasets: [
         { label: 'החזר חובות מקוריים',    data: afterDebtPayments, backgroundColor: '#4472C4', borderWidth: 0, stack: 'debt', order: 3 },
         { label: 'החזר הלוואות חדשות',    data: newLoanPayments,   backgroundColor: '#ED7D31', borderWidth: 0, stack: 'debt', order: 2 },
+        { label: 'פירעון מתוכנן', type:'scatter', yAxisID:'yMark', clip:false,
+          data: capitalFunded.map((v,i)=>i>0&&v>0?{x:i,y:1.12}:null).filter(Boolean),
+          pointStyle:'triangle', rotation:180, pointRadius:8, pointHoverRadius:10,
+          backgroundColor:'#1a6e3c', borderColor:'#0a3d1f', borderWidth:1.5, showLine:false, order:0 },
         { label: 'סכום פנוי להחזר חובות', data: afterLine, type: 'line',
           borderColor: '#FF0000', borderWidth: 2, pointRadius: 0, fill: false, order: 1 },
       ]
     },
     options: {
       ...chartOpts('התפתחות החזר חודשי לפי חודשים', 'אחרי הבראה', '#1a7a40'),
+      clip: false,
+      layout: { padding: { top: 30 } },
       scales: {
         x: { stacked: true, title: { display: true, text: 'חודשים', font: { size: 11 } }, ticks: { callback: tickCb } },
         y: { stacked: true, title: { display: true, text: "ש\"ח", font: { size: 11 } }, ticks: { callback: v => fmtN(v) } },
+        yMark: { display: false, min: 0, max: 1, position: 'right' },
       }
     },
   });
@@ -1438,19 +2143,34 @@ function runCalc() {
   const phases = getPlanPhases();
   const getBudget = m => phases.find(p => m >= p.from && m <= p.to) || phases[phases.length-1];
 
-  // Available immediately
+  // Available immediately / future
   const startDateObj = new Date(sy, sm-1, 1);
-  const fundsImmediate = state.funds.reduce((s,f) => {
-    const fd = f.date ? new Date(f.date + '-01') : null;
-    return s + ((!fd || fd <= startDateObj) ? f.withdrawal : 0);
+  const fundsImmediate = state.funds.reduce((s,f) => s + (f.immediate!==false ? f.total : 0), 0);
+  const futureFundsTotal   = state.funds.reduce((s,f) => s + (f.immediate===false ? f.total : 0), 0);
+  const futureFundsPlanned = state.funds.reduce((s,f) => {
+    if (f.immediate!==false || !f.planUsage || f.planUsage==='none') return s;
+    return s + (f.planAmount>0&&f.planAmount<f.total ? f.planAmount : f.total);
   }, 0);
   const newLoansTotal = state.loans.reduce((s,l)=>s+l.amount,0);
   let availablePool = fundsImmediate + newLoansTotal;
+  const fundsInjectedByMonth = new Array(MONTHS).fill(0);
+
+  // Expand split debts into virtual entries
+  const expandedDebts = [];
+  state.debts.forEach((d, origIdx) => {
+    if (d.splitEnabled && (d.splitAmount1||0) > 0) {
+      expandedDebts.push({...getSplitVirtual(d,1), action:d.action, actionParam:d.actionParam, _orig:origIdx});
+      const vd2 = getSplitVirtual(d,2);
+      if (vd2.balance > 0) expandedDebts.push({...vd2, action:d.action, actionParam:d.actionParam, _orig:origIdx});
+    } else {
+      expandedDebts.push({...d, _orig:origIdx});
+    }
+  });
 
   // Debt monthly payments over time
   const debtMonthlyByMonth = [];
   const debtBalanceByMonth = [];
-  let currentBalances = state.debts.map(d => ({
+  let currentBalances = expandedDebts.map(d => ({
     balance: d.balance,
     monthly: d.monthly,
     paymentsLeft: d.paymentsLeft,
@@ -1462,11 +2182,30 @@ function runCalc() {
     newMonthsLeft: d.action==='פריסה מחדש' ? (d.actionParam||d.paymentsLeft||0) : d.paymentsLeft,
   }));
 
-  // Apply immediate actions (full repayment / full waiver)
-  currentBalances.forEach(d => {
-    if (d.action === 'פרעון מלא') { availablePool -= d.balance; d.balance = 0; d.monthly = 0; d.paymentsLeft = 0; }
-    if (d.action === 'ויתור מלא') { d.balance = 0; d.monthly = 0; d.paymentsLeft = 0; }
-    if (d.action === 'ויתור חלקי') { d.balance = Math.max(d.balance - (d.actionParam||0), 0); }
+  // Apply immediate actions (step-2 actions + plan immediate actions)
+  currentBalances.forEach((d, idx) => {
+    const planA = expandedDebts[idx].planAction || 'ללא שינוי';
+    if (d.action === 'פרעון מלא' || planA === 'פירעון מיידי מלא' || planA === 'פרעון מלא') {
+      const repayFull = Math.min(expandedDebts[idx].planParam||d.balance, d.balance);
+      availablePool -= repayFull;
+      d.balance = Math.max(d.balance - repayFull, 0);
+      if (d.balance < 1) { d.balance = 0; d.monthly = 0; d.paymentsLeft = 0; }
+      else if (d.paymentsLeft > 0) d.monthly = pmt(d.interest||0, d.paymentsLeft, d.balance);
+    } else if (planA === 'פירעון מיידי חלקי') {
+      const repay = Math.min(expandedDebts[idx].planParam||0, d.balance);
+      availablePool -= repay;
+      d.balance = Math.max(d.balance - repay, 0);
+      if (d.balance > 0 && d.paymentsLeft > 0) d.monthly = pmt(d.interest||0, d.paymentsLeft, d.balance);
+    } else if (d.action === 'ויתור מלא' || planA === 'ויתור מלא') {
+      d.balance = 0; d.monthly = 0; d.paymentsLeft = 0;
+    } else if (d.action === 'ויתור חלקי') {
+      d.balance = Math.max(d.balance - (d.actionParam||0), 0);
+    } else if (planA === 'ויתור חלקי') {
+      const wb = Math.max(d.balance - (state.debts[idx].planParam||0), 0);
+      d.balance = wb;
+      if (state.debts[idx].partialWaiverMode === 'endEarly') { /* same monthly, shorter */ }
+      else if (wb > 0 && d.paymentsLeft > 0) d.monthly = pmt(d.interest||0, d.paymentsLeft, wb);
+    }
   });
 
   // New loan payments
@@ -1482,12 +2221,26 @@ function runCalc() {
     const year  = sy + Math.floor((sm - 1 + m) / 12);
     const dateStr = `${year}/${String(month).padStart(2,'0')}`;
 
-    // Add funds that become available this month
-    state.funds.forEach(f => {
-      if (f.date) {
+    // Apply future fund repayments planned for this month
+    expandedDebts.forEach((debt, debtIdx) => {
+      const planA = debt.planAction || 'ללא שינוי';
+      if (!planA.includes('עתידי')) return;
+      (debt.futureFundAllocations||[]).forEach(alloc => {
+        const f = state.funds[alloc.fundIdx];
+        if (!f || !f.date) return;
         const [fy, fm] = f.date.split('-').map(Number);
-        if (fy === year && fm === month) availablePool += f.withdrawal;
-      }
+        if (fy !== year || fm !== month) return;
+        const cb = currentBalances[debtIdx];
+        if (!cb || cb.balance <= 0) return;
+        const repay = Math.min(alloc.amount, cb.balance);
+        cb.balance = Math.max(cb.balance - repay, 0);
+        fundsInjectedByMonth[m] = (fundsInjectedByMonth[m]||0) + repay;
+        if (planA === 'פירעון עתידי מלא' || cb.balance < 1) {
+          cb.balance = 0; cb.monthly = 0; cb.paymentsLeft = 0;
+        } else if (planA === 'פירעון עתידי חלקי' && cb.balance > 0 && cb.paymentsLeft > 0) {
+          cb.monthly = pmt(cb.interest||0, cb.paymentsLeft, cb.balance);
+        }
+      });
     });
 
     // Debt payments
@@ -1520,7 +2273,7 @@ function runCalc() {
     const netBefore = incomeNow - expNow - state.debts.reduce((s,d)=>s+d.monthly,0);
     const netAfter  = phaseIncome - phaseExp - totalDebt;
 
-    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, netBefore });
+    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, netBefore, fundsInjected: fundsInjectedByMonth[m] || 0 });
     debtBalanceByMonth.push(totalBalance);
     debtMonthlyByMonth.push(totalDebt);
   }
@@ -1543,7 +2296,8 @@ function runCalc() {
     <div class="sum-box"><div class="sb-label">החזר חובות אחרי הבראה</div><div class="sb-value">${fmtNIS(Math.round(totalNewDebtPmt))}</div></div>
     <div class="sum-box ${netAfterFirst>=0?'positive':'negative'}"><div class="sb-label">תזרים נטו חודשי (מוצע)</div><div class="sb-value">${fmtNIS(Math.round(netAfterFirst))}</div></div>
     <div class="sum-box highlight"><div class="sb-label">זמן עד לסיום חובות</div><div class="sb-value">${debtFreeText}</div></div>
-    <div class="sum-box"><div class="sb-label">כספים זמינים לפרעון</div><div class="sb-value">${fmtNIS(fundsImmediate + newLoansTotal)}</div></div>`;
+    <div class="sum-box"><div class="sb-label">כספים זמינים לפרעון</div><div class="sb-value">${fmtNIS(fundsImmediate + newLoansTotal)}</div></div>
+    ${futureFundsTotal > 0 ? `<div class="sum-box"><div class="sb-label">כספים עתידיים מתוכננים</div><div class="sb-value">${fmtNIS(futureFundsPlanned)} / ${fmtNIS(futureFundsTotal)}</div></div>` : ''}`;
 
   // Cash flow chart
   const labels = monthlyCF.map(m => m.m % 12 === 1 || m.m === 1 ? m.dateStr : '');
@@ -1556,6 +2310,7 @@ function runCalc() {
         { label: 'הכנסות', data: monthlyCF.map(m=>m.incomeNew), backgroundColor: '#1a7a40cc', borderColor:'#1a7a40', borderWidth:1 },
         { label: 'הוצאות', data: monthlyCF.map(m=>m.expNew), backgroundColor: '#c0392bcc', borderColor:'#c0392b', borderWidth:1 },
         { label: 'החזרי חובות', data: monthlyCF.map(m=>m.totalDebt), backgroundColor: '#c87f00cc', borderColor:'#c87f00', borderWidth:1 },
+        { label: 'פירעון מכספים עתידיים', data: monthlyCF.map(m=>m.fundsInjected||null), backgroundColor: '#2a649688', borderColor:'#2a6496', borderWidth:1 },
         { label: 'תזרים נטו', data: monthlyCF.map(m=>m.netAfter), type:'line', borderColor:'#1a3a5c', borderWidth:2.5, tension:0.3, pointRadius:0, fill:false },
       ]
     },
@@ -1576,7 +2331,15 @@ function runCalc() {
     data: {
       labels: monthlyCF.map(m=>m.dateStr),
       datasets:[
-        { label:'יתרת חובות', data: debtBalanceByMonth, borderColor:'#c0392b', backgroundColor:'rgba(192,57,43,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true }
+        { label:'יתרת חובות', data: debtBalanceByMonth, borderColor:'#c0392b', backgroundColor:'rgba(192,57,43,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true },
+        {
+          label:'פירעון מתוכנן',
+          type:'scatter',
+          data: fundsInjectedByMonth.map((v,i) => v>0 ? {x: monthlyCF[i].dateStr, y: debtBalanceByMonth[i]+v} : null).filter(Boolean),
+          pointStyle:'triangle', rotation:180, pointRadius:12,
+          backgroundColor:'#1a6e3c', borderColor:'#0f4a25', borderWidth:2, showLine:false,
+          tooltip:{ callbacks:{ label: ctx => 'פירעון: ' + fmtNIS(fundsInjectedByMonth[ctx.dataIndex]) } }
+        }
       ]
     },
     options:{
@@ -1599,6 +2362,7 @@ function runCalc() {
       <td>${fmtNIS(m.incomeNew)}</td>
       <td>${fmtNIS(m.expNew)}</td>
       <td>${fmtNIS(Math.round(m.totalDebt))}</td>
+      <td style="color:#2a6496;font-weight:${m.fundsInjected?'700':'400'}">${m.fundsInjected ? fmtNIS(Math.round(m.fundsInjected)) : '—'}</td>
       <td class="${neg}">${fmtNIS(Math.round(m.netAfter))}</td>
       <td>${fmtNIS(Math.round(m.totalBalance))}</td>
     </tr>`;
@@ -1767,6 +2531,154 @@ function importJSON(file) {
 window.addEventListener('load', () => {
   setSaveStatus('פגישה חדשה', '');
 });
+
+// ===================== FUTURE FUNDS MODAL =====================
+let _ffPrevRemaining = 0;
+
+function openFFModal() {
+  const modal = document.getElementById('ffModal');
+  const deficit = Math.abs(_ffPrevRemaining);
+  document.getElementById('ffDeficit').textContent = fmtNIS(Math.round(deficit));
+  modal.style.display = 'flex';
+  document.getElementById('ffStep1').style.display = '';
+  document.getElementById('ffStep2').style.display = 'none';
+}
+
+function showFFList() {
+  document.getElementById('ffStep1').style.display = 'none';
+  const step2 = document.getElementById('ffStep2');
+  step2.style.display = '';
+
+  const deficit = Math.abs(_ffPrevRemaining);
+  const unusedFunds = state.funds.map((f,fi) => ({f,fi}))
+    .filter(({f}) => f.immediate===false && (!f.planUsage || f.planUsage==='none') && f.total > 0);
+
+  if (!unusedFunds.length) {
+    document.getElementById('ffFundList').innerHTML =
+      '<div style="color:#888;text-align:center;padding:1.5rem">אין חסכונות עתידיים זמינים</div>';
+    return;
+  }
+
+  let remaining = deficit;
+  const rows = unusedFunds.map(({f,fi}) => {
+    const suggested = Math.min(f.total, Math.max(0, Math.round(remaining)));
+    remaining -= suggested;
+    const debtOpts = state.debts.filter(d=>d.name&&d.balance>0)
+      .map((d,di)=>`<option value="${di}">${d.name}</option>`).join('');
+    return `<div class="ffl-row">
+      <label class="ffl-top">
+        <input type="checkbox" class="ffl-cb" id="fflCb${fi}" data-fi="${fi}"
+               onchange="toggleFFRow(this,${fi},${f.total})">
+        <div>
+          <div class="ffl-name">${f.source||'מקור'}</div>
+          <div class="ffl-meta">
+            <span class="ffl-total">${fmtNIS(f.total)}</span>
+            <span class="ffl-date">📅 ${f.date}</span>
+          </div>
+        </div>
+      </label>
+      <div class="ffl-controls" id="fflCtrl${fi}" style="display:none">
+        <div class="ffl-field">
+          <label>סכום לשימוש (₪)</label>
+          <input type="text" inputmode="numeric" id="fflAmt${fi}" value="${suggested.toLocaleString('he-IL')}"
+                 oninput="fmtMoneyInput(this);updateFFRemain(${fi},${f.total})">
+          <div class="ffl-remain-line" id="fflRemain${fi}"></div>
+        </div>
+        <div class="ffl-field">
+          <label>יישום על</label>
+          <select class="ffp-sel" id="fflUsage${fi}">
+            <option value="auto">פירעון אוטומטי (ריבית גבוהה)</option>
+            ${debtOpts}
+          </select>
+        </div>
+        <div class="ffl-field">
+          <label>תאריך יישום</label>
+          <div class="month-wrap" style="min-width:150px">
+            <input type="date" id="fflDate${fi}" value="${f.planDate||f.date||''}" class="${(f.planDate||f.date)?'has-val':''}"
+                   onfocus="this.classList.add('has-val');this.nextElementSibling.style.opacity='0'"
+                   onblur="if(!this.value){this.classList.remove('has-val');this.nextElementSibling.style.opacity='1'}"
+                   onchange="this.nextElementSibling.style.opacity=this.value?'0':'1'">
+            <span class="month-ph" style="opacity:${(f.planDate||f.date)?'0':'1'}">יום / חודש / שנה</span>
+            <span class="date-cal-btn" onclick="try{document.getElementById('fflDate${fi}').showPicker()}catch(e){document.getElementById('fflDate${fi}').focus()}">📅</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('ffFundList').innerHTML = rows;
+}
+
+function toggleFFRow(cb, fi, total) {
+  document.getElementById('fflCtrl'+fi).style.display = cb.checked ? '' : 'none';
+  if (cb.checked) updateFFRemain(fi, total);
+}
+
+function updateFFRemain(fi, total) {
+  const amt = parseNum(document.getElementById('fflAmt'+fi).value);
+  const remain = total - amt;
+  const el = document.getElementById('fflRemain'+fi);
+  if (remain > 0) { el.textContent = 'יתרה שתישאר: ' + fmtNIS(remain); el.style.color = '#2a6496'; }
+  else if (remain < 0) { el.textContent = 'חורג מהסכום הזמין'; el.style.color = '#c0392b'; }
+  else { el.textContent = ''; }
+}
+
+function applyFFSelection() {
+  document.querySelectorAll('.ffl-cb:checked').forEach(cb => {
+    const fi = parseInt(cb.dataset.fi);
+    const f = state.funds[fi];
+    const amtEl = document.getElementById('fflAmt'+fi);
+    const usageEl = document.getElementById('fflUsage'+fi);
+    const dateEl = document.getElementById('fflDate'+fi);
+    const amt = parseNum(amtEl ? amtEl.value : f.total);
+    f.planUsage  = usageEl ? usageEl.value : 'auto';
+    f.planAmount = (amt > 0 && amt < f.total) ? amt : 0;
+    f.planDate   = (dateEl && dateEl.value) ? dateEl.value : (f.planDate || f.date);
+  });
+  closeFFModal();
+  renderPlanFunds();
+  renderPlanCharts();
+  updateAvailableRemaining();
+}
+
+function closeFFModal() {
+  document.getElementById('ffModal').style.display = 'none';
+}
 </script>
+
+<!-- FUTURE FUNDS MODAL -->
+<div id="ffModal" class="ff-overlay" style="display:none" onclick="if(event.target===this)closeFFModal()">
+  <div class="ff-box">
+    <div class="ff-header">
+      <div class="ff-header-icon">💡</div>
+      <div class="ff-header-title">יתרה פנויה שלילית</div>
+      <div class="ff-header-sub">היתרה הפנויה לפירעון ירדה ל־<span id="ffDeficit" style="font-weight:800;color:#ffd06e"></span></div>
+    </div>
+
+    <!-- Step 1: Question -->
+    <div id="ffStep1">
+      <div class="ff-body">
+        <div class="ff-question">האם ברצונך להשתמש בחסכונות העתידיים לכיסוי ההתחייבויות?</div>
+      </div>
+      <div class="ff-footer">
+        <button class="ff-btn-no" onclick="closeFFModal()">לא כרגע</button>
+        <button class="ff-btn-yes" onclick="showFFList()">כן, הצג חסכונות ←</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Fund selection -->
+    <div id="ffStep2" style="display:none">
+      <div class="ff-body">
+        <div class="ff-question">בחר את החסכונות שברצונך להשתמש בהם לפירעון:</div>
+        <div class="ff-fund-list" id="ffFundList"></div>
+      </div>
+      <div class="ff-footer">
+        <button class="ff-btn-no" onclick="closeFFModal()">ביטול</button>
+        <button class="ff-btn-yes" onclick="applyFFSelection()">✓ אשר בחירה</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

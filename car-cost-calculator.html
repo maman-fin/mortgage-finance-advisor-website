@@ -54,7 +54,7 @@
     .shared-field-note { font-size: 0.75rem; color: #888; font-weight: 400; }
     .shared-field-row { display: flex; align-items: center; border: 1px solid #d0d8e4; border-radius: 7px; overflow: hidden; background: #fff; transition: border-color 0.2s; }
     .shared-field-row:focus-within { border-color: #2a6496; }
-    .shared-field-row input[type="number"] { flex: 1; border: none; padding: 0.5rem 0.7rem; font-size: 0.95rem; direction: rtl; font-family: inherit; background: transparent; outline: none; min-width: 0; }
+    .shared-field-row input[type="number"], .shared-field-row input[type="text"] { flex: 1; border: none; padding: 0.5rem 0.7rem; font-size: 0.95rem; direction: rtl; font-family: inherit; background: transparent; outline: none; min-width: 0; }
     .shared-field-unit { background: #f0f4f8; border-right: 1px solid #d0d8e4; padding: 0.5rem 0.6rem; font-size: 0.8rem; color: #666; white-space: nowrap; }
     .shared-slider { width: 100%; accent-color: #1a3a5c; cursor: pointer; margin-top: 0.15rem; }
 
@@ -81,7 +81,7 @@
     .field label { display: block; font-size: 0.82rem; font-weight: 600; color: #555; margin-bottom: 0.25rem; }
     .field-row { display: flex; align-items: center; border: 1px solid #d0d8e4; border-radius: 7px; overflow: hidden; background: #fff; transition: border-color 0.2s; }
     .field-row:focus-within { border-color: #2a6496; }
-    .field-row input[type="number"] { flex: 1; border: none; padding: 0.52rem 0.7rem; font-size: 0.95rem; direction: rtl; font-family: inherit; background: transparent; outline: none; min-width: 0; }
+    .field-row input[type="number"], .field-row input[type="text"] { flex: 1; border: none; padding: 0.52rem 0.7rem; font-size: 0.95rem; direction: rtl; font-family: inherit; background: transparent; outline: none; min-width: 0; }
     .field-unit { background: #f0f4f8; border-right: 1px solid #d0d8e4; padding: 0.52rem 0.6rem; font-size: 0.8rem; color: #666; white-space: nowrap; }
     .slider-row { margin-top: 0.18rem; }
     .slider-row input[type="range"] { width: 100%; accent-color: #1a3a5c; cursor: pointer; }
@@ -251,7 +251,7 @@
 
       <div>
         <div class="shared-field-label">הון עצמי ראשוני <span class="shared-field-note">(לא חל על ליסינג)</span></div>
-        <div class="shared-field-row"><input type="number" id="g_equity" value="50000" min="0" max="400000" step="1000" oninput="syncSlider('g_equity','sl_g_equity');calc()"><div class="shared-field-unit">₪</div></div>
+        <div class="shared-field-row"><input type="text" inputmode="numeric" id="g_equity" value="50,000" oninput="fmtInput(this);syncSlider('g_equity','sl_g_equity');calc()"><div class="shared-field-unit">₪</div></div>
         <input type="range" class="shared-slider" id="sl_g_equity" min="0" max="400000" step="1000" value="50000" oninput="syncInput('sl_g_equity','g_equity');calc()">
       </div>
 
@@ -295,7 +295,7 @@
         <div class="section-mini">רכישה ומימון</div>
         <div class="field">
           <label>מחיר הרכב (₪)</label>
-          <div class="field-row"><input type="number" id="el_price" value="150000" min="30000" max="400000" step="1000" oninput="syncSlider('el_price','sl_el_price');calc()"><div class="field-unit">₪</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="el_price" value="150,000" oninput="fmtInput(this);syncSlider('el_price','sl_el_price');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_el_price" min="30000" max="400000" step="1000" value="150000" oninput="syncInput('sl_el_price','el_price');calc()"></div>
         </div>
         <div class="computed-row">
@@ -315,7 +315,7 @@
         </div>
         <div class="field" id="el_sale_field" style="display:none">
           <label>מחיר מכירה צפוי בסוף תקופה (₪)</label>
-          <div class="field-row"><input type="number" id="el_sale" value="90000" min="0" max="400000" step="1000" oninput="syncSlider('el_sale','sl_el_sale');calc()"><div class="field-unit">₪</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="el_sale" value="90,000" oninput="fmtInput(this);syncSlider('el_sale','sl_el_sale');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_el_sale" min="0" max="400000" step="1000" value="90000" oninput="syncInput('sl_el_sale','el_sale');calc()"></div>
         </div>
         <div id="el_pct_field">
@@ -341,7 +341,7 @@
         </div>
         <div class="field">
           <label>עמדת טעינה ביתית — חד-פעמי (₪)</label>
-          <div class="field-row"><input type="number" id="el_charging" value="3000" min="0" max="8000" step="100" oninput="syncSlider('el_charging','sl_el_charging');calc()"><div class="field-unit">₪</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="el_charging" value="3,000" oninput="fmtInput(this);syncSlider('el_charging','sl_el_charging');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_el_charging" min="0" max="8000" step="100" value="3000" oninput="syncInput('sl_el_charging','el_charging');calc()"></div>
         </div>
 
@@ -349,17 +349,17 @@
         <div class="section-mini">עלויות שוטפות</div>
         <div class="field">
           <label>ביטוח שנתי (₪)</label>
-          <div class="field-row"><input type="number" id="el_ins" value="6000" min="500" max="15000" step="100" oninput="syncSlider('el_ins','sl_el_ins');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="el_ins" value="6,000" oninput="fmtInput(this);syncSlider('el_ins','sl_el_ins');calc()"><div class="field-unit">₪/שנה</div></div>
           <div class="slider-row"><input type="range" id="sl_el_ins" min="500" max="15000" step="100" value="6000" oninput="syncInput('sl_el_ins','el_ins');calc()"></div>
         </div>
         <div class="field">
           <label>אגרת רישוי / טסט (₪)</label>
-          <div class="field-row"><input type="number" id="el_lic" value="1300" min="0" max="3000" step="50" oninput="syncSlider('el_lic','sl_el_lic');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="el_lic" value="1,300" oninput="fmtInput(this);syncSlider('el_lic','sl_el_lic');calc()"><div class="field-unit">₪/שנה</div></div>
           <div class="slider-row"><input type="range" id="sl_el_lic" min="0" max="3000" step="50" value="1300" oninput="syncInput('sl_el_lic','el_lic');calc()"></div>
         </div>
         <div class="field">
           <label>טיפולים ותקלות (₪)</label>
-          <div class="field-row"><input type="number" id="el_mnt" value="1500" min="0" max="10000" step="100" oninput="syncSlider('el_mnt','sl_el_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="el_mnt" value="1,500" oninput="fmtInput(this);syncSlider('el_mnt','sl_el_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
           <div class="slider-row"><input type="range" id="sl_el_mnt" min="0" max="10000" step="100" value="1500" oninput="syncInput('sl_el_mnt','el_mnt');calc()"></div>
         </div>
       </div>
@@ -372,7 +372,7 @@
         <div class="section-mini">עלות ליסינג</div>
         <div class="field">
           <label>תשלום חודשי (₪)</label>
-          <div class="field-row"><input type="number" id="ls_monthly" value="3500" min="1000" max="10000" step="100" oninput="syncSlider('ls_monthly','sl_ls_monthly');calc()"><div class="field-unit">₪/חודש</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="ls_monthly" value="3,500" oninput="fmtInput(this);syncSlider('ls_monthly','sl_ls_monthly');calc()"><div class="field-unit">₪/חודש</div></div>
           <div class="slider-row"><input type="range" id="sl_ls_monthly" min="1000" max="10000" step="100" value="3500" oninput="syncInput('sl_ls_monthly','ls_monthly');calc()"></div>
         </div>
 
@@ -390,7 +390,7 @@
         <div id="ls_ins_field" style="display:none">
           <div class="field">
             <label>ביטוח שנתי (₪)</label>
-            <div class="field-row"><input type="number" id="ls_ins" value="5000" min="500" max="15000" step="100" oninput="syncSlider('ls_ins','sl_ls_ins');calc()"><div class="field-unit">₪/שנה</div></div>
+            <div class="field-row"><input type="text" inputmode="numeric" id="ls_ins" value="5,000" oninput="fmtInput(this);syncSlider('ls_ins','sl_ls_ins');calc()"><div class="field-unit">₪/שנה</div></div>
             <div class="slider-row"><input type="range" id="sl_ls_ins" min="500" max="15000" step="100" value="5000" oninput="syncInput('sl_ls_ins','ls_ins');calc()"></div>
           </div>
         </div>
@@ -398,7 +398,7 @@
         <div id="ls_lic_field" style="display:none">
           <div class="field">
             <label>אגרת רישוי / טסט (₪)</label>
-            <div class="field-row"><input type="number" id="ls_lic" value="1300" min="0" max="3000" step="50" oninput="syncSlider('ls_lic','sl_ls_lic');calc()"><div class="field-unit">₪/שנה</div></div>
+            <div class="field-row"><input type="text" inputmode="numeric" id="ls_lic" value="1,300" oninput="fmtInput(this);syncSlider('ls_lic','sl_ls_lic');calc()"><div class="field-unit">₪/שנה</div></div>
             <div class="slider-row"><input type="range" id="sl_ls_lic" min="0" max="3000" step="50" value="1300" oninput="syncInput('sl_ls_lic','ls_lic');calc()"></div>
           </div>
         </div>
@@ -406,7 +406,7 @@
         <div id="ls_mnt_field" style="display:none">
           <div class="field">
             <label>טיפולים ותקלות (₪)</label>
-            <div class="field-row"><input type="number" id="ls_mnt" value="2500" min="0" max="10000" step="100" oninput="syncSlider('ls_mnt','sl_ls_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
+            <div class="field-row"><input type="text" inputmode="numeric" id="ls_mnt" value="2,500" oninput="fmtInput(this);syncSlider('ls_mnt','sl_ls_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
             <div class="slider-row"><input type="range" id="sl_ls_mnt" min="0" max="10000" step="100" value="2500" oninput="syncInput('sl_ls_mnt','ls_mnt');calc()"></div>
           </div>
         </div>
@@ -420,7 +420,7 @@
         <div class="section-mini">רכישה ומימון</div>
         <div class="field">
           <label>מחיר הרכב (₪)</label>
-          <div class="field-row"><input type="number" id="u1_price" value="80000" min="20000" max="300000" step="1000" oninput="syncSlider('u1_price','sl_u1_price');calc()"><div class="field-unit">₪</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u1_price" value="80,000" oninput="fmtInput(this);syncSlider('u1_price','sl_u1_price');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_u1_price" min="20000" max="300000" step="1000" value="80000" oninput="syncInput('sl_u1_price','u1_price');calc()"></div>
         </div>
         <div class="computed-row">
@@ -440,7 +440,7 @@
         </div>
         <div class="field" id="u1_sale_field" style="display:none">
           <label>מחיר מכירה צפוי בסוף תקופה (₪)</label>
-          <div class="field-row"><input type="number" id="u1_sale" value="50000" min="0" max="300000" step="1000" oninput="syncSlider('u1_sale','sl_u1_sale');calc()"><div class="field-unit">₪</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u1_sale" value="50,000" oninput="fmtInput(this);syncSlider('u1_sale','sl_u1_sale');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_u1_sale" min="0" max="300000" step="1000" value="50000" oninput="syncInput('sl_u1_sale','u1_sale');calc()"></div>
         </div>
         <div id="u1_pct_field">
@@ -464,17 +464,17 @@
         <div class="section-mini">עלויות שוטפות</div>
         <div class="field">
           <label>ביטוח שנתי (₪)</label>
-          <div class="field-row"><input type="number" id="u1_ins" value="5000" min="500" max="15000" step="100" oninput="syncSlider('u1_ins','sl_u1_ins');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u1_ins" value="5,000" oninput="fmtInput(this);syncSlider('u1_ins','sl_u1_ins');calc()"><div class="field-unit">₪/שנה</div></div>
           <div class="slider-row"><input type="range" id="sl_u1_ins" min="500" max="15000" step="100" value="5000" oninput="syncInput('sl_u1_ins','u1_ins');calc()"></div>
         </div>
         <div class="field">
           <label>אגרת רישוי / טסט (₪)</label>
-          <div class="field-row"><input type="number" id="u1_lic" value="1300" min="0" max="3000" step="50" oninput="syncSlider('u1_lic','sl_u1_lic');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u1_lic" value="1,300" oninput="fmtInput(this);syncSlider('u1_lic','sl_u1_lic');calc()"><div class="field-unit">₪/שנה</div></div>
           <div class="slider-row"><input type="range" id="sl_u1_lic" min="0" max="3000" step="50" value="1300" oninput="syncInput('sl_u1_lic','u1_lic');calc()"></div>
         </div>
         <div class="field">
           <label>טיפולים ותקלות (₪)</label>
-          <div class="field-row"><input type="number" id="u1_mnt" value="3000" min="0" max="10000" step="100" oninput="syncSlider('u1_mnt','sl_u1_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u1_mnt" value="3,000" oninput="fmtInput(this);syncSlider('u1_mnt','sl_u1_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
           <div class="slider-row"><input type="range" id="sl_u1_mnt" min="0" max="10000" step="100" value="3000" oninput="syncInput('sl_u1_mnt','u1_mnt');calc()"></div>
         </div>
       </div>
@@ -487,7 +487,7 @@
         <div class="section-mini">רכישה ומימון</div>
         <div class="field">
           <label>מחיר הרכב (₪)</label>
-          <div class="field-row"><input type="number" id="u2_price" value="120000" min="20000" max="300000" step="1000" oninput="syncSlider('u2_price','sl_u2_price');calc()"><div class="field-unit">₪</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u2_price" value="120,000" oninput="fmtInput(this);syncSlider('u2_price','sl_u2_price');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_u2_price" min="20000" max="300000" step="1000" value="120000" oninput="syncInput('sl_u2_price','u2_price');calc()"></div>
         </div>
         <div class="computed-row">
@@ -507,7 +507,7 @@
         </div>
         <div class="field" id="u2_sale_field" style="display:none">
           <label>מחיר מכירה צפוי בסוף תקופה (₪)</label>
-          <div class="field-row"><input type="number" id="u2_sale" value="75000" min="0" max="300000" step="1000" oninput="syncSlider('u2_sale','sl_u2_sale');calc()"><div class="field-unit">₪</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u2_sale" value="75,000" oninput="fmtInput(this);syncSlider('u2_sale','sl_u2_sale');calc()"><div class="field-unit">₪</div></div>
           <div class="slider-row"><input type="range" id="sl_u2_sale" min="0" max="300000" step="1000" value="75000" oninput="syncInput('sl_u2_sale','u2_sale');calc()"></div>
         </div>
         <div id="u2_pct_field">
@@ -531,17 +531,17 @@
         <div class="section-mini">עלויות שוטפות</div>
         <div class="field">
           <label>ביטוח שנתי (₪)</label>
-          <div class="field-row"><input type="number" id="u2_ins" value="5000" min="500" max="15000" step="100" oninput="syncSlider('u2_ins','sl_u2_ins');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u2_ins" value="5,000" oninput="fmtInput(this);syncSlider('u2_ins','sl_u2_ins');calc()"><div class="field-unit">₪/שנה</div></div>
           <div class="slider-row"><input type="range" id="sl_u2_ins" min="500" max="15000" step="100" value="5000" oninput="syncInput('sl_u2_ins','u2_ins');calc()"></div>
         </div>
         <div class="field">
           <label>אגרת רישוי / טסט (₪)</label>
-          <div class="field-row"><input type="number" id="u2_lic" value="1300" min="0" max="3000" step="50" oninput="syncSlider('u2_lic','sl_u2_lic');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u2_lic" value="1,300" oninput="fmtInput(this);syncSlider('u2_lic','sl_u2_lic');calc()"><div class="field-unit">₪/שנה</div></div>
           <div class="slider-row"><input type="range" id="sl_u2_lic" min="0" max="3000" step="50" value="1300" oninput="syncInput('sl_u2_lic','u2_lic');calc()"></div>
         </div>
         <div class="field">
           <label>טיפולים ותקלות (₪)</label>
-          <div class="field-row"><input type="number" id="u2_mnt" value="2500" min="0" max="10000" step="100" oninput="syncSlider('u2_mnt','sl_u2_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
+          <div class="field-row"><input type="text" inputmode="numeric" id="u2_mnt" value="2,500" oninput="fmtInput(this);syncSlider('u2_mnt','sl_u2_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
           <div class="slider-row"><input type="range" id="sl_u2_mnt" min="0" max="10000" step="100" value="2500" oninput="syncInput('sl_u2_mnt','u2_mnt');calc()"></div>
         </div>
       </div>
@@ -621,9 +621,10 @@
   let barChartInst, lineChartInst;
 
   // HELPERS
-  const gv = id => parseFloat(document.getElementById(id).value) || 0;
+  const gv = id => parseFloat((document.getElementById(id).value||'').replace(/,/g,'')) || 0;
   const gc = id => document.getElementById(id).checked;
   const fmtN = n => Math.round(n).toLocaleString('he-IL');
+  function fmtInput(el) { var d = el.value.replace(/[^\d]/g,''); el.value = d ? parseInt(d,10).toLocaleString('he-IL') : ''; }
 
   // Global shared values
   const gEquity = () => gv('g_equity');
@@ -632,12 +633,14 @@
   const gFuel   = () => gv('g_fuel');
 
   function syncInput(slId, inId) {
-    document.getElementById(inId).value = document.getElementById(slId).value;
+    const v = parseFloat(document.getElementById(slId).value);
+    const el = document.getElementById(inId);
+    el.value = (v >= 1000 && el.type === 'text') ? Math.round(v).toLocaleString('he-IL') : document.getElementById(slId).value;
   }
   function syncSlider(inId, slId) {
     const sl = document.getElementById(slId);
     if (!sl) return;
-    const v = parseFloat(document.getElementById(inId).value);
+    const v = parseFloat((document.getElementById(inId).value||'').replace(/,/g,''));
     if (!isNaN(v)) sl.value = Math.min(Math.max(v, parseFloat(sl.min)), parseFloat(sl.max));
   }
 

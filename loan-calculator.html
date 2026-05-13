@@ -63,7 +63,7 @@
 
     .field-row { display: flex; align-items: center; gap: 0; border: 1px solid #d0d8e4; border-radius: 7px; overflow: hidden; background: #fff; transition: border-color 0.2s; margin-bottom: 0.55rem; }
     .field-row:focus-within { border-color: #2a6496; }
-    .field-row input[type="number"] { flex: 1; border: none; padding: 0.65rem 0.9rem; font-size: 1rem; direction: rtl; font-family: inherit; background: transparent; outline: none; min-width: 0; }
+    .field-row input[type="number"], .field-row input[type="text"] { flex: 1; border: none; padding: 0.65rem 0.9rem; font-size: 1rem; direction: rtl; font-family: inherit; background: transparent; outline: none; min-width: 0; }
     .field-unit { background: #f0f4f8; border-right: 1px solid #d0d8e4; padding: 0.65rem 0.75rem; font-size: 0.85rem; color: #555; white-space: nowrap; }
 
     input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #c5d8ec; outline: none; cursor: pointer; }
@@ -125,7 +125,7 @@
       .calc-wrapper { grid-template-columns: 1fr; margin-top: 0; }
       .calc-panel { border-radius: 0 0 12px 12px; }
       .results-card { position: static; order: -1; border-radius: 12px; }
-      .field-row input[type="number"] { font-size: 1rem; }
+      .field-row input[type="number"], .field-row input[type="text"] { font-size: 1rem; }
     }
   </style>
 </head>
@@ -195,7 +195,7 @@
             <span class="field-value" id="disp-amount">₪50,000</span>
           </div>
           <div class="field-row">
-            <input type="number" id="inp-amount" value="50000" min="1000" max="500000" step="1000" oninput="syncSlider('amount'); calc()">
+            <input type="text" inputmode="numeric" id="inp-amount" value="50,000" oninput="fmtInput(this);syncSlider('amount');calc()">
             <div class="field-unit">₪</div>
           </div>
           <input type="range" id="sl-amount" min="1000" max="500000" step="1000" value="50000" oninput="syncInput('amount'); calc()">
@@ -252,7 +252,7 @@
             <span class="field-value" id="disp-monthly">₪1,500</span>
           </div>
           <div class="field-row">
-            <input type="number" id="inp-monthly" value="1500" min="100" max="50000" step="100" oninput="syncSlider('monthly'); calcCapacity()">
+            <input type="text" inputmode="numeric" id="inp-monthly" value="1,500" oninput="fmtInput(this);syncSlider('monthly');calcCapacity()">
             <div class="field-unit">₪</div>
           </div>
           <input type="range" id="sl-monthly" min="100" max="50000" step="100" value="1500" oninput="syncInput('monthly'); calcCapacity()">
@@ -367,6 +367,8 @@
     /* ── Format helpers ── */
     function fmt(n) { var r = Math.round(n); if (Object.is(r, -0) || r < 0) r = 0; return '₪' + r.toLocaleString('he-IL'); }
     function fmtPct(n) { return parseFloat(n).toFixed(1) + '%'; }
+    function fmtInput(el) { var d = el.value.replace(/[^\d]/g,''); el.value = d ? parseInt(d,10).toLocaleString('he-IL') : ''; }
+    function stripNum(v) { return parseFloat(String(v).replace(/,/g,'')) || 0; }
 
     /* ── Slider ↔ Input sync ── */
     var fields = {
@@ -382,16 +384,22 @@
 
     function syncSlider(key) {
       var f = fields[key];
-      var val = document.getElementById(f.inp).value;
-      document.getElementById(f.sl).value = val;
-      document.getElementById(f.disp).textContent = f.fmt(val);
+      var raw = String(document.getElementById(f.inp).value).replace(/,/g,'');
+      var num = parseFloat(raw);
+      document.getElementById(f.sl).value = isNaN(num) ? 0 : num;
+      document.getElementById(f.disp).textContent = f.fmt(num || 0);
     }
 
     function syncInput(key) {
       var f = fields[key];
       var val = document.getElementById(f.sl).value;
-      document.getElementById(f.inp).value = val;
-      document.getElementById(f.disp).textContent = f.fmt(val);
+      var num = parseFloat(val);
+      if (key === 'amount' || key === 'monthly') {
+        document.getElementById(f.inp).value = num >= 1000 ? Math.round(num).toLocaleString('he-IL') : val;
+      } else {
+        document.getElementById(f.inp).value = val;
+      }
+      document.getElementById(f.disp).textContent = f.fmt(num || 0);
     }
 
     /* ── Monthly payment formula ── */
@@ -408,7 +416,7 @@
 
     /* ── Mode: תשלום חודשי ── */
     function calc() {
-      var P    = parseFloat(document.getElementById('inp-amount').value) || 0;
+      var P    = stripNum(document.getElementById('inp-amount').value);
       var n    = parseInt(document.getElementById('inp-months').value)   || 1;
       var rate = parseFloat(document.getElementById('inp-rate').value)   || 0;
       var cpi  = parseFloat(document.getElementById('inp-cpi').value)    || 0;
@@ -430,7 +438,7 @@
 
     /* ── Mode: כמה אוכל ללוות ── */
     function calcCapacity() {
-      var M    = parseFloat(document.getElementById('inp-monthly').value) || 0;
+      var M    = stripNum(document.getElementById('inp-monthly').value);
       var n    = parseInt(document.getElementById('inp-months2').value)   || 1;
       var rate = parseFloat(document.getElementById('inp-rate2').value)   || 0;
       var cpi  = parseFloat(document.getElementById('inp-cpi2').value)    || 0;
@@ -524,14 +532,14 @@
       var P, n, rate, cpi, monthly;
 
       if (mode === 'payment') {
-        P      = parseFloat(document.getElementById('inp-amount').value)  || 0;
+        P      = stripNum(document.getElementById('inp-amount').value);
         n      = parseInt(document.getElementById('inp-months').value)    || 1;
         rate   = parseFloat(document.getElementById('inp-rate').value)    || 0;
         cpi    = parseFloat(document.getElementById('inp-cpi').value)     || 0;
         var effRate = effectiveAnnual(rate, cpi);
         monthly = monthlyPayment(P, effRate, n);
       } else {
-        var M  = parseFloat(document.getElementById('inp-monthly').value) || 0;
+        var M  = stripNum(document.getElementById('inp-monthly').value);
         n      = parseInt(document.getElementById('inp-months2').value)   || 1;
         rate   = parseFloat(document.getElementById('inp-rate2').value)   || 0;
         cpi    = parseFloat(document.getElementById('inp-cpi2').value)    || 0;
