@@ -65,6 +65,7 @@
 
     /* OPTIONS GRID */
     .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 1.4rem; margin-bottom: 2rem; }
+    .options-grid.all-five { grid-template-columns: repeat(5, 1fr); }
 
     /* OPTION CARD */
     .opt-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 14px rgba(0,0,0,0.07); overflow: hidden; }
@@ -75,6 +76,7 @@
     .card-leasing .opt-card-header { background: #1a3a5c; }
     .card-used1 .opt-card-header { background: #7b3a00; }
     .card-used2 .opt-card-header { background: #5a1f6e; }
+    .card-el-leasing .opt-card-header { background: #0d7377; }
 
     /* FIELDS */
     .field { margin-bottom: 0.85rem; }
@@ -119,6 +121,7 @@
     .comp-table th.col-leasing { background: #1a3a5c; }
     .comp-table th.col-used1 { background: #7b3a00; }
     .comp-table th.col-used2 { background: #5a1f6e; }
+    .comp-table th.col-el-leasing { background: #0d7377; }
     .comp-table .winner-cell { box-shadow: inset 0 0 0 2px #e8a020; }
     .empty-msg { text-align: center; color: #aaa; padding: 2rem; font-size: 0.95rem; }
     .table-note { font-size: 0.75rem; color: #888; margin-top: 0.5rem; font-style: italic; }
@@ -185,7 +188,7 @@
       .page-header { padding: 1.5rem 1rem 1.2rem; }
       .page-header h1 { font-size: 1.6rem; }
       .shared-fields { grid-template-columns: 1fr; }
-      .options-grid { grid-template-columns: 1fr; }
+      .options-grid, .options-grid.all-five { grid-template-columns: 1fr; }
       .charts-row { grid-template-columns: 1fr; }
     }
   </style>
@@ -280,6 +283,7 @@
     <div class="option-checks">
       <label class="opt-check-label"><input type="checkbox" id="chk_electric" checked onchange="toggleOption('electric',this.checked)"><span style="color:#1a6e3c;">⚡ רכב חשמלי</span></label>
       <label class="opt-check-label"><input type="checkbox" id="chk_leasing" checked onchange="toggleOption('leasing',this.checked)"><span style="color:#1a3a5c;">📋 ליסינג תפעולי</span></label>
+      <label class="opt-check-label"><input type="checkbox" id="chk_el_leasing" checked onchange="toggleOption('el_leasing',this.checked)"><span style="color:#0d7377;">⚡📋 ליסינג חשמלי</span></label>
       <label class="opt-check-label"><input type="checkbox" id="chk_used1" checked onchange="toggleOption('used1',this.checked)"><span style="color:#7b3a00;">🚗 חדש/יד שניה א'</span></label>
       <label class="opt-check-label"><input type="checkbox" id="chk_used2" checked onchange="toggleOption('used2',this.checked)"><span style="color:#5a1f6e;">🚘 חדש/יד שניה ב'</span></label>
     </div>
@@ -408,6 +412,64 @@
             <label>טיפולים ותקלות (₪)</label>
             <div class="field-row"><input type="text" inputmode="numeric" id="ls_mnt" value="2,500" oninput="fmtInput(this);syncSlider('ls_mnt','sl_ls_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
             <div class="slider-row"><input type="range" id="sl_ls_mnt" min="0" max="10000" step="100" value="2500" oninput="syncInput('sl_ls_mnt','ls_mnt');calc()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ELECTRIC LEASING ===== -->
+    <div class="opt-card card-el-leasing" id="card_el_leasing">
+      <div class="opt-card-header">⚡📋 <span>ליסינג חשמלי</span></div>
+      <div class="opt-card-body">
+        <div class="section-mini">עלות ליסינג</div>
+        <div class="field">
+          <label>תשלום חודשי (₪)</label>
+          <div class="field-row"><input type="text" inputmode="numeric" id="ell_monthly" value="4,000" oninput="fmtInput(this);syncSlider('ell_monthly','sl_ell_monthly');calc()"><div class="field-unit">₪/חודש</div></div>
+          <div class="slider-row"><input type="range" id="sl_ell_monthly" min="1000" max="12000" step="100" value="4000" oninput="syncInput('sl_ell_monthly','ell_monthly');calc()"></div>
+        </div>
+
+        <hr class="field-divider">
+        <div class="section-mini">צריכת חשמל</div>
+        <div class="field">
+          <label>צריכה (ק"מ לק"ו)</label>
+          <div class="field-row"><input type="number" id="ell_kwh" value="6" min="3" max="15" step="0.5" oninput="syncSlider('ell_kwh','sl_ell_kwh');calc()"><div class="field-unit">ק"מ/ק"ו</div></div>
+          <div class="slider-row"><input type="range" id="sl_ell_kwh" min="3" max="15" step="0.5" value="6" oninput="syncInput('sl_ell_kwh','ell_kwh');calc()"></div>
+        </div>
+        <div class="field">
+          <label>מחיר ק"ו (₪)</label>
+          <div class="field-row"><input type="number" id="ell_elec" value="0.60" min="0.30" max="1.50" step="0.05" oninput="syncSlider('ell_elec','sl_ell_elec');calc()"><div class="field-unit">₪/ק"ו</div></div>
+          <div class="slider-row"><input type="range" id="sl_ell_elec" min="0.30" max="1.50" step="0.05" value="0.60" oninput="syncInput('sl_ell_elec','ell_elec');calc()"></div>
+        </div>
+        <div class="field">
+          <label>עמדת טעינה ביתית — חד-פעמי (₪)</label>
+          <div class="field-row"><input type="text" inputmode="numeric" id="ell_charging" value="3,000" oninput="fmtInput(this);syncSlider('ell_charging','sl_ell_charging');calc()"><div class="field-unit">₪</div></div>
+          <div class="slider-row"><input type="range" id="sl_ell_charging" min="0" max="8000" step="100" value="3000" oninput="syncInput('sl_ell_charging','ell_charging');calc()"></div>
+        </div>
+
+        <hr class="field-divider">
+        <div class="section-mini">עלויות שוטפות</div>
+        <label class="check-inline"><input type="checkbox" id="ell_ins_inc" checked onchange="toggleIncluded('ell_ins_inc','ell_ins_field');calc()"> ביטוח כלול במחיר הליסינג</label>
+        <div id="ell_ins_field" style="display:none">
+          <div class="field">
+            <label>ביטוח שנתי (₪)</label>
+            <div class="field-row"><input type="text" inputmode="numeric" id="ell_ins" value="5,000" oninput="fmtInput(this);syncSlider('ell_ins','sl_ell_ins');calc()"><div class="field-unit">₪/שנה</div></div>
+            <div class="slider-row"><input type="range" id="sl_ell_ins" min="500" max="15000" step="100" value="5000" oninput="syncInput('sl_ell_ins','ell_ins');calc()"></div>
+          </div>
+        </div>
+        <label class="check-inline"><input type="checkbox" id="ell_lic_inc" checked onchange="toggleIncluded('ell_lic_inc','ell_lic_field');calc()"> אגרת רישוי כלולה במחיר הליסינג</label>
+        <div id="ell_lic_field" style="display:none">
+          <div class="field">
+            <label>אגרת רישוי / טסט (₪)</label>
+            <div class="field-row"><input type="text" inputmode="numeric" id="ell_lic" value="1,300" oninput="fmtInput(this);syncSlider('ell_lic','sl_ell_lic');calc()"><div class="field-unit">₪/שנה</div></div>
+            <div class="slider-row"><input type="range" id="sl_ell_lic" min="0" max="3000" step="50" value="1300" oninput="syncInput('sl_ell_lic','ell_lic');calc()"></div>
+          </div>
+        </div>
+        <label class="check-inline"><input type="checkbox" id="ell_mnt_inc" checked onchange="toggleIncluded('ell_mnt_inc','ell_mnt_field');calc()"> טיפולים ותקלות כלולים בליסינג</label>
+        <div id="ell_mnt_field" style="display:none">
+          <div class="field">
+            <label>טיפולים ותקלות (₪)</label>
+            <div class="field-row"><input type="text" inputmode="numeric" id="ell_mnt" value="2,500" oninput="fmtInput(this);syncSlider('ell_mnt','sl_ell_mnt');calc()"><div class="field-unit">₪/שנה</div></div>
+            <div class="slider-row"><input type="range" id="sl_ell_mnt" min="0" max="10000" step="100" value="2500" oninput="syncInput('sl_ell_mnt','ell_mnt');calc()"></div>
           </div>
         </div>
       </div>
@@ -617,7 +679,7 @@
 
   // STATE
   let years = 3;
-  const active = { electric: true, leasing: true, used1: true, used2: true };
+  const active = { electric: true, leasing: true, el_leasing: true, used1: true, used2: true };
   let barChartInst, lineChartInst;
 
   // HELPERS
@@ -651,9 +713,15 @@
     calc();
   }
 
+  function updateGridLayout() {
+    const count = Object.values(active).filter(Boolean).length;
+    document.querySelector('.options-grid').classList.toggle('all-five', count === 5);
+  }
+
   function toggleOption(opt, on) {
     active[opt] = on;
     document.getElementById(`card_${opt}`).style.display = on ? '' : 'none';
+    updateGridLayout();
     calc();
   }
 
@@ -744,6 +812,29 @@
     };
   }
 
+  function computeElectricLeasing() {
+    const monthly     = gv('ell_monthly');
+    const kwh         = gv('ell_kwh');
+    const energyAnn   = kwh > 0 ? (gKm() / kwh) * gv('ell_elec') : 0;
+    const charging    = gv('ell_charging');
+    const insIncluded = gc('ell_ins_inc');
+    const licIncluded = gc('ell_lic_inc');
+    const mntIncluded = gc('ell_mnt_inc');
+    const insAnn      = insIncluded ? 0 : gv('ell_ins');
+    const licAnn      = licIncluded ? 0 : gv('ell_lic');
+    const mntAnn      = mntIncluded ? 0 : gv('ell_mnt');
+
+    const cashFlowMonthly = monthly + energyAnn / 12 + insAnn / 12 + licAnn / 12 + mntAnn / 12 + charging / (years * 12);
+
+    return {
+      leasing: monthly * 12 * years,
+      depreciation: 0, interest: 0, energy: energyAnn * years,
+      insurance: insAnn * years, license: licAnn * years, maintenance: mntAnn * years, charging,
+      loanPaymentMonthly: 0,
+      cashFlowMonthly,
+    };
+  }
+
   function computeUsed(p) {
     const price  = gv(`${p}_price`);
     const equity = Math.min(gEquity(), price);
@@ -780,22 +871,24 @@
   }
 
   function getName(key) {
-    if (key === 'electric') return '⚡ חשמלי';
-    if (key === 'leasing')  return '📋 ליסינג';
-    if (key === 'used1')    return document.getElementById('name_used1').value || 'יד שניה א\'';
-    if (key === 'used2')    return document.getElementById('name_used2').value || 'יד שניה ב\'';
+    if (key === 'electric')   return '⚡ חשמלי';
+    if (key === 'leasing')    return '📋 ליסינג';
+    if (key === 'el_leasing') return '⚡📋 ליסינג חשמלי';
+    if (key === 'used1')      return document.getElementById('name_used1').value || 'יד שניה א\'';
+    if (key === 'used2')      return document.getElementById('name_used2').value || 'יד שניה ב\'';
   }
 
-  const COL_CLASS = { electric: 'col-electric', leasing: 'col-leasing', used1: 'col-used1', used2: 'col-used2' };
-  const COLORS    = { electric: '#1a6e3c', leasing: '#1a3a5c', used1: '#7b3a00', used2: '#5a1f6e' };
+  const COL_CLASS = { electric: 'col-electric', leasing: 'col-leasing', el_leasing: 'col-el-leasing', used1: 'col-used1', used2: 'col-used2' };
+  const COLORS    = { electric: '#1a6e3c', leasing: '#1a3a5c', el_leasing: '#0d7377', used1: '#7b3a00', used2: '#5a1f6e' };
   const COMP_COLORS = ['#1a6e3c', '#2a6496', '#c87f00', '#c0392b', '#5a1f6e', '#16a085'];
 
   function calc() {
     const results = {};
-    if (active.electric) results.electric = computeElectric();
-    if (active.leasing)  results.leasing  = computeLeasing();
-    if (active.used1)    results.used1    = computeUsed('u1');
-    if (active.used2)    results.used2    = computeUsed('u2');
+    if (active.electric)   results.electric   = computeElectric();
+    if (active.leasing)    results.leasing    = computeLeasing();
+    if (active.el_leasing) results.el_leasing = computeElectricLeasing();
+    if (active.used1)      results.used1      = computeUsed('u1');
+    if (active.used2)      results.used2      = computeUsed('u2');
     renderTable(results);
     renderCharts(results);
   }
@@ -992,6 +1085,17 @@
         else rows.push(['טיפולים', 'כלולים בליסינג']);
         return rows;
       }},
+      { key: 'el_leasing', label: '⚡📋 ליסינג חשמלי', color: '#0d7377', active: active.el_leasing, rows: () => {
+        const insInc = gc('ell_ins_inc'), licInc = gc('ell_lic_inc'), mntInc = gc('ell_mnt_inc');
+        const rows = [['תשלום חודשי', fmtM(gv('ell_monthly'))], ['צריכה', gv('ell_kwh') + ' ק"מ/ק"ו'], ['מחיר חשמל', gv('ell_elec').toFixed(2) + ' ₪/ק"ו'], ['עמדת טעינה', fmtM(gv('ell_charging'))]];
+        if (!insInc) rows.push(['ביטוח שנתי', fmtM(gv('ell_ins'))]);
+        else rows.push(['ביטוח', 'כלול בליסינג']);
+        if (!licInc) rows.push(['אגרת רישוי', fmtM(gv('ell_lic'))]);
+        else rows.push(['אגרת רישוי', 'כלולה בליסינג']);
+        if (!mntInc) rows.push(['טיפולים שנתי', fmtM(gv('ell_mnt'))]);
+        else rows.push(['טיפולים', 'כלולים בליסינג']);
+        return rows;
+      }},
       { key: 'used1', label: '🚗 ' + (document.getElementById('name_used1').value || 'יד שניה א\''), color: '#7b3a00', active: active.used1, rows: () => {
         const depr = document.querySelector('input[name="u1_depr"]:checked').value;
         return [
@@ -1090,11 +1194,12 @@
   }
 
   // Sync card visibility with checkbox state on load (handles browser form-state restore)
-  ['electric', 'leasing', 'used1', 'used2'].forEach(opt => {
+  ['electric', 'leasing', 'el_leasing', 'used1', 'used2'].forEach(opt => {
     const on = document.getElementById(`chk_${opt}`).checked;
     active[opt] = on;
     document.getElementById(`card_${opt}`).style.display = on ? '' : 'none';
   });
+  updateGridLayout();
   calc();
 </script>
 </body>
