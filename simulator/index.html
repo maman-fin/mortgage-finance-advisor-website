@@ -1368,9 +1368,9 @@ function renderPlanningTable() {
 let planBeforeChartInst = null, planAfterChartInst = null, planDynChartInst = null;
 
 function renderPlanningExtras() {
-  renderPlanFunds();
   renderPlanDebts();
   updateAvailableRemaining();
+  renderPlanFunds();
   renderPlanCharts();
 }
 
@@ -1380,6 +1380,15 @@ function renderPlanFunds() {
   const futFunds  = state.funds.filter(f => f.immediate===false);
   const immTotal  = immFunds.reduce((s,f)=>s+f.total,0) + state.loans.reduce((s,l)=>s+l.amount,0);
   const immUsed   = state.debts.reduce((s,d) => {
+    if (d.splitEnabled) {
+      const usePart = (vd) => {
+        const a = vd.planAction;
+        if (a==='פרעון מלא'||a==='פירעון מיידי מלא') return vd.planParam||vd.balance;
+        if (a==='פירעון מיידי חלקי') return vd.planParam||0;
+        return 0;
+      };
+      return s + usePart(getSplitVirtual(d,1)) + usePart(getSplitVirtual(d,2));
+    }
     const a = d.planAction||'ללא שינוי';
     if (a==='פרעון מלא'||a==='פירעון מיידי מלא') return s + (d.planParam||d.balance);
     if (a==='פירעון מיידי חלקי') return s + (d.planParam||0);

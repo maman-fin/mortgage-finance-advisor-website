@@ -1000,9 +1000,9 @@
       data: { labels: keys.map(getName), datasets: barDatasets },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } } },
+        plugins: { legend: { position: 'bottom', rtl: true, labels: { font: { size: 10 }, boxWidth: 12 } } },
         scales: {
-          x: { stacked: true },
+          x: { stacked: true, reverse: true },
           y: { stacked: true, ticks: { callback: v => fmtN(v) + ' ₪' } }
         }
       }
@@ -1029,7 +1029,7 @@
       data: { labels: lineLabels, datasets: lineDatasets },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } } },
+        plugins: { legend: { position: 'bottom', rtl: true, labels: { font: { size: 10 }, boxWidth: 12 } } },
         scales: { y: { ticks: { callback: v => fmtN(v) + ' ₪' } } }
       }
     });
