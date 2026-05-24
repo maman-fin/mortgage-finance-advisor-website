@@ -339,7 +339,7 @@
     .plan-param-input:disabled { background:#f5f5f5; color:#aaa; }
     .plan-group-hdr td { font-size:0.83rem; font-weight:700; padding:0.45rem 0.85rem; letter-spacing:0.01em; }
     .plan-group-hdr--arranged td { background:#d4edda; color:#145a2e; border-top:2px solid #a8d5b0; border-bottom:1px solid #a8d5b0; }
-    .plan-group-hdr--active td   { background:#fff3e0; color:#a04000; border-top:2px solid #f5c07a; border-bottom:1px solid #f5c07a; }
+    .plan-group-hdr--active td   { background:#ffd699; color:#7a3800; border-top:2px solid #e8a020; border-bottom:1px solid #e8a020; }
     .plan-group-hdr--danger td   { background:#fde8e8; color:#922b21; border-top:2px solid #f5b7b7; border-bottom:1px solid #f5b7b7; }
 
     /* SESSION BAR */
@@ -2084,16 +2084,17 @@ function updatePlanDebtTotals() {
 function simulateDebtBalances(debtList, months) {
   const debts = debtList.map(d => ({
     balance: d.balance||0, monthly: d.monthly||0,
-    interest: d.interest||0, paymentsLeft: d.paymentsLeft||0,
+    interest: d.interest||0, paymentsLeft: d.paymentsLeft||999,
   }));
   return Array.from({length: months}, () => {
     debts.forEach(d => {
-      if (d.balance <= 0 || d.paymentsLeft <= 0) return;
+      if (d.balance <= 0) return;
       const r = d.interest / 100 / 12;
       const intr = d.balance * r;
+      if (d.paymentsLeft <= 0 || d.monthly <= intr) return;
       const payment = Math.min(d.monthly, d.balance + intr);
       d.balance = Math.max(d.balance - (payment - intr), 0);
-      d.paymentsLeft--;
+      if (d.paymentsLeft < 999) d.paymentsLeft--;
       if (d.balance < 0.5) { d.balance = 0; d.paymentsLeft = 0; }
     });
     return Math.round(debts.reduce((s, d) => s + d.balance, 0));
@@ -2519,7 +2520,7 @@ function getPlanPhases() {
 let balanceChartInst = null, balanceBeforeChartInst = null;
 
 function runCalc() {
-  const MONTHS = 100;
+  const MONTHS = 360;
   const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
   const [sy, sm] = startDate.split('-').map(Number);
 
@@ -2560,13 +2561,12 @@ function runCalc() {
   let currentBalances = expandedDebts.map(d => ({
     balance: d.balance,
     monthly: d.monthly,
-    paymentsLeft: d.paymentsLeft,
+    paymentsLeft: d.action==='פריסה מחדש' ? (d.actionParam||d.paymentsLeft||0) : (d.paymentsLeft||0),
     interest: d.interest,
     action: d.action,
     actionParam: d.actionParam,
     freezeLeft: d.action==='הקפאה' ? (d.actionParam||0) : 0,
     newMonthly: calcDebtNewPmt(d) || 0,
-    newMonthsLeft: d.action==='פריסה מחדש' ? (d.actionParam||d.paymentsLeft||0) : d.paymentsLeft,
   }));
 
   // Apply immediate actions (step-2 actions + plan immediate actions)
@@ -2633,17 +2633,20 @@ function runCalc() {
     // Debt payments
     let debtPmt = 0, debtPmtInPlan = 0, debtPmtNotInPlan = 0;
     currentBalances.forEach((d, idx) => {
-      if (d.balance <= 0 || d.paymentsLeft <= 0) return;
+      if (d.balance <= 0) return;
       if (d.action === 'הקפאה' && d.freezeLeft > 0) { d.freezeLeft--; return; }
       const r = d.interest / 100 / 12;
-      const payment = Math.min(d.action==='פריסה מחדש' ? d.newMonthly : d.monthly, d.balance + d.balance*r);
+      const mthly = d.action==='פריסה מחדש' ? d.newMonthly : d.monthly;
+      if (d.paymentsLeft <= 0 && mthly <= d.balance * r) return;
+      const payment = Math.min(mthly, d.balance + d.balance*r);
       const interestCharge = d.balance * r;
       d.balance = Math.max(d.balance + interestCharge - payment, 0);
-      d.paymentsLeft = Math.max(d.paymentsLeft - 1, 0);
+      if (d.paymentsLeft > 0) d.paymentsLeft = Math.max(d.paymentsLeft - 1, 0);
       debtPmt += payment;
       const planA = expandedDebts[idx]?.planAction || 'ללא שינוי';
-      if ((d.action && d.action !== 'ללא שינוי') || planA !== 'ללא שינוי') debtPmtInPlan += payment;
-      else debtPmtNotInPlan += payment;
+      const origArranged = expandedDebts[idx]?.arranged === true;
+      if (origArranged) debtPmtInPlan += payment;
+      else if (planA !== 'ללא שינוי') debtPmtNotInPlan += payment;
     });
 
     // New loan payments
@@ -2692,7 +2695,7 @@ function runCalc() {
   // Balance charts — before & after
   const yMax = Math.round(expandedDebts.reduce((s, d) => s + (d.balance || 0), 0) * 1.04);
   const balScales = {
-    x: { ticks: { autoSkip: false, maxRotation: 45, callback: (val, idx) => idx % 2 === 0 ? val : '' } },
+    x: { ticks: { autoSkip: false, maxRotation: 45, callback: (val, idx) => (idx + 1) % 5 === 0 ? val : '' } },
     y: { min: 0, max: yMax, ticks: { callback: v => fmtN(v) + ' ₪' } }
   };
   const makeBalTooltip = (tooltipId, sliceArr, dataArr, injArr) => (context) => {
