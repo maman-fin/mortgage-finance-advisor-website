@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="תמונות/logo_main.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#1a3a5c">
+  <title>ההתמחויות שלנו | יחיאל ממן</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #f7f8fa; direction: rtl; }
+
+    /* NAV */
+    nav { background: #1a3a5c; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    nav .logo a { color: inherit; text-decoration: none; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: #cde; text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 0.4rem 0.5rem; line-height: 1; -webkit-tap-highlight-color: transparent; }
+    .nav-toggle:focus, .nav-toggle:active { outline: none; background: none; color: #fff; }
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: ' ▾'; font-size: 0.75em; opacity: 0.8; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: #142d48; min-width: 220px; box-shadow: 0 6px 16px rgba(0,0,0,0.35); border-radius: 0 0 8px 8px; list-style: none; padding: 0.3rem 0; z-index: 200; }
+    .dropdown-menu li a { display: block; padding: 0.65rem 1.1rem; color: #cde; text-decoration: none; font-size: 0.92rem; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown-menu li:last-child a { border-bottom: none; }
+    .dropdown-menu li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    @media (min-width: 769px) { .dropdown:hover > .dropdown-menu { display: block; } }
+
+    /* PAGE HEADERS */
+    .page-header { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 3.5rem 1rem 3rem; }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .page-header p { opacity: 0.85; font-size: 1rem; max-width: 600px; margin: 0 auto; }
+    .detail-page-header { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; padding: 1.5rem 2rem 1.8rem; }
+    .back-link { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; display: inline-flex; align-items: center; gap: 0.3rem; margin-bottom: 0.7rem; }
+    .back-link:hover { color: #fff; }
+    .detail-page-header h1 { font-size: 1.85rem; font-weight: 700; }
+
+    /* ─── GRID VIEW ─── */
+    .areas-intro { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 0.5rem; text-align: center; }
+    .intro-lead { font-size: 1.07rem; color: #1a3a5c; line-height: 1.8; margin-bottom: 0.8rem; font-weight: 600; }
+    .areas-intro p { font-size: 0.96rem; color: #555; line-height: 1.75; margin-bottom: 0.7rem; }
+    .intro-cue { font-size: 0.92rem; color: #2a6496; font-weight: 700; margin-top: 1.5rem !important; letter-spacing: 0.01em; }
+
+    .areas-grid-wrap { max-width: 1060px; margin: 2rem auto 0; padding: 0 1.5rem 3rem; }
+    .area-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; }
+
+    .area-card { display: flex; flex-direction: column; align-items: center; text-align: center; background: #fff; border-radius: 18px; padding: 2rem 1.3rem 1.6rem; text-decoration: none; color: #1a3a5c; box-shadow: 0 3px 18px rgba(0,0,0,0.08); border: 2px solid transparent; transition: all 0.22s; cursor: pointer; }
+    .area-card:hover { border-color: #2a6496; box-shadow: 0 10px 30px rgba(26,58,92,0.17); transform: translateY(-5px); }
+    .area-icon-wrap { width: 78px; height: 78px; border-radius: 50%; background: linear-gradient(135deg, #e8f0fb 0%, #d4e4f7 100%); display: flex; align-items: center; justify-content: center; margin-bottom: 1.1rem; font-size: 2.2rem; transition: background 0.22s; flex-shrink: 0; }
+    .area-card:hover .area-icon-wrap { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); }
+    .area-title { font-size: 0.97rem; font-weight: 700; color: #1a3a5c; line-height: 1.45; margin-bottom: 0.45rem; }
+    .area-tag { font-size: 0.79rem; color: #778; line-height: 1.55; flex-grow: 1; }
+    .area-more { margin-top: 1rem; font-size: 0.8rem; color: #2a6496; font-weight: 600; opacity: 0; transition: opacity 0.2s; }
+    .area-card:hover .area-more { opacity: 1; }
+
+    /* ─── SERVICE SECTION ─── */
+    .service-section { background: linear-gradient(180deg, #f0f6ff 0%, #e8f0fb 100%); padding: 3.5rem 1.5rem 3rem; }
+    .service-hdr { text-align: center; margin-bottom: 2.2rem; }
+    .service-hdr h2 { font-size: 1.45rem; font-weight: 800; color: #1a3a5c; margin-bottom: 0.4rem; }
+    .service-hdr p { font-size: 0.95rem; color: #556; }
+    .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; max-width: 860px; margin: 0 auto; }
+    .service-box { background: #fff; border-radius: 14px; padding: 1.4rem 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 0.4rem; }
+    .service-box-icon { font-size: 1.8rem; }
+    .service-box-title { font-size: 0.97rem; font-weight: 700; color: #1a3a5c; }
+    .service-box p { font-size: 0.86rem; color: #555; line-height: 1.65; }
+
+    /* ─── CTA ─── */
+    .cta-section { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 4rem 1.5rem; }
+    .cta-section h2 { font-size: 1.7rem; margin-bottom: 0.8rem; }
+    .cta-section p { opacity: 0.85; margin-bottom: 1.8rem; font-size: 1rem; }
+    .btn-cta { display: inline-block; background: #e8a020; color: #fff; padding: 0.85rem 2.2rem; border-radius: 10px; font-size: 1rem; font-weight: 700; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+    .btn-cta:hover { background: #c98010; transform: scale(1.03); }
+
+    /* ─── DETAIL VIEW ─── */
+    .content-wrap { max-width: 860px; margin: 2.5rem auto 1rem; padding: 0 1rem; }
+    .detail-section { display: none; }
+
+    .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .sub-grid .sub-card:last-child:nth-child(odd) { grid-column: 1 / -1; max-width: calc(50% - 0.5rem); margin-inline-start: auto; margin-inline-end: auto; }
+    .sub-card { background: #f9fbfd; border: 1px solid #dde8f2; border-radius: 10px; padding: 1.1rem 1.3rem; }
+    .sub-card h3 { font-size: 0.98rem; font-weight: 700; color: #1a3a5c; margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 2px solid #dde8f2; }
+    .sub-intro { font-size: 0.87rem; color: #555; margin-bottom: 0.5rem; font-weight: 600; }
+    .sub-card ul { padding-right: 1.1rem; margin: 0; }
+    .sub-card ul li { font-size: 0.87rem; color: #444; line-height: 1.6; margin-bottom: 0.2rem; }
+    .sub-sec { margin-top: 0.8rem; padding-top: 0.7rem; border-top: 1px dashed #c8d8e8; }
+    .sub-sec-title { font-size: 0.8rem; font-weight: 700; color: #2a6496; margin-bottom: 0.4rem; }
+    .sub-note { margin-top: 0.9rem; padding: 0.55rem 0.85rem; border-radius: 7px; background: #fff8e7; border-right: 3px solid #e8a020; }
+    .sub-note strong { display: block; color: #7a5500; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 0.25rem; }
+    .sub-note p { font-size: 0.84rem; color: #7a5500; line-height: 1.55; margin: 0; }
+    .sub-note ul { padding-right: 1rem; }
+    .sub-note ul li { font-size: 0.84rem; color: #7a5500; line-height: 1.55; margin-bottom: 0.15rem; }
+
+    .detail-cta { background: linear-gradient(135deg, #1a3a5c 0%, #2a6496 100%); color: #fff; text-align: center; padding: 3rem 1.5rem; margin-top: 2rem; }
+    .detail-cta h2 { font-size: 1.4rem; margin-bottom: 0.7rem; }
+    .detail-cta p { opacity: 0.85; margin-bottom: 1.5rem; font-size: 0.95rem; }
+
+    /* FOOTER */
+    footer { background: #111e2e; color: #889; text-align: center; padding: 1.5rem; font-size: 0.85rem; }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .nav-toggle { display: block; }
+      nav ul { display: none; flex-direction: column; position: absolute; top: 64px; right: 0; left: 0; background: #1a3a5c; padding: 0.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 99; gap: 0; }
+      nav ul.open { display: flex; }
+      nav ul li { margin: 0; }
+      nav ul a { padding: 0.75rem 1.5rem; display: block; }
+      .dropdown-menu { display: none !important; position: static; background: #142d48; border-radius: 0; box-shadow: none; min-width: unset; }
+      .dropdown.open > .dropdown-menu { display: block !important; }
+      .dropdown > a::after { display: none; }
+      .page-header h1, .detail-page-header h1 { font-size: 1.55rem; }
+      .area-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
+      .area-icon-wrap { width: 62px; height: 62px; font-size: 1.8rem; }
+      .area-title { font-size: 0.88rem; }
+      .service-grid { grid-template-columns: 1fr; }
+      .sub-grid { grid-template-columns: 1fr; }
+      .sub-grid .sub-card:last-child:nth-child(odd) { grid-column: auto; max-width: none; margin-inline-start: 0; margin-inline-end: 0; }
+    }
+    @media (max-width: 480px) {
+      .area-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <a href="index.html" style="display:flex;align-items:center;gap:0.7rem;text-decoration:none;">
+      <img src="תמונות/logo.png" alt="יחיאל ממן" style="height:40px;width:auto;display:block;">
+      <span style="color:#fff;font-size:1rem;font-weight:700;white-space:nowrap;">יחיאל ממן <span style="opacity:0.85;font-weight:400;">| אסטרטגיה פיננסית</span></span>
+    </a>
+  </div>
+  <ul>
+    <li><a href="index.html#services">שירותים</a></li>
+    <li><a href="index.html#process">תהליך</a></li>
+    <li><a href="testimonials.html">המלצות</a></li>
+    <li><a href="areas.html" class="active">ההתמחויות שלנו</a></li>
+    <li class="dropdown">
+      <a href="#">מחשבונים</a>
+      <ul class="dropdown-menu">
+        <li><a href="calculator.html">מחשבון משכנתא</a></li>
+        <li><a href="loan-calculator.html">מחשבון הלוואה</a></li>
+        <li><a href="repayment-table.html">לוח החזר חודשי למשכנתא</a></li>
+        <li><a href="payment-comparison.html">טבלת השוואת החזרי משכנתא</a></li>
+        <li><a href="compound-interest.html">מחשבון ריבית דריבית</a></li>
+        <li><a href="madad-vs.html">מחשבון השפעת מדד על המשכנתא</a></li>
+        <li><a href="car-cost-calculator.html">השוואת עלות אחזקת רכב</a></li>
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="#">מרכז הידע</a>
+      <ul class="dropdown-menu">
+        <li><a href="articles.html">מאמרים ועדכונים</a></li>
+        <li><a href="madad.html">מצפן השוק — ריבית ומדד</a></li>
+        <li><a href="documents-guide.html">הדרכות</a></li>
+        <li><a href="balance-report.html">הפקת דו"ח יתרות לסילוק</a></li>
+        <li><a href="credit-report.html">דו"ח ריכוז נתוני אשראי</a></li>
+        <li><a href="pension-report.html">דו"ח המסלקה הפנסיונית</a></li>
+        <li><a href="events-list.html">אירועים</a></li>
+      </ul>
+    </li>
+    <li><a href="index.html#contact">צור קשר</a></li>
+  </ul>
+  <button class="nav-toggle" aria-label="פתח תפריט">☰</button>
+</nav>
+
+<!-- ══════════════════════════════════ GRID VIEW ══════════════════════════════════ -->
+<div id="view-grid">
+
+  <div class="page-header">
+    <h1>ההתמחויות שלנו</h1>
+    <p>תחומי ההתמחות שלנו במשכנתאות ופתרונות מימון</p>
+  </div>
+
+  <div class="areas-intro">
+    <p class="intro-lead">אנחנו מלווים משפחות, זוגות, משקיעים ובעלי עסקים בתהליכי מימון ומשכנתאות – מהעסקאות הפשוטות ועד המקרים המורכבים ביותר.</p>
+    <p>המטרה שלנו היא לא רק להשיג אישור עקרוני או ריבית טובה, אלא לבנות פתרון פיננסי נכון, יציב וחכם לטווח הארוך.</p>
+    <p class="intro-cue">בחרו את התחום הרלוונטי עבורכם ↓</p>
+  </div>
+
+  <div class="areas-grid-wrap">
+    <div class="area-grid">
+
+      <a href="#residential" class="area-card">
+        <div class="area-icon-wrap">🏠</div>
+        <span class="area-title">רכישת דירה ומשכנתאות למגורים</span>
+        <span class="area-tag">דירה ראשונה, מחיר למשתכן וליווי מלא</span>
+        <span class="area-more">לפרטים ←</span>
+      </a>
+
+      <a href="#yosh" class="area-card">
+        <div class="area-icon-wrap">📍</div>
+        <span class="area-title">יו"ש והתיישבות צעירה</span>
+        <span class="area-tag">מומחיות ייחודית ברכישות ביהודה ושומרון</span>
+        <span class="area-more">לפרטים ←</span>
+      </a>
+
+      <a href="#upgrade" class="area-card">
+        <div class="area-icon-wrap">🔨</div>
+        <span class="area-title">משפרי דיור ושיפוצים</span>
+        <span class="area-tag">שדרוג בית, שיפוץ ומעבר חלק ומסודר</span>
+        <span class="area-more">לפרטים ←</span>
+      </a>
+
+      <a href="#creative" class="area-card">
+        <div class="area-icon-wrap">💡</div>
+        <span class="area-title">מימון יצירתי ועסקאות מורכבות</span>
+        <span class="area-tag">גם כשחסר הון עצמי — יש פתרון</span>
+        <span class="area-more">לפרטים ←</span>
+      </a>
+
+      <a href="#refused" class="area-card">
+        <div class="area-icon-wrap">🔓</div>
+        <span class="area-title">מסורבי בנקים ואשראי מורכב</span>
+        <span class="area-tag">גם כשהבנק אמר לא — אנחנו מוצאים פתרון</span>
+        <span class="area-more">לפרטים ←</span>
+      </a>
+
+      <a href="#construction" class="area-card">
+        <div class="area-icon-wrap">🏗️</div>
+        <span class="area-title">בנייה עצמית ובנחלות / מושבים</span>
+        <span class="area-tag">ליווי מלא לאורך כל תהליך הבנייה</span>
+        <span class="area-more">לפרטים ←</span>
+      </a>
+
+      <a href="#investors" class="area-card">
+        <div class="area-icon-wrap">📈</div>
+        <span class="area-title">משכנתאות למשקיעים</span>
+        <span class="area-tag">אסטרטגיה, מינוף ורכישות להשקעה</span>
+        <span class="area-more">לפרטים ←</span>
+      </a>
+
+      <a href="#refi" class="area-card">
+        <div class="area-icon-wrap">🔄</div>
+        <span class="area-title">מחזור ושיפור תנאי משכנתא</span>
+        <span class="area-tag">חיסכון של עשרות אלפי שקלים בתהליך נכון</span>
+        <span class="area-more">לפרטים ←</span>
+      </a>
+
+      <a href="#special" class="area-card">
+        <div class="area-icon-wrap">⭐</div>
+        <span class="area-title">משכנתאות מיוחדות</span>
+        <span class="area-tag">משכנתא הפוכה ופתרונות לגיל השלישי</span>
+        <span class="area-more">לפרטים ←</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- מעטפת ליווי -->
+  <div class="service-section">
+    <div class="service-hdr">
+      <h2>מעטפת ליווי אישית, מקצועית ואסטרטגית</h2>
+      <p>כשאתם בוחרים בנו, אתם מקבלים הרבה יותר ממשכנתא</p>
+    </div>
+    <div class="service-grid">
+      <div class="service-box">
+        <div class="service-box-icon">🔭</div>
+        <div class="service-box-title">ראייה פיננסית רחבה</div>
+        <p>אנחנו בוחנים את התמונה המלאה — לא רק את הריבית, אלא את המשמעות הפיננסית האמיתית לטווח הארוך. פתרון שמתאים לחיים שלכם היום — וגם לשנים קדימה.</p>
+      </div>
+      <div class="service-box">
+        <div class="service-box-icon">🤝</div>
+        <div class="service-box-title">ניהול מו"מ מקצועי מול הבנקים</div>
+        <p>מכרז ריביות בין הבנקים, השוואת מסלולים לעומק, ומשא ומתן מקצועי. הבדלים קטנים בתנאים יכולים להשפיע על מאות אלפי שקלים לאורך השנים.</p>
+      </div>
+      <div class="service-box">
+        <div class="service-box-icon">🧭</div>
+        <div class="service-box-title">סדר ובהירות בתוך התהליך</div>
+        <p>מסבירים כל שלב בבהירות, מלווים לאורך כל הדרך ועוזרים לקבל החלטות מתוך ביטחון ולא מתוך לחץ.</p>
+      </div>
+      <div class="service-box">
+        <div class="service-box-icon">👤</div>
+        <div class="service-box-title">ליווי אישי וזמינות גבוהה</div>
+        <p>יחס אנושי וסבלני, זמינות לשאלות ולהתלבטויות, שקיפות מלאה בכל שלב, והתאמה אישית לצרכים ולמציאות שלכם.</p>
+      </div>
+      <div class="service-box">
+        <div class="service-box-icon">🎯</div>
+        <div class="service-box-title">מיקוד בתוצאה הנכונה עבורכם</div>
+        <p>לא כל משכנתא טובה מתאימה לכם. בונים פתרון נכון, מאוזן וחכם — שמאפשר לעמוד בהחזרים, לשמור על איכות חיים ולהתקדם כלכלית.</p>
+      </div>
+      <div class="service-box">
+        <div class="service-box-icon">🌐</div>
+        <div class="service-box-title">הרבה מעבר למשכנתא</div>
+        <p>רואים במשכנתא חלק מהתמונה הכלכלית הכוללת של המשפחה — חשיבה אסטרטגית, תכנון לטווח ארוך ובניית יציבות ושקט נפשי.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <h2>מוכנים להתחיל?</h2>
+    <p>צרו קשר עוד היום לייעוץ ראשוני ללא עלות</p>
+    <a href="index.html#contact" class="btn-cta">לתיאום פגישה ←</a>
+  </div>
+
+</div><!-- /view-grid -->
+
+
+<!-- ══════════════════════════════════ DETAIL VIEW ══════════════════════════════════ -->
+<div id="view-detail" style="display:none">
+
+  <div class="detail-page-header">
+    <a href="#" class="back-link" id="detail-back">← חזרה לכל תחומי ההתמחות</a>
+    <h1 id="detail-page-title"></h1>
+  </div>
+
+  <div class="content-wrap">
+
+    <!-- 1. רכישת דירה -->
+    <div class="detail-section" id="detail-residential">
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h3>משכנתא לדירה ראשונה</h3>
+          <p class="sub-intro">ליווי מלא לרוכשי דירה ראשונה:</p>
+          <ul>
+            <li>בדיקת יכולת כלכלית אמיתית</li>
+            <li>תכנון הון עצמי</li>
+            <li>בניית תמהיל משכנתא נכון</li>
+            <li>מכרז ריביות בין הבנקים</li>
+            <li>ליווי עד קבלת הכספים והחתימות</li>
+          </ul>
+          <div class="sub-note">
+            <strong>מתאים במיוחד עבור:</strong>
+            <ul>
+              <li>זוגות צעירים</li>
+              <li>משפחות בתחילת הדרך</li>
+              <li>לקוחות ללא ניסיון בתחום המשכנתאות</li>
+            </ul>
+          </div>
+        </div>
+        <div class="sub-card">
+          <h3>מחיר למשתכן / דירה בהנחה</h3>
+          <p class="sub-intro">ליווי מקצועי לזוכים בתכניות המדינה:</p>
+          <ul>
+            <li>אישורי זכאות</li>
+            <li>טיפול מול הבנק והקבלן</li>
+            <li>פתרונות לפערי הון עצמי</li>
+            <li>תכנון תקופת ההמתנה עד האכלוס</li>
+            <li>התאמת המשכנתא למסירה עתידית</li>
+          </ul>
+          <div class="sub-note">
+            <strong>למה זה דורש מומחיות?</strong>
+            <p>בתכניות אלו יש מורכבות פיננסית ומשפטית מיוחדת שדורשת תכנון מדויק מראש.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. יו"ש -->
+    <div class="detail-section" id="detail-yosh">
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h3>רכישת נכסים ביו"ש</h3>
+          <p class="sub-intro">התמחות ייחודית ברכישות באזור יהודה ושומרון:</p>
+          <ul>
+            <li>עבודה מול בנקים רלוונטיים</li>
+            <li>טיפול ברישומים מיוחדים</li>
+            <li>הבנת מגבלות המימון</li>
+            <li>התאמת פתרונות לנכסים מורכבים</li>
+            <li>ליווי מלא לאורך העסקה</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h3>נכסים בהתיישבות צעירה</h3>
+          <p class="sub-intro">ליווי עסקאות ביישובים ותשתיות מיוחדות:</p>
+          <ul>
+            <li>בדיקות זכויות</li>
+            <li>בחינת אפשרויות מימון</li>
+            <li>פתרונות לנכסים ללא רישום מלא</li>
+            <li>עבודה מול גורמים רלוונטיים</li>
+            <li>התאמת פתרונות גם במקרים מורכבים</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h3>נכסים מורכבים ביו"ש ובהתיישבות</h3>
+          <p class="sub-intro">פתרונות לעסקאות מורכבות:</p>
+          <ul>
+            <li>נכסים ללא טאבו</li>
+            <li>רישומים מורכבים</li>
+            <li>חריגות בנייה</li>
+            <li>זכויות לא מוסדרות</li>
+            <li>מקרים שבנקים מתקשים לאשר</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. משפרי דיור -->
+    <div class="detail-section" id="detail-upgrade">
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h3>משפרי דיור</h3>
+          <p class="sub-intro">ליווי משפחות המשדרגות את איכות החיים:</p>
+          <ul>
+            <li>רכישת נכס חדש לפני מכירת הקיים</li>
+            <li>גרירת משכנתא</li>
+            <li>תכנון תזרים ביניים</li>
+            <li>התאמת לוחות זמנים</li>
+            <li>פתרונות מימון זמניים</li>
+          </ul>
+          <div class="sub-note">
+            <strong>המטרה:</strong>
+            <p>לאפשר מעבר נכון ובטוח בלי לחץ פיננסי מיותר.</p>
+          </div>
+        </div>
+        <div class="sub-card">
+          <h3>שיפוצים והרחבת נכס</h3>
+          <p class="sub-intro">פתרונות מימון לשדרוג הבית:</p>
+          <ul>
+            <li>שיפוץ כללי</li>
+            <li>הרחבות בנייה</li>
+            <li>תוספות בנייה</li>
+            <li>התאמת הבית לצרכים משתנים</li>
+            <li>מימון שיפוץ כחלק מהמשכנתא</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h3>משכנתא לכל מטרה</h3>
+          <p class="sub-intro">מימון לצרכים מגוונים:</p>
+          <ul>
+            <li>סגירת התחייבויות</li>
+            <li>עזרה לילדים</li>
+            <li>השקעות</li>
+            <li>שיפור תזרים</li>
+            <li>צרכים משפחתיים שונים</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. מימון יצירתי -->
+    <div class="detail-section" id="detail-creative">
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h3>מימון יצירתי / רכישה ללא הון עצמי</h3>
+          <p class="sub-intro">פתרונות מתקדמים לרכישת נכס גם כאשר חסר הון עצמי מלא:</p>
+          <ul>
+            <li>השלמת הון עצמי</li>
+            <li>שימוש בנכסים קיימים</li>
+            <li>הלוואות משלימות</li>
+            <li>מינוף נכון של נכסים</li>
+            <li>בניית מבנה מימון יצירתי וחוקי</li>
+          </ul>
+          <div class="sub-note">
+            <strong>חשוב לדעת:</strong>
+            <p>לא כל עסקה מתאימה לכך – נדרש תכנון זהיר ואחראי.</p>
+          </div>
+        </div>
+        <div class="sub-card">
+          <h3>עסקאות מורכבות ופתרונות מיוחדים</h3>
+          <p class="sub-intro">ליווי בתיקים מאתגרים:</p>
+          <ul>
+            <li>עסקאות עם מורכבות משפטית</li>
+            <li>בעיות רישום</li>
+            <li>הכנסות מורכבות</li>
+            <li>תיקים חריגים</li>
+            <li>פתרונות מימון לא סטנדרטיים</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. מסורבי בנקים -->
+    <div class="detail-section" id="detail-refused">
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h3>מסורבי בנקים</h3>
+          <p class="sub-intro">פתרונות גם כאשר הבנק סירב:</p>
+          <ul>
+            <li>BDI שלילי</li>
+            <li>עיקולים והגבלות</li>
+            <li>צ'קים חוזרים</li>
+            <li>בעיות אשראי</li>
+            <li>הכנסות לא סטנדרטיות</li>
+            <li>עצמאים מורכבים</li>
+          </ul>
+          <div class="sub-sec">
+            <div class="sub-sec-title">איך אנחנו עובדים?</div>
+            <ul>
+              <li>ניתוח עומק של התיק</li>
+              <li>בניית אסטרטגיה נכונה</li>
+              <li>התאמת הבנק או גוף המימון</li>
+              <li>הצגת התיק בצורה מקצועית</li>
+            </ul>
+          </div>
+        </div>
+        <div class="sub-card">
+          <h3>איחוד הלוואות והקטנת החזר חודשי</h3>
+          <p class="sub-intro">יצירת סדר פיננסי מחדש:</p>
+          <ul>
+            <li>איחוד הלוואות למשכנתא אחת</li>
+            <li>פריסת חובות</li>
+            <li>הורדת החזר חודשי</li>
+            <li>שיפור תזרים משפחתי</li>
+            <li>יציאה ממעגל המינוסים וההלוואות</li>
+          </ul>
+          <div class="sub-note">
+            <strong>המטרה:</strong>
+            <p>להחזיר יציבות, שליטה ושקט נפשי.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. בנייה -->
+    <div class="detail-section" id="detail-construction">
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h3>בנייה עצמית</h3>
+          <p class="sub-intro">ליווי מלא לאורך תהליך הבנייה:</p>
+          <ul>
+            <li>תכנון תקציב</li>
+            <li>התאמת מסגרת מימון</li>
+            <li>עבודה מול שמאי</li>
+            <li>שחרור כספים לפי שלבי ביצוע</li>
+            <li>תכנון תזרים לאורך הפרויקט</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h3>בנייה בנחלות, מושבים וקיבוצים</h3>
+          <p class="sub-intro">התמחות במבנים וזכויות מיוחדות:</p>
+          <ul>
+            <li>רמ"י</li>
+            <li>אגודות שיתופיות</li>
+            <li>זכויות מורכבות</li>
+            <li>מימון בנייה באזורים חקלאיים</li>
+            <li>התאמת פתרונות למבנים מיוחדים</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. משקיעים -->
+    <div class="detail-section" id="detail-investors">
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h3>ליווי משקיעי נדל"ן</h3>
+          <p class="sub-intro">ליווי פיננסי ואסטרטגי למשקיעים:</p>
+          <ul>
+            <li>מינוף נכסים קיימים</li>
+            <li>תכנון רכישות עתידיות</li>
+            <li>בחינת כדאיות השקעה</li>
+            <li>התאמת תמהיל למשקיעים</li>
+            <li>תכנון תזרים נכון</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h3>רכישת נכסים להשקעה</h3>
+          <p class="sub-intro">ליווי ברכישת:</p>
+          <ul>
+            <li>דירות להשקעה</li>
+            <li>נכסים מניבים</li>
+            <li>רכישות עם מינוף</li>
+            <li>השקעות לטווח ארוך</li>
+            <li>בניית אסטרטגיית צמיחה</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h3>תכנון מימון למשקיעים</h3>
+          <p class="sub-intro">בניית אסטרטגיית מימון חכמה:</p>
+          <ul>
+            <li>ניצול הון עצמי נכון</li>
+            <li>שילוב נכסים קיימים</li>
+            <li>בניית יכולת לרכישות נוספות</li>
+            <li>התאמת מימון למטרות ההשקעה</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. מחזור -->
+    <div class="detail-section" id="detail-refi">
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h3>מחזור משכנתא</h3>
+          <p class="sub-intro">בדיקה מקצועית של המשכנתא הקיימת:</p>
+          <ul>
+            <li>הפחתת ריביות</li>
+            <li>הקטנת החזר חודשי</li>
+            <li>קיצור תקופת המשכנתא</li>
+            <li>התאמת המסלולים למצב הקיים</li>
+            <li>חיסכון משמעותי לאורך השנים</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h3>בדיקת כדאיות למשכנתא קיימת</h3>
+          <p class="sub-intro">בדיקת עומק מקצועית:</p>
+          <ul>
+            <li>האם המשכנתא עדיין מתאימה?</li>
+            <li>האם אפשר לחסוך כסף?</li>
+            <li>האם קיימים מסלולים מסוכנים?</li>
+            <li>האם ההחזר מותאם למצב כיום?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. מיוחדות -->
+    <div class="detail-section" id="detail-special">
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h3>משכנתא הפוכה / פנסיונית</h3>
+          <p class="sub-intro">פתרונות פיננסיים לגיל השלישי:</p>
+          <ul>
+            <li>השלמת הכנסה</li>
+            <li>עזרה לילדים</li>
+            <li>שיפור איכות החיים</li>
+            <li>מימון צרכים רפואיים</li>
+            <li>ניצול נכון של נכס קיים</li>
+          </ul>
+          <div class="sub-note">
+            <strong>ליווי רגיש ואחראי:</strong>
+            <p>תוך התחשבות במשפחה, בירושה ובצרכים העתידיים.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-wrap -->
+
+  <div class="detail-cta">
+    <h2>רוצים לדעת יותר?</h2>
+    <p>צרו קשר לייעוץ ראשוני ללא עלות</p>
+    <a href="index.html#contact" class="btn-cta">לתיאום פגישה ←</a>
+  </div>
+
+</div><!-- /view-detail -->
+
+
+<footer style="background:#111e2e;color:#889;text-align:center;padding:1.5rem;font-size:0.85rem;">
+  <span style="color:#aab;">© 2026 יחיאל ממן — יועץ משכנתאות</span> | כל הזכויות שמורות | האתר אינו מהווה ייעוץ פיננסי מחייב | <a href="admin.html" style="color:#889;text-decoration:none;">ניהול</a>
+</footer>
+
+<script>
+  const SECTIONS = {
+    residential: 'רכישת דירה ומשכנתאות למגורים',
+    yosh:        'יו"ש והתיישבות צעירה',
+    upgrade:     'משפרי דיור ושיפוצים',
+    creative:    'מימון יצירתי ועסקאות מורכבות',
+    refused:     'מסורבי בנקים ופתרונות אשראי מורכבים',
+    construction:'בנייה עצמית ובנייה בנחלות / מושבים / קיבוצים',
+    investors:   'משכנתאות למשקיעים',
+    refi:        'מחזור ושיפור תנאי משכנתא',
+    special:     'משכנתאות מיוחדות'
+  };
+
+  const viewGrid   = document.getElementById('view-grid');
+  const viewDetail = document.getElementById('view-detail');
+  const detailTitle = document.getElementById('detail-page-title');
+
+  function handleHash() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && SECTIONS[hash]) {
+      viewGrid.style.display = 'none';
+      viewDetail.style.display = 'block';
+      document.querySelectorAll('.detail-section').forEach(s => s.style.display = 'none');
+      const sec = document.getElementById('detail-' + hash);
+      if (sec) sec.style.display = 'block';
+      detailTitle.textContent = SECTIONS[hash];
+      document.title = SECTIONS[hash] + ' | יחיאל ממן';
+      window.scrollTo(0, 0);
+    } else {
+      viewGrid.style.display = 'block';
+      viewDetail.style.display = 'none';
+      document.title = 'ההתמחויות שלנו | יחיאל ממן';
+    }
+  }
+
+  document.getElementById('detail-back').addEventListener('click', e => {
+    e.preventDefault();
+    history.pushState('', document.title, window.location.pathname);
+    handleHash();
+    window.scrollTo(0, 0);
+  });
+
+  handleHash();
+  window.addEventListener('hashchange', handleHash);
+
+  // Mobile nav
+  const toggle = document.querySelector('.nav-toggle');
+  const navUl  = document.querySelector('nav ul');
+  if (toggle) toggle.addEventListener('click', () => navUl.classList.toggle('open'));
+  document.querySelectorAll('.dropdown > a').forEach(a => {
+    a.addEventListener('click', e => {
+      if (window.innerWidth < 769) {
+        e.preventDefault();
+        a.closest('.dropdown').classList.toggle('open');
+      }
+    });
+  });
+</script>
+</body>
+</html>
