@@ -684,7 +684,6 @@
         </table>
       </div>
 
-      <div class="note-box" style="margin-top:1rem;" id="planNote"></div>
     </div>
 
     <!-- גרף תכנון דינמי -->
@@ -703,9 +702,6 @@
     <div class="card">
       <div class="card-title">📋 תכנון טיפול בחובות</div>
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.7rem;margin-bottom:1rem;">
-        <div class="note-box" style="margin:0;flex:1;">
-          💡 <strong>פרעון מלא</strong> — הזן סכום פירעון מהכספים הזמינים | <strong>פריסה מחדש</strong> — הזן תקופה חדשה בחודשים | <strong>ויתור חלקי</strong> — הזן סכום ויתור (₪)
-        </div>
         <div style="background:#1a3a5c;color:#fff;border-radius:10px;padding:0.7rem 1.2rem;text-align:center;min-width:180px;white-space:nowrap;">
           <div style="font-size:0.75rem;opacity:0.8;margin-bottom:0.2rem;">יתרה פנויה לפירעון</div>
           <div style="font-size:1.3rem;font-weight:800;" id="availableRemaining">—</div>
@@ -1774,6 +1770,14 @@ function updateDetCalc(i, part, field, val) {
   if (nbEl)  nbEl.innerHTML   = (nbVal !== null && amt > 0) ? `יתרה: <span class="det-strong">${fmtNIS(nbVal)}</span>` : '';
   if (pmtEl) pmtEl.textContent = (npVal !== null) ? fmtNIS(Math.round(npVal)) : '';
 
+  if (npVal !== null && !part) {
+    const mainPmtEl = document.getElementById(`planNewPmt_${i}`);
+    if (mainPmtEl) {
+      mainPmtEl.textContent = fmtNIS(Math.round(npVal));
+      mainPmtEl.style.color = npVal < (d.monthly || 0) ? '#1a7a40' : '#1a3a5c';
+    }
+  }
+
   updatePlanDebtTotals(); updateAvailableRemaining(); renderPlanFunds();
 }
 
@@ -2015,7 +2019,7 @@ function renderPlanDebtRow(i) {
       </select>
       ${d.balance>0?`<button class="split-btn" title="פצל ל-2" onclick="enableSplit(${i})">✂</button>`:''}
     </div></td>
-    <td style="font-weight:700;color:${pmtColor}">${fmtNIS(Math.round(newPmt))}</td>`;
+    <td id="planNewPmt_${i}" style="font-weight:700;color:${pmtColor}">${fmtNIS(Math.round(newPmt))}</td>`;
 
   let trDetail = document.getElementById(`planDebtDetail${i}`);
   if (!trDetail) { trDetail = document.createElement('tr'); trDetail.id = `planDebtDetail${i}`; document.getElementById('planDebtsBody').appendChild(trDetail); }
