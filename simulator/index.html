@@ -2475,12 +2475,7 @@ function updatePlanFromTo() {
   renderPlanCharts();
 }
 
-function updatePlanNote() {
-  const p1to = parseNum(document.getElementById('plan_p1_to').value) || 12;
-  const p2to = parseNum(document.getElementById('plan_p2_to').value) || 24;
-  document.getElementById('planNote').textContent =
-    `📅 תקציב מוצע 1: חודשים 1–${p1to} | תקציב מוצע 2: חודשים ${p1to+1}–${p2to} | תקציב מוצע 3: חודשים ${p2to+1}–999`;
-}
+function updatePlanNote() {}
 
 function getPlanPhases() {
   const p1to = parseNum(document.getElementById('plan_p1_to').value) || 12;
