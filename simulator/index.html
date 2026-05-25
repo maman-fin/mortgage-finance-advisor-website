@@ -165,7 +165,14 @@
     .funds-table tfoot td { font-weight:700; background:#f5f8fc; border-top:2px solid #1a6e3c; }
 
     /* SUMMARY BOXES */
-    .summary-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .summary-grid { margin-bottom:1.5rem; }
+    .before-after-wrap { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+    @media (max-width:600px) { .before-after-wrap { grid-template-columns:1fr; } }
+    .ba-col { display:flex; flex-direction:column; gap:0.75rem; }
+    .ba-col-title { text-align:center; font-weight:800; font-size:0.97rem; padding:0.45rem 0.5rem; border-radius:8px; }
+    .ba-col--before .ba-col-title { background:#fef4f4; color:#c0392b; border:1px solid #f0c0c0; }
+    .ba-col--after .ba-col-title { background:#f0faf4; color:#1a7a40; border:1px solid #b8e0c8; }
+    .ba-col .sum-box { flex:1; }
     .sum-box { background:#fff; border:1px solid #dde8f2; border-radius:10px; padding:1rem; text-align:center; }
     .sum-box .sb-label { font-size:0.75rem; color:#666; margin-bottom:0.3rem; font-weight:600; }
     .sum-box .sb-value { font-size:1.35rem; font-weight:800; color:#1a3a5c; }
@@ -175,6 +182,10 @@
     .sum-box.highlight { background:#1a3a5c; border-color:#1a3a5c; }
     .sum-box.highlight .sb-label { color:rgba(255,255,255,0.75); }
     .sum-box.highlight .sb-value { color:#fff; }
+    .sum-box .sb-sub { display:flex; gap:0.6rem; margin-top:0.6rem; justify-content:center; flex-wrap:wrap; }
+    .sum-box .sb-sub-item { background:#f0f4f8; border-radius:7px; padding:0.3rem 0.75rem; font-size:0.76rem; display:flex; flex-direction:column; align-items:center; }
+    .sum-box .sb-sub-label { color:#888; font-weight:600; margin-bottom:1px; }
+    .sum-box .sb-sub-val { color:#1a3a5c; font-weight:800; font-size:0.88rem; }
 
     /* CHART */
     .chart-container { position:relative; height:300px; margin-bottom:1rem; }
@@ -2104,7 +2115,7 @@ function simulateDebtBalances(debtList, months) {
       const payment = Math.min(d.monthly, d.balance + intr);
       d.balance = Math.max(d.balance - (payment - intr), 0);
       d.paymentsLeft--;
-      if (d.balance < 0.5) { d.balance = 0; d.paymentsLeft = 0; }
+      if (d.balance < 0.5 || d.paymentsLeft === 0) { d.balance = 0; d.paymentsLeft = 0; }
     });
     return Math.round(debts.reduce((s, d) => s + d.balance, 0));
   });
@@ -2127,7 +2138,7 @@ function simulateDebts(debtList, months) {
       const payment = Math.min(d.monthly, d.balance + interestCharge);
       d.balance = Math.max(d.balance - (payment - interestCharge), 0);
       d.paymentsLeft--;
-      if (d.balance < 0.5) { d.balance = 0; d.paymentsLeft = 0; }
+      if (d.balance < 0.5 || d.paymentsLeft === 0) { d.balance = 0; d.paymentsLeft = 0; }
       total += payment;
     });
     payments.push(Math.round(total));
@@ -2174,7 +2185,7 @@ function simulateDebtsWithFunds(debtList, months, startYear, startMonth) {
       const payment = Math.min(d.monthly, d.balance + interest);
       d.balance = Math.max(d.balance - (payment - interest), 0);
       d.paymentsLeft--;
-      if (d.balance < 0.5) { d.balance = 0; d.paymentsLeft = 0; }
+      if (d.balance < 0.5 || d.paymentsLeft === 0) { d.balance = 0; d.paymentsLeft = 0; }
       total += payment;
     });
     payments.push(Math.round(total));
@@ -2291,9 +2302,9 @@ function renderPlanDynChart(afterDebtPmts, newLoanPmts, labels, afterLine) {
 }
 
 function renderPlanCharts() {
-  const MONTHS = 100;
-  const labels = Array.from({length: MONTHS}, (_, i) => i + 1);
-  const tickCb = (_, idx) => (idx + 1) % 2 === 0 ? idx + 1 : '';
+  const MONTHS = 360;
+  const allLabels = Array.from({length: MONTHS}, (_, i) => i + 1);
+  const tickCb = (_, idx) => (idx + 1) % 5 === 0 ? idx + 1 : '';
 
   const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
   const [sy, sm] = startDate.split('-').map(Number);
@@ -2317,7 +2328,6 @@ function renderPlanCharts() {
 
   // Simulate BEFORE — no actions, current debts
   const beforePayments = simulateDebts(planDebts, MONTHS);
-  const beforeLine = new Array(MONTHS).fill(curAvail);
 
   // Simulate AFTER — apply planAction to each debt
   const afterDebtList = planDebts.map(d => {
@@ -2370,15 +2380,23 @@ function renderPlanCharts() {
   // Combined after payments = debts + new loans
   const afterPayments = afterDebtPayments.map((v, i) => v + newLoanPayments[i]);
 
-  // After available — phased
+  // Trim each chart to its actual last active month
+  const beforeEnd = Math.max(beforePayments.reduce((last, v, i) => v > 0 ? i : last, 0) + 1, 1);
+  const afterEnd  = Math.max(afterPayments.reduce((last, v, i) => v > 0 ? i : last, 0) + 1, 1);
+  const beforeLabels = allLabels.slice(0, beforeEnd);
+  const afterLabels  = allLabels.slice(0, afterEnd);
+
+  // After available — phased (full length for dyn chart, trimmed for static chart)
   const phases   = getPlanPhases();
-  const afterLine = labels.map(m => {
+  const afterLineFull = allLabels.map(m => {
     const ph = phases.find(p => m >= p.from && m <= p.to) || phases[phases.length-1];
     return Math.round(ph.income - ph.expenses);
   });
+  const afterLine  = afterLineFull.slice(0, afterEnd);
+  const beforeLine2 = beforeLabels.map(() => curAvail);
 
   // Dynamic planning chart (single chart, updates with planning changes)
-  renderPlanDynChart(afterDebtPayments, newLoanPayments, labels, afterLine);
+  renderPlanDynChart(afterDebtPayments, newLoanPayments, allLabels, afterLineFull);
 
   const makeBATooltip = (tooltipId) => (context) => {
     const { chart, tooltip } = context;
@@ -2438,10 +2456,10 @@ function renderPlanCharts() {
   planBeforeChartInst = new Chart(document.getElementById('planBeforeChart'), {
     type: 'bar',
     data: {
-      labels,
+      labels: beforeLabels,
       datasets: [
-        { label: 'התפתחות החזר החודשי', data: beforePayments, backgroundColor: '#4472C4bb', borderWidth: 0, order: 2 },
-        { label: 'סכום פנוי להחזר חובות', data: beforeLine, type: 'line',
+        { label: 'התפתחות החזר החודשי', data: beforePayments.slice(0, beforeEnd), backgroundColor: '#4472C4bb', borderWidth: 0, order: 2 },
+        { label: 'סכום פנוי להחזר חובות', data: beforeLine2, type: 'line',
           borderColor: '#FF0000', borderWidth: 2, pointRadius: 0, fill: false, order: 1 },
       ]
     },
@@ -2455,12 +2473,12 @@ function renderPlanCharts() {
   planAfterChartInst = new Chart(document.getElementById('planAfterChart'), {
     type: 'bar',
     data: {
-      labels,
+      labels: afterLabels,
       datasets: [
-        { label: 'החזר חובות מקוריים',    data: afterDebtPayments, backgroundColor: '#4472C4', borderWidth: 0, stack: 'debt', order: 3 },
-        { label: 'החזר הלוואות חדשות',    data: newLoanPayments,   backgroundColor: '#ED7D31', borderWidth: 0, stack: 'debt', order: 2 },
+        { label: 'החזר חובות מקוריים',    data: afterDebtPayments.slice(0, afterEnd), backgroundColor: '#4472C4', borderWidth: 0, stack: 'debt', order: 3 },
+        { label: 'החזר הלוואות חדשות',    data: newLoanPayments.slice(0, afterEnd),   backgroundColor: '#ED7D31', borderWidth: 0, stack: 'debt', order: 2 },
         { label: 'פירעון מתוכנן', type:'scatter', yAxisID:'yMark', clip:false,
-          data: capitalFunded.map((v,i)=>i>0&&v>0?{x:i,y:1.12}:null).filter(Boolean),
+          data: capitalFunded.slice(0, afterEnd).map((v,i)=>i>0&&v>0?{x:i,y:1.12}:null).filter(Boolean),
           pointStyle:'triangle', rotation:180, pointRadius:8, pointHoverRadius:10,
           backgroundColor:'#1a6e3c', borderColor:'#0a3d1f', borderWidth:1.5, showLine:false, order:0 },
         { label: 'סכום פנוי להחזר חובות', data: afterLine, type: 'line',
@@ -2567,18 +2585,35 @@ function runCalc() {
   // Debt monthly payments over time
   const debtMonthlyByMonth = [];
   const debtBalanceByMonth = [];
-  let currentBalances = expandedDebts.map(d => ({
-    balance: d.balance,
-    monthly: d.monthly,
-    paymentsLeft: d.action==='פריסה מחדש'
-      ? (d.actionParam || d.paymentsLeft || 0)
-      : (d.paymentsLeft > 0 ? d.paymentsLeft : impliedPaymentsLeft(d.balance, d.monthly, d.interest)),
-    interest: d.interest,
-    action: d.action,
-    actionParam: d.actionParam,
-    freezeLeft: d.action==='הקפאה' ? (d.actionParam||0) : 0,
-    newMonthly: calcDebtNewPmt(d) || 0,
-  }));
+  let currentBalances = expandedDebts.map(d => {
+    const planA = d.planAction || 'ללא שינוי';
+    const stepRestr = d.action === 'פריסה מחדש';
+    const planRestr = planA === 'פריסה מחדש';
+    const effInterest = planRestr && d.planRate != null ? d.planRate : (d.interest || 0);
+
+    let newMonthly = 0, newPL = 0;
+    if (stepRestr) {
+      newPL = d.actionParam || d.paymentsLeft || 0;
+      newMonthly = calcDebtNewPmt(d) || 0;
+    } else if (planRestr) {
+      newPL = d.planParam || d.paymentsLeft || 36;
+      newMonthly = pmt(effInterest, newPL, d.balance) || 0;
+    }
+
+    return {
+      balance: d.balance,
+      monthly: d.monthly,
+      interest: effInterest,
+      action: d.action,
+      actionParam: d.actionParam,
+      freezeLeft: d.action === 'הקפאה' ? (d.actionParam || 0) : 0,
+      isRestructured: stepRestr || planRestr,
+      newMonthly,
+      paymentsLeft: (stepRestr || planRestr)
+        ? newPL
+        : (d.paymentsLeft > 0 ? d.paymentsLeft : impliedPaymentsLeft(d.balance, d.monthly, d.interest)),
+    };
+  });
 
   // Apply immediate actions (step-2 actions + plan immediate actions)
   currentBalances.forEach((d, idx) => {
@@ -2605,6 +2640,11 @@ function runCalc() {
       else if (wb > 0 && d.paymentsLeft > 0) d.monthly = pmt(d.interest||0, d.paymentsLeft, wb);
     }
   });
+
+  // Capture post-action balances for "after" summary column
+  const totalDebtAfterActions = currentBalances.reduce((s,d) => s+d.balance, 0);
+  const totalArrangedAfterActions = expandedDebts.reduce((s,d,i) => d.arranged===true ? s+currentBalances[i].balance : s, 0);
+  const totalNonArrangedAfterActions = totalDebtAfterActions - totalArrangedAfterActions;
 
   // New loan payments
   const loanPayments = state.loans.map(l => ({
@@ -2647,13 +2687,13 @@ function runCalc() {
       if (d.balance <= 0) return;
       if (d.action === 'הקפאה' && d.freezeLeft > 0) { d.freezeLeft--; return; }
       const r = d.interest / 100 / 12;
-      const mthly = d.action==='פריסה מחדש' ? d.newMonthly : d.monthly;
-      if (d.paymentsLeft <= 0 && mthly <= d.balance * r) return;
+      if (d.paymentsLeft <= 0) { d.balance = 0; return; }
+      const mthly = d.isRestructured ? d.newMonthly : d.monthly;
       const payment = Math.min(mthly, d.balance + d.balance*r);
       const interestCharge = d.balance * r;
       d.balance = Math.max(d.balance + interestCharge - payment, 0);
-      if (d.balance < 0.5) d.balance = 0;
-      if (d.paymentsLeft > 0) d.paymentsLeft = Math.max(d.paymentsLeft - 1, 0);
+      d.paymentsLeft = Math.max(d.paymentsLeft - 1, 0);
+      if (d.balance < 0.5 || d.paymentsLeft === 0) d.balance = 0;
       debtPmt += payment;
       const planA = expandedDebts[idx]?.planAction || 'ללא שינוי';
       const origArranged = expandedDebts[idx]?.arranged === true;
@@ -2685,31 +2725,66 @@ function runCalc() {
 
   // Summary stats
   const totalDebtNow = state.debts.reduce((s,d)=>s+d.balance,0);
+  const totalArrangedDebt = state.debts.filter(d=>d.arranged===true).reduce((s,d)=>s+d.balance,0);
+  const totalNonArrangedDebt = totalDebtNow - totalArrangedDebt;
   const currentMonthlyDebt = state.debts.reduce((s,d)=>s+d.monthly,0);
-  const newMonthlyDebt = currentBalances.reduce((s,d,i) => s + (calcDebtNewPmt(state.debts[i])||0), 0);
+  const newMonthlyDebt = currentBalances.reduce((s,d) => s + (d.balance > 0 ? (d.isRestructured ? d.newMonthly : d.monthly) : 0), 0);
   const newLoanPmtTotal = state.loans.reduce((s,l)=>s+(l.pmt||0),0);
   const totalNewDebtPmt = newMonthlyDebt + newLoanPmtTotal;
-  const netAfterFirst = monthlyCF[0]?.netAfter || 0;
   const debtFreeMonth = debtBalanceByMonth.findIndex(b => b < 100);
-  const debtFreeText = debtFreeMonth >= 0 ? `${debtFreeMonth + 1} חודשים (${Math.ceil((debtFreeMonth+1)/12)} שנים)` : 'מעל 100 חודש';
+  // Last month with any payment or balance (covers new loans too)
+  let treatmentEnd = 0;
+  for (let i = 0; i < monthlyCF.length; i++) {
+    if (monthlyCF[i].totalDebt > 1 || monthlyCF[i].totalBalance > 1) treatmentEnd = i;
+  }
+  // Before: if non-arranged debts exist → no forecast; else compute from simulation
+  const beforeSim = simulateDebtBalances(expandedDebts, MONTHS);
+  const beforeFreeIdx = beforeSim.findIndex(v => v <= 0);
+  const beforeDebtFreeText = totalNonArrangedDebt > 0
+    ? 'אין צפי לסיום'
+    : beforeFreeIdx >= 0
+      ? `${beforeFreeIdx + 1} חודשים (${Math.ceil((beforeFreeIdx+1)/12)} שנים)`
+      : 'מעל 100 חודש';
+  const afterDebtFreeText = `${treatmentEnd + 1} חודשים (${Math.ceil((treatmentEnd+1)/12)} שנים)`;
 
   document.getElementById('resultsTitle').textContent = `📈 תוצאות תכנית הבראה${state.family ? ' — ' + state.family : ''}`;
 
+  const mkDebtBox = (total, arranged, nonArranged, label) => `
+    <div class="sum-box">
+      <div class="sb-label">${label}</div>
+      <div class="sb-value">${fmtNIS(Math.round(total))}</div>
+      <div class="sb-sub">
+        <div class="sb-sub-item"><span class="sb-sub-label">בהסדר</span><span class="sb-sub-val">${fmtNIS(Math.round(arranged))}</span></div>
+        <div class="sb-sub-item"><span class="sb-sub-label">שלא בהסדר</span><span class="sb-sub-val">${fmtNIS(Math.round(nonArranged))}</span></div>
+      </div>
+    </div>`;
+
   document.getElementById('summaryGrid').innerHTML = `
-    <div class="sum-box"><div class="sb-label">סה"כ חובות כיום</div><div class="sb-value">${fmtNIS(totalDebtNow)}</div></div>
-    <div class="sum-box"><div class="sb-label">החזר חובות לפני הבראה</div><div class="sb-value">${fmtNIS(currentMonthlyDebt)}</div></div>
-    <div class="sum-box"><div class="sb-label">החזר חובות אחרי הבראה</div><div class="sb-value">${fmtNIS(Math.round(totalNewDebtPmt))}</div></div>
-    <div class="sum-box ${netAfterFirst>=0?'positive':'negative'}"><div class="sb-label">תזרים נטו חודשי (מוצע)</div><div class="sb-value">${fmtNIS(Math.round(netAfterFirst))}</div></div>
-    <div class="sum-box highlight"><div class="sb-label">זמן עד לסיום חובות</div><div class="sb-value">${debtFreeText}</div></div>
-    <div class="sum-box"><div class="sb-label">כספים זמינים לפרעון</div><div class="sb-value">${fmtNIS(fundsImmediate + newLoansTotal)}</div></div>
-    ${futureFundsTotal > 0 ? `<div class="sum-box"><div class="sb-label">כספים עתידיים מתוכננים</div><div class="sb-value">${fmtNIS(futureFundsPlanned)} / ${fmtNIS(futureFundsTotal)}</div></div>` : ''}`;
+    <div class="before-after-wrap">
+      <div class="ba-col ba-col--before">
+        <div class="ba-col-title">לפני הבראה</div>
+        ${mkDebtBox(totalDebtNow, totalArrangedDebt, totalNonArrangedDebt, 'סה"כ חובות כיום')}
+        <div class="sum-box"><div class="sb-label">כספים זמינים לפירעון מיידי</div><div class="sb-value">${fmtNIS(fundsImmediate)}</div></div>
+        <div class="sum-box"><div class="sb-label">החזר חובות ראשוני</div><div class="sb-value">${fmtNIS(Math.round(currentMonthlyDebt))}</div></div>
+        <div class="sum-box ${totalNonArrangedDebt>0?'negative':''}"><div class="sb-label">זמן לסיום חובות</div><div class="sb-value" style="font-size:${totalNonArrangedDebt>0?'1rem':'1.35rem'}">${beforeDebtFreeText}</div></div>
+      </div>
+      <div class="ba-col ba-col--after">
+        <div class="ba-col-title">לאחר הבראה</div>
+        ${mkDebtBox(totalDebtAfterActions, totalArrangedAfterActions, totalNonArrangedAfterActions, 'סה"כ חובות לאחר הבראה')}
+        <div class="sum-box"><div class="sb-label">כספים זמינים לפירעון מיידי</div><div class="sb-value">${fmtNIS(fundsImmediate)}</div></div>
+        <div class="sum-box positive"><div class="sb-label">החזר חובות ראשוני</div><div class="sb-value">${fmtNIS(Math.round(monthlyCF[0]?.totalDebt || 0))}</div></div>
+        <div class="sum-box highlight"><div class="sb-label">זמן לסיום חובות</div><div class="sb-value">${afterDebtFreeText}</div></div>
+      </div>
+    </div>`;
 
   // Balance charts — before & after
   const yMax = Math.round(expandedDebts.reduce((s, d) => s + (d.balance || 0), 0) * 1.04);
   const balScales = {
-    x: { grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, callback: (val, idx) => (idx + 1) % 5 === 0 ? 'ח׳ ' + val : '' } },
+    x: { grid: { display: false }, ticks: { maxRotation: 0 } },
     y: { min: 0, max: yMax, ticks: { callback: v => fmtN(v) + ' ₪' } }
   };
+  const every5 = arr => arr.filter((_, i) => (i + 1) % 5 === 0);
+
   const makeBalTooltip = (tooltipId, sliceArr, dataArr, injArr) => (context) => {
     const { chart, tooltip } = context;
     let el = document.getElementById(tooltipId);
@@ -2737,8 +2812,10 @@ function runCalc() {
   const beforeBalanceByMonth = simulateDebtBalances(expandedDebts, MONTHS);
   let befZeroIdx = beforeBalanceByMonth.findIndex(v => v <= 0);
   if (befZeroIdx === -1) befZeroIdx = beforeBalanceByMonth.length - 1;
-  const befSlice = monthlyCF.slice(0, befZeroIdx + 1);
-  const befData  = beforeBalanceByMonth.slice(0, befZeroIdx + 1);
+  const befSliceFull = monthlyCF.slice(0, befZeroIdx + 1);
+  const befDataFull  = beforeBalanceByMonth.slice(0, befZeroIdx + 1);
+  const befSlice = every5(befSliceFull);
+  const befData  = every5(befDataFull);
 
   if (balanceBeforeChartInst) balanceBeforeChartInst.destroy();
   balanceBeforeChartInst = new Chart(document.getElementById('balanceBeforeChart'), {
@@ -2752,12 +2829,15 @@ function runCalc() {
       scales: balScales }
   });
 
-  // AFTER chart — with plan actions (green)
+  // AFTER chart — with plan actions (green), trimmed at treatmentEnd
   let balZeroIdx = debtBalanceByMonth.findIndex(v => v <= 0);
-  if (balZeroIdx === -1) balZeroIdx = debtBalanceByMonth.length - 1;
-  const balSlice = monthlyCF.slice(0, balZeroIdx + 1);
-  const balData  = debtBalanceByMonth.slice(0, balZeroIdx + 1);
-  const injSlice = fundsInjectedByMonth.slice(0, balZeroIdx + 1);
+  if (balZeroIdx === -1) balZeroIdx = treatmentEnd;
+  const balSliceFull = monthlyCF.slice(0, balZeroIdx + 1);
+  const balDataFull  = debtBalanceByMonth.slice(0, balZeroIdx + 1);
+  const injSliceFull = fundsInjectedByMonth.slice(0, balZeroIdx + 1);
+  const balSlice = every5(balSliceFull);
+  const balData  = every5(balDataFull);
+  const injSlice = every5(injSliceFull);
 
   if (balanceChartInst) balanceChartInst.destroy();
   balanceChartInst = new Chart(document.getElementById('balanceChart'), {
@@ -2776,9 +2856,10 @@ function runCalc() {
       scales: balScales }
   });
 
-  // Monthly table (first 60 months)
+  // Monthly table — show until all payments end
+  const tableEnd = treatmentEnd + 1;
   let tableHtml = '';
-  monthlyCF.slice(0,60).forEach(m => {
+  monthlyCF.slice(0, tableEnd).forEach(m => {
     const neg = m.netAfter < 0 ? 'neg' : 'pos';
     tableHtml += `<tr>
       <td>${m.m}</td>
@@ -2793,8 +2874,8 @@ function runCalc() {
   });
   document.getElementById('monthlyBody').innerHTML = tableHtml;
 
-  // Cash flow analysis — transposed table
-  const planLen = Math.min(debtFreeMonth >= 0 ? debtFreeMonth + 2 : 60, 60);
+  // Cash flow analysis — show until all payments end
+  const planLen = treatmentEnd + 1;
   const cfMonths = monthlyCF.slice(0, planLen);
   const cols = cfMonths.length;
   const D = n => Math.round(n) === 0 ? '—' : fmtNIS(Math.round(n));
