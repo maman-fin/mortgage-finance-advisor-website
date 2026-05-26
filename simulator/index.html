@@ -2646,6 +2646,7 @@ function runCalc() {
       interest: effInterest,
       action: d.action,
       actionParam: d.actionParam,
+      planAction: d.planAction || 'ללא שינוי',
       freezeLeft: d.action === 'הקפאה' ? (d.actionParam || 0) : 0,
       isRestructured: stepRestr || planRestr,
       newMonthly,
@@ -2763,7 +2764,10 @@ function runCalc() {
       if (d.balance <= 0) return;
       if (d.action === 'הקפאה' && d.freezeLeft > 0) { d.freezeLeft--; return; }
       const r = d.interest / 100 / 12;
-      if (d.paymentsLeft <= 0) { d.balance = 0; return; }
+      if (d.paymentsLeft <= 0) {
+        if (d.planAction && d.planAction.includes('עתידי')) return; // hold balance until injection
+        d.balance = 0; return;
+      }
       const mthly = d.isRestructured ? d.newMonthly : d.monthly;
       const payment = Math.min(mthly, d.balance + d.balance*r);
       const interestCharge = d.balance * r;
@@ -2872,7 +2876,7 @@ function runCalc() {
   // Balance charts — before & after
   const yMax = Math.round(expandedDebts.reduce((s, d) => s + (d.balance || 0), 0) * 1.04);
   const balScales = {
-    x: { grid: { display: false }, ticks: { maxRotation: 0 } },
+    x: { grid: { display: false }, ticks: { maxRotation: 0, callback: (val, idx) => (idx + 1) % 5 === 0 ? val : '' } },
     y: { min: 0, max: yMax, ticks: { callback: v => fmtN(v) + ' ₪' } }
   };
   const every5 = arr => arr.filter((_, i) => (i + 1) % 5 === 0);
@@ -2906,18 +2910,15 @@ function runCalc() {
   if (befZeroIdx === -1) befZeroIdx = beforeBalanceByMonth.length - 1;
   const befSliceFull = monthlyCF.slice(0, befZeroIdx + 1);
   const befDataFull  = beforeBalanceByMonth.slice(0, befZeroIdx + 1);
-  const befSlice = every5(befSliceFull);
-  const befData  = every5(befDataFull);
-
   if (balanceBeforeChartInst) balanceBeforeChartInst.destroy();
   balanceBeforeChartInst = new Chart(document.getElementById('balanceBeforeChart'), {
     type: 'line',
     data: {
-      labels: befSlice.map(m => m.m),
-      datasets: [{ label:'יתרת חובות', data: befData, borderColor:'#c0392b', backgroundColor:'rgba(192,57,43,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true }]
+      labels: befSliceFull.map(m => m.m),
+      datasets: [{ label:'יתרת חובות', data: befDataFull, borderColor:'#c0392b', backgroundColor:'rgba(192,57,43,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true }]
     },
     options: { responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
-      plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceBeforeTooltip', befSlice, befData, null) } },
+      plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceBeforeTooltip', befSliceFull, befDataFull, null) } },
       scales: balScales }
   });
 
@@ -2927,24 +2928,20 @@ function runCalc() {
   const balSliceFull = monthlyCF.slice(0, balZeroIdx + 1);
   const balDataFull  = debtBalanceByMonth.slice(0, balZeroIdx + 1);
   const injSliceFull = fundsInjectedByMonth.slice(0, balZeroIdx + 1);
-  const balSlice = every5(balSliceFull);
-  const balData  = every5(balDataFull);
-  const injSlice = every5(injSliceFull);
-
   if (balanceChartInst) balanceChartInst.destroy();
   balanceChartInst = new Chart(document.getElementById('balanceChart'), {
     type: 'line',
     data: {
-      labels: balSlice.map(m => m.m),
+      labels: balSliceFull.map(m => m.m),
       datasets:[
-        { label:'יתרת חובות', data: balData, borderColor:'#1a7a40', backgroundColor:'rgba(26,122,64,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true },
+        { label:'יתרת חובות', data: balDataFull, borderColor:'#1a7a40', backgroundColor:'rgba(26,122,64,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true },
         { label:'פירעון מתוכנן', type:'scatter',
-          data: injSlice.map((v,i) => v>0 ? {x: balSlice[i].m, y: balData[i]+v} : null).filter(Boolean),
+          data: injSliceFull.map((v,i) => v>0 ? {x: balSliceFull[i].m, y: balDataFull[i]+v} : null).filter(Boolean),
           pointStyle:'triangle', rotation:180, pointRadius:12, backgroundColor:'#1a6e3c', borderColor:'#0f4a25', borderWidth:2, showLine:false }
       ]
     },
     options:{ responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
-      plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceAfterTooltip', balSlice, balData, injSlice) } },
+      plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceAfterTooltip', balSliceFull, balDataFull, injSliceFull) } },
       scales: balScales }
   });
 
