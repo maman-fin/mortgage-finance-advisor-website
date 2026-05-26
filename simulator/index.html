@@ -288,10 +288,17 @@
     .plan-detail-cell { padding:0 !important; }
     .plan-detail-cell td { border-top:none !important; }
     .plan-detail-box { background:#f7f9fc; border-right:3px solid #c5d8ec; padding:6px 12px; }
-    .plan-task-wrap { background:#fffbf0; border-top:1px solid #e8d8a0; padding:5px 10px 7px; display:flex; align-items:flex-start; gap:8px; }
-    .plan-task-lbl { font-size:0.74rem; font-weight:700; color:#7a5800; white-space:nowrap; padding-top:3px; flex-shrink:0; }
-    .plan-task-inp { flex:1; border:1px solid #d4b86a; border-radius:5px; padding:4px 8px; font-size:0.82rem; font-family:Segoe UI,Arial,sans-serif; resize:vertical; direction:rtl; background:#fff; line-height:1.45; min-height:38px; }
-    .plan-task-inp:focus { border-color:#c98010; outline:none; }
+    .note-btn { background:none; border:1px solid #dde; border-radius:5px; width:26px; height:24px; cursor:pointer; font-size:0.8rem; padding:0; display:inline-flex; align-items:center; justify-content:center; color:#ccc; transition:all 0.15s; flex-shrink:0; position:relative; }
+    .note-btn:hover { border-color:#e8a020; color:#e8a020; }
+    .note-btn.has-note { border-color:#e8a020; color:#e8a020; background:#fffbf0; }
+    .note-btn.has-note::after { content:''; position:absolute; top:2px; left:2px; width:6px; height:6px; background:#e8a020; border-radius:50%; border:1.5px solid #fff; }
+    .note-btn.is-open { background:#fff3d0; border-color:#c98010; color:#c98010; }
+    .note-panel-inner { background:#fffbf0; border-top:1px solid #e8d8a0; padding:6px 10px 8px; display:flex; align-items:flex-start; gap:8px; }
+    .note-panel-lbl { font-size:0.74rem; font-weight:700; color:#7a5800; white-space:nowrap; padding-top:4px; flex-shrink:0; }
+    .note-panel-inp { flex:1; border:1px solid #d4b86a; border-radius:5px; padding:4px 8px; font-size:0.82rem; font-family:Segoe UI,Arial,sans-serif; resize:vertical; direction:rtl; background:#fff; line-height:1.45; min-height:40px; }
+    .note-panel-inp:focus { border-color:#c98010; outline:none; }
+    #notePreview { display:none; position:fixed; background:#fff; border:1px solid #e8d8a0; border-right:3px solid #e8a020; border-radius:8px; padding:8px 12px; font-size:0.81rem; font-family:Segoe UI,Arial,sans-serif; direction:rtl; text-align:right; max-width:250px; box-shadow:0 4px 14px rgba(0,0,0,0.13); color:#3a2200; line-height:1.55; z-index:9999; pointer-events:none; white-space:pre-wrap; word-break:break-word; }
+    @media (hover:none) { #notePreview { display:none !important; } }
     .fpk-pool-bar { background:transparent; padding:0; }
     /* ── Future funds modal ── */
     .ff-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2000; display:flex; align-items:center; justify-content:center; padding:1rem; }
@@ -2054,8 +2061,10 @@ function renderPlanDebtRow(i) {
   let trMain = document.getElementById(`planDebtRow${i}`);
   if (!trMain) { trMain = document.createElement('tr'); trMain.id = `planDebtRow${i}`; document.getElementById('planDebtsBody').appendChild(trMain); }
   trMain.className = i > 0 ? 'debt-group-row' : '';
+  const noteAttr = (d.planTask||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/\n/g,'&#10;');
+  const noteBtnCls = 'note-btn' + (d.planTask?' has-note':'') + (d.planTaskOpen?' is-open':'');
   trMain.innerHTML = `
-    <td style="font-weight:600">${rowBadge}${d.name||'—'}</td>
+    <td style="font-weight:600"><div style="display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0;"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${rowBadge}${d.name||'—'}</span><button class="${noteBtnCls}" onclick="toggleNote(${i})" onmouseenter="showNotePreview(this)" onmouseleave="hideNotePreview()" data-note="${noteAttr}">🖊️</button></div></td>
     <td>${fmtNIS(d.balance)}</td>
     <td>${d.interest?d.interest+'%':'—'}</td>
     <td>${d.paymentsLeft||'—'}</td>
@@ -2071,16 +2080,23 @@ function renderPlanDebtRow(i) {
   let trDetail = document.getElementById(`planDebtDetail${i}`);
   if (!trDetail) { trDetail = document.createElement('tr'); trDetail.id = `planDebtDetail${i}`; document.getElementById('planDebtsBody').appendChild(trDetail); }
   const showDetail = action !== 'ללא שינוי';
-  const taskHtml = `<div class="plan-task-wrap"><span class="plan-task-lbl">📌 פעולה לביצוע</span><textarea rows="2" class="plan-task-inp" placeholder="כתוב כאן מה יש לעשות עם חוב זה..." oninput="state.debts[${i}].planTask=this.value">${d.planTask||''}</textarea></div>`;
-  trDetail.innerHTML = `<td colspan="7" class="plan-detail-cell">${showDetail?`<div class="plan-detail-box">${renderPlanDetail(i,action)}</div>`:''}${taskHtml}</td>`;
+  const noteOpen = d.planTaskOpen === true;
+  const notePanelHtml = `<div class="note-panel-inner"><span class="note-panel-lbl">📌 פעולה לביצוע</span><textarea class="note-panel-inp" rows="3" placeholder="כתוב כאן מה יש לעשות..." oninput="state.debts[${i}].planTask=this.value;updateNoteBtn(${i},this.value)">${d.planTask||''}</textarea></div>`;
+  if (showDetail || noteOpen) {
+    trDetail.innerHTML = `<td colspan="7" class="plan-detail-cell">${showDetail?`<div class="plan-detail-box">${renderPlanDetail(i,action)}</div>`:''}${noteOpen?notePanelHtml:''}</td>`;
+  } else {
+    trDetail.innerHTML = '';
+  }
 }
 
 function printTaskList() {
-  const rows = state.debts.map(d => {
-    const task = (d.planTask||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  const withNotes = state.debts.filter(d => d.planTask && d.planTask.trim());
+  if (!withNotes.length) { alert('אין הערות/משימות להדפסה.'); return; }
+  const rows = withNotes.map(d => {
+    const task = d.planTask.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
     const plan = d.planAction || 'ללא שינוי';
     const bal  = (d.balance||0).toLocaleString('he-IL');
-    return `<tr><td>${d.name||'—'}</td><td style="direction:ltr;text-align:right;">₪ ${bal}</td><td>${plan}</td><td class="task-col">${task||'—'}</td></tr>`;
+    return `<tr><td>${d.name||'—'}</td><td style="direction:ltr;text-align:right;">₪ ${bal}</td><td>${plan}</td><td class="task-col">${task}</td></tr>`;
   }).join('');
   const w = window.open('','_blank','width=920,height=720');
   w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>רשימת משימות — תכנית הבראה</title>
@@ -2097,12 +2113,48 @@ function printTaskList() {
   @media print{.print-btn{display:none;} body{padding:0.5rem;}}
 </style></head><body>
 <h2>📋 רשימת משימות — תכנית הבראה</h2>
-<div class="sub">סה"כ ${state.debts.length} חובות</div>
+<div class="sub">סה"כ ${withNotes.length} חובות עם משימות מתוך ${state.debts.length}</div>
 <table><thead><tr><th>שם הנושה</th><th>יתרה</th><th>פעולה בתכנית</th><th>פעולה לביצוע</th></tr></thead>
 <tbody>${rows}</tbody></table>
 <button class="print-btn" onclick="window.print()">🖨️ הדפס</button>
 </body></html>`);
   w.document.close();
+}
+
+function toggleNote(i) {
+  state.debts[i].planTaskOpen = !state.debts[i].planTaskOpen;
+  renderPlanDebtRow(i);
+  if (state.debts[i].planTaskOpen) {
+    setTimeout(() => document.querySelector(`#planDebtDetail${i} .note-panel-inp`)?.focus(), 30);
+  }
+}
+
+function updateNoteBtn(i, val) {
+  const btn = document.querySelector(`#planDebtRow${i} .note-btn`);
+  if (!btn) return;
+  btn.className = 'note-btn has-note is-open';
+  btn.dataset.note = val;
+  if (!val) btn.className = 'note-btn is-open';
+}
+
+function showNotePreview(el) {
+  const text = el.dataset.note;
+  if (!text || !text.trim()) return;
+  const preview = document.getElementById('notePreview');
+  if (!preview) return;
+  preview.textContent = text;
+  preview.style.display = 'block';
+  const rect = el.getBoundingClientRect();
+  let left = rect.right + 10;
+  if (left + 260 > window.innerWidth) left = rect.left - 264;
+  const top = Math.min(rect.top, window.innerHeight - preview.offsetHeight - 10);
+  preview.style.left = left + 'px';
+  preview.style.top = Math.max(top, 10) + 'px';
+}
+
+function hideNotePreview() {
+  const preview = document.getElementById('notePreview');
+  if (preview) preview.style.display = 'none';
 }
 
 function getTotalAvailable() {
@@ -3343,6 +3395,6 @@ function closeFFModal() {
     </div>
   </div>
 </div>
-
+<div id="notePreview"></div>
 </body>
 </html>
