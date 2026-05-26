@@ -187,6 +187,13 @@
     .sum-box .sb-sub-label { color:#888; font-weight:600; margin-bottom:1px; }
     .sum-box .sb-sub-val { color:#1a3a5c; font-weight:800; font-size:0.88rem; }
 
+    /* PLAN STAT BOXES */
+    .plan-stat-box { background:#1a3a5c; color:#fff; border-radius:10px; padding:0.7rem 1.2rem; text-align:center; min-width:160px; white-space:nowrap; }
+    .plan-stat-box--warn { background:#8e0000; }
+    .psb-label { font-size:0.75rem; opacity:0.8; margin-bottom:0.2rem; }
+    .psb-value { font-size:1.3rem; font-weight:800; }
+    .psb-sub { font-size:0.78rem; opacity:0.85; margin-top:0.3rem; }
+
     /* CHART */
     .chart-container { position:relative; height:300px; margin-bottom:1rem; }
 
@@ -712,10 +719,19 @@
     <!-- תכנון חובות -->
     <div class="card">
       <div class="card-title">📋 תכנון טיפול בחובות</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.7rem;margin-bottom:1rem;">
-        <div style="background:#1a3a5c;color:#fff;border-radius:10px;padding:0.7rem 1.2rem;text-align:center;min-width:180px;white-space:nowrap;">
-          <div style="font-size:0.75rem;opacity:0.8;margin-bottom:0.2rem;">יתרה פנויה לפירעון</div>
-          <div style="font-size:1.3rem;font-weight:800;" id="availableRemaining">—</div>
+      <div style="display:flex;align-items:stretch;flex-wrap:wrap;gap:0.7rem;margin-bottom:1rem;">
+        <div class="plan-stat-box" id="planBudgetBox">
+          <div class="psb-label">תקציב זמין לפירעון</div>
+          <div class="psb-value" id="planBudgetTotal">—</div>
+          <div class="psb-sub">נשאר: <strong id="availableRemaining">—</strong></div>
+        </div>
+        <div class="plan-stat-box">
+          <div class="psb-label">חובות בהסדר</div>
+          <div class="psb-value" id="planArrangedTotal">—</div>
+        </div>
+        <div class="plan-stat-box" id="planNoArrangementBox">
+          <div class="psb-label">חובות שלא בהסדר</div>
+          <div class="psb-value" id="planNonArrangedTotal">—</div>
         </div>
       </div>
       <div style="overflow-x:auto;">
@@ -1215,6 +1231,13 @@ function updateLoanTotals() {
 const DEBT_ACTIONS = ['ללא שינוי','פרעון מלא','הקפאה','פריסה מחדש','ויתור חלקי','ויתור מלא'];
 const ACTION_PARAM_LABEL = {'הקפאה':'חודשי הקפאה','פריסה מחדש':'חודשים חדשים','ויתור חלקי':'סכום ויתור (₪)','פרעון מלא':'סכום (₪)'};
 const CATEGORY_BADGE = {'בנק - הלוואה':'badge-bank','כרטיס אשראי':'badge-cc','משפחה קרובה':'badge-family'};
+const DEBT_CATEGORIES = [
+  'ארנונה','ביטוח לאומי','בנק - הלוואה','בנק - משיכת יתר',
+  'גמ"ח','הוצאה לפועל','חברים','כרטיס אשראי',
+  'מוסד / חברה','מזונות','מס הכנסה','מע"מ',
+  'משכורת - הלוואה','משכנתא - פיגורים','משפחה קרובה','משפחה רחוקה',
+  'פיגורים','פעמונים','שוק אפור','אחר'
+];
 
 function initDebts() {
   state.debts.push({name:'חוב לדוגמא', category:'בנק - הלוואה', balance:10000, arranged:true, interest:5, paymentsLeft:36, monthly:300, notes:'', action:'ללא שינוי', actionParam:0});
@@ -1306,10 +1329,7 @@ function renderDebtRow(i) {
     <td>
       <select onchange="state.debts[${i}].category=this.value">
         <option ${!d.category?'selected':''}>בחר</option>
-        <option ${d.category==='בנק - הלוואה'?'selected':''}>בנק - הלוואה</option>
-        <option ${d.category==='כרטיס אשראי'?'selected':''}>כרטיס אשראי</option>
-        <option ${d.category==='משפחה קרובה'?'selected':''}>משפחה קרובה</option>
-        <option ${d.category==='אחר'?'selected':''}>אחר</option>
+        ${DEBT_CATEGORIES.map(c=>`<option ${d.category===c?'selected':''}>${c}</option>`).join('')}
       </select>
     </td>
     <td><input type="text" inputmode="numeric" value="${d.balance?parseInt(d.balance).toLocaleString('he-IL'):''}" placeholder="0" oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].balance=parseNum(this.value);updateDebtTotals()"></td>
@@ -2074,11 +2094,12 @@ function updateAvailableRemaining() {
     return s;
   }, 0);
   const remaining = total - used;
-  const el = document.getElementById('availableRemaining');
-  if (el) {
-    el.textContent = fmtNIS(Math.round(remaining));
-    el.closest('div[style]').style.background = remaining < 0 ? '#8e0000' : '#1a3a5c';
-  }
+  const remEl = document.getElementById('availableRemaining');
+  if (remEl) remEl.textContent = fmtNIS(Math.round(remaining));
+  const totEl = document.getElementById('planBudgetTotal');
+  if (totEl) totEl.textContent = fmtNIS(Math.round(total));
+  const box = document.getElementById('planBudgetBox');
+  if (box) box.style.background = remaining < 0 ? '#8e0000' : '#1a3a5c';
 }
 
 function updatePlanDebtTotals() {
@@ -2090,6 +2111,15 @@ function updatePlanDebtTotals() {
   document.getElementById('planTotalBalance').textContent = fmtNIS(totBal);
   document.getElementById('planTotalMonthly').textContent = fmtNIS(totMon);
   document.getElementById('planTotalNew').textContent = fmtNIS(Math.round(totNew));
+
+  const arranged    = state.debts.reduce((s,d) => d.arranged===true ? s+d.balance : s, 0);
+  const nonArranged = totBal - arranged;
+  const arrEl = document.getElementById('planArrangedTotal');
+  const nonEl = document.getElementById('planNonArrangedTotal');
+  const nonBox = document.getElementById('planNoArrangementBox');
+  if (arrEl) arrEl.textContent = fmtNIS(Math.round(arranged));
+  if (nonEl) nonEl.textContent = fmtNIS(Math.round(nonArranged));
+  if (nonBox) nonBox.style.background = nonArranged > 0 ? '#8e0000' : '#1a3a5c';
 }
 
 function impliedPaymentsLeft(balance, monthly, interest) {
@@ -2641,10 +2671,36 @@ function runCalc() {
     }
   });
 
-  // Capture post-action balances for "after" summary column
-  const totalDebtAfterActions = currentBalances.reduce((s,d) => s+d.balance, 0);
-  const totalArrangedAfterActions = expandedDebts.reduce((s,d,i) => d.arranged===true ? s+currentBalances[i].balance : s, 0);
-  const totalNonArrangedAfterActions = totalDebtAfterActions - totalArrangedAfterActions;
+  // Remaining client funds after immediate repayments (loan principal consumed first)
+  const remainingClientFunds = Math.max(availablePool - newLoansTotal, 0);
+
+  // Capture post-action balances for "after" summary column — 4 categories
+  let afterCat_origArranged = 0;   // arranged=true, no new treatment
+  let afterCat_newArranged  = 0;   // received treatment, has remaining balance
+  let afterCat_cancelled    = 0;   // forgiven: ויתור מלא OR gap from פירעון מיידי מלא
+  let afterCat_noArrangement = 0;  // not arranged, no treatment
+  expandedDebts.forEach((d, i) => {
+    const planA = d.planAction || 'ללא שינוי';
+    const act   = d.action     || 'ללא שינוי';
+    const isFullWaiver      = planA === 'ויתור מלא' || act === 'ויתור מלא';
+    const isFullRepayment   = planA === 'פירעון מיידי מלא' || planA === 'פרעון מלא' || act === 'פרעון מלא';
+    const hasNewTreatment   = planA !== 'ללא שינוי' || act !== 'ללא שינוי';
+    const origBal = d.balance || 0;
+    const remBal  = currentBalances[i].balance;
+    if (isFullWaiver) {
+      afterCat_cancelled += origBal;
+    } else if (isFullRepayment) {
+      const paid = Math.min(d.planParam || origBal, origBal);
+      afterCat_cancelled    += origBal - paid;   // forgiven gap
+      afterCat_newArranged  += remBal;           // remaining (usually 0)
+    } else if (!hasNewTreatment) {
+      if (d.arranged === true) afterCat_origArranged  += remBal;
+      else                      afterCat_noArrangement += remBal;
+    } else {
+      afterCat_newArranged += remBal;
+    }
+  });
+  const totalDebtAfterActions = afterCat_origArranged + afterCat_newArranged + afterCat_noArrangement;
 
   // New loan payments
   const loanPayments = state.loans.map(l => ({
@@ -2749,31 +2805,46 @@ function runCalc() {
 
   document.getElementById('resultsTitle').textContent = `📈 תוצאות תכנית הבראה${state.family ? ' — ' + state.family : ''}`;
 
-  const mkDebtBox = (total, arranged, nonArranged, label) => `
-    <div class="sum-box">
-      <div class="sb-label">${label}</div>
-      <div class="sb-value">${fmtNIS(Math.round(total))}</div>
-      <div class="sb-sub">
-        <div class="sb-sub-item"><span class="sb-sub-label">בהסדר</span><span class="sb-sub-val">${fmtNIS(Math.round(arranged))}</span></div>
-        <div class="sb-sub-item"><span class="sb-sub-label">שלא בהסדר</span><span class="sb-sub-val">${fmtNIS(Math.round(nonArranged))}</span></div>
-      </div>
-    </div>`;
+  const mkSub = (label, val) =>
+    `<div class="sb-sub-item"><span class="sb-sub-label">${label}</span><span class="sb-sub-val">${fmtNIS(Math.round(val))}</span></div>`;
 
   document.getElementById('summaryGrid').innerHTML = `
     <div class="before-after-wrap">
       <div class="ba-col ba-col--before">
         <div class="ba-col-title">לפני הבראה</div>
-        ${mkDebtBox(totalDebtNow, totalArrangedDebt, totalNonArrangedDebt, 'סה"כ חובות כיום')}
+        <div class="sum-box">
+          <div class="sb-label">סה"כ חובות כיום</div>
+          <div class="sb-value">${fmtNIS(Math.round(totalDebtNow))}</div>
+          <div class="sb-sub">
+            ${mkSub('בהסדר', totalArrangedDebt)}
+            ${mkSub('שלא בהסדר', totalNonArrangedDebt)}
+          </div>
+        </div>
         <div class="sum-box"><div class="sb-label">כספים זמינים לפירעון מיידי</div><div class="sb-value">${fmtNIS(fundsImmediate)}</div></div>
         <div class="sum-box"><div class="sb-label">החזר חובות ראשוני</div><div class="sb-value">${fmtNIS(Math.round(currentMonthlyDebt))}</div></div>
         <div class="sum-box ${totalNonArrangedDebt>0?'negative':''}"><div class="sb-label">זמן לסיום חובות</div><div class="sb-value" style="font-size:${totalNonArrangedDebt>0?'1rem':'1.35rem'}">${beforeDebtFreeText}</div></div>
       </div>
       <div class="ba-col ba-col--after">
         <div class="ba-col-title">לאחר הבראה</div>
-        ${mkDebtBox(totalDebtAfterActions, totalArrangedAfterActions, totalNonArrangedAfterActions, 'סה"כ חובות לאחר הבראה')}
-        <div class="sum-box"><div class="sb-label">כספים זמינים לפירעון מיידי</div><div class="sb-value">${fmtNIS(fundsImmediate)}</div></div>
+        <div class="sum-box">
+          <div class="sb-label">סה"כ חובות לאחר הבראה</div>
+          <div class="sb-value">${fmtNIS(Math.round(totalDebtAfterActions))}</div>
+          <div class="sb-sub">
+            ${mkSub('בהסדר מקור', afterCat_origArranged)}
+            ${mkSub('בהסדר חדש', afterCat_newArranged)}
+            ${afterCat_cancelled > 0 ? mkSub('נמחקו', afterCat_cancelled) : ''}
+            ${afterCat_noArrangement > 0 ? mkSub('ללא הסדר', afterCat_noArrangement) : ''}
+          </div>
+        </div>
+        <div class="sum-box">
+          <div class="sb-label">כספים זמינים לפירעון מיידי</div>
+          <div class="sb-value">${fmtNIS(fundsImmediate)}</div>
+          <div class="sb-sub" style="justify-content:center;color:#888;font-size:0.76rem;margin-top:0.4rem;">
+            <span>יתרה לאחר תכנית: <strong style="color:#1a3a5c">${fmtNIS(Math.round(remainingClientFunds))}</strong></span>
+          </div>
+        </div>
         <div class="sum-box positive"><div class="sb-label">החזר חובות ראשוני</div><div class="sb-value">${fmtNIS(Math.round(monthlyCF[0]?.totalDebt || 0))}</div></div>
-        <div class="sum-box highlight"><div class="sb-label">זמן לסיום חובות</div><div class="sb-value">${afterDebtFreeText}</div></div>
+        <div class="sum-box positive"><div class="sb-label">זמן לסיום חובות</div><div class="sb-value">${afterDebtFreeText}</div></div>
       </div>
     </div>`;
 
