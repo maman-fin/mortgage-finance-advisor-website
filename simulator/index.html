@@ -2112,7 +2112,17 @@ function updatePlanDebtTotals() {
   document.getElementById('planTotalMonthly').textContent = fmtNIS(totMon);
   document.getElementById('planTotalNew').textContent = fmtNIS(Math.round(totNew));
 
-  const arranged    = state.debts.reduce((s,d) => d.arranged===true ? s+d.balance : s, 0);
+  // "בהסדר" = originally arranged OR got any plan/step treatment
+  // "שלא בהסדר" = not arranged AND no treatment at all
+  const arranged = state.debts.reduce((s, d) => {
+    if (d.arranged === true) return s + d.balance;
+    const planA = d.planAction || 'ללא שינוי';
+    const act   = d.action     || 'ללא שינוי';
+    const hasTreatment = d.splitEnabled
+      ? (d.splitAction1||'ללא שינוי') !== 'ללא שינוי' || (d.splitAction2||'ללא שינוי') !== 'ללא שינוי' || planA !== 'ללא שינוי'
+      : planA !== 'ללא שינוי' || act !== 'ללא שינוי';
+    return hasTreatment ? s + d.balance : s;
+  }, 0);
   const nonArranged = totBal - arranged;
   const arrEl = document.getElementById('planArrangedTotal');
   const nonEl = document.getElementById('planNonArrangedTotal');
@@ -2674,32 +2684,42 @@ function runCalc() {
   // Remaining client funds after immediate repayments (loan principal consumed first)
   const remainingClientFunds = Math.max(availablePool - newLoansTotal, 0);
 
-  // Capture post-action balances for "after" summary column — 4 categories
-  let afterCat_origArranged = 0;   // arranged=true, no new treatment
-  let afterCat_newArranged  = 0;   // received treatment, has remaining balance
-  let afterCat_cancelled    = 0;   // forgiven: ויתור מלא OR gap from פירעון מיידי מלא
+  // Capture post-action balances for "after" summary column — 5 categories
+  let afterCat_origArranged  = 0;  // arranged=true, no new treatment
+  let afterCat_newArranged   = 0;  // received treatment, has remaining balance
+  let afterCat_cancelled     = 0;  // forgiven: ויתור מלא OR gap from פירעון מיידי מלא
+  let afterCat_paidOff       = 0;  // paid in full immediately (no forgiveness, balance → 0)
   let afterCat_noArrangement = 0;  // not arranged, no treatment
   expandedDebts.forEach((d, i) => {
     const planA = d.planAction || 'ללא שינוי';
     const act   = d.action     || 'ללא שינוי';
-    const isFullWaiver      = planA === 'ויתור מלא' || act === 'ויתור מלא';
-    const isFullRepayment   = planA === 'פירעון מיידי מלא' || planA === 'פרעון מלא' || act === 'פרעון מלא';
-    const hasNewTreatment   = planA !== 'ללא שינוי' || act !== 'ללא שינוי';
+    const isFullWaiver    = planA === 'ויתור מלא' || act === 'ויתור מלא';
+    const isFullRepayment = planA === 'פירעון מיידי מלא' || planA === 'פרעון מלא' || act === 'פרעון מלא';
+    const hasNewTreatment = planA !== 'ללא שינוי' || act !== 'ללא שינוי';
     const origBal = d.balance || 0;
     const remBal  = currentBalances[i].balance;
     if (isFullWaiver) {
       afterCat_cancelled += origBal;
     } else if (isFullRepayment) {
       const paid = Math.min(d.planParam || origBal, origBal);
-      afterCat_cancelled    += origBal - paid;   // forgiven gap
-      afterCat_newArranged  += remBal;           // remaining (usually 0)
+      afterCat_cancelled   += origBal - paid;  // forgiven gap
+      afterCat_paidOff     += paid;             // paid from funds
+      afterCat_newArranged += remBal;           // residual if any (usually 0)
     } else if (!hasNewTreatment) {
       if (d.arranged === true) afterCat_origArranged  += remBal;
       else                      afterCat_noArrangement += remBal;
     } else {
+      // Other treatments (פריסה מחדש, הקפאה, ויתור חלקי, פירעון מיידי חלקי...)
+      const diff = origBal - remBal; // amount that left the balance
+      if (planA === 'ויתור חלקי' || act === 'ויתור חלקי') {
+        afterCat_cancelled += diff;   // forgiven (waived)
+      } else {
+        afterCat_paidOff += diff;     // paid from funds (partial immediate repayment etc.)
+      }
       afterCat_newArranged += remBal;
     }
   });
+  // totalDebtAfterActions = remaining balance still owed (excludes paid-off and cancelled)
   const totalDebtAfterActions = afterCat_origArranged + afterCat_newArranged + afterCat_noArrangement;
 
   // New loan payments
@@ -2828,10 +2848,11 @@ function runCalc() {
         <div class="ba-col-title">לאחר הבראה</div>
         <div class="sum-box">
           <div class="sb-label">סה"כ חובות לאחר הבראה</div>
-          <div class="sb-value">${fmtNIS(Math.round(totalDebtAfterActions))}</div>
+          <div class="sb-value">${fmtNIS(Math.round(afterCat_origArranged + afterCat_newArranged + afterCat_cancelled + afterCat_paidOff + afterCat_noArrangement))}</div>
           <div class="sb-sub">
             ${mkSub('בהסדר מקור', afterCat_origArranged)}
-            ${mkSub('בהסדר חדש', afterCat_newArranged)}
+            ${afterCat_newArranged > 0 ? mkSub('בהסדר חדש', afterCat_newArranged) : ''}
+            ${afterCat_paidOff > 0 ? mkSub('שולמו מיידית', afterCat_paidOff) : ''}
             ${afterCat_cancelled > 0 ? mkSub('נמחקו', afterCat_cancelled) : ''}
             ${afterCat_noArrangement > 0 ? mkSub('ללא הסדר', afterCat_noArrangement) : ''}
           </div>
