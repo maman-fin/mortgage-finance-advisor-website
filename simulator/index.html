@@ -288,6 +288,10 @@
     .plan-detail-cell { padding:0 !important; }
     .plan-detail-cell td { border-top:none !important; }
     .plan-detail-box { background:#f7f9fc; border-right:3px solid #c5d8ec; padding:6px 12px; }
+    .plan-task-wrap { background:#fffbf0; border-top:1px solid #e8d8a0; padding:5px 10px 7px; display:flex; align-items:flex-start; gap:8px; }
+    .plan-task-lbl { font-size:0.74rem; font-weight:700; color:#7a5800; white-space:nowrap; padding-top:3px; flex-shrink:0; }
+    .plan-task-inp { flex:1; border:1px solid #d4b86a; border-radius:5px; padding:4px 8px; font-size:0.82rem; font-family:Segoe UI,Arial,sans-serif; resize:vertical; direction:rtl; background:#fff; line-height:1.45; min-height:38px; }
+    .plan-task-inp:focus { border-color:#c98010; outline:none; }
     .fpk-pool-bar { background:transparent; padding:0; }
     /* ── Future funds modal ── */
     .ff-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2000; display:flex; align-items:center; justify-content:center; padding:1rem; }
@@ -759,6 +763,9 @@
             </tr>
           </tfoot>
         </table>
+      </div>
+      <div style="text-align:left;margin-top:0.6rem;">
+        <button class="btn btn-secondary" onclick="printTaskList()" style="font-size:0.83rem;padding:0.35rem 0.9rem;">🖨️ הדפס רשימת משימות</button>
       </div>
     </div>
 
@@ -2064,11 +2071,38 @@ function renderPlanDebtRow(i) {
   let trDetail = document.getElementById(`planDebtDetail${i}`);
   if (!trDetail) { trDetail = document.createElement('tr'); trDetail.id = `planDebtDetail${i}`; document.getElementById('planDebtsBody').appendChild(trDetail); }
   const showDetail = action !== 'ללא שינוי';
-  if (showDetail) {
-    trDetail.innerHTML = `<td colspan="7" class="plan-detail-cell"><div class="plan-detail-box">${renderPlanDetail(i,action)}</div></td>`;
-  } else {
-    trDetail.innerHTML = '';
-  }
+  const taskHtml = `<div class="plan-task-wrap"><span class="plan-task-lbl">📌 פעולה לביצוע</span><textarea rows="2" class="plan-task-inp" placeholder="כתוב כאן מה יש לעשות עם חוב זה..." oninput="state.debts[${i}].planTask=this.value">${d.planTask||''}</textarea></div>`;
+  trDetail.innerHTML = `<td colspan="7" class="plan-detail-cell">${showDetail?`<div class="plan-detail-box">${renderPlanDetail(i,action)}</div>`:''}${taskHtml}</td>`;
+}
+
+function printTaskList() {
+  const rows = state.debts.map(d => {
+    const task = (d.planTask||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    const plan = d.planAction || 'ללא שינוי';
+    const bal  = (d.balance||0).toLocaleString('he-IL');
+    return `<tr><td>${d.name||'—'}</td><td style="direction:ltr;text-align:right;">₪ ${bal}</td><td>${plan}</td><td class="task-col">${task||'—'}</td></tr>`;
+  }).join('');
+  const w = window.open('','_blank','width=920,height=720');
+  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>רשימת משימות — תכנית הבראה</title>
+<style>
+  body{font-family:'Segoe UI',Arial,sans-serif;direction:rtl;padding:2rem;color:#222;font-size:0.93rem;}
+  h2{color:#1a3a5c;margin-bottom:0.3rem;}
+  .sub{color:#666;font-size:0.82rem;margin-bottom:1.2rem;}
+  table{width:100%;border-collapse:collapse;}
+  th{background:#1a3a5c;color:#fff;padding:8px 11px;text-align:right;font-weight:700;}
+  td{padding:8px 11px;border-bottom:1px solid #dde;vertical-align:top;}
+  tr:nth-child(even) td{background:#f5f8fc;}
+  .task-col{color:#3a2200;line-height:1.5;}
+  .print-btn{margin-top:1.2rem;background:#1a3a5c;color:#fff;border:none;padding:9px 22px;border-radius:7px;font-size:0.9rem;cursor:pointer;font-family:inherit;}
+  @media print{.print-btn{display:none;} body{padding:0.5rem;}}
+</style></head><body>
+<h2>📋 רשימת משימות — תכנית הבראה</h2>
+<div class="sub">סה"כ ${state.debts.length} חובות</div>
+<table><thead><tr><th>שם הנושה</th><th>יתרה</th><th>פעולה בתכנית</th><th>פעולה לביצוע</th></tr></thead>
+<tbody>${rows}</tbody></table>
+<button class="print-btn" onclick="window.print()">🖨️ הדפס</button>
+</body></html>`);
+  w.document.close();
 }
 
 function getTotalAvailable() {
