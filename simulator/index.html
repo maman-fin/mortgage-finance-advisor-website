@@ -2646,16 +2646,20 @@ function renderPlanCharts() {
   const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
   const [sy, sm] = startDate.split('-').map(Number);
 
-  // Budget values
-  const curIncome = state.budget.filter(b=>b.type==='income'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
-  const curExp    = state.budget.filter(b=>b.type==='expense'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
+  // Budget values (excluding 'התחייבויות', consistent with getBudgetTotals)
+  const { curIncome, curExp } = getBudgetTotals();
   const curAvail  = Math.round(curIncome - curExp);
 
   // Reuse already-expanded list
   const planDebts = planDebtsForDur;
 
   // Simulate BEFORE — no actions, current debts
-  const beforePayments = simulateDebts(planDebts, MONTHS);
+  // For debts with no paymentsLeft (non-arranged) but a monthly payment, estimate duration
+  const beforeDebtList = planDebts.map(d =>
+    d.paymentsLeft > 0 || d.monthly <= 0 || d.balance <= 0 ? d
+    : { ...d, paymentsLeft: Math.max(1, Math.ceil(d.balance / (d.monthly || 1))) }
+  );
+  const beforePayments = simulateDebts(beforeDebtList, MONTHS);
 
   // Simulate AFTER — apply planAction to each debt
   const afterDebtList = planDebts.map(d => {
