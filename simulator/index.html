@@ -2031,6 +2031,7 @@ function getSplitVirtual(d, part) {
     planAction:  part===1 ? (d.splitAction1 ||'ללא שינוי') : (d.splitAction2 ||'ללא שינוי'),
     planParam:   part===1 ? (d.splitParam1  ||0)           : (d.splitParam2  ||0),
     planRate:    part===1 ? d.splitRate1 : d.splitRate2,
+    planGrace:   part===1 ? (d.splitGrace1  ||0)           : (d.splitGrace2  ||0),
     partialWaiverMode: part===1 ? (d.splitWaiverMode1||'reducePmt') : (d.splitWaiverMode2||'reducePmt'),
     futureFundAllocations: part===1 ? (d.splitFundAllocs1||[]) : (d.splitFundAllocs2||[])
   };
@@ -2042,10 +2043,12 @@ function enableSplit(i) {
   d.splitAmount1   = Math.round((d.balance||0) / 2);
   d.splitAction1   = d.planAction || 'ללא שינוי';
   d.splitParam1    = d.planParam  || 0;
+  d.splitGrace1    = d.planGrace  || 0;
   d.splitWaiverMode1 = d.partialWaiverMode || 'reducePmt';
   d.splitFundAllocs1 = [...(d.futureFundAllocations||[])];
   d.splitAction2   = 'ללא שינוי';
   d.splitParam2    = 0;
+  d.splitGrace2    = 0;
   d.splitWaiverMode2 = 'reducePmt';
   d.splitFundAllocs2 = [];
   renderPlanDebtRow(i);
@@ -3000,9 +3003,8 @@ function runCalc() {
       afterCat_cancelled += origBal;
     } else if (isFullRepayment) {
       const paid = Math.min(d.planParam || origBal, origBal);
-      afterCat_cancelled   += origBal - paid;  // forgiven gap
-      afterCat_paidOff     += paid;             // paid from funds
-      afterCat_newArranged += remBal;           // residual if any (usually 0)
+      afterCat_cancelled += origBal - paid;  // forgiven gap
+      afterCat_paidOff   += paid;            // paid from funds
     } else if (!hasNewTreatment) {
       if (d.arranged === true) afterCat_origArranged  += remBal;
       else                      afterCat_noArrangement += remBal;
@@ -3153,7 +3155,7 @@ function runCalc() {
         <div class="ba-col-title">לאחר הבראה</div>
         <div class="sum-box">
           <div class="sb-label">סה"כ חובות לאחר הבראה</div>
-          <div class="sb-value">${fmtNIS(Math.round(afterCat_origArranged + afterCat_newArranged + afterCat_cancelled + afterCat_paidOff + afterCat_noArrangement))}</div>
+          <div class="sb-value">${fmtNIS(Math.round(afterCat_origArranged + afterCat_newArranged + afterCat_noArrangement))}</div>
           <div class="sb-sub">
             ${mkSub('בהסדר מקור', afterCat_origArranged)}
             ${afterCat_newArranged > 0 ? mkSub('בהסדר חדש', afterCat_newArranged) : ''}
