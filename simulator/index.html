@@ -2880,9 +2880,8 @@ function runCalc() {
   const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
   const [sy, sm] = startDate.split('-').map(Number);
 
-  // Budget — current
-  const incomeNow = state.budget.filter(b=>b.type==='income'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
-  const expNow    = state.budget.filter(b=>b.type==='expense'&&!b.isGroup).reduce((s,b)=>s+b.current,0);
+  // Budget — current (excluding 'התחייבויות' group, same as getBudgetTotals)
+  const { curIncome, curExp } = getBudgetTotals();
   // Phases from planning step
   const phases = getPlanPhases();
   const getBudget = m => phases.find(p => m >= p.from && m <= p.to) || phases[phases.length-1];
@@ -3098,7 +3097,7 @@ function runCalc() {
     const phase = getBudget(m+1);
     const phaseIncome = phase.income;
     const phaseExp    = phase.expenses;
-    const netBefore = incomeNow - expNow - state.debts.reduce((s,d)=>s+d.monthly,0);
+    const netBefore = curIncome - curExp - state.debts.reduce((s,d)=>s+d.monthly,0);
     const netAfter  = phaseIncome - phaseExp - totalDebt;
 
     monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, netBefore, fundsInjected: fundsInjectedByMonth[m] || 0, debtPmtInPlan, debtPmtNotInPlan, newLoanPmt });
@@ -3270,7 +3269,7 @@ function runCalc() {
   const D = n => Math.round(n) === 0 ? '—' : fmtNIS(Math.round(n));
   const row = (label, vals, cls='') =>
     `<tr${cls?' class="'+cls+'"':''}><td class="cf-row-label">${label}</td>${vals.map(v=>`<td>${v}</td>`).join('')}</tr>`;
-  const netBeforeVal = incomeNow - expNow - currentMonthlyDebt;
+  const netBeforeVal = curIncome - curExp - currentMonthlyDebt;
 
   let cfHtml = `<thead>
     <tr class="cf-num-row"><th></th>${cfMonths.map(m=>`<th>${m.m}</th>`).join('')}</tr>
@@ -3278,9 +3277,9 @@ function runCalc() {
   </thead><tbody>`;
 
   cfHtml += `<tr class="cf-section-hdr"><td colspan="${cols+1}">מצב נוכחי</td></tr>`;
-  cfHtml += row('הכנסות',             cfMonths.map(()=>fmtNIS(incomeNow)));
-  cfHtml += row('הוצאות',             cfMonths.map(()=>fmtNIS(expNow)));
-  cfHtml += row('סכום פנוי להחזר חובות', cfMonths.map(()=>fmtNIS(incomeNow - expNow)));
+  cfHtml += row('הכנסות',             cfMonths.map(()=>fmtNIS(curIncome)));
+  cfHtml += row('הוצאות',             cfMonths.map(()=>fmtNIS(curExp)));
+  cfHtml += row('סכום פנוי להחזר חובות', cfMonths.map(()=>fmtNIS(curIncome - curExp)));
   cfHtml += row('החזר',               cfMonths.map(()=>fmtNIS(currentMonthlyDebt)));
   cfHtml += row('הכנסות פחות הוצאות והחזר חובות לפני הבראה',
     cfMonths.map(()=>`<span class="${netBeforeVal<0?'neg':'pos'}">${fmtNIS(netBeforeVal)}</span>`), 'cf-total-row');
