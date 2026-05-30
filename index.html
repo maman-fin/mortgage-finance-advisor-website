@@ -897,13 +897,13 @@
         return '★'.repeat(n) + '☆'.repeat(5 - n);
       }
 
-      fetch(SUPABASE_URL + '/rest/v1/reviews?approved=eq.true&rejected=eq.false&rating=eq.5', {
+      fetch(SUPABASE_URL + '/rest/v1/reviews?approved=eq.true&rejected=not.is.true&rating=eq.5', {
         headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
       })
       .then(function(r) { return r.json(); })
       .then(function(rows) {
         var grid = document.getElementById('home-reviews-grid');
-        if (!rows || !rows.length) {
+        if (!rows || !Array.isArray(rows) || !rows.length) {
           grid.innerHTML = '<div class="reviews-loading">אין ביקורות להצגה עדיין</div>';
           return;
         }
@@ -927,7 +927,7 @@
         }).join('');
       })
       .catch(function() {
-        document.getElementById('home-reviews-grid').innerHTML = '';
+        document.getElementById('home-reviews-grid').innerHTML = '<div class="reviews-loading">לא ניתן לטעון ביקורות כרגע</div>';
       });
     })();
   </script>

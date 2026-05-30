@@ -125,13 +125,15 @@
 
     /* DEBTS TABLE */
     .debts-table { width:100%; border-collapse:collapse; font-size:0.84rem; }
-    .debts-table th { background:#1a3a5c; color:#fff; padding:0.48rem 0.6rem; text-align:right; white-space:nowrap; font-weight:600; }
-    .debts-table td { padding:0.28rem 0.6rem; border-bottom:1px solid #f0f2f5; vertical-align:middle; }
+    .debts-table th { background:#1a3a5c; color:#fff; padding:0.48rem 0.45rem; text-align:right; font-weight:600; font-size:0.82rem; }
+    .debts-table td { padding:0.28rem 0.45rem; border-bottom:1px solid #f0f2f5; vertical-align:middle; }
     .debts-table tr:nth-child(even) td { background:#fafbfd; }
-    .debts-table select { border:1px solid #d0d8e4; border-radius:5px; padding:0.28rem 0.4rem; font-family:inherit; font-size:0.82rem; background:#fff; }
-    .debts-table input[type="number"], .debts-table input[type="text"] { width:90px; border:1px solid #d0d8e4; border-radius:5px; padding:0.28rem 0.4rem; font-family:inherit; font-size:0.82rem; direction:ltr; text-align:right; }
+    .debts-table select { border:1px solid #d0d8e4; border-radius:5px; padding:0.28rem 0.35rem; font-family:inherit; font-size:0.82rem; background:#fff; }
+    .debts-table input[type="number"], .debts-table input[type="text"] { width:80px; border:1px solid #d0d8e4; border-radius:5px; padding:0.28rem 0.4rem; font-family:inherit; font-size:0.82rem; direction:ltr; text-align:right; }
+    .debts-table input[type="number"]::-webkit-inner-spin-button { margin-left: 4px; }
     .debts-table input[type="number"]:disabled, .debts-table input[type="text"]:disabled { background:#f5f5f5; color:#aaa; }
-    .debts-table .action-select { min-width:130px; }
+    .debts-table .action-select { min-width:108px; }
+    .debts-table-wrap { overflow-x:auto; }
     .debt-badge { display:inline-block; padding:0.15rem 0.5rem; border-radius:10px; font-size:0.72rem; font-weight:700; }
     .badge-bank { background:#dde8f2; color:#1a3a5c; }
     .badge-cc { background:#fde8d0; color:#a03000; }
@@ -188,7 +190,7 @@
     .sum-box .sb-sub-val { color:#1a3a5c; font-weight:800; font-size:0.88rem; }
 
     /* PLAN STAT BOXES */
-    .plan-stat-box { background:#1a3a5c; color:#fff; border-radius:10px; padding:0.7rem 1.2rem; text-align:center; min-width:160px; white-space:nowrap; }
+    .plan-stat-box { background:#1a3a5c; color:#fff; border-radius:10px; padding:0.7rem 1.2rem; text-align:center; min-width:160px; white-space:nowrap; display:flex; flex-direction:column; justify-content:center; align-items:center; }
     .plan-stat-box--warn { background:#8e0000; }
     .psb-label { font-size:0.75rem; opacity:0.8; margin-bottom:0.2rem; }
     .psb-value { font-size:1.3rem; font-weight:800; }
@@ -470,6 +472,7 @@
 <div class="session-bar">
   <span class="sb-status" id="saveStatus">לא נשמר</span>
   <div style="display:flex;gap:0.5rem;align-items:center;">
+    <button class="sb-btn" onclick="resetData()" style="color:#c0392b;">🗑️ אפס נתונים</button>
     <button class="sb-btn" onclick="document.getElementById('importFileInput').click()">📂 טען קובץ</button>
     <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importJSON(this.files[0]);this.value=''">
     <button class="sb-btn sb-btn-primary" onclick="exportJSON()">💾 שמור קובץ</button>
@@ -560,7 +563,7 @@
         <div id="debtImportStatus" style="display:none" class="note-box"></div>
       </div>
 
-      <div style="overflow-x:auto;">
+      <div class="debts-table-wrap">
         <table class="debts-table" id="debtsTable">
           <thead>
             <tr>
@@ -750,7 +753,7 @@
     <!-- תכנון חובות -->
     <div class="card">
       <div class="card-title">📋 תכנון טיפול בחובות</div>
-      <div style="display:flex;align-items:stretch;flex-wrap:wrap;gap:0.7rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:stretch;flex-wrap:wrap;gap:0.7rem;margin-bottom:1rem;justify-content:center;">
         <div class="plan-stat-box" id="planBudgetBox">
           <div class="psb-label">תקציב זמין לפירעון</div>
           <div class="psb-value" id="planBudgetTotal">—</div>
@@ -938,6 +941,7 @@ const fmtN = n => isNaN(n) ? '—' : Math.round(n).toLocaleString('he-IL');
 const fmtNIS = n => isNaN(n) ? '—' : fmtN(n) + ' ₪';
 function fmtMoneyInput(el) { var d = el.value.replace(/[^\d]/g,''); el.value = d ? parseInt(d,10).toLocaleString('he-IL') : ''; }
 const parseNum = s => parseFloat(String(s).replace(/,/g,'')) || 0;
+const escAttr = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,' ').replace(/\r/g,'');
 function pmt(rate, nper, pv) {
   if (!pv || !nper) return 0;
   const r = rate / 100 / 12;
@@ -1430,6 +1434,9 @@ async function importDebts(input) {
     const wb = XLSX.read(buf);
     const sheetName = wb.SheetNames.find(n => n.includes('list') || n.includes('debts')) || wb.SheetNames[0];
     const ws = wb.Sheets[sheetName];
+    // Extend !ref to include column I (notes) which may be outside the declared range
+    const wsRange = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+    if (wsRange.e.c < 8) { wsRange.e.c = 8; ws['!ref'] = XLSX.utils.encode_range(wsRange); }
     const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:false});
 
     // Find header row (contains "שם הנושה" or similar)
@@ -1507,7 +1514,7 @@ function renderDebtRow(i) {
     <td><input type="number" value="${arr?(d.interest||''):''}" placeholder="%" step="0.1" style="width:60px" ${dis} onchange="state.debts[${i}].interest=parseNum(this.value)"></td>
     <td><input type="number" value="${arr?(d.paymentsLeft||''):''}" placeholder="חודשים" style="width:70px" ${dis} onchange="state.debts[${i}].paymentsLeft=parseNum(this.value)"></td>
     <td><input type="text" inputmode="numeric" value="${arr&&d.monthly?parseInt(d.monthly).toLocaleString('he-IL'):''}" placeholder="₪" ${dis} oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].monthly=parseNum(this.value);if(!this.value||parseNum(this.value)===0){state.debts[${i}].arranged=false;renderDebtRow(${i});}updateDebtTotals()"></td>
-    <td><input placeholder="הערות" value="${d.notes||''}" oninput="state.debts[${i}].notes=this.value" style="width:100%;border:1px solid #d0d8e4;border-radius:5px;padding:0.28rem 0.4rem;font-family:inherit;font-size:0.82rem;"></td>
+    <td><input placeholder="הערות" value="${escAttr(d.notes)}" title="${escAttr(d.notes)}" oninput="state.debts[${i}].notes=this.value;this.title=this.value" style="width:100%;border:1px solid #d0d8e4;border-radius:5px;padding:0.28rem 0.4rem;font-family:inherit;font-size:0.82rem;"></td>
     <td style="text-align:center"><button class="del-btn" onclick="removeDebtRow(${i})" title="מחק שורה">✕</button></td>`;
   if (!existing) document.getElementById('debtsBody').appendChild(tr);
 }
@@ -3440,6 +3447,12 @@ function exportJSON() {
   document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
   setSaveStatus('קובץ נשמר ✓', 'saved');
+}
+
+function resetData() {
+  if (!confirm('האם לאפס את כל הנתונים ולהתחיל מחדש?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
 }
 
 function importJSON(file) {

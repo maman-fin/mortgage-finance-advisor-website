@@ -34,7 +34,9 @@
       "Bash(curl -s \"https://dwlcascxmgspmtpqbfmr.supabase.co/functions/v1/boi-data?series=CBS&chapter=c\")",
       "Bash(ls -la favicon*)",
       "Bash(ls *.ico)",
-      "Bash(grep -v \"\\\\.html$\\\\|\\\\.git\\\\|node_modules\\\\|תמונות\")"
+      "Bash(grep -v \"\\\\.html$\\\\|\\\\.git\\\\|node_modules\\\\|תמונות\")",
+      "PowerShell($excel = New-Object -ComObject Excel.Application; $excel.Visible = $false; $wb = $excel.Workbooks.Open\\(\"C:\\\\Users\\\\Yechiel\\\\mortgage-advisor\\\\simulator\\\\חובות מזרחי לבדיקה.xlsx\"\\); $ws = $wb.Sheets.Item\\(1\\); $rows = $ws.UsedRange.Rows.Count; $cols = $ws.UsedRange.Columns.Count; for \\($r=1; $r -le [Math]::Min\\($rows,30\\); $r++\\) { $line = @\\(\\); for \\($c=1; $c -le $cols; $c++\\) { $line += $ws.Cells\\($r,$c\\).Text }; Write-Output \\($line -join \"`t\"\\) }; $wb.Close\\($false\\); $excel.Quit\\(\\))",
+      "PowerShell($excel = New-Object -ComObject Excel.Application; $excel.Visible = $false; $wb = $excel.Workbooks.Open\\(\"C:\\\\Users\\\\Yechiel\\\\mortgage-advisor\\\\simulator\\\\חובות מזרחי לבדיקה.xlsx\"\\); $ws = $wb.Sheets.Item\\(1\\); $rows = $ws.UsedRange.Rows.Count; $cols = $ws.UsedRange.Columns.Count; Write-Output \"סה''כ עמודות ב-UsedRange: $cols\"; $ws.UsedRange.Rows | ForEach-Object -Begin {$r=1} -Process { $row = $_; $rowData = @\\(\\); for \\($c=1; $c -le $cols; $c++\\) { $rowData += \"[$\\($c-1\\)]:$\\($ws.Cells\\($r,$c\\).Text\\)\" }; Write-Output \"שורה $r`: $\\($rowData -join ' | '\\)\"; $r++ }; $wb.Close\\($false\\); $excel.Quit\\(\\))"
     ]
   }
 }
