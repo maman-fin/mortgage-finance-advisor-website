@@ -2411,7 +2411,7 @@ function generatePDF() {
         <td><strong>${esc(d.planAction || 'ללא שינוי')}</strong></td>
         <td class="note">${esc(det)}</td>
         <td class="num">${np ? fmtN(Math.round(np)) + ' ₪' : '—'}</td>
-        <td class="note">${esc(d.planTask || d.notes || '')}</td>
+        <td class="note">${esc(d.planTask || '')}</td>
       </tr>`;
     }).join('');
 
