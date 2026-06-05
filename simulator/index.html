@@ -730,7 +730,7 @@
                 </div>
               </td>
               <td style="text-align:center;color:#aaa;font-size:0.82rem;">—</td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p1_saving" placeholder="0" oninput="updatePlanRow()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p1_saving" placeholder="0" oninput="syncP2P3('saving',this.value);updatePlanRow()"></td>
               <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_saving" placeholder="0" oninput="syncP3('saving',this.value);updatePlanRow()"></td>
               <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_saving" placeholder="0" oninput="updatePlanRow()"></td>
             </tr>
@@ -3198,6 +3198,11 @@ function renderPlanCharts() {
 }
 
 function syncP3(field, val) {
+  document.getElementById(`plan_p3_${field}`).value = val;
+}
+
+function syncP2P3(field, val) {
+  document.getElementById(`plan_p2_${field}`).value = val;
   document.getElementById(`plan_p3_${field}`).value = val;
 }
 
