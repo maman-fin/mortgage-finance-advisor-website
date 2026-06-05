@@ -730,8 +730,8 @@
                 </div>
               </td>
               <td style="text-align:center;color:#aaa;font-size:0.82rem;">—</td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p1_saving" placeholder="0" oninput="syncP2P3('saving',this.value);updatePlanRow()"></td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_saving" placeholder="0" oninput="syncP3('saving',this.value);updatePlanRow()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p1_saving" placeholder="0" oninput="document.getElementById('plan_p2_saving').value=this.value;document.getElementById('plan_p3_saving').value=this.value;updatePlanRow()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_saving" placeholder="0" oninput="document.getElementById('plan_p3_saving').value=this.value;updatePlanRow()"></td>
               <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_saving" placeholder="0" oninput="updatePlanRow()"></td>
             </tr>
             <tr style="background:#f5f8fc;">
