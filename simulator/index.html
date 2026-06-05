@@ -1465,6 +1465,8 @@ async function importDebts(input) {
         category: row[1] ? String(row[1]).trim() : '',
         balance: parseNum(row[2]) || 0,
         arranged: true,
+        autoMonths: true,
+        importedMonths: parseNum(row[5]) || 0,
         interest: parseNum(row[4]) || 0,
         paymentsLeft: parseNum(row[5]) || 0,
         monthly: parseNum(row[6]) || 0,
@@ -1491,15 +1493,69 @@ async function importDebts(input) {
 
 function addDebtRow() {
   const i = state.debts.length;
-  state.debts.push({name:'', category:'', balance:0, arranged:true, interest:0, paymentsLeft:0, monthly:0, notes:'', action:'ללא שינוי', actionParam:0, planAction:'ללא שינוי', planParam:0, planRate:null, futureFundAllocations:[], partialWaiverMode:'reducePmt', splitEnabled:false, splitAmount1:0, splitAction1:'ללא שינוי', splitParam1:0, splitRate1:null, splitWaiverMode1:'reducePmt', splitFundAllocs1:[], splitAction2:'ללא שינוי', splitParam2:0, splitRate2:null, splitWaiverMode2:'reducePmt', splitFundAllocs2:[]});
+  state.debts.push({name:'', category:'', balance:0, arranged:true, autoMonths:true, importedMonths:null, interest:0, paymentsLeft:0, monthly:0, notes:'', action:'ללא שינוי', actionParam:0, planAction:'ללא שינוי', planParam:0, planRate:null, futureFundAllocations:[], partialWaiverMode:'reducePmt', splitEnabled:false, splitAmount1:0, splitAction1:'ללא שינוי', splitParam1:0, splitRate1:null, splitWaiverMode1:'reducePmt', splitFundAllocs1:[], splitAction2:'ללא שינוי', splitParam2:0, splitRate2:null, splitWaiverMode2:'reducePmt', splitFundAllocs2:[]});
   renderDebtRow(i);
+}
+
+function calcAutoMonths(d) {
+  const P = d.balance;
+  const PMT = d.monthly;
+  const r = (d.interest || 0) / 12 / 100;
+  if (!P || !PMT) return 0;
+  if (r === 0) return PMT > 0 ? Math.ceil(P / PMT) : 0;
+  if (PMT <= P * r) return 0;
+  return Math.ceil(Math.log(PMT / (PMT - P * r)) / Math.log(1 + r));
+}
+
+function applyAutoMonths(i) {
+  const d = state.debts[i];
+  if (d.autoMonths === false) return;
+  const n = calcAutoMonths(d);
+  d.paymentsLeft = n || 0;
+  const row = document.getElementById(`debtRow${i}`);
+  if (row) {
+    const inp = row.querySelector('.months-input');
+    if (inp) inp.value = n || '';
+    const remCell = row.cells[3];
+    if (remCell) {
+      remCell.textContent = d.arranged && d.monthly > 0 && d.paymentsLeft > 0
+        ? fmtNIS(Math.round(d.monthly * d.paymentsLeft))
+        : (d.balance > 0 ? fmtNIS(Math.round(d.balance)) : '—');
+    }
+  }
+  updateDebtTotals();
+}
+
+function toggleAutoMonths(i, checked) {
+  const d = state.debts[i];
+  d.autoMonths = checked;
+  if (checked) {
+    applyAutoMonths(i);
+  } else {
+    if (d.importedMonths) d.paymentsLeft = d.importedMonths;
+  }
+  renderDebtRow(i);
+  updateDebtTotals();
 }
 
 function renderDebtRow(i) {
   const d = state.debts[i];
-  if (!d.paymentsLeft && !d.monthly) d.arranged = false;
+  if (d.autoMonths === undefined) d.autoMonths = true;
   const arr = d.arranged === true;
   const dis = arr ? '' : 'disabled style="background:#f5f5f5;color:#aaa;"';
+
+  if (arr && d.autoMonths !== false) {
+    const n = calcAutoMonths(d);
+    if (n > 0) d.paymentsLeft = n;
+  }
+
+  const monthsVal = arr ? (d.paymentsLeft || '') : '';
+  const monthsAttrs = !arr
+    ? 'disabled style="background:#f5f5f5;color:#aaa;width:70px"'
+    : d.autoMonths !== false
+      ? 'disabled style="background:#f5f5f5;color:#888;width:70px"'
+      : 'style="width:70px"';
+
   const existing = document.getElementById(`debtRow${i}`);
   const tr = existing || document.createElement('tr');
   tr.id = `debtRow${i}`;
@@ -1511,15 +1567,18 @@ function renderDebtRow(i) {
         ${DEBT_CATEGORIES.map(c=>`<option ${d.category===c?'selected':''}>${c}</option>`).join('')}
       </select>
     </td>
-    <td><input type="text" inputmode="numeric" value="${d.balance?parseInt(d.balance).toLocaleString('he-IL'):''}" placeholder="0" oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].balance=parseNum(this.value);updateDebtTotals()"></td>
+    <td><input type="text" inputmode="numeric" value="${d.balance?parseInt(d.balance).toLocaleString('he-IL'):''}" placeholder="0" oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].balance=parseNum(this.value);if(state.debts[${i}].autoMonths!==false)applyAutoMonths(${i});updateDebtTotals()"></td>
     <td style="direction:ltr;text-align:right;color:#555;font-size:0.82rem;white-space:nowrap;">${arr&&d.monthly>0&&d.paymentsLeft>0 ? fmtNIS(Math.round(d.monthly*d.paymentsLeft)) : (d.balance>0?fmtNIS(Math.round(d.balance)):'—')}</td>
     <td style="text-align:center">
       <input type="checkbox" ${arr?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:#1a3a5c;"
         onchange="state.debts[${i}].arranged=this.checked;if(!this.checked){state.debts[${i}].interest=0;state.debts[${i}].paymentsLeft=0;state.debts[${i}].monthly=0;}renderDebtRow(${i});updateDebtTotals()">
     </td>
-    <td><input type="number" value="${arr?(d.interest||''):''}" placeholder="%" step="0.1" style="width:60px" ${dis} onchange="state.debts[${i}].interest=parseNum(this.value)"></td>
-    <td><input type="number" value="${arr?(d.paymentsLeft||''):''}" placeholder="חודשים" style="width:70px" ${dis} onchange="state.debts[${i}].paymentsLeft=parseNum(this.value)"></td>
-    <td><input type="text" inputmode="numeric" value="${arr&&d.monthly?parseInt(d.monthly).toLocaleString('he-IL'):''}" placeholder="₪" ${dis} oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].monthly=parseNum(this.value);if(!this.value||parseNum(this.value)===0){state.debts[${i}].arranged=false;renderDebtRow(${i});}updateDebtTotals()"></td>
+    <td><input type="number" value="${arr?(d.interest||''):''}" placeholder="%" step="0.1" style="width:60px" ${dis} onchange="state.debts[${i}].interest=parseNum(this.value);if(state.debts[${i}].autoMonths!==false)applyAutoMonths(${i})"></td>
+    <td>
+      ${arr ? `<label style="display:block;font-size:0.65rem;color:#888;margin-bottom:1px;cursor:pointer;white-space:nowrap;line-height:1.3;"><input type="checkbox" ${d.autoMonths!==false?'checked':''} style="width:11px;height:11px;margin-left:2px;accent-color:#1a3a5c;vertical-align:middle;cursor:pointer;" onchange="toggleAutoMonths(${i},this.checked)"> חישוב אוט׳</label>` : ''}
+      <input type="number" class="months-input" value="${monthsVal}" placeholder="חודשים" ${monthsAttrs} onchange="state.debts[${i}].paymentsLeft=parseNum(this.value);updateDebtTotals()">
+    </td>
+    <td><input type="text" inputmode="numeric" value="${arr&&d.monthly?parseInt(d.monthly).toLocaleString('he-IL'):''}" placeholder="₪" ${dis} oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].monthly=parseNum(this.value);if(state.debts[${i}].autoMonths!==false){applyAutoMonths(${i});}else if(!this.value||parseNum(this.value)===0){state.debts[${i}].arranged=false;renderDebtRow(${i});}updateDebtTotals()"></td>
     <td><input placeholder="הערות" value="${escAttr(d.notes)}" title="${escAttr(d.notes)}" oninput="state.debts[${i}].notes=this.value;this.title=this.value" style="width:100%;border:1px solid #d0d8e4;border-radius:5px;padding:0.28rem 0.4rem;font-family:inherit;font-size:0.82rem;"></td>
     <td style="text-align:center"><button class="del-btn" onclick="removeDebtRow(${i})" title="מחק שורה">✕</button></td>`;
   if (!existing) document.getElementById('debtsBody').appendChild(tr);
