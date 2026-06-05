@@ -565,6 +565,11 @@
 
       <div class="debts-table-wrap">
         <table class="debts-table" id="debtsTable">
+          <colgroup>
+            <col style="width:120px">
+            <col style="width:130px">
+            <col><col><col><col><col><col><col><col>
+          </colgroup>
           <thead>
             <tr>
               <th>שם הנושה</th>
@@ -1434,7 +1439,7 @@ const DEBT_ACTIONS = ['ללא שינוי','פרעון מלא','הקפאה','פר
 const ACTION_PARAM_LABEL = {'הקפאה':'חודשי הקפאה','פריסה מחדש':'חודשים חדשים','ויתור חלקי':'סכום ויתור (₪)','פרעון מלא':'סכום (₪)'};
 const CATEGORY_BADGE = {'בנק - הלוואה':'badge-bank','כרטיס אשראי':'badge-cc','משפחה קרובה':'badge-family'};
 const DEBT_CATEGORIES = [
-  'ארנונה','ביטוח לאומי','בנק - הלוואה','הלוואה - חברה פיננסית','בנק - משיכת יתר',
+  'ארנונה','ביטוח לאומי','בנק - הלוואה','בנק - משיכת יתר',
   'גמ"ח','הוצאה לפועל','חברים','כרטיס אשראי',
   'מוסד / חברה','מזונות','מס הכנסה','מע"מ',
   'משכורת - הלוואה','משכנתא - פיגורים','משפחה קרובה','משפחה רחוקה',
@@ -1586,9 +1591,9 @@ function renderDebtRow(i) {
   const tr = existing || document.createElement('tr');
   tr.id = `debtRow${i}`;
   tr.innerHTML = `
-    <td><input placeholder="שם הנושה" value="${d.name}" oninput="state.debts[${i}].name=this.value;updateDebtTotals()"></td>
+    <td><input placeholder="שם הנושה" value="${d.name}" style="width:100%" oninput="state.debts[${i}].name=this.value;updateDebtTotals()"></td>
     <td>
-      <select onchange="state.debts[${i}].category=this.value">
+      <select style="width:100%;max-width:128px;" onchange="state.debts[${i}].category=this.value">
         <option ${!d.category?'selected':''}>בחר</option>
         ${DEBT_CATEGORIES.map(c=>`<option ${d.category===c?'selected':''}>${c}</option>`).join('')}
       </select>
