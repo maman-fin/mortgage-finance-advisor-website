@@ -1551,10 +1551,10 @@ function renderDebtRow(i) {
 
   const monthsVal = arr ? (d.paymentsLeft || '') : '';
   const monthsAttrs = !arr
-    ? 'disabled style="background:#f5f5f5;color:#aaa;width:70px"'
+    ? 'disabled style="background:#f5f5f5;color:#aaa;width:62px"'
     : d.autoMonths !== false
-      ? 'disabled style="background:#f5f5f5;color:#888;width:70px"'
-      : 'style="width:70px"';
+      ? 'disabled style="background:#f5f5f5;color:#888;width:62px"'
+      : 'style="width:62px"';
 
   const existing = document.getElementById(`debtRow${i}`);
   const tr = existing || document.createElement('tr');
@@ -1574,12 +1574,14 @@ function renderDebtRow(i) {
         onchange="state.debts[${i}].arranged=this.checked;if(!this.checked){state.debts[${i}].interest=0;state.debts[${i}].paymentsLeft=0;state.debts[${i}].monthly=0;}renderDebtRow(${i});updateDebtTotals()">
     </td>
     <td><input type="number" value="${arr?(d.interest||''):''}" placeholder="%" step="0.1" style="width:60px" ${dis} onchange="state.debts[${i}].interest=parseNum(this.value);if(state.debts[${i}].autoMonths!==false)applyAutoMonths(${i})"></td>
-    <td>
-      ${arr ? `<label style="display:block;font-size:0.65rem;color:#888;margin-bottom:1px;cursor:pointer;white-space:nowrap;line-height:1.3;"><input type="checkbox" ${d.autoMonths!==false?'checked':''} style="width:11px;height:11px;margin-left:2px;accent-color:#1a3a5c;vertical-align:middle;cursor:pointer;" onchange="toggleAutoMonths(${i},this.checked)"> חישוב אוט׳</label>` : ''}
-      <input type="number" class="months-input" value="${monthsVal}" placeholder="חודשים" ${monthsAttrs} onchange="state.debts[${i}].paymentsLeft=parseNum(this.value);updateDebtTotals()">
+    <td style="white-space:nowrap;vertical-align:middle;">
+      <div style="display:flex;align-items:center;gap:3px;">
+        <input type="number" class="months-input" value="${monthsVal}" placeholder="חודשים" ${monthsAttrs} onchange="state.debts[${i}].paymentsLeft=parseNum(this.value);updateDebtTotals()">
+        ${arr ? `<label title="חישוב אוטומטי לפי לוח שפיצר" style="display:flex;align-items:center;gap:2px;font-size:0.6rem;color:#888;cursor:pointer;white-space:nowrap;flex-shrink:0;"><input type="checkbox" ${d.autoMonths!==false?'checked':''} style="width:12px;height:12px;accent-color:#1a3a5c;cursor:pointer;flex-shrink:0;" onchange="toggleAutoMonths(${i},this.checked)">אוט׳</label>` : ''}
+      </div>
     </td>
     <td><input type="text" inputmode="numeric" value="${arr&&d.monthly?parseInt(d.monthly).toLocaleString('he-IL'):''}" placeholder="₪" ${dis} oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].monthly=parseNum(this.value);if(state.debts[${i}].autoMonths!==false){applyAutoMonths(${i});}else if(!this.value||parseNum(this.value)===0){state.debts[${i}].arranged=false;renderDebtRow(${i});}updateDebtTotals()"></td>
-    <td><input placeholder="הערות" value="${escAttr(d.notes)}" title="${escAttr(d.notes)}" oninput="state.debts[${i}].notes=this.value;this.title=this.value" style="width:100%;border:1px solid #d0d8e4;border-radius:5px;padding:0.28rem 0.4rem;font-family:inherit;font-size:0.82rem;"></td>
+    <td><input placeholder="הערות" value="${escAttr(d.notes)}" title="${escAttr(d.notes)}" oninput="state.debts[${i}].notes=this.value;this.title=this.value" style="min-width:120px;width:100%;border:1px solid #d0d8e4;border-radius:5px;padding:0.28rem 0.4rem;font-family:inherit;font-size:0.82rem;"></td>
     <td style="text-align:center"><button class="del-btn" onclick="removeDebtRow(${i})" title="מחק שורה">✕</button></td>`;
   if (!existing) document.getElementById('debtsBody').appendChild(tr);
 }
