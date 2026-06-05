@@ -566,8 +566,8 @@
       <div class="debts-table-wrap">
         <table class="debts-table" id="debtsTable">
           <colgroup>
-            <col style="width:155px">
-            <col style="width:160px">
+            <col style="width:185px">
+            <col style="width:190px">
             <col><col><col><col><col><col><col><col>
           </colgroup>
           <thead>
@@ -1593,7 +1593,7 @@ function renderDebtRow(i) {
   tr.innerHTML = `
     <td><input placeholder="שם הנושה" value="${d.name}" style="width:100%" oninput="state.debts[${i}].name=this.value;updateDebtTotals()"></td>
     <td>
-      <select style="width:100%;max-width:158px;" onchange="state.debts[${i}].category=this.value">
+      <select style="width:100%;max-width:188px;" onchange="state.debts[${i}].category=this.value">
         <option ${!d.category?'selected':''}>בחר</option>
         ${DEBT_CATEGORIES.map(c=>`<option ${d.category===c?'selected':''}>${c}</option>`).join('')}
       </select>
