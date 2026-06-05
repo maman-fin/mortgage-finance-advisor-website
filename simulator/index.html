@@ -584,7 +584,7 @@
             <tr>
               <td colspan="2" style="font-weight:700;text-align:right;">סה"כ</td>
               <td id="debtsTotalBalance" style="font-weight:700;">0 ₪</td>
-              <td id="debtsTotalRemaining" style="font-weight:700;">0 ₪</td>
+              <td id="debtsTotalRemaining" style="font-weight:700;direction:ltr;white-space:nowrap;">₪ 0</td>
               <td colspan="3"></td>
               <td id="debtsTotalMonthly" style="font-weight:700;">0 ₪</td>
               <td colspan="2"></td>
@@ -1434,7 +1434,7 @@ const DEBT_ACTIONS = ['ללא שינוי','פרעון מלא','הקפאה','פר
 const ACTION_PARAM_LABEL = {'הקפאה':'חודשי הקפאה','פריסה מחדש':'חודשים חדשים','ויתור חלקי':'סכום ויתור (₪)','פרעון מלא':'סכום (₪)'};
 const CATEGORY_BADGE = {'בנק - הלוואה':'badge-bank','כרטיס אשראי':'badge-cc','משפחה קרובה':'badge-family'};
 const DEBT_CATEGORIES = [
-  'ארנונה','ביטוח לאומי','בנק - הלוואה','בנק - משיכת יתר',
+  'ארנונה','ביטוח לאומי','בנק - הלוואה','הלוואה - חברה פיננסית','בנק - משיכת יתר',
   'גמ"ח','הוצאה לפועל','חברים','כרטיס אשראי',
   'מוסד / חברה','מזונות','מס הכנסה','מע"מ',
   'משכורת - הלוואה','משכנתא - פיגורים','משפחה קרובה','משפחה רחוקה',
@@ -1594,12 +1594,12 @@ function renderDebtRow(i) {
       </select>
     </td>
     <td><input type="text" inputmode="numeric" value="${d.balance?parseInt(d.balance).toLocaleString('he-IL'):''}" placeholder="0" oninput="fmtMoneyInput(this)" onchange="state.debts[${i}].balance=parseNum(this.value);if(state.debts[${i}].autoMonths!==false)applyAutoMonths(${i});updateDebtTotals()"></td>
-    <td style="direction:ltr;text-align:right;color:#555;font-size:0.82rem;white-space:nowrap;">${arr&&d.monthly>0&&d.paymentsLeft>0 ? fmtNIS(Math.round(d.monthly*d.paymentsLeft)) : (d.balance>0?fmtNIS(Math.round(d.balance)):'—')}</td>
+    <td style="direction:ltr;color:#555;font-size:0.82rem;white-space:nowrap;min-width:90px;">${arr&&d.monthly>0&&d.paymentsLeft>0 ? '₪ '+Math.round(d.monthly*d.paymentsLeft).toLocaleString('he-IL') : (d.balance>0?'₪ '+Math.round(d.balance).toLocaleString('he-IL'):'—')}</td>
     <td style="text-align:center">
       <input type="checkbox" ${arr?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:#1a3a5c;"
         onchange="state.debts[${i}].arranged=this.checked;if(!this.checked){state.debts[${i}].interest=0;state.debts[${i}].paymentsLeft=0;state.debts[${i}].monthly=0;}renderDebtRow(${i});updateDebtTotals()">
     </td>
-    <td><input type="number" value="${arr?(d.interest||''):''}" placeholder="%" step="0.1" style="width:60px" ${dis} onchange="state.debts[${i}].interest=parseNum(this.value);if(state.debts[${i}].autoMonths!==false)applyAutoMonths(${i})"></td>
+    <td style="white-space:nowrap;"><input type="number" value="${arr?(d.interest||''):''}" placeholder="0" step="0.1" style="width:52px" ${dis} onchange="state.debts[${i}].interest=parseNum(this.value);if(state.debts[${i}].autoMonths!==false)applyAutoMonths(${i})"><span style="font-size:0.8rem;color:#666;margin-right:2px;">%</span></td>
     <td style="white-space:nowrap;vertical-align:middle;">
       <div style="display:flex;align-items:center;gap:3px;">
         <input type="number" class="months-input" value="${monthsVal}" placeholder="חודשים" ${monthsAttrs} onchange="state.debts[${i}].paymentsLeft=parseNum(this.value);updateDebtTotals()">
@@ -1655,7 +1655,7 @@ function updateDebtTotals() {
     return s + (arr && d.monthly>0 && d.paymentsLeft>0 ? d.monthly*d.paymentsLeft : d.balance||0);
   }, 0);
   document.getElementById('debtsTotalBalance').textContent = fmtNIS(totalBal);
-  document.getElementById('debtsTotalRemaining').textContent = fmtNIS(Math.round(totalRem));
+  document.getElementById('debtsTotalRemaining').textContent = '₪ ' + Math.round(totalRem).toLocaleString('he-IL');
   document.getElementById('debtsTotalMonthly').textContent = fmtNIS(totalMon);
   scheduleAutoSave();
 }
@@ -3411,6 +3411,7 @@ function runCalc() {
 
   const savingsMonthlyRate = state.savingsRateEnabled && state.savingsRate > 0 ? state.savingsRate / 12 / 100 : 0;
   let cumulativeSavings = 0;
+  let principalCumul = 0;
 
   const monthlyCF = [];
   for (let m = 0; m < MONTHS; m++) {
@@ -3488,10 +3489,11 @@ function runCalc() {
     const phaseExp    = phase.expenses;
     const phaseSaving = phase.saving || 0;
     cumulativeSavings = cumulativeSavings * (1 + savingsMonthlyRate) + phaseSaving;
+    principalCumul += phaseSaving;
     const netBefore = curIncome - curExp - state.debts.reduce((s,d)=>s+d.monthly,0);
     const netAfter  = phaseIncome - phaseExp - phaseSaving - totalDebt;
 
-    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, loanBalance: Math.round(newLoanBalance), savingMonthly: phaseSaving, savingCumul: Math.round(cumulativeSavings), netBefore, fundsInjected: fundsInjectedByMonth[m] || 0, debtPmtInPlan, debtPmtNotInPlan, newLoanPmt });
+    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, loanBalance: Math.round(newLoanBalance), savingMonthly: phaseSaving, savingCumul: Math.round(cumulativeSavings), savingPrincipal: Math.round(principalCumul), netBefore, fundsInjected: fundsInjectedByMonth[m] || 0, debtPmtInPlan, debtPmtNotInPlan, newLoanPmt });
     debtBalanceByMonth.push(totalBalance);
     loanBalanceByMonth.push(Math.round(newLoanBalance));
     debtMonthlyByMonth.push(totalDebt);
@@ -3556,13 +3558,15 @@ function runCalc() {
             ${newLoansTotal > 0 ? mkSub('הלוואות חדשות', newLoansTotal) : ''}
           </div>
         </div>
-        <div class="sum-box">
-          <div class="sb-label">כספים זמינים לפירעון מיידי לאחר תכנית</div>
-          <div class="sb-value">${fmtNIS(Math.round(remainingClientFunds))}</div>
+        <div style="display:flex;gap:0.75rem;">
+          <div class="sum-box">
+            <div class="sb-label">כספים זמינים לפירעון מיידי לאחר תכנית</div>
+            <div class="sb-value">${fmtNIS(Math.round(remainingClientFunds))}</div>
+          </div>
+          ${monthlyCF[monthlyCF.length-1]?.savingCumul > 0 ? `<div class="sum-box" style="border-right:4px solid #1a6e3c;"><div class="sb-label">💰 חיסכון צפוי בסיום התכנית</div><div class="sb-value" style="color:#1a6e3c;">${fmtNIS(Math.round(monthlyCF[monthlyCF.length-1].savingCumul))}</div></div>` : ''}
         </div>
         <div class="sum-box positive"><div class="sb-label">החזר חובות ראשוני</div><div class="sb-value">${fmtNIS(Math.round(monthlyCF[0]?.totalDebt || 0))}</div></div>
         <div class="sum-box positive"><div class="sb-label">זמן לסיום חובות</div><div class="sb-value">${afterDebtFreeText}</div></div>
-        ${monthlyCF[monthlyCF.length-1]?.savingCumul > 0 ? `<div class="sum-box" style="border-right:4px solid #1a6e3c;"><div class="sb-label">💰 חיסכון צפוי בסיום התכנית</div><div class="sb-value" style="color:#1a6e3c;">${fmtNIS(Math.round(monthlyCF[monthlyCF.length-1].savingCumul))}</div></div>` : ''}
       </div>
     </div>`;
 
@@ -3651,12 +3655,12 @@ function runCalc() {
     const savLabels = savSlice.map(m => m.m);
     if (savingsChartInst) savingsChartInst.destroy();
     savingsChartInst = new Chart(document.getElementById('savingsChart'), {
-      type: 'bar',
+      type: 'line',
       data: {
         labels: savLabels,
         datasets: [
-          { label: 'חיסכון חודשי', data: savSlice.map(m => m.savingMonthly), backgroundColor: 'rgba(26,110,60,0.5)', borderColor: '#1a6e3c', borderWidth: 1, order: 2 },
-          { label: 'חיסכון מצטבר', data: savSlice.map(m => m.savingCumul), type: 'line', borderColor: '#e8a020', backgroundColor: 'rgba(232,160,32,0.1)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3, order: 1 },
+          { label: 'סך הפקדות (קרן)', data: savSlice.map(m => m.savingPrincipal), borderColor: '#2a6496', backgroundColor: 'rgba(42,100,150,0.15)', fill: 'origin', tension: 0.3, pointRadius: 0, borderWidth: 2 },
+          { label: 'ערך הצבירה (קרן + ריבית)', data: savSlice.map(m => m.savingCumul), borderColor: '#e8a020', backgroundColor: 'rgba(232,160,32,0.25)', fill: '-1', tension: 0.3, pointRadius: 0, borderWidth: 2.5 },
         ]
       },
       options: {
@@ -3664,11 +3668,14 @@ function runCalc() {
         interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 14 } },
-          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmtNIS(ctx.raw || 0)}` } },
+          tooltip: {
+            rtl: true,
+            callbacks: { label: ctx => `${ctx.dataset.label}: ₪ ${Math.round(ctx.parsed.y).toLocaleString('he-IL')}` }
+          },
         },
         scales: {
           x: { title: { display: true, text: 'חודשים', font: { size: 11 } }, ticks: { autoSkip: true, maxTicksLimit: 20 } },
-          y: { title: { display: true, text: 'ש"כ', font: { size: 11 } }, ticks: { callback: v => fmtN(v) } },
+          y: { title: { display: true, text: 'ש"ח', font: { size: 11 } }, ticks: { callback: v => fmtN(v) } },
         }
       }
     });
