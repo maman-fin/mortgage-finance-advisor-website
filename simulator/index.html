@@ -3446,7 +3446,7 @@ function runCalc() {
     const netBefore = curIncome - curExp - state.debts.reduce((s,d)=>s+d.monthly,0);
     const netAfter  = phaseIncome - phaseExp - totalDebt;
 
-    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, netBefore, fundsInjected: fundsInjectedByMonth[m] || 0, debtPmtInPlan, debtPmtNotInPlan, newLoanPmt });
+    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, loanBalance: Math.round(newLoanBalance), netBefore, fundsInjected: fundsInjectedByMonth[m] || 0, debtPmtInPlan, debtPmtNotInPlan, newLoanPmt });
     debtBalanceByMonth.push(totalBalance);
     loanBalanceByMonth.push(Math.round(newLoanBalance));
     debtMonthlyByMonth.push(totalDebt);
@@ -3609,7 +3609,7 @@ function runCalc() {
       <td>${fmtNIS(Math.round(m.totalDebt))}</td>
       <td style="color:#2a6496;font-weight:${m.fundsInjected?'700':'400'}">${m.fundsInjected ? fmtNIS(Math.round(m.fundsInjected)) : '—'}</td>
       <td class="${neg}">${fmtNIS(Math.round(m.netAfter))}</td>
-      <td>${fmtNIS(Math.round(m.totalBalance))}</td>
+      <td>${fmtNIS(Math.round(m.totalBalance + (m.loanBalance || 0)))}</td>
     </tr>`;
   });
   document.getElementById('monthlyBody').innerHTML = tableHtml;
