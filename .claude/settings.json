@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python gen_budget.py)",
+      "Bash(node -e ' *)",
+      "Bash(node --check _check.js)",
+      "Bash(rm -f _check.js)",
+      "Bash(node --check _check_0.js)",
+      "Bash(rm _check.js)"
+    ]
+  }
+}

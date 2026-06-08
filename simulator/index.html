@@ -836,6 +836,41 @@
       <div class="summary-grid" id="summaryGrid"></div>
     </div>
 
+    <div class="card" id="interestCompareCard" style="display:none">
+      <div class="card-title">💡 חיסכון בריבית — לפני מול אחרי ההבראה</div>
+      <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-end;margin-bottom:1.2rem;">
+        <div>
+          <label style="font-size:0.8rem;color:#666;font-weight:600;display:block;margin-bottom:4px;">ריבית שנתית משוערת על חובות שלא בהסדר</label>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <input type="number" id="unarrangedRateInput" placeholder="0" step="0.1" min="0" max="40"
+              style="width:70px;border:1px solid #c8d8ec;border-radius:6px;padding:0.3rem 0.5rem;font-size:0.85rem;"
+              oninput="state.unarrangedDebtRate=parseFloat(this.value)||0;updateInterestCompare()">
+            <span style="font-size:0.85rem;color:#666;">%</span>
+          </div>
+        </div>
+        <div style="flex:1;min-width:240px;">
+          <label style="font-size:0.8rem;color:#666;font-weight:600;display:block;margin-bottom:4px;">תקופת השוואה: <span id="interestCompareMonthsLabel" style="color:#1a3a5c;font-weight:800;"></span> חודשים</label>
+          <input type="range" id="interestCompareSlider" min="1" value="1"
+            style="width:100%;accent-color:#1a3a5c;cursor:pointer;"
+            oninput="state.interestCompareMonths=parseInt(this.value);updateInterestCompare()">
+        </div>
+      </div>
+      <div class="before-after-wrap">
+        <div class="ba-col ba-col--before">
+          <div class="ba-col-title">לפני הבראה</div>
+          <div class="sum-box"><div class="sb-label">סך ריבית שתיצבר על החובות</div><div class="sb-value" id="interestBeforeVal">—</div></div>
+        </div>
+        <div class="ba-col ba-col--after">
+          <div class="ba-col-title">לאחר הבראה</div>
+          <div class="sum-box positive"><div class="sb-label">סך ריבית במסגרת התכנית</div><div class="sb-value" id="interestAfterVal">—</div></div>
+        </div>
+      </div>
+      <div class="sum-box" id="interestSavingBox" style="margin-top:0.9rem;border-right:4px solid #1a6e3c;">
+        <div class="sb-label">💰 חיסכון משוער בריבית לתקופה שנבחרה</div>
+        <div class="sb-value" style="color:#1a6e3c;" id="interestSavingVal">—</div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-title">יתרת חובות לאורך הזמן</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
@@ -923,6 +958,8 @@ const state = {
   debts: [],  // {name, category, balance, interest, paymentsLeft, monthly, notes, action, actionParam}
   savingsRateEnabled: false,
   savingsRate: 0,
+  unarrangedDebtRate: 0,
+  interestCompareMonths: null,
 };
 
 // ===================== NAV =====================
@@ -989,31 +1026,135 @@ function remainingBalance(pv, annualRate, totalMonths, paidMonths) {
 }
 
 // ===================== BUDGET STEP =====================
-const EXPENSE_GROUPS = ['מזון ופארמה','פנאי, בילוי ותחביבים','ביגוד והנעלה','תכולת בית','אחזקת בית','טיפוח','חינוך','אירועים, תרומות, צרכי דת','בריאות','תחבורה','משפחה','תקשורת','דיור','התחייבויות','פיננסים'];
+const EXPENSE_GROUPS = ['מזון ופארמה','פנאי, בילוי ותחביבים','ביגוד והנעלה','תכולת בית','אחזקת בית','טיפוח','חינוך','אירועים, תרומות, צרכי דת','בריאות','תחבורה','משפחה','תקשורת','דיור','התחייבויות','נכסים','פיננסים'];
 const INCOME_GROUPS  = ['שכר','קצבאות','הכנסות שונות'];
 
 function initBudget() {
   state.budget = [
     // ── הכנסות ──
-    {name:'הכנסות', group:'הכנסות', type:'income', isGroup:true, current:0, proposed:0, expanded:true},
-    {name:'שכר ומשכורת', group:'הכנסות', type:'income', isGroup:false, current:0, proposed:0},
-    {name:'קצבאות',       group:'הכנסות', type:'income', isGroup:false, current:0, proposed:0},
-    {name:'הכנסות אחרות', group:'הכנסות', type:'income', isGroup:false, current:0, proposed:0},
-    // ── דיור ──
+    {name:'שכר', group:'שכר', type:'income', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'שכר עבודה 1', group:'שכר', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'שכר עבודה 2', group:'שכר', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'שכר עבודה 3', group:'שכר', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'שכר עבודה 4', group:'שכר', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'שכר - כללי', group:'שכר', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'קצבאות', group:'קצבאות', type:'income', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'קצבת ילדים', group:'קצבאות', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'קצבת נכות', group:'קצבאות', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'סיוע בשכר דירה', group:'קצבאות', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'קצבת זיקנה', group:'קצבאות', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'קצבאות - כללי', group:'קצבאות', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'הכנסות שונות', group:'הכנסות שונות', type:'income', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'קבלת מזונות', group:'הכנסות שונות', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'הכנסה מנכס או פיננסי', group:'הכנסות שונות', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'עזרה ממשפחה', group:'הכנסות שונות', type:'income', isGroup:false, current:0, proposed:0},
+    {name:'הכנסות שונות - כללי', group:'הכנסות שונות', type:'income', isGroup:false, current:0, proposed:0},
+    // ── הוצאות ──
+    {name:'מזון ופארמה', group:'מזון ופארמה', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'מזון', group:'מזון ופארמה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'עישון', group:'מזון ופארמה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'אוכל מוכן / בעבודה', group:'מזון ופארמה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'בר מים', group:'מזון ופארמה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'פארמה וטואלטיקה', group:'מזון ופארמה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'מזון ופארמה - כללי', group:'מזון ופארמה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'פנאי, בילוי ותחביבים', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'חופשות', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'בילויים ומופעים', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'חוגי מבוגרים', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'הגרלות', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ספורט', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'מסעדה ואוכל בחוץ', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'חיות מחמד', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'בייביסיטר', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'פנאי - כללי', group:'פנאי, בילוי ותחביבים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ביגוד והנעלה', group:'ביגוד והנעלה', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'ביגוד והנעלה - כללי', group:'ביגוד והנעלה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ביגוד הורים', group:'ביגוד והנעלה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ביגוד ילדים', group:'ביגוד והנעלה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'נעליים', group:'ביגוד והנעלה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תכולת בית', group:'תכולת בית', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'תכולת בית - כללי', group:'תכולת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ריהוט', group:'תכולת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'מוצרי חשמל ואלקטרוניקה', group:'תכולת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'משחקים, צעצועים וספרים', group:'תכולת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'כלי בית', group:'תכולת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'אחזקת בית', group:'אחזקת בית', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'מים וביוב', group:'אחזקת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'חשמל', group:'אחזקת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'גז', group:'אחזקת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'אחזקת בית - כללי', group:'אחזקת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ניקיון', group:'אחזקת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תיקונים בבית / במכשירים', group:'אחזקת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'גינה', group:'אחזקת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'בלת"ם', group:'אחזקת בית', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'טיפוח', group:'טיפוח', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'מספרה', group:'טיפוח', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'קוסמטיקה', group:'טיפוח', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'טיפוח - כללי', group:'טיפוח', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'חינוך', group:'חינוך', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'חינוך - כללי', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'חוגים ותנועת נוער', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'מסגרות צהריים', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'מסגרות קיץ', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'לימודים והשתלמות לבוגרים', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'הסעות', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'בית ספר', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'צהרון / מטפלת', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'שיעור פרטי', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'מסגרות יום', group:'חינוך', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'אירועים, תרומות, צרכי דת', group:'אירועים, תרומות, צרכי דת', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'תרומות', group:'אירועים, תרומות, צרכי דת', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'חגים וצורכי דת', group:'אירועים, תרומות, צרכי דת', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'אירוע בעבודה / לחברים', group:'אירועים, תרומות, צרכי דת', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'בריאות', group:'בריאות', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'בריאות - כללי', group:'בריאות', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'אופטיקה', group:'בריאות', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'טיפולי שיניים / אורתודנט', group:'בריאות', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תשלום לקופ"ח', group:'בריאות', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'טיפולים פרטיים', group:'בריאות', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תרופות', group:'בריאות', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ביטוח רפואי נוסף', group:'בריאות', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'חדר כושר', group:'בריאות', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תחבורה', group:'תחבורה', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'דלק', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ביטוח רכב', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תחבורה ציבורית', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'חניה', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תחבורה - כללי', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'כבישי אגרה', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'רישוי רכב', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תחזוקת רכב', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ליסינג', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תחבורה שיתופית', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'מוניות', group:'תחבורה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'משפחה', group:'משפחה', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'אירועי שמחות במשפחה', group:'משפחה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'דמי כיס', group:'משפחה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תשלום מזונות', group:'משפחה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'עזרה למשפחה', group:'משפחה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'משפחה - כללי', group:'משפחה', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תקשורת', group:'תקשורת', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'טלפון נייד ונייח', group:'תקשורת', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'טלוויזיה ואינטרנט (ספק ותשתית)', group:'תקשורת', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'תקשורת - כללי', group:'תקשורת', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'שירותי תוכן', group:'תקשורת', type:'expense', isGroup:false, current:0, proposed:0},
     {name:'דיור', group:'דיור', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
-    {name:'משכנתא',               group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
-    {name:'שכר דירה',             group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
-    {name:'ארנונה',               group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
-    {name:'ועד בית',              group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
-    {name:'ביטוח נכס ותכולה',    group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
-    {name:'דיור - כללי',         group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
-    // ── התחייבויות ──
+    {name:'משכנתה', group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'שכר דירה', group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'מיסי יישוב / ועד בית', group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ארנונה', group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ביטוח נכס ותכולה', group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'דיור - כללי', group:'דיור', type:'expense', isGroup:false, current:0, proposed:0},
     {name:'התחייבויות', group:'התחייבויות', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
-    {name:'ריביות משיכת יתר',     group:'התחייבויות', type:'expense', isGroup:false, current:0, proposed:0},
-    {name:'החזר הלוואות - כללי', group:'התחייבויות', type:'expense', isGroup:false, current:0, proposed:0},
-    // ── נכסים ──
+    {name:'ריביות משיכת יתר', group:'התחייבויות', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'החזר חובות חודשי (למעט משכנתה) - כללי', group:'התחייבויות', type:'expense', isGroup:false, current:0, proposed:0},
     {name:'נכסים', group:'נכסים', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
     {name:'הפקדות לחסכונות - כללי', group:'נכסים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'פיננסים', group:'פיננסים', type:'expense', isGroup:true, current:0, proposed:0, expanded:false},
+    {name:'ביטוח לאומי (למי שלא עובד)', group:'פיננסים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'ביטוח חיים', group:'פיננסים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'פיננסים - כללי', group:'פיננסים', type:'expense', isGroup:false, current:0, proposed:0},
+    {name:'עמלות', group:'פיננסים', type:'expense', isGroup:false, current:0, proposed:0},
   ];
   renderBudgetTable();
 }
@@ -1148,30 +1289,22 @@ function renderBudgetTable() {
   const hatGrpIdx = state.budget.findIndex(r=>r.isGroup&&r.name==='התחייבויות');
   const monthlyDebts = hatGrpIdx >= 0 ? (groupSums[hatGrpIdx]?.current||0) : 0;
 
-  const incomeGroupCount = state.budget.filter(r => r.isGroup && r.type === 'income').length;
-
   let html = '';
-  let curType = null, curExpanded = false, firstExpense = true, firstIncome = true;
+  let curType = null, curExpanded = false, firstExpense = true;
   orderedBudget.forEach(({r:row, i}) => {
     if (row.isGroup) {
       const isFirstExp = row.type === 'expense' && firstExpense;
-      const isMasterIncome = row.type === 'income' && firstIncome;
       if (row.type === 'expense') firstExpense = false;
-      if (row.type === 'income') firstIncome = false;
       curType = row.type;
       curExpanded = row.expanded === true; // default collapsed
-      if (isMasterIncome && incomeGroupCount > 1) {
-        curExpanded = true;
-      } else {
-        const s = groupSums[i] || {current:0, proposed:0};
-        const arrow = curExpanded ? '▾' : '▸';
-        const grpClass = `budget-grp-${row.type}${isFirstExp?' budget-first-expense':''}`;
-        const grpPropStyle = s.proposed !== s.current ? 'background:#fff3e0;color:#b45309;' : '';
-        html += `<tr class="${grpClass}" onclick="toggleBudgetGroup(${i})">
-          <td>${arrow} ${row.name}</td>
-          <td style="text-align:center">${fmtN(s.current)}</td>
-          <td style="text-align:center;${grpPropStyle}">${fmtN(s.proposed)}</td></tr>`;
-      }
+      const s = groupSums[i] || {current:0, proposed:0};
+      const arrow = curExpanded ? '▾' : '▸';
+      const grpClass = `budget-grp-${row.type}${isFirstExp?' budget-first-expense':''}`;
+      const grpPropStyle = s.proposed !== s.current ? 'background:#fff3e0;color:#b45309;' : '';
+      html += `<tr class="${grpClass}" onclick="toggleBudgetGroup(${i})">
+        <td>${arrow} ${row.name}</td>
+        <td style="text-align:center">${fmtN(s.current)}</td>
+        <td style="text-align:center;${grpPropStyle}">${fmtN(s.proposed)}</td></tr>`;
     } else if (curExpanded) {
       const subChanged = (row.proposed||0) !== (row.current||0);
       const subPropCellStyle = subChanged ? 'background:#fff3e0;' : '';
@@ -2801,6 +2934,79 @@ function simulateDebtBalances(debtList, months) {
   });
 }
 
+// Cumulative interest accrued "before" — arranged debts amortize at their current terms;
+// not-arranged debts have no payment plan, so interest simply accrues on the static balance
+// at the assumed rate the advisor sets.
+function simulateBeforeInterest(debtList, months, unarrangedRate) {
+  const arranged = [], unarranged = [];
+  debtList.forEach(d => {
+    const bal = d.balance || 0;
+    if (bal <= 0) return;
+    if (d.arranged === true) {
+      const mon = d.monthly || 0, int = d.interest || 0;
+      const pl = d.paymentsLeft > 0 ? d.paymentsLeft : impliedPaymentsLeft(bal, mon, int);
+      arranged.push({ balance: bal, monthly: mon, interest: int, paymentsLeft: pl });
+    } else {
+      unarranged.push({ balance: bal });
+    }
+  });
+  const rUnarranged = (unarrangedRate || 0) / 100 / 12;
+  const out = [];
+  let cumul = 0;
+  for (let m = 0; m < months; m++) {
+    arranged.forEach(d => {
+      if (d.balance <= 0 || d.paymentsLeft <= 0) return;
+      const r = d.interest / 100 / 12;
+      const intr = d.balance * r;
+      if (d.monthly <= intr) return;
+      const payment = Math.min(d.monthly, d.balance + intr);
+      d.balance = Math.max(d.balance - (payment - intr), 0);
+      d.paymentsLeft--;
+      if (d.balance < 0.5 || d.paymentsLeft === 0) { d.balance = 0; d.paymentsLeft = 0; }
+      cumul += intr;
+    });
+    unarranged.forEach(d => {
+      if (d.balance <= 0) return;
+      cumul += d.balance * rUnarranged;
+    });
+    out.push(cumul);
+  }
+  return out;
+}
+
+function renderInterestCompare() {
+  if (!icCache) return;
+  const card = document.getElementById('interestCompareCard');
+  card.style.display = '';
+
+  const slider = document.getElementById('interestCompareSlider');
+  slider.max = icCache.months;
+  if (!state.interestCompareMonths) state.interestCompareMonths = icCache.planMonths;
+  slider.value = Math.min(state.interestCompareMonths, icCache.months);
+  state.interestCompareMonths = parseInt(slider.value);
+
+  const rateInput = document.getElementById('unarrangedRateInput');
+  rateInput.value = state.unarrangedDebtRate || '';
+
+  updateInterestCompare();
+}
+
+function updateInterestCompare() {
+  if (!icCache) return;
+  const months = Math.max(1, Math.min(state.interestCompareMonths || 1, icCache.months));
+  const idx = months - 1;
+
+  const beforeArr = simulateBeforeInterest(icCache.expandedDebts, icCache.months, state.unarrangedDebtRate);
+  const beforeVal = beforeArr[idx] || 0;
+  const afterVal = icCache.afterCumul[idx] || 0;
+  const saving = Math.max(beforeVal - afterVal, 0);
+
+  document.getElementById('interestCompareMonthsLabel').textContent = months;
+  document.getElementById('interestBeforeVal').textContent = fmtNIS(Math.round(beforeVal));
+  document.getElementById('interestAfterVal').textContent = fmtNIS(Math.round(afterVal));
+  document.getElementById('interestSavingVal').textContent = fmtNIS(Math.round(saving));
+}
+
 function simulateDebts(debtList, months) {
   const debts = debtList.map(d => ({
     balance: d.balance || 0,
@@ -3263,6 +3469,7 @@ function getPlanPhases() {
 
 // ===================== CALCULATIONS =====================
 let balanceChartInst = null, balanceBeforeChartInst = null, savingsChartInst = null;
+let icCache = null; // {expandedDebts, months, planMonths, afterCumul[]} — for the interest-comparison card
 
 function runCalc() {
   const startDate = document.getElementById('startDate').value || new Date().toISOString().slice(0,7);
@@ -3422,6 +3629,7 @@ function runCalc() {
   const savingsMonthlyRate = state.savingsRateEnabled && state.savingsRate > 0 ? state.savingsRate / 12 / 100 : 0;
   let cumulativeSavings = 0;
   let principalCumul = 0;
+  let cumulativeInterestAfter = 0;
 
   const monthlyCF = [];
   for (let m = 0; m < MONTHS; m++) {
@@ -3468,6 +3676,7 @@ function runCalc() {
       const mthly = d.isRestructured ? d.newMonthly : d.monthly;
       const payment = Math.min(mthly, d.balance + d.balance*r);
       const interestCharge = d.balance * r;
+      cumulativeInterestAfter += interestCharge;
       d.balance = Math.max(d.balance + interestCharge - payment, 0);
       d.paymentsLeft = Math.max(d.paymentsLeft - 1, 0);
       if (d.balance < 0.5 || d.paymentsLeft === 0) d.balance = 0;
@@ -3483,9 +3692,15 @@ function runCalc() {
     let newLoanBalance = 0;
     loanPayments.forEach(l => {
       if (l.monthsLeft <= 0) return;
-      if (l.graceLeft > 0) { l.graceLeft--; if (l.rate > 0) l.balance *= (1 + l.rate); newLoanBalance += l.balance; return; }
+      if (l.graceLeft > 0) {
+        l.graceLeft--;
+        if (l.rate > 0) { cumulativeInterestAfter += l.balance * l.rate; l.balance *= (1 + l.rate); }
+        newLoanBalance += l.balance;
+        return;
+      }
       newLoanPmt += l.monthlyPmt;
       const interestCharge = l.balance * l.rate;
+      cumulativeInterestAfter += interestCharge;
       l.balance = Math.max(l.balance + interestCharge - l.monthlyPmt, 0);
       if (l.balance < 0.5) l.balance = 0;
       newLoanBalance += l.balance;
@@ -3503,7 +3718,7 @@ function runCalc() {
     const netBefore = curIncome - curExp - state.debts.reduce((s,d)=>s+d.monthly,0);
     const netAfter  = phaseIncome - phaseExp - phaseSaving - totalDebt;
 
-    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, loanBalance: Math.round(newLoanBalance), savingMonthly: phaseSaving, savingCumul: Math.round(cumulativeSavings), savingPrincipal: Math.round(principalCumul), netBefore, fundsInjected: fundsInjectedByMonth[m] || 0, debtPmtInPlan, debtPmtNotInPlan, newLoanPmt });
+    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, loanBalance: Math.round(newLoanBalance), savingMonthly: phaseSaving, savingCumul: Math.round(cumulativeSavings), savingPrincipal: Math.round(principalCumul), interestCumulAfter: cumulativeInterestAfter, netBefore, fundsInjected: fundsInjectedByMonth[m] || 0, debtPmtInPlan, debtPmtNotInPlan, newLoanPmt });
     debtBalanceByMonth.push(totalBalance);
     loanBalanceByMonth.push(Math.round(newLoanBalance));
     debtMonthlyByMonth.push(totalDebt);
@@ -3532,6 +3747,15 @@ function runCalc() {
       ? `${beforeFreeIdx + 1} חודשים (${Math.ceil((beforeFreeIdx+1)/12)} שנים)`
       : 'מעל 100 חודש';
   const afterDebtFreeText = `${treatmentEnd + 1} חודשים (${Math.ceil((treatmentEnd+1)/12)} שנים)`;
+
+  // Cache data needed for the interest-comparison card (re-evaluated on slider/rate change)
+  icCache = {
+    expandedDebts,
+    months: MONTHS,
+    planMonths: treatmentEnd + 1,
+    afterCumul: monthlyCF.map(m => m.interestCumulAfter),
+  };
+  renderInterestCompare();
 
   document.getElementById('resultsTitle').textContent = `📈 תוצאות תכנית הבראה${state.family ? ' — ' + state.family : ''}`;
 
@@ -3638,6 +3862,10 @@ function runCalc() {
   const balDataFull  = debtBalanceByMonth.slice(0, balZeroIdx + 1);
   const loanDataFull = loanBalanceByMonth.slice(0, balZeroIdx + 1);
   const injSliceFull = fundsInjectedByMonth.slice(0, balZeroIdx + 1);
+  // Lift the "planned payoff" marker above the balance line by a margin proportional to the
+  // chart's value range, so the triangle never overlaps the line regardless of scale
+  const balMarkerMax = Math.max(1, ...balDataFull, ...injSliceFull.map((v,i) => v>0 ? balDataFull[i]+v : 0));
+  const balMarkerOffset = balMarkerMax * 0.05;
   if (balanceChartInst) balanceChartInst.destroy();
   balanceChartInst = new Chart(document.getElementById('balanceChart'), {
     type: 'line',
@@ -3646,8 +3874,8 @@ function runCalc() {
       datasets:[
         { label:'יתרת חובות', data: balDataFull, borderColor:'#1a7a40', backgroundColor:'rgba(26,122,64,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true },
         ...(loanDataFull.some(v => v > 0) ? [{ label:'יתרת הלוואות חדשות', data: loanDataFull, borderColor:'#2a6496', backgroundColor:'rgba(42,100,150,0.07)', borderWidth:2, tension:0.3, pointRadius:0, fill:true }] : []),
-        { label:'פירעון מתוכנן', type:'scatter',
-          data: injSliceFull.map((v,i) => v>0 ? {x: balSliceFull[i].m, y: balDataFull[i]+v} : null).filter(Boolean),
+        { label:'פירעון מתוכנן', type:'scatter', clip:false,
+          data: injSliceFull.map((v,i) => v>0 ? {x: balSliceFull[i].m, y: balDataFull[i]+v+balMarkerOffset} : null).filter(Boolean),
           pointStyle:'triangle', rotation:180, pointRadius:12, backgroundColor:'#1a6e3c', borderColor:'#0f4a25', borderWidth:2, showLine:false }
       ]
     },
