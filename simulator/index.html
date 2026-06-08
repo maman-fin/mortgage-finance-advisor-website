@@ -3805,12 +3805,17 @@ function runCalc() {
     </div>`;
 
   // Balance charts — before & after
-  const yMax = Math.round(expandedDebts.reduce((s, d) => s + (d.balance || 0), 0) * 1.04);
-  const balScales = {
-    x: { grid: { display: false }, ticks: { maxRotation: 0, callback: (val, idx) => (idx + 1) % 5 === 0 ? val : '' } },
-    y: { min: 0, max: yMax, ticks: { callback: v => fmtN(v) + ' ₪' } }
+  // Each chart picks its own label interval based on its own length (autoSkip:false so the
+  // callback is the sole authority) — keeps ticks evenly spaced and non-overlapping regardless
+  // of how many months the "before" / "after" timelines span
+  const balStepFor = n => n <= 30 ? 2 : n <= 60 ? 5 : n <= 120 ? 10 : n <= 240 ? 20 : n <= 480 ? 24 : 48;
+  const balScalesFor = (n, max) => {
+    const step = balStepFor(n);
+    return {
+      x: { grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, callback: (_, idx) => (idx + 1) % step === 0 ? idx + 1 : '' } },
+      y: { min: 0, max, ticks: { callback: v => fmtN(v) + ' ₪' } }
+    };
   };
-  const every5 = arr => arr.filter((_, i) => (i + 1) % 5 === 0);
 
   const makeBalTooltip = (tooltipId, sliceArr, dataArr, injArr, loanArr) => (context) => {
     const { chart, tooltip } = context;
@@ -3836,25 +3841,14 @@ function runCalc() {
     el.style.left = left + 'px'; el.style.top = (r.top + tooltip.caretY - el.offsetHeight / 2) + 'px';
   };
 
-  // BEFORE chart — original debts, no plan actions
+  // BEFORE chart data — original debts, no plan actions
   const beforeBalanceByMonth = simulateDebtBalances(expandedDebts, MONTHS);
   let befZeroIdx = beforeBalanceByMonth.findIndex(v => v <= 0);
   if (befZeroIdx === -1) befZeroIdx = beforeBalanceByMonth.length - 1;
   const befSliceFull = monthlyCF.slice(0, befZeroIdx + 1);
   const befDataFull  = beforeBalanceByMonth.slice(0, befZeroIdx + 1);
-  if (balanceBeforeChartInst) balanceBeforeChartInst.destroy();
-  balanceBeforeChartInst = new Chart(document.getElementById('balanceBeforeChart'), {
-    type: 'line',
-    data: {
-      labels: befSliceFull.map(m => m.m),
-      datasets: [{ label:'יתרת חובות', data: befDataFull, borderColor:'#c0392b', backgroundColor:'rgba(192,57,43,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true }]
-    },
-    options: { responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
-      plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceBeforeTooltip', befSliceFull, befDataFull, null) } },
-      scales: balScales }
-  });
 
-  // AFTER chart — with plan actions (green), trimmed at treatmentEnd
+  // AFTER chart data — with plan actions (green), trimmed at treatmentEnd
   const combinedBal = debtBalanceByMonth.map((v, i) => v + (loanBalanceByMonth[i] || 0));
   let balZeroIdx = combinedBal.findIndex(v => v <= 0);
   if (balZeroIdx === -1) balZeroIdx = treatmentEnd;
@@ -3866,6 +3860,29 @@ function runCalc() {
   // chart's value range, so the triangle never overlaps the line regardless of scale
   const balMarkerMax = Math.max(1, ...balDataFull, ...injSliceFull.map((v,i) => v>0 ? balDataFull[i]+v : 0));
   const balMarkerOffset = balMarkerMax * 0.05;
+
+  // Shared y-axis ceiling — must fit every series in both charts (original-debt balances,
+  // new-loan balances, and the lifted marker), so large new-loan amounts never get clipped
+  const yMax = Math.round(Math.max(
+    1,
+    ...befDataFull,
+    ...balDataFull,
+    ...loanDataFull,
+    ...injSliceFull.map((v,i) => v>0 ? balDataFull[i]+v+balMarkerOffset : 0)
+  ) * 1.04);
+
+  if (balanceBeforeChartInst) balanceBeforeChartInst.destroy();
+  balanceBeforeChartInst = new Chart(document.getElementById('balanceBeforeChart'), {
+    type: 'line',
+    data: {
+      labels: befSliceFull.map(m => m.m),
+      datasets: [{ label:'יתרת חובות', data: befDataFull, borderColor:'#c0392b', backgroundColor:'rgba(192,57,43,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
+      plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceBeforeTooltip', befSliceFull, befDataFull, null) } },
+      scales: balScalesFor(befSliceFull.length, yMax) }
+  });
+
   if (balanceChartInst) balanceChartInst.destroy();
   balanceChartInst = new Chart(document.getElementById('balanceChart'), {
     type: 'line',
@@ -3881,7 +3898,7 @@ function runCalc() {
     },
     options:{ responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
       plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceAfterTooltip', balSliceFull, balDataFull, injSliceFull, loanDataFull) } },
-      scales: balScales }
+      scales: balScalesFor(balSliceFull.length, yMax) }
   });
 
   // Savings chart
