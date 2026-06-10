@@ -1634,16 +1634,17 @@ async function importDebts(input) {
       const row = rows[r];
       const name = row[0] ? String(row[0]).trim() : '';
       if (!name || name.includes('סה"כ') || name === '') continue;
+      const importedMonthly = parseNum(row[6]) || 0;
       imported.push({
         name,
         category: row[1] ? String(row[1]).trim() : '',
         balance: parseNum(row[2]) || 0,
-        arranged: true,
+        arranged: importedMonthly > 0,
         autoMonths: true,
         importedMonths: parseNum(row[5]) || 0,
         interest: parseNum(row[4]) || 0,
         paymentsLeft: parseNum(row[5]) || 0,
-        monthly: parseNum(row[6]) || 0,
+        monthly: importedMonthly,
         notes: row[8] ? String(row[8]).trim() : '',
         action: 'ללא שינוי',
         actionParam: 0,
@@ -4170,6 +4171,13 @@ function exportJSON() {
 function resetData() {
   if (!confirm('האם לאפס את כל הנתונים ולהתחיל מחדש?')) return;
   localStorage.removeItem(STORAGE_KEY);
+  // נקה ערכי שדות שהדפדפן עלול לשחזר אחרי רענון
+  ['plan_p1_saving','plan_p2_saving','plan_p3_saving','savingsRateInput'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const rateCb = document.getElementById('savingsRateEnabled');
+  if (rateCb) rateCb.checked = false;
   location.reload();
 }
 
