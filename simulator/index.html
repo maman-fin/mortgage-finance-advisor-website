@@ -8,7 +8,7 @@
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
   <link rel="manifest" href="../site.webmanifest">
   <meta name="theme-color" content="#1a3a5c">
-  <title>סימולטור תוכנית הבראה | יחיאל ממן</title>
+  <title>סימולטור תכנית צמיחה כלכלית | יחיאל ממן</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
@@ -460,7 +460,7 @@
 </nav>
 
 <div class="wizard-header">
-  <h1>סימולטור תוכנית הבראה</h1>
+  <h1>סימולטור תכנית צמיחה כלכלית</h1>
   <p>תכנון מובנה לסדר כלכלי — 5 שלבים לתכנית מעשית</p>
 </div>
 
@@ -469,7 +469,7 @@
   <div class="step-ind"        onclick="goStep(1)"><div class="si-num">2</div><span>תקציב</span></div>
   <div class="step-ind"        onclick="goStep(2)"><div class="si-num">3</div><span>חובות</span></div>
   <div class="step-ind"        onclick="goStep(3)"><div class="si-num">4</div><span>מקורות מימון</span></div>
-  <div class="step-ind"        onclick="goStep(4)"><div class="si-num">5</div><span>תכנון הבראה</span></div>
+  <div class="step-ind"        onclick="goStep(4)"><div class="si-num">5</div><span>תכנון התכנית</span></div>
   <div class="step-ind"        onclick="goStep(5)"><div class="si-num">6</div><span>תוצאות</span></div>
 </div>
 
@@ -495,7 +495,7 @@
           <div class="field-row"><input type="text" id="familyName" placeholder="לדוגמא: משפחת כהן" oninput="updateFamilyName()"></div>
         </div>
         <div class="field">
-          <label>תאריך תחילת תכנית ההבראה</label>
+          <label>תאריך תחילת התכנית</label>
           <div class="field-row"><input type="month" id="startDate"></div>
         </div>
       </div>
@@ -684,14 +684,14 @@
 
     <div class="wizard-nav">
       <button class="btn btn-secondary" onclick="goStep(2)">→ חזרה</button>
-      <button class="btn btn-primary" onclick="goStep(4); renderPlanningTable()">המשך לתכנון הבראה ←</button>
+      <button class="btn btn-primary" onclick="goStep(4); renderPlanningTable()">המשך לתכנון התכנית ←</button>
     </div>
   </div>
 
-  <!-- ===== STEP 5: תכנון הבראה ===== -->
+  <!-- ===== STEP 5: תכנון התכנית ===== -->
   <div class="step" id="step4plan">
     <div class="card">
-      <div class="card-title">🗓️ תכנון תקציב ההבראה</div>
+      <div class="card-title">🗓️ תכנון תקציב התכנית</div>
       <p style="font-size:0.85rem;color:#666;margin-bottom:1.2rem;">הגדר עד 3 תקציבים מוצעים לתקופות שונות. הכנסות/הוצאות מוצעות נלקחות מהתקציב שהוזן — ניתן לשנות.</p>
 
       <div style="overflow-x:auto;">
@@ -773,7 +773,7 @@
 
     <!-- כספים זמינים -->
     <div class="card">
-      <div class="card-title">💵 כספים זמינים לתכנון ההבראה</div>
+      <div class="card-title">💵 כספים זמינים לתכנון התכנית</div>
       <div id="planFundsSummary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.8rem;"></div>
     </div>
 
@@ -836,12 +836,12 @@
   <div class="step" id="step4">
 
     <div class="card">
-      <div class="card-title" id="resultsTitle">📈 תוצאות תכנית ההבראה</div>
+      <div class="card-title" id="resultsTitle">📈 תוצאות תכנית הצמיחה הכלכלית</div>
       <div class="summary-grid" id="summaryGrid"></div>
     </div>
 
     <div class="card" id="interestCompareCard" style="display:none">
-      <div class="card-title">💡 חיסכון בריבית — לפני מול אחרי ההבראה</div>
+      <div class="card-title">💡 חיסכון בריבית — לפני מול אחרי התכנית</div>
       <div style="background:#f7f9fc;border:1px solid #e3e9f2;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem;">
         <div style="font-size:0.95rem;font-weight:800;color:#1a3a5c;margin-bottom:0.9rem;">⚙️ הגדרות השוואה</div>
         <div style="display:flex;flex-wrap:wrap;gap:1rem;">
@@ -865,11 +865,11 @@
       </div>
       <div class="before-after-wrap">
         <div class="ba-col ba-col--before">
-          <div class="ba-col-title">לפני הבראה</div>
+          <div class="ba-col-title">לפני התכנית</div>
           <div class="sum-box"><div class="sb-label">סך ריבית שתיצבר על החובות</div><div class="sb-value" id="interestBeforeVal">—</div></div>
         </div>
         <div class="ba-col ba-col--after">
-          <div class="ba-col-title">לאחר הבראה</div>
+          <div class="ba-col-title">לאחר התכנית</div>
           <div class="sum-box positive"><div class="sb-label">סך ריבית במסגרת התכנית</div><div class="sb-value" id="interestAfterVal">—</div></div>
         </div>
       </div>
@@ -883,11 +883,11 @@
       <div class="card-title">יתרת חובות לאורך הזמן</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
         <div>
-          <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#c0392b;margin-bottom:0.5rem;">לפני הבראה</div>
+          <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#c0392b;margin-bottom:0.5rem;">לפני התכנית</div>
           <div class="chart-container"><canvas id="balanceBeforeChart"></canvas></div>
         </div>
         <div>
-          <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#1a7a40;margin-bottom:0.5rem;">אחרי הבראה</div>
+          <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#1a7a40;margin-bottom:0.5rem;">אחרי התכנית</div>
           <div class="chart-container"><canvas id="balanceChart"></canvas></div>
         </div>
       </div>
@@ -899,15 +899,15 @@
     </div>
 
     <div class="card">
-      <div class="card-title">📊 תמונת מצב — לפני ואחרי ההבראה</div>
+      <div class="card-title">📊 תמונת מצב — לפני ואחרי התכנית</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
         <div>
-          <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#c0392b;margin-bottom:0.5rem;">לפני הבראה</div>
+          <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#c0392b;margin-bottom:0.5rem;">לפני התכנית</div>
           <div class="chart-container" style="height:300px;"><canvas id="planBeforeChart"></canvas></div>
           <div class="chart-legend" id="planBeforeChartLegend"></div>
         </div>
         <div>
-          <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#1a7a40;margin-bottom:0.5rem;">אחרי הבראה</div>
+          <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#1a7a40;margin-bottom:0.5rem;">אחרי התכנית</div>
           <div class="chart-container" style="height:300px;"><canvas id="planAfterChart"></canvas></div>
           <div class="chart-legend" id="planAfterChartLegend"></div>
         </div>
@@ -2536,7 +2536,7 @@ function printTaskList() {
     return `<tr><td>${d.name||'—'}</td><td style="direction:ltr;text-align:right;">₪ ${bal}</td><td>${plan}</td><td class="task-col">${task}</td></tr>`;
   }).join('');
   const w = window.open('','_blank','width=920,height=720');
-  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>רשימת משימות — תכנית הבראה</title>
+  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>רשימת משימות — תכנית צמיחה כלכלית</title>
 <style>
   body{font-family:'Segoe UI',Arial,sans-serif;direction:rtl;padding:2rem;color:#222;font-size:0.93rem;}
   h2{color:#1a3a5c;margin-bottom:0.3rem;}
@@ -2549,7 +2549,7 @@ function printTaskList() {
   .print-btn{margin-top:1.2rem;background:#1a3a5c;color:#fff;border:none;padding:9px 22px;border-radius:7px;font-size:0.9rem;cursor:pointer;font-family:inherit;}
   @media print{.print-btn{display:none;} body{padding:0.5rem;}}
 </style></head><body>
-<h2>📋 רשימת משימות — תכנית הבראה</h2>
+<h2>📋 רשימת משימות — תכנית צמיחה כלכלית</h2>
 <div class="sub">סה"כ ${withNotes.length} חובות עם משימות מתוך ${state.debts.length}</div>
 <table><thead><tr><th>שם הנושה</th><th>יתרה</th><th>פעולה בתכנית</th><th>פעולה לביצוע</th></tr></thead>
 <tbody>${rows}</tbody></table>
@@ -2722,7 +2722,7 @@ function generatePDF() {
 
   w.document.write(`<!DOCTYPE html>
 <html dir="rtl" lang="he"><head><meta charset="UTF-8">
-<title>תכנית הבראה — ${family}</title>
+<title>תכנית צמיחה כלכלית — ${family}</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',Arial,sans-serif;color:#222;direction:rtl;font-size:10pt;padding:1.5cm;background:#fff}
@@ -2790,22 +2790,22 @@ h2{font-size:13pt;color:#1a3a5c;border-bottom:2.5px solid #1a3a5c;padding-bottom
 <div class="no-print"><button class="pbtn" onclick="window.print()">🖨️ שמור כ-PDF</button></div>
 
 <div class="ph">
-  <h1>📋 תכנית הבראה פיננסית</h1>
+  <h1>📋 תכנית צמיחה כלכלית</h1>
   <div class="sub">משפחת ${family} &nbsp;|&nbsp; ${today} &nbsp;|&nbsp; יחיאל ממן — יועץ משכנתאות &amp; חובות</div>
 </div>
 
 ${summaryHTML ? `<h2>סיכום ביצועי</h2><div style="margin-bottom:8px">${summaryHTML}</div>` : ''}
 ${_debts   ? `<h2>רשימת חובות</h2>${_debts}` : ''}
-${_plan    ? `<h2>תכנית ההבראה</h2>${_plan}` : ''}
+${_plan    ? `<h2>תכנית הצמיחה הכלכלית</h2>${_plan}` : ''}
 ${_budget  ? `<h2>תקציב משפחתי</h2>${_budget}` : ''}
 ${_fl      ? `<h2>מקורות מימון</h2>${_fl}` : ''}
 
 ${_charts  ? `<div class="pb"></div><h2>גרפים</h2>
 <div class="ch-grid">
-  ${chartImg('balanceBeforeChart','יתרת חובות לפני הבראה')}
-  ${chartImg('balanceChart','יתרת חובות אחרי הבראה')}
-  ${chartImg('planBeforeChart','תקציב לפני הבראה')}
-  ${chartImg('planAfterChart','תקציב אחרי הבראה')}
+  ${chartImg('balanceBeforeChart','יתרת חובות לפני התכנית')}
+  ${chartImg('balanceChart','יתרת חובות אחרי התכנית')}
+  ${chartImg('planBeforeChart','תקציב לפני התכנית')}
+  ${chartImg('planAfterChart','תקציב אחרי התכנית')}
 </div>
 ${imgs.planDynChart?`<div><div class="ch-label">תשלומים חודשיים לאורך זמן</div><img src="${imgs.planDynChart}" class="ch-img"></div>`:''}` : ''}
 
@@ -3379,7 +3379,7 @@ function renderPlanCharts() {
       ]
     },
     options: {
-      ...chartOpts('התפתחות החזר חודשי לפי חודשים', 'לפני הבראה', '#FF0000', 'planBeforeTooltip'),
+      ...chartOpts('התפתחות החזר חודשי לפי חודשים', 'לפני התכנית', '#FF0000', 'planBeforeTooltip'),
       layout: { padding: { top: 30 } },
     },
   });
@@ -3401,7 +3401,7 @@ function renderPlanCharts() {
       ]
     },
     options: {
-      ...chartOpts('התפתחות החזר חודשי לפי חודשים', 'אחרי הבראה', '#1a7a40', 'planAfterTooltip'),
+      ...chartOpts('התפתחות החזר חודשי לפי חודשים', 'אחרי התכנית', '#1a7a40', 'planAfterTooltip'),
       clip: false,
       layout: { padding: { top: 30 } },
       scales: {
@@ -3793,7 +3793,7 @@ function runCalc() {
   };
   renderInterestCompare();
 
-  document.getElementById('resultsTitle').textContent = `📈 תוצאות תכנית הבראה${state.family ? ' — ' + state.family : ''}`;
+  document.getElementById('resultsTitle').textContent = `📈 תוצאות תכנית הצמיחה הכלכלית${state.family ? ' — ' + state.family : ''}`;
 
   const mkSub = (label, val) =>
     `<div class="sb-sub-item"><span class="sb-sub-label">${label}</span><span class="sb-sub-val">${fmtNIS(Math.round(val))}</span></div>`;
@@ -3801,7 +3801,7 @@ function runCalc() {
   document.getElementById('summaryGrid').innerHTML = `
     <div class="before-after-wrap">
       <div class="ba-col ba-col--before">
-        <div class="ba-col-title">לפני הבראה</div>
+        <div class="ba-col-title">לפני התכנית</div>
         <div class="sum-box">
           <div class="sb-label">סה"כ חובות כיום</div>
           <div class="sb-value">${fmtNIS(Math.round(totalDebtNow))}</div>
@@ -3815,9 +3815,9 @@ function runCalc() {
         <div class="sum-box ${totalNonArrangedDebt>0?'negative':''}"><div class="sb-label">זמן לסיום חובות</div><div class="sb-value" style="font-size:${totalNonArrangedDebt>0?'1rem':'1.35rem'}">${beforeDebtFreeText}</div></div>
       </div>
       <div class="ba-col ba-col--after">
-        <div class="ba-col-title">לאחר הבראה</div>
+        <div class="ba-col-title">לאחר התכנית</div>
         <div class="sum-box">
-          <div class="sb-label">סה"כ חובות לאחר הבראה</div>
+          <div class="sb-label">סה"כ חובות לאחר התכנית</div>
           <div class="sb-value">${fmtNIS(Math.round(afterCat_origArranged + afterCat_newArranged + afterCat_noArrangement + newLoansTotal))}</div>
           <div class="sb-sub">
             ${mkSub('בהסדר מקור', afterCat_origArranged)}
@@ -4010,7 +4010,7 @@ function runCalc() {
   cfHtml += row('הוצאות',             cfMonths.map(()=>fmtNIS(curExp)));
   cfHtml += row('סכום פנוי להחזר חובות', cfMonths.map(()=>fmtNIS(curIncome - curExp)));
   cfHtml += row('החזר',               cfMonths.map(()=>fmtNIS(currentMonthlyDebt)));
-  cfHtml += row('הכנסות פחות הוצאות והחזר חובות לפני הבראה',
+  cfHtml += row('הכנסות פחות הוצאות והחזר חובות לפני התכנית',
     cfMonths.map(()=>`<span class="${netBeforeVal<0?'neg':'pos'}">${fmtNIS(netBeforeVal)}</span>`), 'cf-total-row');
 
   cfHtml += `<tr class="cf-section-hdr"><td colspan="${cols+1}">מצב חדש</td></tr>`;
@@ -4021,7 +4021,7 @@ function runCalc() {
   cfHtml += row('החזר חודשי המנובע מטיפול בחובות שלא היו בהסדר', cfMonths.map(m=>D(m.debtPmtNotInPlan)));
   cfHtml += row('החזר חודשי המנובע מהלוואות חדשות',          cfMonths.map(m=>D(m.newLoanPmt)));
   cfHtml += row('סה"כ החזר חודשי',    cfMonths.map(m=>fmtNIS(Math.round(m.totalDebt))));
-  cfHtml += row('הכנסות פחות הוצאות והחזר חובות אחרי הבראה',
+  cfHtml += row('הכנסות פחות הוצאות והחזר חובות אחרי התכנית',
     cfMonths.map(m=>`<span class="${m.netAfter<0?'neg':'pos'}">${fmtNIS(Math.round(m.netAfter))}</span>`), 'cf-total-row');
 
   cfHtml += '</tbody>';
@@ -4031,7 +4031,7 @@ function runCalc() {
 }
 
 // ===================== SAVE / LOAD / EXPORT / IMPORT =====================
-const STORAGE_KEY = 'simulator_havraa_v1';
+const STORAGE_KEY = 'simulator_growth_v1';
 let autoSaveTimer = null;
 
 function scheduleAutoSave() {
@@ -4159,7 +4159,7 @@ function exportJSON() {
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `הבראה_${name}_${date}.json`;
+  a.download = `תכנית_צמיחה_${name}_${date}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
