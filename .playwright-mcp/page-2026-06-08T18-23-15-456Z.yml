@@ -1,0 +1,176 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - link "יחיאל ממן יחיאל ממן | אסטרטגיה פיננסית" [ref=e4] [cursor=pointer]:
+      - /url: ../index.html
+      - img "יחיאל ממן" [ref=e5]
+      - generic [ref=e6]: יחיאל ממן | אסטרטגיה פיננסית
+    - list [ref=e7]:
+      - listitem [ref=e8]:
+        - link "שירותים" [ref=e9] [cursor=pointer]:
+          - /url: ../index.html#services
+      - listitem [ref=e10]:
+        - link "תהליך" [ref=e11] [cursor=pointer]:
+          - /url: ../index.html#process
+      - listitem [ref=e12]:
+        - link "המלצות" [ref=e13] [cursor=pointer]:
+          - /url: ../testimonials.html
+      - listitem [ref=e14]:
+        - link "ההתמחויות שלנו" [ref=e15] [cursor=pointer]:
+          - /url: ../areas.html
+      - listitem [ref=e16]:
+        - link "מחשבונים ▾" [ref=e17] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e18]:
+        - link "מרכז הידע ▾" [ref=e19] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e20]:
+        - link "צור קשר" [ref=e21] [cursor=pointer]:
+          - /url: ../index.html#contact
+  - generic [ref=e22]:
+    - heading "סימולטור תוכנית הבראה" [level=1] [ref=e23]
+    - paragraph [ref=e24]: תכנון מובנה לסדר כלכלי — 5 שלבים לתכנית מעשית
+  - generic [ref=e25]:
+    - generic [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: "1"
+      - generic [ref=e28]: פרטי משפחה
+    - generic [ref=e29] [cursor=pointer]:
+      - generic [ref=e30]: "2"
+      - generic [ref=e31]: תקציב
+    - generic [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: "3"
+      - generic [ref=e34]: חובות
+    - generic [ref=e35] [cursor=pointer]:
+      - generic [ref=e36]: "4"
+      - generic [ref=e37]: מקורות מימון
+    - generic [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: "5"
+      - generic [ref=e40]: תכנון הבראה
+    - generic [ref=e41] [cursor=pointer]:
+      - generic [ref=e42]: "6"
+      - generic [ref=e43]: תוצאות
+  - generic [ref=e44]:
+    - generic [ref=e45]: נשמר אוטומטית 21:23
+    - generic [ref=e46]:
+      - button "🗑️ אפס נתונים" [ref=e47] [cursor=pointer]
+      - button "📂 טען קובץ" [ref=e48] [cursor=pointer]
+      - button "💾 שמור קובץ" [ref=e49] [cursor=pointer]
+  - generic [ref=e65]:
+    - generic [ref=e66]:
+      - generic [ref=e67]: 📊 תקציב נוכחי ומוצע
+      - generic [ref=e68]:
+        - button "📂 ייבוא מקובץ" [ref=e69] [cursor=pointer]
+        - button "✏️ הזנה ידנית" [ref=e70] [cursor=pointer]
+      - generic [ref=e72] [cursor=pointer]:
+        - generic [ref=e73]: 📂
+        - generic [ref=e74]: לחץ לבחירת קובץ תקציב וביצוע
+        - generic [ref=e75]: קובץ XLS מיוצא ממערכת ניהול תקציב
+      - table [ref=e77]:
+        - rowgroup [ref=e78]:
+          - row "קטגוריה נוכחי (₪) מוצע (₪)" [ref=e79]:
+            - columnheader "קטגוריה" [ref=e80]
+            - columnheader "נוכחי (₪)" [ref=e81]
+            - columnheader "מוצע (₪)" [ref=e82]
+        - rowgroup [ref=e83]:
+          - row "▸ שכר 0 0" [ref=e84]:
+            - cell "▸ שכר" [ref=e85] [cursor=pointer]
+            - cell "0" [ref=e86] [cursor=pointer]
+            - cell "0" [ref=e87] [cursor=pointer]
+          - row "▸ קצבאות 0 0" [ref=e88]:
+            - cell "▸ קצבאות" [ref=e89] [cursor=pointer]
+            - cell "0" [ref=e90] [cursor=pointer]
+            - cell "0" [ref=e91] [cursor=pointer]
+          - row "▸ הכנסות שונות 0 0" [ref=e92]:
+            - cell "▸ הכנסות שונות" [ref=e93] [cursor=pointer]
+            - cell "0" [ref=e94] [cursor=pointer]
+            - cell "0" [ref=e95] [cursor=pointer]
+          - row "▸ מזון ופארמה 0 0" [ref=e96]:
+            - cell "▸ מזון ופארמה" [ref=e97] [cursor=pointer]
+            - cell "0" [ref=e98] [cursor=pointer]
+            - cell "0" [ref=e99] [cursor=pointer]
+          - row "▸ פנאי, בילוי ותחביבים 0 0" [ref=e100]:
+            - cell "▸ פנאי, בילוי ותחביבים" [ref=e101] [cursor=pointer]
+            - cell "0" [ref=e102] [cursor=pointer]
+            - cell "0" [ref=e103] [cursor=pointer]
+          - row "▸ ביגוד והנעלה 0 0" [ref=e104]:
+            - cell "▸ ביגוד והנעלה" [ref=e105] [cursor=pointer]
+            - cell "0" [ref=e106] [cursor=pointer]
+            - cell "0" [ref=e107] [cursor=pointer]
+          - row "▸ תכולת בית 0 0" [ref=e108]:
+            - cell "▸ תכולת בית" [ref=e109] [cursor=pointer]
+            - cell "0" [ref=e110] [cursor=pointer]
+            - cell "0" [ref=e111] [cursor=pointer]
+          - row "▸ אחזקת בית 0 0" [ref=e112]:
+            - cell "▸ אחזקת בית" [ref=e113] [cursor=pointer]
+            - cell "0" [ref=e114] [cursor=pointer]
+            - cell "0" [ref=e115] [cursor=pointer]
+          - row "▸ טיפוח 0 0" [ref=e116]:
+            - cell "▸ טיפוח" [ref=e117] [cursor=pointer]
+            - cell "0" [ref=e118] [cursor=pointer]
+            - cell "0" [ref=e119] [cursor=pointer]
+          - row "▸ חינוך 0 0" [ref=e120]:
+            - cell "▸ חינוך" [ref=e121] [cursor=pointer]
+            - cell "0" [ref=e122] [cursor=pointer]
+            - cell "0" [ref=e123] [cursor=pointer]
+          - row "▸ אירועים, תרומות, צרכי דת 0 0" [ref=e124]:
+            - cell "▸ אירועים, תרומות, צרכי דת" [ref=e125] [cursor=pointer]
+            - cell "0" [ref=e126] [cursor=pointer]
+            - cell "0" [ref=e127] [cursor=pointer]
+          - row "▸ בריאות 0 0" [ref=e128]:
+            - cell "▸ בריאות" [ref=e129] [cursor=pointer]
+            - cell "0" [ref=e130] [cursor=pointer]
+            - cell "0" [ref=e131] [cursor=pointer]
+          - row "▸ תחבורה 0 0" [ref=e132]:
+            - cell "▸ תחבורה" [ref=e133] [cursor=pointer]
+            - cell "0" [ref=e134] [cursor=pointer]
+            - cell "0" [ref=e135] [cursor=pointer]
+          - row "▸ משפחה 0 0" [ref=e136]:
+            - cell "▸ משפחה" [ref=e137] [cursor=pointer]
+            - cell "0" [ref=e138] [cursor=pointer]
+            - cell "0" [ref=e139] [cursor=pointer]
+          - row "▸ תקשורת 0 0" [ref=e140]:
+            - cell "▸ תקשורת" [ref=e141] [cursor=pointer]
+            - cell "0" [ref=e142] [cursor=pointer]
+            - cell "0" [ref=e143] [cursor=pointer]
+          - row "▸ דיור 0 0" [ref=e144]:
+            - cell "▸ דיור" [ref=e145] [cursor=pointer]
+            - cell "0" [ref=e146] [cursor=pointer]
+            - cell "0" [ref=e147] [cursor=pointer]
+          - row "▸ התחייבויות 0 0" [ref=e148]:
+            - cell "▸ התחייבויות" [ref=e149] [cursor=pointer]
+            - cell "0" [ref=e150] [cursor=pointer]
+            - cell "0" [ref=e151] [cursor=pointer]
+          - row "▸ נכסים 0 0" [ref=e152]:
+            - cell "▸ נכסים" [ref=e153] [cursor=pointer]
+            - cell "0" [ref=e154] [cursor=pointer]
+            - cell "0" [ref=e155] [cursor=pointer]
+          - row "▸ פיננסים 0 0" [ref=e156]:
+            - cell "▸ פיננסים" [ref=e157] [cursor=pointer]
+            - cell "0" [ref=e158] [cursor=pointer]
+            - cell "0" [ref=e159] [cursor=pointer]
+        - rowgroup [ref=e160]:
+          - row "סה\"כ הכנסות 0 ₪ 0 ₪" [ref=e161]:
+            - cell "סה\"כ הכנסות" [ref=e162]:
+              - strong [ref=e163]: סה"כ הכנסות
+            - cell "0 ₪" [ref=e164]
+            - cell "0 ₪" [ref=e165]
+          - row "סה\"כ הוצאות 0 ₪ 0 ₪" [ref=e166]:
+            - cell "סה\"כ הוצאות" [ref=e167]:
+              - strong [ref=e168]: סה"כ הוצאות
+            - cell "0 ₪" [ref=e169]
+            - cell "0 ₪" [ref=e170]
+          - row "הפרש (לפני החזרי חובות) 0 ₪ 0 ₪" [ref=e171]:
+            - cell "הפרש (לפני החזרי חובות)" [ref=e172]:
+              - strong [ref=e173]: הפרש (לפני החזרי חובות)
+            - cell "0 ₪" [ref=e174]
+            - cell "0 ₪" [ref=e175]
+          - row "החזר חודשי כולל (חובות) 0 ₪" [ref=e176]:
+            - cell "החזר חודשי כולל (חובות)" [ref=e177]
+            - cell "0 ₪" [ref=e178]
+          - row "פנוי לאחר החזרי חובות 0 ₪ 0 ₪" [ref=e179]:
+            - cell "פנוי לאחר החזרי חובות" [ref=e180]:
+              - strong [ref=e181]: פנוי לאחר החזרי חובות
+            - cell "0 ₪" [ref=e182]
+            - cell "0 ₪" [ref=e183]
+    - generic [ref=e184]:
+      - button "→ חזרה" [ref=e185] [cursor=pointer]
+      - button "המשך למקורות מימון ←" [ref=e186] [cursor=pointer]

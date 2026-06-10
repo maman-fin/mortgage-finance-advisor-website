@@ -1,0 +1,501 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - link "יחיאל ממן יחיאל ממן | אסטרטגיה פיננסית" [ref=e4] [cursor=pointer]:
+      - /url: index.html
+      - img "יחיאל ממן" [ref=e5]
+      - generic [ref=e6]: יחיאל ממן | אסטרטגיה פיננסית
+    - list [ref=e7]:
+      - listitem [ref=e8]:
+        - link "שירותים" [ref=e9] [cursor=pointer]:
+          - /url: index.html#services
+      - listitem [ref=e10]:
+        - link "תהליך" [ref=e11] [cursor=pointer]:
+          - /url: index.html#process
+      - listitem [ref=e12]:
+        - link "המלצות" [ref=e13] [cursor=pointer]:
+          - /url: testimonials.html
+      - listitem [ref=e14]:
+        - link "ההתמחויות שלנו" [ref=e15] [cursor=pointer]:
+          - /url: areas.html
+      - listitem [ref=e16]:
+        - link "מחשבונים ▾" [ref=e17] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e18]:
+        - link "מרכז הידע ▾" [ref=e19] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e20]:
+        - link "צור קשר" [ref=e21] [cursor=pointer]:
+          - /url: index.html#contact
+  - generic [ref=e22]:
+    - heading "השוואת עלות אחזקת רכב" [level=1] [ref=e23]
+    - paragraph [ref=e24]: השווה את העלות האמיתית של כל אפשרות רכב — חשמלי, ליסינג, יד שניה — לאורך הזמן
+  - generic [ref=e25]:
+    - generic [ref=e26]:
+      - generic [ref=e27]: ⚙️ הגדרות השוואה
+      - generic [ref=e28]: "טווח השוואה:"
+      - generic [ref=e29]:
+        - button "3 שנים" [ref=e30] [cursor=pointer]
+        - button "5 שנים" [ref=e31] [cursor=pointer]
+        - button "8 שנים" [ref=e32] [cursor=pointer]
+      - separator [ref=e33]
+      - generic [ref=e34]: "🔧 נתונים משותפים לכל האפשרויות:"
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - text: הון עצמי ראשוני
+            - generic [ref=e38]: (לא חל על ליסינג)
+          - generic [ref=e39]:
+            - textbox [ref=e40]: 50,000
+            - generic [ref=e41]: ₪
+          - slider [ref=e42] [cursor=pointer]: "50000"
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - text: תקופת הלוואה
+            - generic [ref=e45]: (לא חל על ליסינג)
+          - generic [ref=e46]:
+            - spinbutton [ref=e47]: "60"
+            - generic [ref=e48]: חודש
+          - slider [ref=e49] [cursor=pointer]: "60"
+        - generic [ref=e50]:
+          - generic [ref=e51]: קילומטראז' שנתי ממוצע
+          - generic [ref=e52]:
+            - spinbutton [ref=e53]: "15000"
+            - generic [ref=e54]: ק"מ
+          - slider [ref=e55] [cursor=pointer]: "15000"
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - text: מחיר דלק ממוצע
+            - generic [ref=e58]: (לרכבי בנזין)
+          - generic [ref=e59]:
+            - spinbutton [ref=e60]: "7"
+            - generic [ref=e61]: ₪/ל'
+          - slider [ref=e62] [cursor=pointer]: "7"
+      - separator [ref=e63]
+      - generic [ref=e64]: "בחר אפשרויות להשוואה:"
+      - generic [ref=e65]:
+        - generic [ref=e66] [cursor=pointer]:
+          - checkbox "⚡ רכב חשמלי" [checked] [ref=e67]
+          - generic [ref=e68]: ⚡ רכב חשמלי
+        - generic [ref=e69] [cursor=pointer]:
+          - checkbox "📋 ליסינג תפעולי" [checked] [ref=e70]
+          - generic [ref=e71]: 📋 ליסינג תפעולי
+        - generic [ref=e72] [cursor=pointer]:
+          - checkbox "⚡📋 ליסינג חשמלי" [checked] [ref=e73]
+          - generic [ref=e74]: ⚡📋 ליסינג חשמלי
+        - generic [ref=e75] [cursor=pointer]:
+          - checkbox "🚗 חדש/יד שניה א'" [checked] [ref=e76]
+          - generic [ref=e77]: 🚗 חדש/יד שניה א'
+        - generic [ref=e78] [cursor=pointer]:
+          - checkbox "🚘 חדש/יד שניה ב'" [checked] [ref=e79]
+          - generic [ref=e80]: 🚘 חדש/יד שניה ב'
+    - generic [ref=e81]:
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - text: ⚡
+          - generic [ref=e84]: רכב חשמלי
+        - generic [ref=e85]:
+          - generic [ref=e86]: רכישה ומימון
+          - generic [ref=e87]:
+            - generic [ref=e88]: מחיר הרכב (₪)
+            - generic [ref=e89]:
+              - textbox [ref=e90]: 150,000
+              - generic [ref=e91]: ₪
+            - slider [ref=e93] [cursor=pointer]: "150000"
+          - generic [ref=e94]:
+            - generic [ref=e95]: יתרה למימון
+            - generic [ref=e96]: 100,000 ₪
+          - generic [ref=e97]:
+            - generic [ref=e98]: ריבית הלוואה שנתית (%)
+            - generic [ref=e99]:
+              - spinbutton [ref=e100]: "6"
+              - generic [ref=e101]: "%"
+            - slider [ref=e103] [cursor=pointer]: "6"
+          - separator [ref=e104]
+          - generic [ref=e105]: ירידת ערך
+          - generic [ref=e106]:
+            - generic [ref=e107] [cursor=pointer]:
+              - radio "מחיר מכירה צפוי" [ref=e108]
+              - text: מחיר מכירה צפוי
+            - generic [ref=e109] [cursor=pointer]:
+              - radio "% ירידה שנתי" [checked] [ref=e110]
+              - text: "% ירידה שנתי"
+          - generic [ref=e111]:
+            - generic [ref=e112]:
+              - generic [ref=e113]: ירידת ערך שנתית (%)
+              - generic [ref=e114]:
+                - spinbutton [ref=e115]: "20"
+                - generic [ref=e116]: "%"
+              - slider [ref=e118] [cursor=pointer]: "20"
+            - generic [ref=e119]:
+              - generic [ref=e120]: שווי צפוי בסוף תקופה
+              - generic [ref=e121]: 76,800 ₪
+          - separator [ref=e122]
+          - generic [ref=e123]: צריכת חשמל
+          - generic [ref=e124]:
+            - generic [ref=e125]: צריכה (ק"מ לק"ו)
+            - generic [ref=e126]:
+              - spinbutton [ref=e127]: "6"
+              - generic [ref=e128]: ק"מ/ק"ו
+            - slider [ref=e130] [cursor=pointer]: "6"
+          - generic [ref=e131]:
+            - generic [ref=e132]: מחיר ק"ו (₪)
+            - generic [ref=e133]:
+              - spinbutton [ref=e134]: "0.60"
+              - generic [ref=e135]: ₪/ק"ו
+            - slider [ref=e137] [cursor=pointer]: "0.6"
+          - generic [ref=e138]:
+            - generic [ref=e139]: עמדת טעינה ביתית — חד-פעמי (₪)
+            - generic [ref=e140]:
+              - textbox [ref=e141]: 3,000
+              - generic [ref=e142]: ₪
+            - slider [ref=e144] [cursor=pointer]: "3000"
+          - separator [ref=e145]
+          - generic [ref=e146]: עלויות שוטפות
+          - generic [ref=e147]:
+            - generic [ref=e148]: ביטוח שנתי (₪)
+            - generic [ref=e149]:
+              - textbox [ref=e150]: 6,000
+              - generic [ref=e151]: ₪/שנה
+            - slider [ref=e153] [cursor=pointer]: "6000"
+          - generic [ref=e154]:
+            - generic [ref=e155]: אגרת רישוי / טסט (₪)
+            - generic [ref=e156]:
+              - textbox [ref=e157]: 1,300
+              - generic [ref=e158]: ₪/שנה
+            - slider [ref=e160] [cursor=pointer]: "1300"
+          - generic [ref=e161]:
+            - generic [ref=e162]: טיפולים ותקלות (₪)
+            - generic [ref=e163]:
+              - textbox [ref=e164]: 1,500
+              - generic [ref=e165]: ₪/שנה
+            - slider [ref=e167] [cursor=pointer]: "1500"
+      - generic [ref=e168]:
+        - generic [ref=e169]:
+          - text: 📋
+          - generic [ref=e170]: ליסינג תפעולי
+        - generic [ref=e171]:
+          - generic [ref=e172]: עלות ליסינג
+          - generic [ref=e173]:
+            - generic [ref=e174]: תשלום חודשי (₪)
+            - generic [ref=e175]:
+              - textbox [ref=e176]: 3,500
+              - generic [ref=e177]: ₪/חודש
+            - slider [ref=e179] [cursor=pointer]: "3500"
+          - separator [ref=e180]
+          - generic [ref=e181]: צריכת דלק
+          - generic [ref=e182]:
+            - generic [ref=e183]: צריכת דלק (ק"מ לליטר)
+            - generic [ref=e184]:
+              - spinbutton [ref=e185]: "12"
+              - generic [ref=e186]: ק"מ/ל'
+            - slider [ref=e188] [cursor=pointer]: "12"
+          - separator [ref=e189]
+          - generic [ref=e190]: עלויות שוטפות
+          - generic [ref=e191] [cursor=pointer]:
+            - checkbox "ביטוח כלול במחיר הליסינג" [checked] [ref=e192]
+            - text: ביטוח כלול במחיר הליסינג
+          - generic [ref=e193] [cursor=pointer]:
+            - checkbox "אגרת רישוי כלולה במחיר הליסינג" [checked] [ref=e194]
+            - text: אגרת רישוי כלולה במחיר הליסינג
+          - generic [ref=e195] [cursor=pointer]:
+            - checkbox "טיפולים ותקלות כלולים בליסינג" [checked] [ref=e196]
+            - text: טיפולים ותקלות כלולים בליסינג
+      - generic [ref=e197]:
+        - generic [ref=e198]:
+          - text: ⚡📋
+          - generic [ref=e199]: ליסינג חשמלי
+        - generic [ref=e200]:
+          - generic [ref=e201]: עלות ליסינג
+          - generic [ref=e202]:
+            - generic [ref=e203]: תשלום חודשי (₪)
+            - generic [ref=e204]:
+              - textbox [ref=e205]: 4,000
+              - generic [ref=e206]: ₪/חודש
+            - slider [ref=e208] [cursor=pointer]: "4000"
+          - separator [ref=e209]
+          - generic [ref=e210]: צריכת חשמל
+          - generic [ref=e211]:
+            - generic [ref=e212]: צריכה (ק"מ לק"ו)
+            - generic [ref=e213]:
+              - spinbutton [ref=e214]: "6"
+              - generic [ref=e215]: ק"מ/ק"ו
+            - slider [ref=e217] [cursor=pointer]: "6"
+          - generic [ref=e218]:
+            - generic [ref=e219]: מחיר ק"ו (₪)
+            - generic [ref=e220]:
+              - spinbutton [ref=e221]: "0.60"
+              - generic [ref=e222]: ₪/ק"ו
+            - slider [ref=e224] [cursor=pointer]: "0.6"
+          - generic [ref=e225]:
+            - generic [ref=e226]: עמדת טעינה ביתית — חד-פעמי (₪)
+            - generic [ref=e227]:
+              - textbox [ref=e228]: 3,000
+              - generic [ref=e229]: ₪
+            - slider [ref=e231] [cursor=pointer]: "3000"
+          - separator [ref=e232]
+          - generic [ref=e233]: עלויות שוטפות
+          - generic [ref=e234] [cursor=pointer]:
+            - checkbox "ביטוח כלול במחיר הליסינג" [checked] [ref=e235]
+            - text: ביטוח כלול במחיר הליסינג
+          - generic [ref=e236] [cursor=pointer]:
+            - checkbox "אגרת רישוי כלולה במחיר הליסינג" [checked] [ref=e237]
+            - text: אגרת רישוי כלולה במחיר הליסינג
+          - generic [ref=e238] [cursor=pointer]:
+            - checkbox "טיפולים ותקלות כלולים בליסינג" [checked] [ref=e239]
+            - text: טיפולים ותקלות כלולים בליסינג
+      - generic [ref=e240]:
+        - generic [ref=e241]:
+          - text: 🚗
+          - textbox [ref=e242]: חדש/יד שניה א'
+        - generic [ref=e243]:
+          - generic [ref=e244]: רכישה ומימון
+          - generic [ref=e245]:
+            - generic [ref=e246]: מחיר הרכב (₪)
+            - generic [ref=e247]:
+              - textbox [ref=e248]: 80,000
+              - generic [ref=e249]: ₪
+            - slider [ref=e251] [cursor=pointer]: "80000"
+          - generic [ref=e252]:
+            - generic [ref=e253]: יתרה למימון
+            - generic [ref=e254]: 30,000 ₪
+          - generic [ref=e255]:
+            - generic [ref=e256]: ריבית הלוואה שנתית (%)
+            - generic [ref=e257]:
+              - spinbutton [ref=e258]: "7"
+              - generic [ref=e259]: "%"
+            - slider [ref=e261] [cursor=pointer]: "7"
+          - separator [ref=e262]
+          - generic [ref=e263]: ירידת ערך
+          - generic [ref=e264]:
+            - generic [ref=e265] [cursor=pointer]:
+              - radio "מחיר מכירה צפוי" [ref=e266]
+              - text: מחיר מכירה צפוי
+            - generic [ref=e267] [cursor=pointer]:
+              - radio "% ירידה שנתי" [checked] [ref=e268]
+              - text: "% ירידה שנתי"
+          - generic [ref=e269]:
+            - generic [ref=e270]:
+              - generic [ref=e271]: ירידת ערך שנתית (%)
+              - generic [ref=e272]:
+                - spinbutton [ref=e273]: "15"
+                - generic [ref=e274]: "%"
+              - slider [ref=e276] [cursor=pointer]: "15"
+            - generic [ref=e277]:
+              - generic [ref=e278]: שווי צפוי בסוף תקופה
+              - generic [ref=e279]: 49,130 ₪
+          - separator [ref=e280]
+          - generic [ref=e281]: צריכת דלק
+          - generic [ref=e282]:
+            - generic [ref=e283]: צריכת דלק (ק"מ לליטר)
+            - generic [ref=e284]:
+              - spinbutton [ref=e285]: "12"
+              - generic [ref=e286]: ק"מ/ל'
+            - slider [ref=e288] [cursor=pointer]: "12"
+          - separator [ref=e289]
+          - generic [ref=e290]: עלויות שוטפות
+          - generic [ref=e291]:
+            - generic [ref=e292]: ביטוח שנתי (₪)
+            - generic [ref=e293]:
+              - textbox [ref=e294]: 5,000
+              - generic [ref=e295]: ₪/שנה
+            - slider [ref=e297] [cursor=pointer]: "5000"
+          - generic [ref=e298]:
+            - generic [ref=e299]: אגרת רישוי / טסט (₪)
+            - generic [ref=e300]:
+              - textbox [ref=e301]: 1,300
+              - generic [ref=e302]: ₪/שנה
+            - slider [ref=e304] [cursor=pointer]: "1300"
+          - generic [ref=e305]:
+            - generic [ref=e306]: טיפולים ותקלות (₪)
+            - generic [ref=e307]:
+              - textbox [ref=e308]: 3,000
+              - generic [ref=e309]: ₪/שנה
+            - slider [ref=e311] [cursor=pointer]: "3000"
+      - generic [ref=e312]:
+        - generic [ref=e313]:
+          - text: 🚘
+          - textbox [ref=e314]: חדש/יד שניה ב'
+        - generic [ref=e315]:
+          - generic [ref=e316]: רכישה ומימון
+          - generic [ref=e317]:
+            - generic [ref=e318]: מחיר הרכב (₪)
+            - generic [ref=e319]:
+              - textbox [ref=e320]: 120,000
+              - generic [ref=e321]: ₪
+            - slider [ref=e323] [cursor=pointer]: "120000"
+          - generic [ref=e324]:
+            - generic [ref=e325]: יתרה למימון
+            - generic [ref=e326]: 70,000 ₪
+          - generic [ref=e327]:
+            - generic [ref=e328]: ריבית הלוואה שנתית (%)
+            - generic [ref=e329]:
+              - spinbutton [ref=e330]: "7"
+              - generic [ref=e331]: "%"
+            - slider [ref=e333] [cursor=pointer]: "7"
+          - separator [ref=e334]
+          - generic [ref=e335]: ירידת ערך
+          - generic [ref=e336]:
+            - generic [ref=e337] [cursor=pointer]:
+              - radio "מחיר מכירה צפוי" [ref=e338]
+              - text: מחיר מכירה צפוי
+            - generic [ref=e339] [cursor=pointer]:
+              - radio "% ירידה שנתי" [checked] [ref=e340]
+              - text: "% ירידה שנתי"
+          - generic [ref=e341]:
+            - generic [ref=e342]:
+              - generic [ref=e343]: ירידת ערך שנתית (%)
+              - generic [ref=e344]:
+                - spinbutton [ref=e345]: "15"
+                - generic [ref=e346]: "%"
+              - slider [ref=e348] [cursor=pointer]: "15"
+            - generic [ref=e349]:
+              - generic [ref=e350]: שווי צפוי בסוף תקופה
+              - generic [ref=e351]: 73,695 ₪
+          - separator [ref=e352]
+          - generic [ref=e353]: צריכת דלק
+          - generic [ref=e354]:
+            - generic [ref=e355]: צריכת דלק (ק"מ לליטר)
+            - generic [ref=e356]:
+              - spinbutton [ref=e357]: "12"
+              - generic [ref=e358]: ק"מ/ל'
+            - slider [ref=e360] [cursor=pointer]: "12"
+          - separator [ref=e361]
+          - generic [ref=e362]: עלויות שוטפות
+          - generic [ref=e363]:
+            - generic [ref=e364]: ביטוח שנתי (₪)
+            - generic [ref=e365]:
+              - textbox [ref=e366]: 5,000
+              - generic [ref=e367]: ₪/שנה
+            - slider [ref=e369] [cursor=pointer]: "5000"
+          - generic [ref=e370]:
+            - generic [ref=e371]: אגרת רישוי / טסט (₪)
+            - generic [ref=e372]:
+              - textbox [ref=e373]: 1,300
+              - generic [ref=e374]: ₪/שנה
+            - slider [ref=e376] [cursor=pointer]: "1300"
+          - generic [ref=e377]:
+            - generic [ref=e378]: טיפולים ותקלות (₪)
+            - generic [ref=e379]:
+              - textbox [ref=e380]: 2,500
+              - generic [ref=e381]: ₪/שנה
+            - slider [ref=e383] [cursor=pointer]: "2500"
+    - generic [ref=e384]:
+      - generic [ref=e385]:
+        - generic [ref=e386]: 📊 השוואה מלאה
+        - generic [ref=e387]:
+          - button "שמירת PDF" [ref=e388] [cursor=pointer]:
+            - img [ref=e389]
+            - text: שמירת PDF
+          - button "הדפסה" [ref=e392] [cursor=pointer]:
+            - img [ref=e393]
+            - text: הדפסה
+      - table [ref=e398]:
+        - rowgroup [ref=e399]:
+          - row "רכיב עלות ⚡ חשמלי 📋 ליסינג ⚡📋 ליסינג חשמלי חדש/יד שניה א' 🏆 חדש/יד שניה ב'" [ref=e400]:
+            - columnheader "רכיב עלות" [ref=e401]
+            - columnheader "⚡ חשמלי" [ref=e402]
+            - columnheader "📋 ליסינג" [ref=e403]
+            - columnheader "⚡📋 ליסינג חשמלי" [ref=e404]
+            - columnheader "חדש/יד שניה א' 🏆" [ref=e405]
+            - columnheader "חדש/יד שניה ב'" [ref=e406]
+        - rowgroup [ref=e407]:
+          - row "עלות ליסינג לתקופה — 126,000 ₪ 144,000 ₪ — —" [ref=e408]:
+            - cell "עלות ליסינג לתקופה" [ref=e409]
+            - cell "—" [ref=e410]
+            - cell "126,000 ₪" [ref=e411]
+            - cell "144,000 ₪" [ref=e412]
+            - cell "—" [ref=e413]
+            - cell "—" [ref=e414]
+          - row "ירידת ערך לתקופה 73,200 ₪ — — 30,870 ₪ 46,305 ₪" [ref=e415]:
+            - cell "ירידת ערך לתקופה" [ref=e416]
+            - cell "73,200 ₪" [ref=e417]
+            - cell "—" [ref=e418]
+            - cell "—" [ref=e419]
+            - cell "30,870 ₪" [ref=e420]
+            - cell "46,305 ₪" [ref=e421]
+          - row "עלות מימון (ריבית) 15,997 ₪ — — 5,642 ₪ 13,165 ₪" [ref=e422]:
+            - cell "עלות מימון (ריבית)" [ref=e423]
+            - cell "15,997 ₪" [ref=e424]
+            - cell "—" [ref=e425]
+            - cell "—" [ref=e426]
+            - cell "5,642 ₪" [ref=e427]
+            - cell "13,165 ₪" [ref=e428]
+          - row "עלות אנרגיה לתקופה 4,500 ₪ 26,250 ₪ 4,500 ₪ 26,250 ₪ 26,250 ₪" [ref=e429]:
+            - cell "עלות אנרגיה לתקופה" [ref=e430]
+            - cell "4,500 ₪" [ref=e431]
+            - cell "26,250 ₪" [ref=e432]
+            - cell "4,500 ₪" [ref=e433]
+            - cell "26,250 ₪" [ref=e434]
+            - cell "26,250 ₪" [ref=e435]
+          - row "ביטוח לתקופה 18,000 ₪ — — 15,000 ₪ 15,000 ₪" [ref=e436]:
+            - cell "ביטוח לתקופה" [ref=e437]
+            - cell "18,000 ₪" [ref=e438]
+            - cell "—" [ref=e439]
+            - cell "—" [ref=e440]
+            - cell "15,000 ₪" [ref=e441]
+            - cell "15,000 ₪" [ref=e442]
+          - row "אגרת רישוי לתקופה 3,900 ₪ — — 3,900 ₪ 3,900 ₪" [ref=e443]:
+            - cell "אגרת רישוי לתקופה" [ref=e444]
+            - cell "3,900 ₪" [ref=e445]
+            - cell "—" [ref=e446]
+            - cell "—" [ref=e447]
+            - cell "3,900 ₪" [ref=e448]
+            - cell "3,900 ₪" [ref=e449]
+          - row "טיפולים ותקלות לתקופה 4,500 ₪ — — 9,000 ₪ 7,500 ₪" [ref=e450]:
+            - cell "טיפולים ותקלות לתקופה" [ref=e451]
+            - cell "4,500 ₪" [ref=e452]
+            - cell "—" [ref=e453]
+            - cell "—" [ref=e454]
+            - cell "9,000 ₪" [ref=e455]
+            - cell "7,500 ₪" [ref=e456]
+          - row "עמדת טעינה (חד-פעמי) 3,000 ₪ — 3,000 ₪ — —" [ref=e457]:
+            - cell "עמדת טעינה (חד-פעמי)" [ref=e458]
+            - cell "3,000 ₪" [ref=e459]
+            - cell "—" [ref=e460]
+            - cell "3,000 ₪" [ref=e461]
+            - cell "—" [ref=e462]
+            - cell "—" [ref=e463]
+          - row "סה\"כ לתקופה (3 שנים) 123,097 ₪ 152,250 ₪ 151,500 ₪ 90,662 ₪ 112,120 ₪" [ref=e464]:
+            - cell "סה\"כ לתקופה (3 שנים)" [ref=e465]
+            - cell "123,097 ₪" [ref=e466]
+            - cell "152,250 ₪" [ref=e467]
+            - cell "151,500 ₪" [ref=e468]
+            - cell "90,662 ₪" [ref=e469]
+            - cell "112,120 ₪" [ref=e470]
+          - row "עלות חודשית ממוצעת 3,419 ₪ 4,229 ₪ 4,208 ₪ 2,518 ₪ 3,114 ₪" [ref=e471]:
+            - cell "עלות חודשית ממוצעת" [ref=e472]
+            - cell "3,419 ₪" [ref=e473]
+            - cell "4,229 ₪" [ref=e474]
+            - cell "4,208 ₪" [ref=e475]
+            - cell "2,518 ₪" [ref=e476]
+            - cell "3,114 ₪" [ref=e477]
+          - row "עלות שנתית ממוצעת 41,032 ₪ 50,750 ₪ 50,500 ₪ 30,221 ₪ 37,373 ₪" [ref=e478]:
+            - cell "עלות שנתית ממוצעת" [ref=e479]
+            - cell "41,032 ₪" [ref=e480]
+            - cell "50,750 ₪" [ref=e481]
+            - cell "50,500 ₪" [ref=e482]
+            - cell "30,221 ₪" [ref=e483]
+            - cell "37,373 ₪" [ref=e484]
+          - row "החזר חודשי של הלוואה 1,933 ₪ — — 594 ₪ 1,386 ₪" [ref=e485]:
+            - cell "החזר חודשי של הלוואה" [ref=e486]
+            - cell "1,933 ₪" [ref=e487]
+            - cell "—" [ref=e488]
+            - cell "—" [ref=e489]
+            - cell "594 ₪" [ref=e490]
+            - cell "1,386 ₪" [ref=e491]
+          - row "עלות תזרימית חודשית * 2,875 ₪ 4,229 ₪ 4,208 ₪ 2,098 ₪ 2,849 ₪" [ref=e492]:
+            - cell "עלות תזרימית חודשית *" [ref=e493]
+            - cell "2,875 ₪" [ref=e494]
+            - cell "4,229 ₪" [ref=e495]
+            - cell "4,208 ₪" [ref=e496]
+            - cell "2,098 ₪" [ref=e497]
+            - cell "2,849 ₪" [ref=e498]
+      - generic [ref=e499]: "* תזרימי = תשלום חודשי בפועל — החזר הלוואה (שפיצר) + הוצאות שוטפות. לרכב ממומן, ייתכן שהתשלום החודשי גבוה מהעלות הממוצעת כי ההלוואה נפרסת על תקופה שונה מתקופת ההשוואה."
+      - generic [ref=e500]:
+        - generic [ref=e502]: עלות חודשית ממוצעת לפי רכיב
+        - generic [ref=e506]: עלות מצטברת לאורך הזמן
+    - generic [ref=e509]: ⚠️ המחשבון מספק הערכה כללית בלבד ואינו מהווה ייעוץ פיננסי. הנתונים מבוססים על הערכות המשתמש. ערכים בפועל עשויים להשתנות בהתאם לתנאי שוק, ספקי ביטוח, מצב ודגם הרכב.
+  - contentinfo [ref=e510]:
+    - text: © 2026 יחיאל ממן — יועץ משכנתאות | כל הזכויות שמורות | האתר אינו מהווה ייעוץ פיננסי מחייב |
+    - link "ניהול" [ref=e511] [cursor=pointer]:
+      - /url: admin.html

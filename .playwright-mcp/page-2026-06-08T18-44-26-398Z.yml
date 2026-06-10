@@ -1,0 +1,263 @@
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - link "יחיאל ממן יחיאל ממן | אסטרטגיה פיננסית" [ref=e4] [cursor=pointer]:
+      - /url: ../index.html
+      - img "יחיאל ממן" [ref=e5]
+      - generic [ref=e6]: יחיאל ממן | אסטרטגיה פיננסית
+    - list [ref=e7]:
+      - listitem [ref=e8]:
+        - link "שירותים" [ref=e9] [cursor=pointer]:
+          - /url: ../index.html#services
+      - listitem [ref=e10]:
+        - link "תהליך" [ref=e11] [cursor=pointer]:
+          - /url: ../index.html#process
+      - listitem [ref=e12]:
+        - link "המלצות" [ref=e13] [cursor=pointer]:
+          - /url: ../testimonials.html
+      - listitem [ref=e14]:
+        - link "ההתמחויות שלנו" [ref=e15] [cursor=pointer]:
+          - /url: ../areas.html
+      - listitem [ref=e16]:
+        - link "מחשבונים ▾" [ref=e17] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e18]:
+        - link "מרכז הידע ▾" [ref=e19] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e20]:
+        - link "צור קשר" [ref=e21] [cursor=pointer]:
+          - /url: ../index.html#contact
+  - generic [ref=e22]:
+    - heading "סימולטור תוכנית הבראה" [level=1] [ref=e23]
+    - paragraph [ref=e24]: תכנון מובנה לסדר כלכלי — 5 שלבים לתכנית מעשית
+  - generic [ref=e25]:
+    - generic [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: "1"
+      - generic [ref=e28]: פרטי משפחה
+    - generic [ref=e29] [cursor=pointer]:
+      - generic [ref=e30]: "2"
+      - generic [ref=e31]: תקציב
+    - generic [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: "3"
+      - generic [ref=e34]: חובות
+    - generic [ref=e35] [cursor=pointer]:
+      - generic [ref=e36]: "4"
+      - generic [ref=e37]: מקורות מימון
+    - generic [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: "5"
+      - generic [ref=e40]: תכנון הבראה
+    - generic [ref=e41] [cursor=pointer]:
+      - generic [ref=e42]: "6"
+      - generic [ref=e43]: תוצאות
+  - generic [ref=e44]:
+    - generic [ref=e45]: נשמר אוטומטית 21:43
+    - generic [ref=e46]:
+      - button "🗑️ אפס נתונים" [ref=e47] [cursor=pointer]
+      - button "📂 טען קובץ" [ref=e48] [cursor=pointer]
+      - button "💾 שמור קובץ" [ref=e49] [cursor=pointer]
+  - generic [ref=e1047]:
+    - generic [ref=e1048]:
+      - generic [ref=e1049]: 💰 כספים זמינים (חסכונות, קרנות)
+      - table [ref=e1051]:
+        - rowgroup [ref=e1052]:
+          - row "מקור סכום (₪) מועד משיכה הערות" [ref=e1053]:
+            - columnheader "מקור" [ref=e1054]
+            - columnheader "סכום (₪)" [ref=e1055]
+            - columnheader "מועד משיכה" [ref=e1056]
+            - columnheader "הערות" [ref=e1057]
+            - columnheader [ref=e1058]
+        - rowgroup [ref=e1059]:
+          - row "קרן השתלמות 20,000 זמין מיידי ✕" [ref=e1176]:
+            - cell "קרן השתלמות" [ref=e1061]:
+              - textbox "שם המקור" [ref=e1062]: קרן השתלמות
+            - cell "20,000" [ref=e1177]:
+              - textbox "0" [ref=e1064]: 20,000
+            - cell "זמין מיידי" [ref=e1065]:
+              - generic [ref=e1067] [cursor=pointer]:
+                - checkbox "זמין מיידי" [checked] [ref=e1068]
+                - text: זמין מיידי
+            - cell [ref=e1069]:
+              - textbox "הערות" [ref=e1070]
+            - cell "✕" [ref=e1071]:
+              - button "✕" [ref=e1072] [cursor=pointer]
+          - row "חיסכון פנסיוני 10,000 זמין מיידי ✕" [ref=e1178]:
+            - cell "חיסכון פנסיוני" [ref=e1074]:
+              - textbox "שם המקור" [ref=e1075]: חיסכון פנסיוני
+            - cell "10,000" [ref=e1179]:
+              - textbox "0" [ref=e1077]: 10,000
+            - cell "זמין מיידי" [ref=e1078]:
+              - generic [ref=e1080] [cursor=pointer]:
+                - checkbox "זמין מיידי" [checked] [ref=e1081]
+                - text: זמין מיידי
+            - cell [ref=e1082]:
+              - textbox "הערות" [ref=e1083]
+            - cell "✕" [ref=e1084]:
+              - button "✕" [ref=e1085] [cursor=pointer]
+          - row "חיסכון אחר 8,000 זמין מיידי ✕" [ref=e6768]:
+            - cell "חיסכון אחר" [ref=e6770]:
+              - textbox "שם המקור" [ref=e6771]: חיסכון אחר
+            - cell "8,000" [ref=e6772]:
+              - textbox "0" [ref=e6773]: 8,000
+            - cell "זמין מיידי" [ref=e6774]:
+              - generic [ref=e6775]:
+                - generic [ref=e6776] [cursor=pointer]:
+                  - checkbox "זמין מיידי" [ref=e6777]
+                  - text: זמין מיידי
+                - textbox "בחר תאריך" [active] [ref=e6778] [cursor=pointer]
+            - cell [ref=e6779]:
+              - textbox "הערות" [ref=e6780]
+            - cell "✕" [ref=e6781]:
+              - button "✕" [ref=e6782] [cursor=pointer]
+        - rowgroup [ref=e1099]:
+          - row "סה\"כ 38,000 ₪" [ref=e6783]:
+            - cell "סה\"כ" [ref=e1101]
+            - cell "38,000 ₪" [ref=e6784]
+            - cell [ref=e1103]
+      - button "+ הוסף מקור מימון" [ref=e1104] [cursor=pointer]
+    - generic [ref=e1105]:
+      - generic [ref=e1106]: 🏦 הלוואות חדשות
+      - table [ref=e1108]:
+        - rowgroup [ref=e1119]:
+          - row "# שם / מטרה סכום (₪) גרייס ריבית % תקופה החזר חודשי (מחושב אוטומטית) הערות" [ref=e1120]:
+            - columnheader "#" [ref=e1121]
+            - columnheader "שם / מטרה" [ref=e1122]
+            - columnheader "סכום (₪)" [ref=e1123]
+            - columnheader "גרייס" [ref=e1124]
+            - columnheader "ריבית %" [ref=e1125]
+            - columnheader "תקופה" [ref=e1126]
+            - columnheader "החזר חודשי (מחושב אוטומטית)" [ref=e1127]
+            - columnheader "הערות" [ref=e1128]
+            - columnheader [ref=e1129]
+        - rowgroup [ref=e1130]:
+          - row "1 הלוואה לדוגמא 10000 6 60 193 ₪ ✕" [ref=e1131]:
+            - cell "1" [ref=e1132]
+            - cell "הלוואה לדוגמא" [ref=e1133]:
+              - textbox "שם ההלוואה" [ref=e1134]: הלוואה לדוגמא
+            - cell "10000" [ref=e1135]:
+              - spinbutton [ref=e1136]: "10000"
+            - cell [ref=e1137]:
+              - spinbutton [ref=e1138]
+            - cell "6" [ref=e1139]:
+              - spinbutton [ref=e1140]: "6"
+            - cell "60" [ref=e1141]:
+              - spinbutton [ref=e1142]: "60"
+            - cell "193 ₪" [ref=e1143]
+            - cell [ref=e1144]:
+              - textbox "הערות" [ref=e1145]
+            - cell "✕" [ref=e1146]:
+              - button "✕" [ref=e1147] [cursor=pointer]
+          - row "2 — ✕" [ref=e1148]:
+            - cell "2" [ref=e1149]
+            - cell [ref=e1150]:
+              - textbox "שם ההלוואה" [ref=e1151]
+            - cell [ref=e1152]:
+              - spinbutton [ref=e1153]
+            - cell [ref=e1154]:
+              - spinbutton [ref=e1155]
+            - cell [ref=e1156]:
+              - spinbutton [ref=e1157]
+            - cell [ref=e1158]:
+              - spinbutton [ref=e1159]
+            - cell "—" [ref=e1160]
+            - cell [ref=e1161]:
+              - textbox "הערות" [ref=e1162]
+            - cell "✕" [ref=e1163]:
+              - button "✕" [ref=e1164] [cursor=pointer]
+        - rowgroup [ref=e1165]:
+          - row "סה\"כ 10,000 ₪ 193 ₪" [ref=e1166]:
+            - cell "סה\"כ" [ref=e1167]
+            - cell "10,000 ₪" [ref=e1168]
+            - cell [ref=e1169]
+            - cell "193 ₪" [ref=e1170]
+            - cell [ref=e1171]
+      - button "+ הוסף הלוואה" [ref=e1172] [cursor=pointer]
+    - generic [ref=e1173]:
+      - button "→ חזרה" [ref=e1174] [cursor=pointer]
+      - button "המשך לתכנון הבראה ←" [ref=e1175] [cursor=pointer]
+  - generic:
+    - generic: חודש 20 — 2028/02
+    - generic:
+      - generic:
+        - generic: יתרת חובות
+      - generic: ₪ 19,624
+  - generic:
+    - generic: חודש 49 — 2030/07
+    - generic:
+      - generic:
+        - generic: יתרת חובות
+      - generic: ₪ 0
+    - generic:
+      - generic:
+        - generic: יתרת הלוואות חדשות
+      - generic: ₪ 2,064
+  - generic:
+    - generic: חודש 60
+    - generic:
+      - generic:
+        - generic: החזר הלוואות חדשות
+      - generic: ₪ 193
+    - generic:
+      - generic:
+        - generic: החזר חובות מקוריים
+      - generic: ₪ 0
+    - generic:
+      - generic: סה"כ החזר
+      - generic: ₪ 193
+    - generic:
+      - generic:
+        - generic: סכום פנוי להחזר
+      - generic: ₪ 8,500
+    - generic: "יתרה פנויה: ₪ +8,307"
+  - generic:
+    - generic: חודש 16
+    - generic:
+      - generic:
+        - generic: התפתחות החזר החודשי
+      - generic: ₪ 300
+    - generic:
+      - generic:
+        - generic: סכום פנוי להחזר
+      - generic: ₪ 8,000
+    - generic: "יתרה פנויה: ₪ +7,700"
+  - generic [ref=e6785]:
+    - generic [ref=e6786]:
+      - button "›" [ref=e6787] [cursor=pointer]
+      - button "יוני 2026" [ref=e6788] [cursor=pointer]
+      - button "‹" [ref=e6789] [cursor=pointer]
+    - generic [ref=e6790]:
+      - generic [ref=e6791]: א׳
+      - generic [ref=e6792]: ב׳
+      - generic [ref=e6793]: ג׳
+      - generic [ref=e6794]: ד׳
+      - generic [ref=e6795]: ה׳
+      - generic [ref=e6796]: ו׳
+      - generic [ref=e6797]: ש׳
+      - generic [ref=e6799] [cursor=pointer]: "1"
+      - generic [ref=e6800] [cursor=pointer]: "2"
+      - generic [ref=e6801] [cursor=pointer]: "3"
+      - generic [ref=e6802] [cursor=pointer]: "4"
+      - generic [ref=e6803] [cursor=pointer]: "5"
+      - generic [ref=e6804] [cursor=pointer]: "6"
+      - generic [ref=e6805] [cursor=pointer]: "7"
+      - generic [ref=e6806] [cursor=pointer]: "8"
+      - generic [ref=e6807] [cursor=pointer]: "9"
+      - generic [ref=e6808] [cursor=pointer]: "10"
+      - generic [ref=e6809] [cursor=pointer]: "11"
+      - generic [ref=e6810] [cursor=pointer]: "12"
+      - generic [ref=e6811] [cursor=pointer]: "13"
+      - generic [ref=e6812] [cursor=pointer]: "14"
+      - generic [ref=e6813] [cursor=pointer]: "15"
+      - generic [ref=e6814] [cursor=pointer]: "16"
+      - generic [ref=e6815] [cursor=pointer]: "17"
+      - generic [ref=e6816] [cursor=pointer]: "18"
+      - generic [ref=e6817] [cursor=pointer]: "19"
+      - generic [ref=e6818] [cursor=pointer]: "20"
+      - generic [ref=e6819] [cursor=pointer]: "21"
+      - generic [ref=e6820] [cursor=pointer]: "22"
+      - generic [ref=e6821] [cursor=pointer]: "23"
+      - generic [ref=e6822] [cursor=pointer]: "24"
+      - generic [ref=e6823] [cursor=pointer]: "25"
+      - generic [ref=e6824] [cursor=pointer]: "26"
+      - generic [ref=e6825] [cursor=pointer]: "27"
+      - generic [ref=e6826] [cursor=pointer]: "28"
+      - generic [ref=e6827] [cursor=pointer]: "29"
+      - generic [ref=e6828] [cursor=pointer]: "30"

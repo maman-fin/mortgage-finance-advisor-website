@@ -6,7 +6,19 @@
       "Bash(node --check _check.js)",
       "Bash(rm -f _check.js)",
       "Bash(node --check _check_0.js)",
-      "Bash(rm _check.js)"
+      "Bash(rm _check.js)",
+      "Bash(powershell -NonInteractive -Command \"if \\(Test-Path 'C:\\\\Users\\\\Yechiel\\\\.claude\\\\settings.json'\\) { Get-Content 'C:\\\\Users\\\\Yechiel\\\\.claude\\\\settings.json' -Raw } else { 'no user settings.json' }; Write-Output '---'; if \\(Test-Path 'c:\\\\Users\\\\Yechiel\\\\mortgage-advisor\\\\.claude\\\\settings.json'\\) { Get-Content 'c:\\\\Users\\\\Yechiel\\\\mortgage-advisor\\\\.claude\\\\settings.json' -Raw } else { 'no project settings.json' }\")",
+      "mcp__playwright__browser_navigate",
+      "Bash(python -m http.server 8080)",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_console_messages",
+      "Bash(node --check tmp_check.js)",
+      "Bash(rm tmp_check.js)",
+      "mcp__playwright__browser_resize"
     ]
   }
 }

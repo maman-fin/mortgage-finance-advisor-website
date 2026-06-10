@@ -1,0 +1,67 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - link "יחיאל ממן יחיאל ממן | אסטרטגיה פיננסית" [ref=e4] [cursor=pointer]:
+      - /url: ../index.html
+      - img "יחיאל ממן" [ref=e5]
+      - generic [ref=e6]: יחיאל ממן | אסטרטגיה פיננסית
+    - list [ref=e7]:
+      - listitem [ref=e8]:
+        - link "שירותים" [ref=e9] [cursor=pointer]:
+          - /url: ../index.html#services
+      - listitem [ref=e10]:
+        - link "תהליך" [ref=e11] [cursor=pointer]:
+          - /url: ../index.html#process
+      - listitem [ref=e12]:
+        - link "המלצות" [ref=e13] [cursor=pointer]:
+          - /url: ../testimonials.html
+      - listitem [ref=e14]:
+        - link "ההתמחויות שלנו" [ref=e15] [cursor=pointer]:
+          - /url: ../areas.html
+      - listitem [ref=e16]:
+        - link "מחשבונים ▾" [ref=e17] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e18]:
+        - link "מרכז הידע ▾" [ref=e19] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e20]:
+        - link "צור קשר" [ref=e21] [cursor=pointer]:
+          - /url: ../index.html#contact
+  - generic [ref=e22]:
+    - heading "סימולטור תוכנית הבראה" [level=1] [ref=e23]
+    - paragraph [ref=e24]: תכנון מובנה לסדר כלכלי — 5 שלבים לתכנית מעשית
+  - generic [ref=e25]:
+    - generic [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: "1"
+      - generic [ref=e28]: פרטי משפחה
+    - generic [ref=e29] [cursor=pointer]:
+      - generic [ref=e30]: "2"
+      - generic [ref=e31]: תקציב
+    - generic [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: "3"
+      - generic [ref=e34]: חובות
+    - generic [ref=e35] [cursor=pointer]:
+      - generic [ref=e36]: "4"
+      - generic [ref=e37]: מקורות מימון
+    - generic [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: "5"
+      - generic [ref=e40]: תכנון הבראה
+    - generic [ref=e41] [cursor=pointer]:
+      - generic [ref=e42]: "6"
+      - generic [ref=e43]: תוצאות
+  - generic [ref=e44]:
+    - generic [ref=e45]: פגישה חדשה
+    - generic [ref=e46]:
+      - button "🗑️ אפס נתונים" [ref=e47] [cursor=pointer]
+      - button "📂 טען קובץ" [ref=e48] [cursor=pointer]
+      - button "💾 שמור קובץ" [ref=e49] [cursor=pointer]
+  - generic [ref=e51]:
+    - generic [ref=e52]:
+      - generic [ref=e53]: 👨‍👩‍👧 פרטי המשפחה
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e56]: שם המשפחה
+          - 'textbox "לדוגמא: משפחת כהן" [ref=e58]'
+        - generic [ref=e59]:
+          - generic [ref=e60]: תאריך תחילת תכנית ההבראה
+          - textbox [ref=e62]: 2026-07
+    - button "המשך לתקציב ←" [ref=e64] [cursor=pointer]

@@ -1,0 +1,230 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - link "יחיאל ממן יחיאל ממן | אסטרטגיה פיננסית" [ref=e4] [cursor=pointer]:
+      - /url: ../index.html
+      - img "יחיאל ממן" [ref=e5]
+      - generic [ref=e6]: יחיאל ממן | אסטרטגיה פיננסית
+    - list [ref=e7]:
+      - listitem [ref=e8]:
+        - link "שירותים" [ref=e9] [cursor=pointer]:
+          - /url: ../index.html#services
+      - listitem [ref=e10]:
+        - link "תהליך" [ref=e11] [cursor=pointer]:
+          - /url: ../index.html#process
+      - listitem [ref=e12]:
+        - link "המלצות" [ref=e13] [cursor=pointer]:
+          - /url: ../testimonials.html
+      - listitem [ref=e14]:
+        - link "ההתמחויות שלנו" [ref=e15] [cursor=pointer]:
+          - /url: ../areas.html
+      - listitem [ref=e16]:
+        - link "מחשבונים ▾" [ref=e17] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e18]:
+        - link "מרכז הידע ▾" [ref=e19] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e20]:
+        - link "צור קשר" [ref=e21] [cursor=pointer]:
+          - /url: ../index.html#contact
+  - generic [ref=e22]:
+    - heading "סימולטור תוכנית הבראה" [level=1] [ref=e23]
+    - paragraph [ref=e24]: תכנון מובנה לסדר כלכלי — 5 שלבים לתכנית מעשית
+  - generic [ref=e25]:
+    - generic [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: "1"
+      - generic [ref=e28]: פרטי משפחה
+    - generic [ref=e29] [cursor=pointer]:
+      - generic [ref=e30]: "2"
+      - generic [ref=e31]: תקציב
+    - generic [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: "3"
+      - generic [ref=e34]: חובות
+    - generic [ref=e35] [cursor=pointer]:
+      - generic [ref=e36]: "4"
+      - generic [ref=e37]: מקורות מימון
+    - generic [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: "5"
+      - generic [ref=e40]: תכנון הבראה
+    - generic [ref=e41] [cursor=pointer]:
+      - generic [ref=e42]: "6"
+      - generic [ref=e43]: תוצאות
+  - generic [ref=e44]:
+    - generic [ref=e45]: נשמר אוטומטית 21:23
+    - generic [ref=e46]:
+      - button "🗑️ אפס נתונים" [ref=e47] [cursor=pointer]
+      - button "📂 טען קובץ" [ref=e48] [cursor=pointer]
+      - button "💾 שמור קובץ" [ref=e49] [cursor=pointer]
+  - generic [ref=e904]:
+    - generic [ref=e905]:
+      - generic [ref=e906]: 📋 רשימת חובות
+      - generic [ref=e907]:
+        - button "📂 ייבוא מקובץ" [ref=e908] [cursor=pointer]
+        - button "✏️ הזנה ידנית" [ref=e909] [cursor=pointer]
+      - generic [ref=e911] [cursor=pointer]:
+        - generic [ref=e912]: 📂
+        - generic [ref=e913]: לחץ לבחירת קובץ ייצוא חובות
+        - generic [ref=e914]: קובץ XLSX מיוצא ממערכת ניהול חובות
+      - table [ref=e916]:
+        - rowgroup [ref=e928]:
+          - row "שם הנושה קטגוריה יתרת קרן החוב (₪) נותר לתשלום (₪) בהסדר ריבית % חודשים החזר חודשי הערות" [ref=e929]:
+            - columnheader "שם הנושה" [ref=e930]
+            - columnheader "קטגוריה" [ref=e931]
+            - columnheader "יתרת קרן החוב (₪)" [ref=e932]
+            - columnheader "נותר לתשלום (₪)" [ref=e933]
+            - columnheader "בהסדר" [ref=e934]
+            - columnheader "ריבית %" [ref=e935]
+            - columnheader "חודשים" [ref=e936]
+            - columnheader "החזר חודשי" [ref=e937]
+            - columnheader "הערות" [ref=e938]
+            - columnheader [ref=e939]
+        - rowgroup [ref=e940]:
+          - row "חוב לדוגמא בנק - הלוואה 10,000 ₪ 10,800 5 % 36 אוט׳ 300 ✕" [ref=e941]:
+            - cell "חוב לדוגמא" [ref=e942]:
+              - textbox "שם הנושה" [ref=e943]: חוב לדוגמא
+            - cell "בנק - הלוואה" [ref=e944]:
+              - combobox [ref=e945]:
+                - option "בחר"
+                - option "ארנונה"
+                - option "ביטוח לאומי"
+                - option "בנק - הלוואה" [selected]
+                - option "בנק - משיכת יתר"
+                - option "גמ\"ח"
+                - option "הוצאה לפועל"
+                - option "חברים"
+                - option "כרטיס אשראי"
+                - option "מוסד / חברה"
+                - option "מזונות"
+                - option "מס הכנסה"
+                - option "מע\"מ"
+                - option "משכורת - הלוואה"
+                - option "משכנתא - פיגורים"
+                - option "משפחה קרובה"
+                - option "משפחה רחוקה"
+                - option "פיגורים"
+                - option "פעמונים"
+                - option "שוק אפור"
+                - option "אחר"
+            - cell "10,000" [ref=e946]:
+              - textbox "0" [ref=e947]: 10,000
+            - cell "₪ 10,800" [ref=e948]
+            - cell [ref=e949]:
+              - checkbox [checked] [ref=e950] [cursor=pointer]
+            - cell "5 %" [ref=e951]:
+              - spinbutton [ref=e952]: "5"
+              - text: "%"
+            - cell "36 אוט׳" [ref=e953]:
+              - generic [ref=e954]:
+                - spinbutton [disabled] [ref=e955]: "36"
+                - generic "חישוב אוטומטי לפי לוח שפיצר" [ref=e956] [cursor=pointer]:
+                  - checkbox "אוט׳" [checked] [ref=e957]
+                  - text: אוט׳
+            - cell "300" [ref=e958]:
+              - textbox "₪" [ref=e959]: "300"
+            - cell [ref=e960]:
+              - textbox "הערות" [ref=e961]
+            - cell "✕" [ref=e962]:
+              - button "✕" [ref=e963] [cursor=pointer]
+          - row "בחר — % אוט׳ ✕" [ref=e964]:
+            - cell [ref=e965]:
+              - textbox "שם הנושה" [ref=e966]
+            - cell "בחר" [ref=e967]:
+              - combobox [ref=e968]:
+                - option "בחר" [selected]
+                - option "ארנונה"
+                - option "ביטוח לאומי"
+                - option "בנק - הלוואה"
+                - option "בנק - משיכת יתר"
+                - option "גמ\"ח"
+                - option "הוצאה לפועל"
+                - option "חברים"
+                - option "כרטיס אשראי"
+                - option "מוסד / חברה"
+                - option "מזונות"
+                - option "מס הכנסה"
+                - option "מע\"מ"
+                - option "משכורת - הלוואה"
+                - option "משכנתא - פיגורים"
+                - option "משפחה קרובה"
+                - option "משפחה רחוקה"
+                - option "פיגורים"
+                - option "פעמונים"
+                - option "שוק אפור"
+                - option "אחר"
+            - cell [ref=e969]:
+              - textbox "0" [ref=e970]
+            - cell "—" [ref=e971]
+            - cell [ref=e972]:
+              - checkbox [checked] [ref=e973] [cursor=pointer]
+            - cell "%" [ref=e974]:
+              - spinbutton [ref=e975]
+              - text: "%"
+            - cell "אוט׳" [ref=e976]:
+              - generic [ref=e977]:
+                - spinbutton [disabled] [ref=e978]
+                - generic "חישוב אוטומטי לפי לוח שפיצר" [ref=e979] [cursor=pointer]:
+                  - checkbox "אוט׳" [checked] [ref=e980]
+                  - text: אוט׳
+            - cell [ref=e981]:
+              - textbox "₪" [ref=e982]
+            - cell [ref=e983]:
+              - textbox "הערות" [ref=e984]
+            - cell "✕" [ref=e985]:
+              - button "✕" [ref=e986] [cursor=pointer]
+          - row "בחר — % אוט׳ ✕" [ref=e987]:
+            - cell [ref=e988]:
+              - textbox "שם הנושה" [ref=e989]
+            - cell "בחר" [ref=e990]:
+              - combobox [ref=e991]:
+                - option "בחר" [selected]
+                - option "ארנונה"
+                - option "ביטוח לאומי"
+                - option "בנק - הלוואה"
+                - option "בנק - משיכת יתר"
+                - option "גמ\"ח"
+                - option "הוצאה לפועל"
+                - option "חברים"
+                - option "כרטיס אשראי"
+                - option "מוסד / חברה"
+                - option "מזונות"
+                - option "מס הכנסה"
+                - option "מע\"מ"
+                - option "משכורת - הלוואה"
+                - option "משכנתא - פיגורים"
+                - option "משפחה קרובה"
+                - option "משפחה רחוקה"
+                - option "פיגורים"
+                - option "פעמונים"
+                - option "שוק אפור"
+                - option "אחר"
+            - cell [ref=e992]:
+              - textbox "0" [ref=e993]
+            - cell "—" [ref=e994]
+            - cell [ref=e995]:
+              - checkbox [checked] [ref=e996] [cursor=pointer]
+            - cell "%" [ref=e997]:
+              - spinbutton [ref=e998]
+              - text: "%"
+            - cell "אוט׳" [ref=e999]:
+              - generic [ref=e1000]:
+                - spinbutton [disabled] [ref=e1001]
+                - generic "חישוב אוטומטי לפי לוח שפיצר" [ref=e1002] [cursor=pointer]:
+                  - checkbox "אוט׳" [checked] [ref=e1003]
+                  - text: אוט׳
+            - cell [ref=e1004]:
+              - textbox "₪" [ref=e1005]
+            - cell [ref=e1006]:
+              - textbox "הערות" [ref=e1007]
+            - cell "✕" [ref=e1008]:
+              - button "✕" [ref=e1009] [cursor=pointer]
+        - rowgroup [ref=e1010]:
+          - row "סה\"כ 0 ₪ ₪ 0 0 ₪" [ref=e1011]:
+            - cell "סה\"כ" [ref=e1012]
+            - cell "0 ₪" [ref=e1013]
+            - cell "₪ 0" [ref=e1014]
+            - cell [ref=e1015]
+            - cell "0 ₪" [ref=e1016]
+            - cell [ref=e1017]
+      - button "+ הוסף חוב" [ref=e1018] [cursor=pointer]
+    - generic [ref=e1019]:
+      - button "→ חזרה" [ref=e1020] [cursor=pointer]
+      - button "המשך למקורות מימון ←" [ref=e1021] [cursor=pointer]

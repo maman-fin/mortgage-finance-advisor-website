@@ -1,0 +1,267 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - link "יחיאל ממן יחיאל ממן | אסטרטגיה פיננסית" [ref=e4] [cursor=pointer]:
+      - /url: ../index.html
+      - img "יחיאל ממן" [ref=e5]
+      - generic [ref=e6]: יחיאל ממן | אסטרטגיה פיננסית
+    - list [ref=e7]:
+      - listitem [ref=e8]:
+        - link "שירותים" [ref=e9] [cursor=pointer]:
+          - /url: ../index.html#services
+      - listitem [ref=e10]:
+        - link "תהליך" [ref=e11] [cursor=pointer]:
+          - /url: ../index.html#process
+      - listitem [ref=e12]:
+        - link "המלצות" [ref=e13] [cursor=pointer]:
+          - /url: ../testimonials.html
+      - listitem [ref=e14]:
+        - link "ההתמחויות שלנו" [ref=e15] [cursor=pointer]:
+          - /url: ../areas.html
+      - listitem [ref=e16]:
+        - link "מחשבונים ▾" [ref=e17] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e18]:
+        - link "מרכז הידע ▾" [ref=e19] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e20]:
+        - link "צור קשר" [ref=e21] [cursor=pointer]:
+          - /url: ../index.html#contact
+  - generic [ref=e22]:
+    - heading "סימולטור תוכנית הבראה" [level=1] [ref=e23]
+    - paragraph [ref=e24]: תכנון מובנה לסדר כלכלי — 5 שלבים לתכנית מעשית
+  - generic [ref=e25]:
+    - generic [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: "1"
+      - generic [ref=e28]: פרטי משפחה
+    - generic [ref=e29] [cursor=pointer]:
+      - generic [ref=e30]: "2"
+      - generic [ref=e31]: תקציב
+    - generic [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: "3"
+      - generic [ref=e34]: חובות
+    - generic [ref=e35] [cursor=pointer]:
+      - generic [ref=e36]: "4"
+      - generic [ref=e37]: מקורות מימון
+    - generic [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: "5"
+      - generic [ref=e40]: תכנון הבראה
+    - generic [ref=e41] [cursor=pointer]:
+      - generic [ref=e42]: "6"
+      - generic [ref=e43]: תוצאות
+  - generic [ref=e44]:
+    - generic [ref=e45]: נשמר אוטומטית 21:29
+    - generic [ref=e46]:
+      - button "🗑️ אפס נתונים" [ref=e47] [cursor=pointer]
+      - button "📂 טען קובץ" [ref=e48] [cursor=pointer]
+      - button "💾 שמור קובץ" [ref=e49] [cursor=pointer]
+  - generic [ref=e1182]:
+    - generic [ref=e1183]:
+      - generic [ref=e1184]: 🗓️ תכנון תקציב ההבראה
+      - paragraph [ref=e1185]: הגדר עד 3 תקציבים מוצעים לתקופות שונות. הכנסות/הוצאות מוצעות נלקחות מהתקציב שהוזן — ניתן לשנות.
+      - table [ref=e1187]:
+        - rowgroup [ref=e1188]:
+          - row "תקציב נוכחי תקציב מוצע 1 תקציב מוצע 2 תקציב מוצע 3" [ref=e1189]:
+            - columnheader [ref=e1190]
+            - columnheader "תקציב נוכחי" [ref=e1191]
+            - columnheader "תקציב מוצע 1" [ref=e1192]
+            - columnheader "תקציב מוצע 2" [ref=e1193]
+            - columnheader "תקציב מוצע 3" [ref=e1194]
+        - rowgroup [ref=e1195]:
+          - row "הכנסות 12,000 ₪ 12,000 ₪" [ref=e1196]:
+            - cell "הכנסות" [ref=e1197]
+            - cell "12,000 ₪" [ref=e1198]
+            - cell "12,000 ₪" [ref=e1199]
+            - cell [ref=e1200]:
+              - spinbutton [ref=e1201]: "12000"
+            - cell [ref=e1202]:
+              - spinbutton [ref=e1203]: "12000"
+          - row "הוצאות 4,000 ₪ 3,500 ₪" [ref=e1204]:
+            - cell "הוצאות" [ref=e1205]
+            - cell "4,000 ₪" [ref=e1206]
+            - cell "3,500 ₪" [ref=e1207]
+            - cell [ref=e1208]:
+              - spinbutton [ref=e1209]: "3500"
+            - cell [ref=e1210]:
+              - spinbutton [ref=e1211]: "3500"
+          - 'row "חיסכון חודשי ריבית שנתית: —" [ref=e1212]':
+            - cell "חיסכון חודשי ריבית שנתית:" [ref=e1213]:
+              - text: חיסכון חודשי
+              - generic [ref=e1215] [cursor=pointer]:
+                - checkbox "ריבית שנתית:" [ref=e1216]
+                - text: "ריבית שנתית:"
+            - cell "—" [ref=e1217]
+            - cell [ref=e1218]:
+              - spinbutton [ref=e1219]
+            - cell [ref=e1220]:
+              - spinbutton [ref=e1221]
+            - cell [ref=e1222]:
+              - spinbutton [ref=e1223]
+          - row "הפרש 8,000 ₪ 8,500 ₪ 8,500 ₪ 8,500 ₪" [ref=e1224]:
+            - cell "הפרש" [ref=e1225]
+            - cell "8,000 ₪" [ref=e1226]
+            - cell "8,500 ₪" [ref=e1227]
+            - cell "8,500 ₪" [ref=e1228]
+            - cell "8,500 ₪" [ref=e1229]
+          - row "מחודש 1 13 25" [ref=e1230]:
+            - cell "מחודש" [ref=e1231]
+            - cell [ref=e1232]
+            - cell "1" [ref=e1233]
+            - cell "13" [ref=e1234]:
+              - spinbutton [ref=e1235]: "13"
+            - cell "25" [ref=e1236]
+          - row "עד חודש 12 24 999" [ref=e1237]:
+            - cell "עד חודש" [ref=e1238]
+            - cell [ref=e1239]
+            - cell "12" [ref=e1240]:
+              - spinbutton [ref=e1241]: "12"
+            - cell "24" [ref=e1242]:
+              - spinbutton [ref=e1243]: "24"
+            - cell "999" [ref=e1244]
+    - generic [ref=e1246]: 📊 החזר חודשי מצרפי לפי תכנון
+    - generic [ref=e1249]:
+      - generic [ref=e1250]: 💵 כספים זמינים לתכנון ההבראה
+      - generic [ref=e1252]:
+        - generic [ref=e1253]: ⚡ כספים זמינים מיידית
+        - table [ref=e1254]:
+          - rowgroup [ref=e1255]:
+            - row "מקור סכום" [ref=e1256]:
+              - columnheader "מקור" [ref=e1257]
+              - columnheader "סכום" [ref=e1258]
+          - rowgroup [ref=e1259]:
+            - row "קרן השתלמות 20,000 ₪" [ref=e1260]:
+              - cell "קרן השתלמות" [ref=e1261]
+              - cell "20,000 ₪" [ref=e1262]
+            - row "חיסכון פנסיוני 10,000 ₪" [ref=e1263]:
+              - cell "חיסכון פנסיוני" [ref=e1264]
+              - cell "10,000 ₪" [ref=e1265]
+            - row "חיסכון אחר 0 ₪" [ref=e1266]:
+              - cell "חיסכון אחר" [ref=e1267]
+              - cell "0 ₪" [ref=e1268]
+            - row "הלוואה לדוגמא (הלוואה) 10,000 ₪" [ref=e1269]:
+              - cell "הלוואה לדוגמא (הלוואה)" [ref=e1270]
+              - cell "10,000 ₪" [ref=e1271]
+          - rowgroup [ref=e1272]:
+            - row "סה\"כ 40,000 ₪" [ref=e1273]:
+              - cell "סה\"כ" [ref=e1274]
+              - cell "40,000 ₪" [ref=e1275]
+            - row "מוקצה 0 ₪" [ref=e1276]:
+              - cell "מוקצה" [ref=e1277]
+              - cell "0 ₪" [ref=e1278]
+            - row "יתרה 40,000 ₪" [ref=e1279]:
+              - cell "יתרה" [ref=e1280]
+              - cell "40,000 ₪" [ref=e1281]
+    - generic [ref=e1282]:
+      - generic [ref=e1283]: 📋 תכנון טיפול בחובות
+      - generic [ref=e1284]:
+        - generic [ref=e1285]:
+          - generic [ref=e1286]: תקציב זמין לפירעון
+          - generic [ref=e1287]: 40,000 ₪
+          - generic [ref=e1288]:
+            - text: "נשאר:"
+            - strong [ref=e1289]: 40,000 ₪
+        - generic [ref=e1290]:
+          - generic [ref=e1291]: חובות בהסדר
+          - generic [ref=e1292]: 10,000 ₪
+        - generic [ref=e1293]:
+          - generic [ref=e1294]: חובות שלא בהסדר
+          - generic [ref=e1295]: 15,000 ₪
+      - table [ref=e1297]:
+        - rowgroup [ref=e1298]:
+          - row "שם הנושה יתרה (₪) ריבית % חודשים החזר נוכחי פעולה החזר חדש" [ref=e1299]:
+            - columnheader "שם הנושה" [ref=e1300]
+            - columnheader "יתרה (₪)" [ref=e1301]
+            - columnheader "ריבית %" [ref=e1302]
+            - columnheader "חודשים" [ref=e1303]
+            - columnheader "החזר נוכחי" [ref=e1304]
+            - columnheader "פעולה" [ref=e1305]
+            - columnheader "החזר חדש" [ref=e1306]
+        - rowgroup [ref=e1307]:
+          - row "✅ חובות בהסדר (2)" [ref=e1308]:
+            - cell "✅ חובות בהסדר (2)" [ref=e1309]
+          - row "✓ חוב לדוגמא 🖊️ 10,000 ₪ 5% 36 300 ₪ ללא שינוי ✂ 300 ₪" [ref=e1310]:
+            - cell "✓ חוב לדוגמא 🖊️" [ref=e1311]:
+              - generic [ref=e1312]:
+                - generic [ref=e1313]:
+                  - generic "בהסדר" [ref=e1314]: ✓
+                  - text: חוב לדוגמא
+                - button "🖊️" [ref=e1315] [cursor=pointer]
+            - cell "10,000 ₪" [ref=e1316]
+            - cell "5%" [ref=e1317]
+            - cell "36" [ref=e1318]
+            - cell "300 ₪" [ref=e1319]
+            - cell "ללא שינוי ✂" [ref=e1320]:
+              - generic [ref=e1321]:
+                - combobox [ref=e1322]:
+                  - option "ללא שינוי" [selected]
+                  - option "פריסה מחדש"
+                  - option "ויתור מלא"
+                  - option "ויתור חלקי"
+                  - option "פירעון מיידי מלא"
+                  - option "פירעון מיידי חלקי"
+                  - option "פירעון עתידי מלא"
+                  - option "פירעון עתידי חלקי"
+                - button "✂" [ref=e1323] [cursor=pointer]
+            - cell "300 ₪" [ref=e1324]
+          - row
+          - row "✓ — 🖊️ 0 ₪ — — 0 ₪ ללא שינוי 0 ₪" [ref=e1325]:
+            - cell "✓ — 🖊️" [ref=e1326]:
+              - generic [ref=e1327]:
+                - generic [ref=e1328]:
+                  - generic "בהסדר" [ref=e1329]: ✓
+                  - text: —
+                - button "🖊️" [ref=e1330] [cursor=pointer]
+            - cell "0 ₪" [ref=e1331]
+            - cell "—" [ref=e1332]
+            - cell "—" [ref=e1333]
+            - cell "0 ₪" [ref=e1334]
+            - cell "ללא שינוי" [ref=e1335]:
+              - combobox [ref=e1337]:
+                - option "ללא שינוי" [selected]
+                - option "פריסה מחדש"
+                - option "ויתור מלא"
+                - option "ויתור חלקי"
+                - option "פירעון מיידי מלא"
+                - option "פירעון מיידי חלקי"
+                - option "פירעון עתידי מלא"
+                - option "פירעון עתידי חלקי"
+            - cell "0 ₪" [ref=e1338]
+          - row
+          - row "❌ חובות לא בהסדר (1)" [ref=e1339]:
+            - cell "❌ חובות לא בהסדר (1)" [ref=e1340]
+          - row "✕ חוב לא מסודר 🖊️ 15,000 ₪ — — 0 ₪ ללא שינוי ✂ 0 ₪" [ref=e1341]:
+            - cell "✕ חוב לא מסודר 🖊️" [ref=e1342]:
+              - generic [ref=e1343]:
+                - generic [ref=e1344]:
+                  - generic "לא בהסדר" [ref=e1345]: ✕
+                  - text: חוב לא מסודר
+                - button "🖊️" [ref=e1346] [cursor=pointer]
+            - cell "15,000 ₪" [ref=e1347]
+            - cell "—" [ref=e1348]
+            - cell "—" [ref=e1349]
+            - cell "0 ₪" [ref=e1350]
+            - cell "ללא שינוי ✂" [ref=e1351]:
+              - generic [ref=e1352]:
+                - combobox [ref=e1353]:
+                  - option "ללא שינוי" [selected]
+                  - option "פריסה מחדש"
+                  - option "ויתור מלא"
+                  - option "ויתור חלקי"
+                  - option "פירעון מיידי מלא"
+                  - option "פירעון מיידי חלקי"
+                  - option "פירעון עתידי מלא"
+                  - option "פירעון עתידי חלקי"
+                - button "✂" [ref=e1354] [cursor=pointer]
+            - cell "0 ₪" [ref=e1355]
+          - row
+        - rowgroup [ref=e1356]:
+          - row "סה\"כ 25,000 ₪ 300 ₪ 300 ₪" [ref=e1357]:
+            - cell "סה\"כ" [ref=e1358]
+            - cell "25,000 ₪" [ref=e1359]
+            - cell [ref=e1360]
+            - cell "300 ₪" [ref=e1361]
+            - cell [ref=e1362]
+            - cell "300 ₪" [ref=e1363]
+      - button "🖨️ הדפס רשימת משימות" [ref=e1365] [cursor=pointer]
+    - generic [ref=e1366]:
+      - button "→ חזרה" [ref=e1367] [cursor=pointer]
+      - button "חשב תוצאות ✓" [ref=e1368] [cursor=pointer]

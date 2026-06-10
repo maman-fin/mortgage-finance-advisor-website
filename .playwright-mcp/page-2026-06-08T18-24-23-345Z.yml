@@ -1,0 +1,242 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - link "יחיאל ממן יחיאל ממן | אסטרטגיה פיננסית" [ref=e4] [cursor=pointer]:
+      - /url: ../index.html
+      - img "יחיאל ממן" [ref=e5]
+      - generic [ref=e6]: יחיאל ממן | אסטרטגיה פיננסית
+    - list [ref=e7]:
+      - listitem [ref=e8]:
+        - link "שירותים" [ref=e9] [cursor=pointer]:
+          - /url: ../index.html#services
+      - listitem [ref=e10]:
+        - link "תהליך" [ref=e11] [cursor=pointer]:
+          - /url: ../index.html#process
+      - listitem [ref=e12]:
+        - link "המלצות" [ref=e13] [cursor=pointer]:
+          - /url: ../testimonials.html
+      - listitem [ref=e14]:
+        - link "ההתמחויות שלנו" [ref=e15] [cursor=pointer]:
+          - /url: ../areas.html
+      - listitem [ref=e16]:
+        - link "מחשבונים ▾" [ref=e17] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e18]:
+        - link "מרכז הידע ▾" [ref=e19] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e20]:
+        - link "צור קשר" [ref=e21] [cursor=pointer]:
+          - /url: ../index.html#contact
+  - generic [ref=e22]:
+    - heading "סימולטור תוכנית הבראה" [level=1] [ref=e23]
+    - paragraph [ref=e24]: תכנון מובנה לסדר כלכלי — 5 שלבים לתכנית מעשית
+  - generic [ref=e25]:
+    - generic [ref=e26] [cursor=pointer]:
+      - generic [ref=e27]: "1"
+      - generic [ref=e28]: פרטי משפחה
+    - generic [ref=e29] [cursor=pointer]:
+      - generic [ref=e30]: "2"
+      - generic [ref=e31]: תקציב
+    - generic [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: "3"
+      - generic [ref=e34]: חובות
+    - generic [ref=e35] [cursor=pointer]:
+      - generic [ref=e36]: "4"
+      - generic [ref=e37]: מקורות מימון
+    - generic [ref=e38] [cursor=pointer]:
+      - generic [ref=e39]: "5"
+      - generic [ref=e40]: תכנון הבראה
+    - generic [ref=e41] [cursor=pointer]:
+      - generic [ref=e42]: "6"
+      - generic [ref=e43]: תוצאות
+  - generic [ref=e44]:
+    - generic [ref=e45]: נשמר אוטומטית 21:23
+    - generic [ref=e46]:
+      - button "🗑️ אפס נתונים" [ref=e47] [cursor=pointer]
+      - button "📂 טען קובץ" [ref=e48] [cursor=pointer]
+      - button "💾 שמור קובץ" [ref=e49] [cursor=pointer]
+  - generic [ref=e65]:
+    - generic [ref=e66]:
+      - generic [ref=e67]: 📊 תקציב נוכחי ומוצע
+      - generic [ref=e68]:
+        - button "📂 ייבוא מקובץ" [ref=e69] [cursor=pointer]
+        - button "✏️ הזנה ידנית" [ref=e70] [cursor=pointer]
+      - generic [ref=e72] [cursor=pointer]:
+        - generic [ref=e73]: 📂
+        - generic [ref=e74]: לחץ לבחירת קובץ תקציב וביצוע
+        - generic [ref=e75]: קובץ XLS מיוצא ממערכת ניהול תקציב
+      - table [ref=e77]:
+        - rowgroup [ref=e78]:
+          - row "קטגוריה נוכחי (₪) מוצע (₪)" [ref=e79]:
+            - columnheader "קטגוריה" [ref=e80]
+            - columnheader "נוכחי (₪)" [ref=e81]
+            - columnheader "מוצע (₪)" [ref=e82]
+        - rowgroup [ref=e83]:
+          - row "▾ שכר 12,000 12,000" [ref=e574]:
+            - cell "▾ שכר" [ref=e575] [cursor=pointer]
+            - cell "12,000" [ref=e576] [cursor=pointer]
+            - cell "12,000" [ref=e577] [cursor=pointer]
+          - row "שכר עבודה 1 12000 12000" [ref=e578]:
+            - cell "שכר עבודה 1" [ref=e579]
+            - cell "12000" [ref=e580]:
+              - spinbutton [ref=e581]: "12000"
+            - cell "12000" [ref=e582]:
+              - spinbutton [ref=e583]: "12000"
+          - row "שכר עבודה 2 0 0" [ref=e584]:
+            - cell "שכר עבודה 2" [ref=e585]
+            - cell "0" [ref=e586]:
+              - spinbutton [ref=e587]: "0"
+            - cell "0" [ref=e588]:
+              - spinbutton [ref=e589]: "0"
+          - row "שכר עבודה 3 0 0" [ref=e590]:
+            - cell "שכר עבודה 3" [ref=e591]
+            - cell "0" [ref=e592]:
+              - spinbutton [ref=e593]: "0"
+            - cell "0" [ref=e594]:
+              - spinbutton [ref=e595]: "0"
+          - row "שכר עבודה 4 0 0" [ref=e596]:
+            - cell "שכר עבודה 4" [ref=e597]
+            - cell "0" [ref=e598]:
+              - spinbutton [ref=e599]: "0"
+            - cell "0" [ref=e600]:
+              - spinbutton [ref=e601]: "0"
+          - row "שכר - כללי 0 0" [ref=e602]:
+            - cell "שכר - כללי" [ref=e603]
+            - cell "0" [ref=e604]:
+              - spinbutton [ref=e605]: "0"
+            - cell "0" [ref=e606]:
+              - spinbutton [ref=e607]: "0"
+          - row "▸ קצבאות 0 0" [ref=e608]:
+            - cell "▸ קצבאות" [ref=e609] [cursor=pointer]
+            - cell "0" [ref=e610] [cursor=pointer]
+            - cell "0" [ref=e611] [cursor=pointer]
+          - row "▸ הכנסות שונות 0 0" [ref=e612]:
+            - cell "▸ הכנסות שונות" [ref=e613] [cursor=pointer]
+            - cell "0" [ref=e614] [cursor=pointer]
+            - cell "0" [ref=e615] [cursor=pointer]
+          - row "▸ מזון ופארמה 0 0" [ref=e616]:
+            - cell "▸ מזון ופארמה" [ref=e617] [cursor=pointer]
+            - cell "0" [ref=e618] [cursor=pointer]
+            - cell "0" [ref=e619] [cursor=pointer]
+          - row "▸ פנאי, בילוי ותחביבים 0 0" [ref=e620]:
+            - cell "▸ פנאי, בילוי ותחביבים" [ref=e621] [cursor=pointer]
+            - cell "0" [ref=e622] [cursor=pointer]
+            - cell "0" [ref=e623] [cursor=pointer]
+          - row "▸ ביגוד והנעלה 0 0" [ref=e624]:
+            - cell "▸ ביגוד והנעלה" [ref=e625] [cursor=pointer]
+            - cell "0" [ref=e626] [cursor=pointer]
+            - cell "0" [ref=e627] [cursor=pointer]
+          - row "▸ תכולת בית 0 0" [ref=e628]:
+            - cell "▸ תכולת בית" [ref=e629] [cursor=pointer]
+            - cell "0" [ref=e630] [cursor=pointer]
+            - cell "0" [ref=e631] [cursor=pointer]
+          - row "▸ אחזקת בית 0 0" [ref=e632]:
+            - cell "▸ אחזקת בית" [ref=e633] [cursor=pointer]
+            - cell "0" [ref=e634] [cursor=pointer]
+            - cell "0" [ref=e635] [cursor=pointer]
+          - row "▸ טיפוח 0 0" [ref=e636]:
+            - cell "▸ טיפוח" [ref=e637] [cursor=pointer]
+            - cell "0" [ref=e638] [cursor=pointer]
+            - cell "0" [ref=e639] [cursor=pointer]
+          - row "▸ חינוך 0 0" [ref=e640]:
+            - cell "▸ חינוך" [ref=e641] [cursor=pointer]
+            - cell "0" [ref=e642] [cursor=pointer]
+            - cell "0" [ref=e643] [cursor=pointer]
+          - row "▸ אירועים, תרומות, צרכי דת 0 0" [ref=e644]:
+            - cell "▸ אירועים, תרומות, צרכי דת" [ref=e645] [cursor=pointer]
+            - cell "0" [ref=e646] [cursor=pointer]
+            - cell "0" [ref=e647] [cursor=pointer]
+          - row "▸ בריאות 0 0" [ref=e648]:
+            - cell "▸ בריאות" [ref=e649] [cursor=pointer]
+            - cell "0" [ref=e650] [cursor=pointer]
+            - cell "0" [ref=e651] [cursor=pointer]
+          - row "▸ תחבורה 0 0" [ref=e652]:
+            - cell "▸ תחבורה" [ref=e653] [cursor=pointer]
+            - cell "0" [ref=e654] [cursor=pointer]
+            - cell "0" [ref=e655] [cursor=pointer]
+          - row "▸ משפחה 0 0" [ref=e656]:
+            - cell "▸ משפחה" [ref=e657] [cursor=pointer]
+            - cell "0" [ref=e658] [cursor=pointer]
+            - cell "0" [ref=e659] [cursor=pointer]
+          - row "▸ תקשורת 0 0" [ref=e660]:
+            - cell "▸ תקשורת" [ref=e661] [cursor=pointer]
+            - cell "0" [ref=e662] [cursor=pointer]
+            - cell "0" [ref=e663] [cursor=pointer]
+          - row "▾ דיור 0 0" [ref=e664]:
+            - cell "▾ דיור" [ref=e665] [cursor=pointer]
+            - cell "0" [ref=e666] [cursor=pointer]
+            - cell "0" [ref=e667] [cursor=pointer]
+          - row "משכנתה 0 0" [ref=e668]:
+            - cell "משכנתה" [ref=e669]
+            - cell "0" [ref=e670]:
+              - spinbutton [ref=e671]: "0"
+            - cell "0" [ref=e672]:
+              - spinbutton [ref=e673]: "0"
+          - row "שכר דירה 0 0" [ref=e674]:
+            - cell "שכר דירה" [ref=e675]
+            - cell "0" [ref=e676]:
+              - spinbutton [ref=e677]: "0"
+            - cell "0" [ref=e678]:
+              - spinbutton [ref=e679]: "0"
+          - row "מיסי יישוב / ועד בית 0 0" [ref=e680]:
+            - cell "מיסי יישוב / ועד בית" [ref=e681]
+            - cell "0" [ref=e682]:
+              - spinbutton [ref=e683]: "0"
+            - cell "0" [ref=e684]:
+              - spinbutton [ref=e685]: "0"
+          - row "ארנונה 0 0" [ref=e686]:
+            - cell "ארנונה" [ref=e687]
+            - cell "0" [ref=e688]:
+              - spinbutton [ref=e689]: "0"
+            - cell "0" [ref=e690]:
+              - spinbutton [ref=e691]: "0"
+          - row "ביטוח נכס ותכולה 0 0" [ref=e692]:
+            - cell "ביטוח נכס ותכולה" [ref=e693]
+            - cell "0" [ref=e694]:
+              - spinbutton [ref=e695]: "0"
+            - cell "0" [ref=e696]:
+              - spinbutton [ref=e697]: "0"
+          - row "דיור - כללי 0 0" [ref=e698]:
+            - cell "דיור - כללי" [ref=e699]
+            - cell "0" [ref=e700]:
+              - spinbutton [ref=e701]: "0"
+            - cell "0" [ref=e702]:
+              - spinbutton [ref=e703]: "0"
+          - row "▸ התחייבויות 0 0" [ref=e704]:
+            - cell "▸ התחייבויות" [ref=e705] [cursor=pointer]
+            - cell "0" [ref=e706] [cursor=pointer]
+            - cell "0" [ref=e707] [cursor=pointer]
+          - row "▸ נכסים 0 0" [ref=e708]:
+            - cell "▸ נכסים" [ref=e709] [cursor=pointer]
+            - cell "0" [ref=e710] [cursor=pointer]
+            - cell "0" [ref=e711] [cursor=pointer]
+          - row "▸ פיננסים 0 0" [ref=e712]:
+            - cell "▸ פיננסים" [ref=e713] [cursor=pointer]
+            - cell "0" [ref=e714] [cursor=pointer]
+            - cell "0" [ref=e715] [cursor=pointer]
+        - rowgroup [ref=e160]:
+          - row "סה\"כ הכנסות 12,000 ₪ 12,000 ₪" [ref=e716]:
+            - cell "סה\"כ הכנסות" [ref=e717]:
+              - strong [ref=e718]: סה"כ הכנסות
+            - cell "12,000 ₪" [ref=e719]
+            - cell "12,000 ₪" [ref=e720]
+          - row "סה\"כ הוצאות 0 ₪ 0 ₪" [ref=e721]:
+            - cell "סה\"כ הוצאות" [ref=e722]:
+              - strong [ref=e723]: סה"כ הוצאות
+            - cell "0 ₪" [ref=e724]
+            - cell "0 ₪" [ref=e725]
+          - row "הפרש (לפני החזרי חובות) 12,000 ₪ 12,000 ₪" [ref=e726]:
+            - cell "הפרש (לפני החזרי חובות)" [ref=e727]:
+              - strong [ref=e728]: הפרש (לפני החזרי חובות)
+            - cell "12,000 ₪" [ref=e729]
+            - cell "12,000 ₪" [ref=e730]
+          - row "החזר חודשי כולל (חובות) 0 ₪" [ref=e731]:
+            - cell "החזר חודשי כולל (חובות)" [ref=e732]
+            - cell "0 ₪" [ref=e733]
+          - row "פנוי לאחר החזרי חובות 12,000 ₪ 12,000 ₪" [ref=e734]:
+            - cell "פנוי לאחר החזרי חובות" [ref=e735]:
+              - strong [ref=e736]: פנוי לאחר החזרי חובות
+            - cell "12,000 ₪" [ref=e737]
+            - cell "12,000 ₪" [ref=e738]
+    - generic [ref=e184]:
+      - button "→ חזרה" [ref=e185] [cursor=pointer]
+      - button "המשך למקורות מימון ←" [ref=e186] [cursor=pointer]

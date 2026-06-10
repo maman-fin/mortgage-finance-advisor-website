@@ -838,21 +838,25 @@
 
     <div class="card" id="interestCompareCard" style="display:none">
       <div class="card-title">💡 חיסכון בריבית — לפני מול אחרי ההבראה</div>
-      <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-end;margin-bottom:1.2rem;">
-        <div>
-          <label style="font-size:0.8rem;color:#666;font-weight:600;display:block;margin-bottom:4px;">ריבית שנתית משוערת על חובות שלא בהסדר</label>
-          <div style="display:flex;align-items:center;gap:4px;">
-            <input type="number" id="unarrangedRateInput" placeholder="0" step="0.1" min="0" max="40"
-              style="width:70px;border:1px solid #c8d8ec;border-radius:6px;padding:0.3rem 0.5rem;font-size:0.85rem;"
-              oninput="state.unarrangedDebtRate=parseFloat(this.value)||0;updateInterestCompare()">
-            <span style="font-size:0.85rem;color:#666;">%</span>
+      <div style="background:#f7f9fc;border:1px solid #e3e9f2;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem;">
+        <div style="font-size:0.95rem;font-weight:800;color:#1a3a5c;margin-bottom:0.9rem;">⚙️ הגדרות השוואה</div>
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;">
+          <div class="sum-box" style="flex:1;min-width:220px;">
+            <div class="sb-label">ריבית שנתית משוערת על חובות שלא בהסדר</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin:0.4rem 0 0.3rem;">
+              <input type="number" id="unarrangedRateInput" placeholder="0" step="0.1" min="0" max="40"
+                style="width:80px;text-align:center;border:1px solid #c8d8ec;border-radius:6px;padding:0.35rem 0.5rem;font-size:1.1rem;font-weight:800;color:#1a3a5c;"
+                oninput="state.unarrangedDebtRate=parseFloat(this.value)||0;updateInterestCompare()">
+              <span style="font-size:0.95rem;color:#666;font-weight:700;">%</span>
+            </div>
+            <div style="font-size:0.72rem;color:#999;">ברירת מחדל: <a href="javascript:void(0)" onclick="document.getElementById('unarrangedRateInput').value=12;state.unarrangedDebtRate=12;updateInterestCompare()" style="color:#2a6496;font-weight:700;text-decoration:none;">12%</a></div>
           </div>
-        </div>
-        <div style="flex:1;min-width:240px;">
-          <label style="font-size:0.8rem;color:#666;font-weight:600;display:block;margin-bottom:4px;">תקופת השוואה: <span id="interestCompareMonthsLabel" style="color:#1a3a5c;font-weight:800;"></span> חודשים</label>
-          <input type="range" id="interestCompareSlider" min="1" value="1"
-            style="width:100%;accent-color:#1a3a5c;cursor:pointer;"
-            oninput="state.interestCompareMonths=parseInt(this.value);updateInterestCompare()">
+          <div class="sum-box" style="flex:1;min-width:240px;">
+            <div class="sb-label">תקופת השוואה: <span id="interestCompareMonthsLabel" style="color:#1a3a5c;font-weight:800;"></span> חודשים</div>
+            <input type="range" id="interestCompareSlider" min="1" value="1"
+              style="width:100%;accent-color:#1a3a5c;cursor:pointer;margin-top:0.7rem;"
+              oninput="state.interestCompareMonths=parseInt(this.value);updateInterestCompare()">
+          </div>
         </div>
       </div>
       <div class="before-after-wrap">
@@ -958,7 +962,7 @@ const state = {
   debts: [],  // {name, category, balance, interest, paymentsLeft, monthly, notes, action, actionParam}
   savingsRateEnabled: false,
   savingsRate: 0,
-  unarrangedDebtRate: 0,
+  unarrangedDebtRate: 12,
   interestCompareMonths: null,
 };
 
@@ -3635,7 +3639,7 @@ function runCalc() {
   for (let m = 0; m < MONTHS; m++) {
     const month = ((sm - 1 + m) % 12) + 1;
     const year  = sy + Math.floor((sm - 1 + m) / 12);
-    const dateStr = `${year}/${String(month).padStart(2,'0')}`;
+    const dateStr = `${String(month).padStart(2,'0')}/${year}`;
 
     // Apply future fund repayments planned for this month
     expandedDebts.forEach((debt, debtIdx) => {
