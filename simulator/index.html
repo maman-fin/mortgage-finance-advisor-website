@@ -198,6 +198,10 @@
 
     /* CHART */
     .chart-container { position:relative; height:300px; margin-bottom:1rem; }
+    .chart-legend { display:flex; flex-wrap:wrap; justify-content:center; gap:0.4rem 1rem; margin:-0.4rem 0 1rem; }
+    .chart-legend-item { display:inline-flex; align-items:center; gap:5px; font-size:0.78rem; color:#444; cursor:pointer; user-select:none; }
+    .chart-legend-item--hidden { opacity:0.4; text-decoration:line-through; }
+    .chart-legend-swatch { width:12px; height:12px; border-radius:2px; flex-shrink:0; display:inline-block; }
 
     /* NAV BUTTONS */
     .wizard-nav { display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; padding-top:1rem; border-top:2px solid #eef0f4; }
@@ -900,10 +904,12 @@
         <div>
           <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#c0392b;margin-bottom:0.5rem;">לפני הבראה</div>
           <div class="chart-container" style="height:300px;"><canvas id="planBeforeChart"></canvas></div>
+          <div class="chart-legend" id="planBeforeChartLegend"></div>
         </div>
         <div>
           <div style="text-align:center;font-size:0.88rem;font-weight:700;color:#1a7a40;margin-bottom:0.5rem;">אחרי הבראה</div>
           <div class="chart-container" style="height:300px;"><canvas id="planAfterChart"></canvas></div>
+          <div class="chart-legend" id="planAfterChartLegend"></div>
         </div>
       </div>
     </div>
@@ -3352,7 +3358,7 @@ function renderPlanCharts() {
     plugins: {
       title:    { display: true, text: titleText,    color: '#222', font: { size: 13, weight: 'bold' }, padding: { bottom: 2 } },
       subtitle: { display: true, text: subtitleText, color: subtitleColor, font: { size: 12, weight: 'bold' }, padding: { bottom: 6 } },
-      legend:   { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } },
+      legend:   { display: false },
       tooltip:  { enabled: false, external: makeBATooltip(tooltipId) },
     },
     scales: {
@@ -3404,6 +3410,32 @@ function renderPlanCharts() {
         yMark: { display: false, min: 0, max: 1, position: 'right' },
       }
     },
+  });
+
+  renderChartLegend(planBeforeChartInst, 'planBeforeChartLegend');
+  renderChartLegend(planAfterChartInst, 'planAfterChartLegend');
+}
+
+// Custom HTML legend rendered below the fixed-height chart container — keeps the canvas
+// (and therefore the chart's visual height) identical for both charts regardless of how
+// many legend items wrap to a second line.
+function renderChartLegend(chart, containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = chart.data.datasets.map((d, i) => {
+    if (!d.label) return '';
+    const meta = chart.getDatasetMeta(i);
+    const color = typeof d.backgroundColor === 'string' ? d.backgroundColor : (d.borderColor || '#888');
+    const hidden = !!meta.hidden;
+    return `<span class="chart-legend-item${hidden ? ' chart-legend-item--hidden' : ''}" data-idx="${i}"><span class="chart-legend-swatch" style="background:${color};"></span>${d.label}</span>`;
+  }).join('');
+  el.querySelectorAll('.chart-legend-item').forEach(item => {
+    item.onclick = () => {
+      const meta = chart.getDatasetMeta(parseInt(item.dataset.idx));
+      meta.hidden = !meta.hidden;
+      item.classList.toggle('chart-legend-item--hidden');
+      chart.update();
+    };
   });
 }
 
