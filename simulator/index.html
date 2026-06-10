@@ -374,7 +374,7 @@
     .plan-group-hdr td { font-size:0.83rem; font-weight:700; padding:0.45rem 0.85rem; letter-spacing:0.01em; }
     .plan-group-hdr--arranged td { background:#d4edda; color:#145a2e; border-top:2px solid #a8d5b0; border-bottom:1px solid #a8d5b0; }
     .plan-group-hdr--active td   { background:#ffd699; color:#7a3800; border-top:2px solid #e8a020; border-bottom:1px solid #e8a020; }
-    .plan-group-hdr--danger td   { background:#fde8e8; color:#922b21; border-top:2px solid #f5b7b7; border-bottom:1px solid #f5b7b7; }
+    .plan-group-hdr--danger td   { background:#f9d6d6; color:#922b21; border-top:2px solid #f5b7b7; border-bottom:1px solid #f5b7b7; }
 
     /* SESSION BAR */
     .session-bar { background:#fff; border-bottom:1px solid #e0e6ee; padding:0.55rem 1.5rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:64px; z-index:90; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
@@ -810,13 +810,13 @@
           </thead>
           <tbody id="planDebtsBody"></tbody>
           <tfoot>
-            <tr>
-              <td style="font-weight:700;text-align:right;">סה"כ</td>
-              <td id="planTotalBalance" style="font-weight:700;">—</td>
-              <td colspan="2"></td>
-              <td id="planTotalMonthly" style="font-weight:700;">—</td>
-              <td></td>
-              <td id="planTotalNew" style="font-weight:700;color:#1a7a40;">—</td>
+            <tr style="border-top:2px solid #1a3a5c;">
+              <td style="font-weight:700;text-align:right;border-top:2px solid #1a3a5c;">סה"כ</td>
+              <td id="planTotalBalance" style="font-weight:700;border-top:2px solid #1a3a5c;">—</td>
+              <td colspan="2" style="border-top:2px solid #1a3a5c;"></td>
+              <td id="planTotalMonthly" style="font-weight:700;border-top:2px solid #1a3a5c;">—</td>
+              <td style="border-top:2px solid #1a3a5c;"></td>
+              <td id="planTotalNew" style="font-weight:700;color:#1a7a40;border-top:2px solid #1a3a5c;">—</td>
             </tr>
           </tfoot>
         </table>
@@ -1532,9 +1532,7 @@ function updateFundTotals() {
 
 // ===================== LOANS =====================
 function initLoans() {
-  state.loans.push({name:'הלוואה לדוגמא', amount:10000, grace:0, rate:6, months:60, notes:''});
-  renderLoanRow(0);
-  calcLoanPmt(0);
+  addLoanRow();
   addLoanRow();
 }
 
@@ -1590,8 +1588,7 @@ const DEBT_CATEGORIES = [
 ];
 
 function initDebts() {
-  state.debts.push({name:'חוב לדוגמא', category:'בנק - הלוואה', balance:10000, arranged:true, interest:5, paymentsLeft:36, monthly:300, notes:'', action:'ללא שינוי', actionParam:0});
-  renderDebtRow(0);
+  addDebtRow();
   addDebtRow();
   addDebtRow();
 }

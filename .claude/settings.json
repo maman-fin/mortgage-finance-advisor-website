@@ -18,7 +18,12 @@
       "mcp__playwright__browser_console_messages",
       "Bash(node --check tmp_check.js)",
       "Bash(rm tmp_check.js)",
-      "mcp__playwright__browser_resize"
+      "mcp__playwright__browser_resize",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(find .claude/skills -name SKILL.md)",
+      "Bash(ls .claude/skills)",
+      "Bash(npx --version)"
     ]
   }
 }
