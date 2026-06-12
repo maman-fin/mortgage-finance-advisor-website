@@ -710,15 +710,15 @@
               <td style="font-weight:700;color:#1a3a5c;">הכנסות</td>
               <td style="text-align:center" id="plan_cur_income">—</td>
               <td style="text-align:center;font-weight:600;color:#1a6e3c;" id="plan_p1_income">—</td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_income" oninput="state.planValues.p2_income=parseNum(this.value);syncP3('income',this.value);updatePlanRow();scheduleAutoSave()"></td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_income" oninput="state.planValues.p3_income=parseNum(this.value);updatePlanRow();scheduleAutoSave()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_income" oninput="state.planTouched.p2_income=true;state.planValues.p2_income=parseNum(this.value);syncP3('income',this.value);updatePlanRow();scheduleAutoSave()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_income" oninput="state.planTouched.p3_income=true;state.planValues.p3_income=parseNum(this.value);updatePlanRow();scheduleAutoSave()"></td>
             </tr>
             <tr>
               <td style="font-weight:700;color:#1a3a5c;">הוצאות</td>
               <td style="text-align:center" id="plan_cur_exp">—</td>
               <td style="text-align:center;font-weight:600;color:#1a6e3c;" id="plan_p1_exp">—</td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_exp" oninput="state.planValues.p2_exp=parseNum(this.value);syncP3('exp',this.value);updatePlanRow();scheduleAutoSave()"></td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_exp" oninput="state.planValues.p3_exp=parseNum(this.value);updatePlanRow();scheduleAutoSave()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_exp" oninput="state.planTouched.p2_exp=true;state.planValues.p2_exp=parseNum(this.value);syncP3('exp',this.value);updatePlanRow();scheduleAutoSave()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_exp" oninput="state.planTouched.p3_exp=true;state.planValues.p3_exp=parseNum(this.value);updatePlanRow();scheduleAutoSave()"></td>
             </tr>
             <tr>
               <td style="font-weight:700;color:#1a3a5c;">
@@ -970,7 +970,8 @@ const state = {
   savingsRate: 0,
   unarrangedDebtRate: 12,
   interestCompareMonths: null,
-  planValues: null, // {p2_income, p2_exp, p3_income, p3_exp} - נקבע פעם אחת, לא מתאפס בריענון הטבלה
+  planValues: { p2_income:0, p2_exp:0, p3_income:0, p3_exp:0 }, // ערכי תקציב מוצע 2/3
+  planTouched: { p2_income:false, p2_exp:false, p3_income:false, p3_exp:false }, // האם המשתמש שינה ידנית
 };
 
 // ===================== NAV =====================
@@ -1841,12 +1842,13 @@ function renderPlanningTable() {
   // עמודה 1 — נלקחת מהתקציב המוצע, לא ניתנת לעריכה
   document.getElementById('plan_p1_income').textContent = fmtNIS(propIncome);
   document.getElementById('plan_p1_exp').textContent    = fmtNIS(propExp);
-  // עמודות 2-3 — בפעם הראשונה ממשיכות מעמודה 1, ואז ניתנות לשינוי ידני שלא מתאפס בריענון חזרה לשלב
+  // עמודות 2-3 — ממשיכות מעמודה 1 כל עוד המשתמש לא שינה ידנית; שינוי ידני לא מתאפס בריענון חזרה לשלב
   const fillIncome = propIncome || curIncome;
   const fillExp    = propExp    || curExp;
-  if (!state.planValues) {
-    state.planValues = { p2_income: fillIncome, p2_exp: fillExp, p3_income: fillIncome, p3_exp: fillExp };
-  }
+  if (!state.planTouched.p2_income) state.planValues.p2_income = fillIncome;
+  if (!state.planTouched.p2_exp)    state.planValues.p2_exp    = fillExp;
+  if (!state.planTouched.p3_income) state.planValues.p3_income = fillIncome;
+  if (!state.planTouched.p3_exp)    state.planValues.p3_exp    = fillExp;
   document.getElementById('plan_p2_income').value = state.planValues.p2_income;
   document.getElementById('plan_p2_exp').value    = state.planValues.p2_exp;
   document.getElementById('plan_p3_income').value = state.planValues.p3_income;
@@ -3442,7 +3444,8 @@ function renderChartLegend(chart, containerId) {
 
 function syncP3(field, val) {
   document.getElementById(`plan_p3_${field}`).value = val;
-  if (state.planValues) state.planValues[`p3_${field}`] = parseNum(val);
+  state.planValues[`p3_${field}`] = parseNum(val);
+  state.planTouched[`p3_${field}`] = true;
 }
 
 function syncP2P3(field, val) {
@@ -4063,7 +4066,8 @@ function getFullState() {
       p1to: document.getElementById('plan_p1_to')?.value || '12',
       p2to: document.getElementById('plan_p2_to')?.value || '24',
     },
-    planValues: state.planValues
+    planValues: state.planValues,
+    planTouched: state.planTouched
   };
 }
 
@@ -4139,6 +4143,9 @@ function restoreFullState(data) {
   if (data.planValues) {
     state.planValues = data.planValues;
   }
+  if (data.planTouched) {
+    state.planTouched = data.planTouched;
+  }
 
   const ts = data.ts ? new Date(data.ts).toLocaleString('he-IL') : '';
   setSaveStatus(`נטען — ${ts}`, 'saved');
@@ -4177,7 +4184,7 @@ function resetData() {
   if (!confirm('האם לאפס את כל הנתונים ולהתחיל מחדש?')) return;
   localStorage.removeItem(STORAGE_KEY);
   // נקה ערכי שדות שהדפדפן עלול לשחזר אחרי רענון
-  ['plan_p1_saving','plan_p2_saving','plan_p3_saving','savingsRateInput'].forEach(id => {
+  ['familyName','plan_p1_saving','plan_p2_saving','plan_p3_saving','savingsRateInput'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
