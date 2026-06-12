@@ -373,8 +373,8 @@
     .plan-param-input:disabled { background:#f5f5f5; color:#aaa; }
     .plan-group-hdr td { font-size:0.83rem; font-weight:700; padding:0.45rem 0.85rem; letter-spacing:0.01em; }
     .plan-group-hdr--arranged td { background:#d4edda; color:#145a2e; border-top:2px solid #a8d5b0; border-bottom:1px solid #a8d5b0; }
-    .plan-group-hdr--active td   { background:#ffd699; color:#7a3800; border-top:2px solid #e8a020; border-bottom:1px solid #e8a020; }
-    .plan-group-hdr--danger td   { background:#f9d6d6; color:#922b21; border-top:2px solid #f5b7b7; border-bottom:1px solid #f5b7b7; }
+    .plan-group-hdr--active td   { background:#f0b050; color:#7a3800; border-top:2px solid #e8a020; border-bottom:1px solid #e8a020; }
+    .plan-group-hdr--danger td   { background:#f3a6a6; color:#7a1f17; border-top:2px solid #e05252; border-bottom:1px solid #e05252; }
 
     /* SESSION BAR */
     .session-bar { background:#fff; border-bottom:1px solid #e0e6ee; padding:0.55rem 1.5rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:64px; z-index:90; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
@@ -710,15 +710,15 @@
               <td style="font-weight:700;color:#1a3a5c;">הכנסות</td>
               <td style="text-align:center" id="plan_cur_income">—</td>
               <td style="text-align:center;font-weight:600;color:#1a6e3c;" id="plan_p1_income">—</td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_income" oninput="syncP3('income',this.value);updatePlanRow()"></td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_income" oninput="updatePlanRow()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_income" oninput="state.planValues.p2_income=parseNum(this.value);syncP3('income',this.value);updatePlanRow();scheduleAutoSave()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_income" oninput="state.planValues.p3_income=parseNum(this.value);updatePlanRow();scheduleAutoSave()"></td>
             </tr>
             <tr>
               <td style="font-weight:700;color:#1a3a5c;">הוצאות</td>
               <td style="text-align:center" id="plan_cur_exp">—</td>
               <td style="text-align:center;font-weight:600;color:#1a6e3c;" id="plan_p1_exp">—</td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_exp" oninput="syncP3('exp',this.value);updatePlanRow()"></td>
-              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_exp" oninput="updatePlanRow()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p2_exp" oninput="state.planValues.p2_exp=parseNum(this.value);syncP3('exp',this.value);updatePlanRow();scheduleAutoSave()"></td>
+              <td style="text-align:center"><input class="num-input" type="number" id="plan_p3_exp" oninput="state.planValues.p3_exp=parseNum(this.value);updatePlanRow();scheduleAutoSave()"></td>
             </tr>
             <tr>
               <td style="font-weight:700;color:#1a3a5c;">
@@ -810,13 +810,13 @@
           </thead>
           <tbody id="planDebtsBody"></tbody>
           <tfoot>
-            <tr style="border-top:2px solid #1a3a5c;">
-              <td style="font-weight:700;text-align:right;border-top:2px solid #1a3a5c;">סה"כ</td>
-              <td id="planTotalBalance" style="font-weight:700;border-top:2px solid #1a3a5c;">—</td>
-              <td colspan="2" style="border-top:2px solid #1a3a5c;"></td>
-              <td id="planTotalMonthly" style="font-weight:700;border-top:2px solid #1a3a5c;">—</td>
-              <td style="border-top:2px solid #1a3a5c;"></td>
-              <td id="planTotalNew" style="font-weight:700;color:#1a7a40;border-top:2px solid #1a3a5c;">—</td>
+            <tr style="border-top:4px solid #e8a020;">
+              <td style="font-weight:700;text-align:right;border-top:4px solid #e8a020;">סה"כ</td>
+              <td id="planTotalBalance" style="font-weight:700;border-top:4px solid #e8a020;">—</td>
+              <td colspan="2" style="border-top:4px solid #e8a020;"></td>
+              <td id="planTotalMonthly" style="font-weight:700;border-top:4px solid #e8a020;">—</td>
+              <td style="border-top:4px solid #e8a020;"></td>
+              <td id="planTotalNew" style="font-weight:700;color:#1a7a40;border-top:4px solid #e8a020;">—</td>
             </tr>
           </tfoot>
         </table>
@@ -970,6 +970,7 @@ const state = {
   savingsRate: 0,
   unarrangedDebtRate: 12,
   interestCompareMonths: null,
+  planValues: null, // {p2_income, p2_exp, p3_income, p3_exp} - נקבע פעם אחת, לא מתאפס בריענון הטבלה
 };
 
 // ===================== NAV =====================
@@ -1840,14 +1841,16 @@ function renderPlanningTable() {
   // עמודה 1 — נלקחת מהתקציב המוצע, לא ניתנת לעריכה
   document.getElementById('plan_p1_income').textContent = fmtNIS(propIncome);
   document.getElementById('plan_p1_exp').textContent    = fmtNIS(propExp);
-  // עמודה 2 — תמיד ממשיכה מעמודה 1 (ניתנת לשינוי ידני אחר כך)
+  // עמודות 2-3 — בפעם הראשונה ממשיכות מעמודה 1, ואז ניתנות לשינוי ידני שלא מתאפס בריענון חזרה לשלב
   const fillIncome = propIncome || curIncome;
   const fillExp    = propExp    || curExp;
-  document.getElementById('plan_p2_income').value = fillIncome;
-  document.getElementById('plan_p2_exp').value    = fillExp;
-  // עמודה 3 — ממשיכה מעמודה 2
-  document.getElementById('plan_p3_income').value = fillIncome;
-  document.getElementById('plan_p3_exp').value    = fillExp;
+  if (!state.planValues) {
+    state.planValues = { p2_income: fillIncome, p2_exp: fillExp, p3_income: fillIncome, p3_exp: fillExp };
+  }
+  document.getElementById('plan_p2_income').value = state.planValues.p2_income;
+  document.getElementById('plan_p2_exp').value    = state.planValues.p2_exp;
+  document.getElementById('plan_p3_income').value = state.planValues.p3_income;
+  document.getElementById('plan_p3_exp').value    = state.planValues.p3_exp;
   updatePlanRow();
   updatePlanFromTo();
   renderPlanningExtras();
@@ -3439,6 +3442,7 @@ function renderChartLegend(chart, containerId) {
 
 function syncP3(field, val) {
   document.getElementById(`plan_p3_${field}`).value = val;
+  if (state.planValues) state.planValues[`p3_${field}`] = parseNum(val);
 }
 
 function syncP2P3(field, val) {
@@ -4058,7 +4062,8 @@ function getFullState() {
     planning: {
       p1to: document.getElementById('plan_p1_to')?.value || '12',
       p2to: document.getElementById('plan_p2_to')?.value || '24',
-    }
+    },
+    planValues: state.planValues
   };
 }
 
@@ -4130,6 +4135,9 @@ function restoreFullState(data) {
   // Planning DOM values (restored lazily when step 4 opens)
   if (data.planning) {
     state._savedPlanning = data.planning;
+  }
+  if (data.planValues) {
+    state.planValues = data.planValues;
   }
 
   const ts = data.ts ? new Date(data.ts).toLocaleString('he-IL') : '';
