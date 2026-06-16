@@ -1,0 +1,902 @@
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - link "יחיאל ממן יחיאל ממן | אסטרטגיה פיננסית" [ref=e4] [cursor=pointer]:
+      - /url: ../index.html
+      - img "יחיאל ממן" [ref=e5]
+      - generic [ref=e6]: יחיאל ממן | אסטרטגיה פיננסית
+    - list [ref=e7]:
+      - listitem [ref=e8]:
+        - link "שירותים" [ref=e9] [cursor=pointer]:
+          - /url: ../index.html#services
+      - listitem [ref=e10]:
+        - link "תהליך" [ref=e11] [cursor=pointer]:
+          - /url: ../index.html#process
+      - listitem [ref=e12]:
+        - link "המלצות" [ref=e13] [cursor=pointer]:
+          - /url: ../testimonials.html
+      - listitem [ref=e14]:
+        - link "ההתמחויות שלנו" [ref=e15] [cursor=pointer]:
+          - /url: ../areas.html
+      - listitem [ref=e16]:
+        - link "מחשבונים ▾" [ref=e17] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e18]:
+        - link "מרכז הידע ▾" [ref=e19] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e20]:
+        - link "צור קשר" [ref=e21] [cursor=pointer]:
+          - /url: ../index.html#contact
+  - generic [ref=e22]:
+    - heading "סימולטור חיסכון לילדים" [level=1] [ref=e23]
+    - paragraph [ref=e24]: תכנן את העתיד הפיננסי של ילדיך — בר מצווה, לימודים, חתונה, דירה ועוד
+  - generic [ref=e25]:
+    - generic [ref=e26]:
+      - button "💾 שמור לקובץ" [ref=e27] [cursor=pointer]
+      - button "📂 טען מקובץ" [ref=e28] [cursor=pointer]
+      - button "🖨️ ייצוא PDF" [ref=e29] [cursor=pointer]
+    - generic [ref=e30]:
+      - generic [ref=e31]: שלב 1 — בחר מצב קופה
+      - generic [ref=e33]:
+        - button "👨‍👩‍👧‍👦 קופה משפחתית אחת כל הילדים וכל האירועים מקופה משותפת אחת" [ref=e34] [cursor=pointer]:
+          - generic [ref=e35]: 👨‍👩‍👧‍👦
+          - generic [ref=e36]: קופה משפחתית אחת
+          - generic [ref=e37]: כל הילדים וכל האירועים מקופה משותפת אחת
+        - button "👦 קופה לכל ילד כל ילד מקבל חלק מהקרן — חיסכון עצמאי לכל אחד" [ref=e38] [cursor=pointer]:
+          - generic [ref=e39]: 👦
+          - generic [ref=e40]: קופה לכל ילד
+          - generic [ref=e41]: כל ילד מקבל חלק מהקרן — חיסכון עצמאי לכל אחד
+        - button "🎯 קופה לכל אירוע כל אירוע מקבל הקצאה נפרדת — הכי פרטני" [ref=e42] [cursor=pointer]:
+          - generic [ref=e43]: 🎯
+          - generic [ref=e44]: קופה לכל אירוע
+          - generic [ref=e45]: כל אירוע מקבל הקצאה נפרדת — הכי פרטני
+    - generic [ref=e46]:
+      - generic [ref=e47]: שלב 2 — הגדרות כלליות
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - generic [ref=e51]: סכום התחלתי (₪)
+          - spinbutton "סכום התחלתי (₪)" [ref=e52]: "100000"
+        - generic [ref=e53]:
+          - generic [ref=e54]: תשואה שנתית (%)
+          - spinbutton "תשואה שנתית (%)" [ref=e55]: "5"
+        - button "⚡ חשב" [active] [ref=e57] [cursor=pointer]
+    - generic [ref=e58]:
+      - generic [ref=e59]: ברירות מחדל לאירועים
+      - generic [ref=e60]:
+        - paragraph [ref=e61]: הסכומים והגילאים הבאים ישמשו כנקודת התחלה לכל ילד. ניתן לשנות בנפרד לכל ילד בסעיף הילדים.
+        - table [ref=e63]:
+          - rowgroup [ref=e64]:
+            - row "אירוע גיל יעד יעד (₪)" [ref=e65]:
+              - columnheader "אירוע" [ref=e66]
+              - columnheader "גיל יעד" [ref=e67]
+              - columnheader "יעד (₪)" [ref=e68]
+          - rowgroup [ref=e69]:
+            - row "בר/בת מצווה 13 15000" [ref=e70]:
+              - cell "בר/בת מצווה" [ref=e71]
+              - cell "13" [ref=e72]:
+                - spinbutton [ref=e73]: "13"
+              - cell "15000" [ref=e74]:
+                - spinbutton [ref=e75]: "15000"
+            - row "לימודים 18 25000" [ref=e76]:
+              - cell "לימודים" [ref=e77]
+              - cell "18" [ref=e78]:
+                - spinbutton [ref=e79]: "18"
+              - cell "25000" [ref=e80]:
+                - spinbutton [ref=e81]: "25000"
+            - row "חתונה 28 45000" [ref=e82]:
+              - cell "חתונה" [ref=e83]
+              - cell "28" [ref=e84]:
+                - spinbutton [ref=e85]: "28"
+              - cell "45000" [ref=e86]:
+                - spinbutton [ref=e87]: "45000"
+            - row "רכישת דירה 30 100000" [ref=e88]:
+              - cell "רכישת דירה" [ref=e89]
+              - cell "30" [ref=e90]:
+                - spinbutton [ref=e91]: "30"
+              - cell "100000" [ref=e92]:
+                - spinbutton [ref=e93]: "100000"
+        - generic [ref=e94]:
+          - button "🔄 החל על כל הילדים" [ref=e95] [cursor=pointer]
+          - text: מעדכן את יעדי כל הילדים לפי הערכים לעיל
+    - generic [ref=e96]:
+      - generic [ref=e97]: שלב 3 — ילדים ואירועים
+      - generic [ref=e98]:
+        - generic [ref=e99]:
+          - generic [ref=e100]:
+            - generic [ref=e101]:
+              - textbox "שם הילד" [ref=e102]: ילד 1
+              - generic [ref=e103]:
+                - generic [ref=e104]: גיל נוכחי
+                - spinbutton [ref=e105]: "2"
+              - button "✕ הסר ילד" [ref=e106] [cursor=pointer]
+            - generic [ref=e107]:
+              - table [ref=e109]:
+                - rowgroup [ref=e110]:
+                  - row "אירוע שם מותאם גיל יעד שנים חסכתי כבר (₪) יעד (₪) חיסכון/חודש ללא תשואה ↓ עם תשואה" [ref=e111]:
+                    - columnheader "אירוע" [ref=e112]
+                    - columnheader "שם מותאם" [ref=e113]
+                    - columnheader "גיל יעד" [ref=e114]
+                    - columnheader "שנים" [ref=e115]
+                    - columnheader "חסכתי כבר (₪)" [ref=e116]
+                    - columnheader "יעד (₪)" [ref=e117]
+                    - columnheader "חיסכון/חודש ללא תשואה ↓ עם תשואה" [ref=e118]:
+                      - text: חיסכון/חודש
+                      - generic [ref=e119]: ללא תשואה ↓ עם תשואה
+                    - columnheader [ref=e120]
+                - rowgroup [ref=e121]:
+                  - 'row "בר/בת מצווה 11 שנ'' ללא תשואה: ₪114 עם תשואה: ₪85 ✕" [ref=e435]':
+                    - cell "בר/בת מצווה" [ref=e123]:
+                      - combobox [ref=e124]:
+                        - option "בר/בת מצווה" [selected]
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e125]
+                    - cell [ref=e126]:
+                      - spinbutton [ref=e127]: "13"
+                    - cell "11 שנ'" [ref=e128]
+                    - cell [ref=e129]:
+                      - spinbutton [ref=e130]: "0"
+                    - cell [ref=e131]:
+                      - spinbutton [ref=e132]: "15000"
+                    - 'cell "ללא תשואה: ₪114 עם תשואה: ₪85" [ref=e436]':
+                      - generic [ref=e134]:
+                        - generic [ref=e437]: "ללא תשואה: ₪114"
+                        - generic [ref=e438]: "עם תשואה: ₪85"
+                    - cell "✕" [ref=e135]:
+                      - button "✕" [ref=e136] [cursor=pointer]
+                  - 'row "לימודים 16 שנ'' ללא תשואה: ₪130 עם תשואה: ₪85 ✕" [ref=e439]':
+                    - cell "לימודים" [ref=e138]:
+                      - combobox [ref=e139]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה"
+                        - option "לימודים" [selected]
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e140]
+                    - cell [ref=e141]:
+                      - spinbutton [ref=e142]: "18"
+                    - cell "16 שנ'" [ref=e143]
+                    - cell [ref=e144]:
+                      - spinbutton [ref=e145]: "0"
+                    - cell [ref=e146]:
+                      - spinbutton [ref=e147]: "25000"
+                    - 'cell "ללא תשואה: ₪130 עם תשואה: ₪85" [ref=e440]':
+                      - generic [ref=e149]:
+                        - generic [ref=e441]: "ללא תשואה: ₪130"
+                        - generic [ref=e442]: "עם תשואה: ₪85"
+                    - cell "✕" [ref=e150]:
+                      - button "✕" [ref=e151] [cursor=pointer]
+                  - 'row "חתונה 26 שנ'' ללא תשואה: ₪144 עם תשואה: ₪71 ✕" [ref=e443]':
+                    - cell "חתונה" [ref=e153]:
+                      - combobox [ref=e154]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה" [selected]
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e155]
+                    - cell [ref=e156]:
+                      - spinbutton [ref=e157]: "28"
+                    - cell "26 שנ'" [ref=e158]
+                    - cell [ref=e159]:
+                      - spinbutton [ref=e160]: "0"
+                    - cell [ref=e161]:
+                      - spinbutton [ref=e162]: "45000"
+                    - 'cell "ללא תשואה: ₪144 עם תשואה: ₪71" [ref=e444]':
+                      - generic [ref=e164]:
+                        - generic [ref=e445]: "ללא תשואה: ₪144"
+                        - generic [ref=e446]: "עם תשואה: ₪71"
+                    - cell "✕" [ref=e165]:
+                      - button "✕" [ref=e166] [cursor=pointer]
+                  - 'row "רכישת דירה 28 שנ'' ללא תשואה: ₪298 עם תשואה: ₪137 ✕" [ref=e447]':
+                    - cell "רכישת דירה" [ref=e168]:
+                      - combobox [ref=e169]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה" [selected]
+                        - option "אחר"
+                    - cell [ref=e170]
+                    - cell [ref=e171]:
+                      - spinbutton [ref=e172]: "30"
+                    - cell "28 שנ'" [ref=e173]
+                    - cell [ref=e174]:
+                      - spinbutton [ref=e175]: "0"
+                    - cell [ref=e176]:
+                      - spinbutton [ref=e177]: "100000"
+                    - 'cell "ללא תשואה: ₪298 עם תשואה: ₪137" [ref=e448]':
+                      - generic [ref=e179]:
+                        - generic [ref=e449]: "ללא תשואה: ₪298"
+                        - generic [ref=e450]: "עם תשואה: ₪137"
+                    - cell "✕" [ref=e180]:
+                      - button "✕" [ref=e181] [cursor=pointer]
+              - button "+ הוסף אירוע" [ref=e182] [cursor=pointer]
+          - generic [ref=e183]:
+            - generic [ref=e184]:
+              - textbox "שם הילד" [ref=e185]: ילד 2
+              - generic [ref=e186]:
+                - generic [ref=e187]: גיל נוכחי
+                - spinbutton [ref=e188]: "5"
+              - button "✕ הסר ילד" [ref=e189] [cursor=pointer]
+            - generic [ref=e190]:
+              - table [ref=e192]:
+                - rowgroup [ref=e193]:
+                  - row "אירוע שם מותאם גיל יעד שנים חסכתי כבר (₪) יעד (₪) חיסכון/חודש ללא תשואה ↓ עם תשואה" [ref=e194]:
+                    - columnheader "אירוע" [ref=e195]
+                    - columnheader "שם מותאם" [ref=e196]
+                    - columnheader "גיל יעד" [ref=e197]
+                    - columnheader "שנים" [ref=e198]
+                    - columnheader "חסכתי כבר (₪)" [ref=e199]
+                    - columnheader "יעד (₪)" [ref=e200]
+                    - columnheader "חיסכון/חודש ללא תשואה ↓ עם תשואה" [ref=e201]:
+                      - text: חיסכון/חודש
+                      - generic [ref=e202]: ללא תשואה ↓ עם תשואה
+                    - columnheader [ref=e203]
+                - rowgroup [ref=e204]:
+                  - 'row "בר/בת מצווה 8 שנ'' ללא תשואה: ₪156 עם תשואה: ₪127 ✕" [ref=e451]':
+                    - cell "בר/בת מצווה" [ref=e206]:
+                      - combobox [ref=e207]:
+                        - option "בר/בת מצווה" [selected]
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e208]
+                    - cell [ref=e209]:
+                      - spinbutton [ref=e210]: "13"
+                    - cell "8 שנ'" [ref=e211]
+                    - cell [ref=e212]:
+                      - spinbutton [ref=e213]: "0"
+                    - cell [ref=e214]:
+                      - spinbutton [ref=e215]: "15000"
+                    - 'cell "ללא תשואה: ₪156 עם תשואה: ₪127" [ref=e452]':
+                      - generic [ref=e217]:
+                        - generic [ref=e453]: "ללא תשואה: ₪156"
+                        - generic [ref=e454]: "עם תשואה: ₪127"
+                    - cell "✕" [ref=e218]:
+                      - button "✕" [ref=e219] [cursor=pointer]
+                  - 'row "לימודים 13 שנ'' ללא תשואה: ₪160 עם תשואה: ₪114 ✕" [ref=e455]':
+                    - cell "לימודים" [ref=e221]:
+                      - combobox [ref=e222]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה"
+                        - option "לימודים" [selected]
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e223]
+                    - cell [ref=e224]:
+                      - spinbutton [ref=e225]: "18"
+                    - cell "13 שנ'" [ref=e226]
+                    - cell [ref=e227]:
+                      - spinbutton [ref=e228]: "0"
+                    - cell [ref=e229]:
+                      - spinbutton [ref=e230]: "25000"
+                    - 'cell "ללא תשואה: ₪160 עם תשואה: ₪114" [ref=e456]':
+                      - generic [ref=e232]:
+                        - generic [ref=e457]: "ללא תשואה: ₪160"
+                        - generic [ref=e458]: "עם תשואה: ₪114"
+                    - cell "✕" [ref=e233]:
+                      - button "✕" [ref=e234] [cursor=pointer]
+                  - 'row "חתונה 23 שנ'' ללא תשואה: ₪163 עם תשואה: ₪87 ✕" [ref=e459]':
+                    - cell "חתונה" [ref=e236]:
+                      - combobox [ref=e237]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה" [selected]
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e238]
+                    - cell [ref=e239]:
+                      - spinbutton [ref=e240]: "28"
+                    - cell "23 שנ'" [ref=e241]
+                    - cell [ref=e242]:
+                      - spinbutton [ref=e243]: "0"
+                    - cell [ref=e244]:
+                      - spinbutton [ref=e245]: "45000"
+                    - 'cell "ללא תשואה: ₪163 עם תשואה: ₪87" [ref=e460]':
+                      - generic [ref=e247]:
+                        - generic [ref=e461]: "ללא תשואה: ₪163"
+                        - generic [ref=e462]: "עם תשואה: ₪87"
+                    - cell "✕" [ref=e248]:
+                      - button "✕" [ref=e249] [cursor=pointer]
+                  - 'row "רכישת דירה 25 שנ'' ללא תשואה: ₪333 עם תשואה: ₪168 ✕" [ref=e463]':
+                    - cell "רכישת דירה" [ref=e251]:
+                      - combobox [ref=e252]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה" [selected]
+                        - option "אחר"
+                    - cell [ref=e253]
+                    - cell [ref=e254]:
+                      - spinbutton [ref=e255]: "30"
+                    - cell "25 שנ'" [ref=e256]
+                    - cell [ref=e257]:
+                      - spinbutton [ref=e258]: "0"
+                    - cell [ref=e259]:
+                      - spinbutton [ref=e260]: "100000"
+                    - 'cell "ללא תשואה: ₪333 עם תשואה: ₪168" [ref=e464]':
+                      - generic [ref=e262]:
+                        - generic [ref=e465]: "ללא תשואה: ₪333"
+                        - generic [ref=e466]: "עם תשואה: ₪168"
+                    - cell "✕" [ref=e263]:
+                      - button "✕" [ref=e264] [cursor=pointer]
+              - button "+ הוסף אירוע" [ref=e265] [cursor=pointer]
+          - generic [ref=e266]:
+            - generic [ref=e267]:
+              - textbox "שם הילד" [ref=e268]: ילד 3
+              - generic [ref=e269]:
+                - generic [ref=e270]: גיל נוכחי
+                - spinbutton [ref=e271]: "8"
+              - button "✕ הסר ילד" [ref=e272] [cursor=pointer]
+            - generic [ref=e273]:
+              - table [ref=e275]:
+                - rowgroup [ref=e276]:
+                  - row "אירוע שם מותאם גיל יעד שנים חסכתי כבר (₪) יעד (₪) חיסכון/חודש ללא תשואה ↓ עם תשואה" [ref=e277]:
+                    - columnheader "אירוע" [ref=e278]
+                    - columnheader "שם מותאם" [ref=e279]
+                    - columnheader "גיל יעד" [ref=e280]
+                    - columnheader "שנים" [ref=e281]
+                    - columnheader "חסכתי כבר (₪)" [ref=e282]
+                    - columnheader "יעד (₪)" [ref=e283]
+                    - columnheader "חיסכון/חודש ללא תשואה ↓ עם תשואה" [ref=e284]:
+                      - text: חיסכון/חודש
+                      - generic [ref=e285]: ללא תשואה ↓ עם תשואה
+                    - columnheader [ref=e286]
+                - rowgroup [ref=e287]:
+                  - 'row "בר/בת מצווה 5 שנ'' ללא תשואה: ₪250 עם תשואה: ₪221 ✕" [ref=e467]':
+                    - cell "בר/בת מצווה" [ref=e289]:
+                      - combobox [ref=e290]:
+                        - option "בר/בת מצווה" [selected]
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e291]
+                    - cell [ref=e292]:
+                      - spinbutton [ref=e293]: "13"
+                    - cell "5 שנ'" [ref=e294]
+                    - cell [ref=e295]:
+                      - spinbutton [ref=e296]: "0"
+                    - cell [ref=e297]:
+                      - spinbutton [ref=e298]: "15000"
+                    - 'cell "ללא תשואה: ₪250 עם תשואה: ₪221" [ref=e468]':
+                      - generic [ref=e300]:
+                        - generic [ref=e469]: "ללא תשואה: ₪250"
+                        - generic [ref=e470]: "עם תשואה: ₪221"
+                    - cell "✕" [ref=e301]:
+                      - button "✕" [ref=e302] [cursor=pointer]
+                  - 'row "לימודים 10 שנ'' ללא תשואה: ₪208 עם תשואה: ₪161 ✕" [ref=e471]':
+                    - cell "לימודים" [ref=e304]:
+                      - combobox [ref=e305]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה"
+                        - option "לימודים" [selected]
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e306]
+                    - cell [ref=e307]:
+                      - spinbutton [ref=e308]: "18"
+                    - cell "10 שנ'" [ref=e309]
+                    - cell [ref=e310]:
+                      - spinbutton [ref=e311]: "0"
+                    - cell [ref=e312]:
+                      - spinbutton [ref=e313]: "25000"
+                    - 'cell "ללא תשואה: ₪208 עם תשואה: ₪161" [ref=e472]':
+                      - generic [ref=e315]:
+                        - generic [ref=e473]: "ללא תשואה: ₪208"
+                        - generic [ref=e474]: "עם תשואה: ₪161"
+                    - cell "✕" [ref=e316]:
+                      - button "✕" [ref=e317] [cursor=pointer]
+                  - 'row "חתונה 20 שנ'' ללא תשואה: ₪188 עם תשואה: ₪109 ✕" [ref=e475]':
+                    - cell "חתונה" [ref=e319]:
+                      - combobox [ref=e320]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה" [selected]
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e321]
+                    - cell [ref=e322]:
+                      - spinbutton [ref=e323]: "28"
+                    - cell "20 שנ'" [ref=e324]
+                    - cell [ref=e325]:
+                      - spinbutton [ref=e326]: "0"
+                    - cell [ref=e327]:
+                      - spinbutton [ref=e328]: "45000"
+                    - 'cell "ללא תשואה: ₪188 עם תשואה: ₪109" [ref=e476]':
+                      - generic [ref=e330]:
+                        - generic [ref=e477]: "ללא תשואה: ₪188"
+                        - generic [ref=e478]: "עם תשואה: ₪109"
+                    - cell "✕" [ref=e331]:
+                      - button "✕" [ref=e332] [cursor=pointer]
+                  - 'row "רכישת דירה 22 שנ'' ללא תשואה: ₪379 עם תשואה: ₪209 ✕" [ref=e479]':
+                    - cell "רכישת דירה" [ref=e334]:
+                      - combobox [ref=e335]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה" [selected]
+                        - option "אחר"
+                    - cell [ref=e336]
+                    - cell [ref=e337]:
+                      - spinbutton [ref=e338]: "30"
+                    - cell "22 שנ'" [ref=e339]
+                    - cell [ref=e340]:
+                      - spinbutton [ref=e341]: "0"
+                    - cell [ref=e342]:
+                      - spinbutton [ref=e343]: "100000"
+                    - 'cell "ללא תשואה: ₪379 עם תשואה: ₪209" [ref=e480]':
+                      - generic [ref=e345]:
+                        - generic [ref=e481]: "ללא תשואה: ₪379"
+                        - generic [ref=e482]: "עם תשואה: ₪209"
+                    - cell "✕" [ref=e346]:
+                      - button "✕" [ref=e347] [cursor=pointer]
+              - button "+ הוסף אירוע" [ref=e348] [cursor=pointer]
+          - generic [ref=e349]:
+            - generic [ref=e350]:
+              - textbox "שם הילד" [ref=e351]: ילד 4
+              - generic [ref=e352]:
+                - generic [ref=e353]: גיל נוכחי
+                - spinbutton [ref=e354]: "11"
+              - button "✕ הסר ילד" [ref=e355] [cursor=pointer]
+            - generic [ref=e356]:
+              - table [ref=e358]:
+                - rowgroup [ref=e359]:
+                  - row "אירוע שם מותאם גיל יעד שנים חסכתי כבר (₪) יעד (₪) חיסכון/חודש ללא תשואה ↓ עם תשואה" [ref=e360]:
+                    - columnheader "אירוע" [ref=e361]
+                    - columnheader "שם מותאם" [ref=e362]
+                    - columnheader "גיל יעד" [ref=e363]
+                    - columnheader "שנים" [ref=e364]
+                    - columnheader "חסכתי כבר (₪)" [ref=e365]
+                    - columnheader "יעד (₪)" [ref=e366]
+                    - columnheader "חיסכון/חודש ללא תשואה ↓ עם תשואה" [ref=e367]:
+                      - text: חיסכון/חודש
+                      - generic [ref=e368]: ללא תשואה ↓ עם תשואה
+                    - columnheader [ref=e369]
+                - rowgroup [ref=e370]:
+                  - 'row "בר/בת מצווה 2 שנ'' ללא תשואה: ₪625 עם תשואה: ₪596 ✕" [ref=e483]':
+                    - cell "בר/בת מצווה" [ref=e372]:
+                      - combobox [ref=e373]:
+                        - option "בר/בת מצווה" [selected]
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e374]
+                    - cell [ref=e375]:
+                      - spinbutton [ref=e376]: "13"
+                    - cell "2 שנ'" [ref=e377]
+                    - cell [ref=e378]:
+                      - spinbutton [ref=e379]: "0"
+                    - cell [ref=e380]:
+                      - spinbutton [ref=e381]: "15000"
+                    - 'cell "ללא תשואה: ₪625 עם תשואה: ₪596" [ref=e484]':
+                      - generic [ref=e383]:
+                        - generic [ref=e485]: "ללא תשואה: ₪625"
+                        - generic [ref=e486]: "עם תשואה: ₪596"
+                    - cell "✕" [ref=e384]:
+                      - button "✕" [ref=e385] [cursor=pointer]
+                  - 'row "לימודים 7 שנ'' ללא תשואה: ₪298 עם תשואה: ₪249 ✕" [ref=e487]':
+                    - cell "לימודים" [ref=e387]:
+                      - combobox [ref=e388]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה"
+                        - option "לימודים" [selected]
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e389]
+                    - cell [ref=e390]:
+                      - spinbutton [ref=e391]: "18"
+                    - cell "7 שנ'" [ref=e392]
+                    - cell [ref=e393]:
+                      - spinbutton [ref=e394]: "0"
+                    - cell [ref=e395]:
+                      - spinbutton [ref=e396]: "25000"
+                    - 'cell "ללא תשואה: ₪298 עם תשואה: ₪249" [ref=e488]':
+                      - generic [ref=e398]:
+                        - generic [ref=e489]: "ללא תשואה: ₪298"
+                        - generic [ref=e490]: "עם תשואה: ₪249"
+                    - cell "✕" [ref=e399]:
+                      - button "✕" [ref=e400] [cursor=pointer]
+                  - 'row "חתונה 17 שנ'' ללא תשואה: ₪221 עם תשואה: ₪140 ✕" [ref=e491]':
+                    - cell "חתונה" [ref=e402]:
+                      - combobox [ref=e403]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה" [selected]
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e404]
+                    - cell [ref=e405]:
+                      - spinbutton [ref=e406]: "28"
+                    - cell "17 שנ'" [ref=e407]
+                    - cell [ref=e408]:
+                      - spinbutton [ref=e409]: "0"
+                    - cell [ref=e410]:
+                      - spinbutton [ref=e411]: "45000"
+                    - 'cell "ללא תשואה: ₪221 עם תשואה: ₪140" [ref=e492]':
+                      - generic [ref=e413]:
+                        - generic [ref=e493]: "ללא תשואה: ₪221"
+                        - generic [ref=e494]: "עם תשואה: ₪140"
+                    - cell "✕" [ref=e414]:
+                      - button "✕" [ref=e415] [cursor=pointer]
+                  - 'row "רכישת דירה 19 שנ'' ללא תשואה: ₪439 עם תשואה: ₪264 ✕" [ref=e495]':
+                    - cell "רכישת דירה" [ref=e417]:
+                      - combobox [ref=e418]:
+                        - option "בר/בת מצווה"
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה" [selected]
+                        - option "אחר"
+                    - cell [ref=e419]
+                    - cell [ref=e420]:
+                      - spinbutton [ref=e421]: "30"
+                    - cell "19 שנ'" [ref=e422]
+                    - cell [ref=e423]:
+                      - spinbutton [ref=e424]: "0"
+                    - cell [ref=e425]:
+                      - spinbutton [ref=e426]: "100000"
+                    - 'cell "ללא תשואה: ₪439 עם תשואה: ₪264" [ref=e496]':
+                      - generic [ref=e428]:
+                        - generic [ref=e497]: "ללא תשואה: ₪439"
+                        - generic [ref=e498]: "עם תשואה: ₪264"
+                    - cell "✕" [ref=e429]:
+                      - button "✕" [ref=e430] [cursor=pointer]
+              - button "+ הוסף אירוע" [ref=e431] [cursor=pointer]
+        - button "+ הוסף ילד" [ref=e432] [cursor=pointer]
+    - generic [ref=e499]:
+      - generic [ref=e500]:
+        - generic [ref=e501]: תוצאות
+        - generic [ref=e502]:
+          - generic [ref=e503]:
+            - generic [ref=e504]: "מצב חישוב:"
+            - generic [ref=e505]:
+              - button "חיסכון רגיל" [ref=e506] [cursor=pointer]
+              - button "חיסכון מאוזן" [ref=e507] [cursor=pointer]
+            - generic [ref=e508]: סכום משתנה — חישוב נפרד לכל אירוע
+          - generic [ref=e509]:
+            - generic [ref=e510]:
+              - generic [ref=e511]: ילד 1
+              - generic [ref=e512]:
+                - generic [ref=e513]: "ללא תשואה: ₪686 / חודש"
+                - generic [ref=e514]: "עם תשואה: ₪378 / חודש"
+                - generic [ref=e515]: "חסכת: ₪308 / חודש"
+            - generic [ref=e516]:
+              - generic [ref=e517]: ילד 2
+              - generic [ref=e518]:
+                - generic [ref=e519]: "ללא תשואה: ₪813 / חודש"
+                - generic [ref=e520]: "עם תשואה: ₪497 / חודש"
+                - generic [ref=e521]: "חסכת: ₪316 / חודש"
+            - generic [ref=e522]:
+              - generic [ref=e523]: ילד 3
+              - generic [ref=e524]:
+                - generic [ref=e525]: "ללא תשואה: ₪1,025 / חודש"
+                - generic [ref=e526]: "עם תשואה: ₪700 / חודש"
+                - generic [ref=e527]: "חסכת: ₪325 / חודש"
+            - generic [ref=e528]:
+              - generic [ref=e529]: ילד 4
+              - generic [ref=e530]:
+                - generic [ref=e531]: "ללא תשואה: ₪1,582 / חודש"
+                - generic [ref=e532]: "עם תשואה: ₪1,249 / חודש"
+                - generic [ref=e533]: "חסכת: ₪333 / חודש"
+      - generic [ref=e534]:
+        - generic [ref=e535]:
+          - generic [ref=e536]: חיסכון חודשי עם תשואה
+          - generic [ref=e537]: ₪2,823
+          - generic [ref=e538]: בתחילת התקופה — יורד עם הזמן
+        - generic [ref=e539]:
+          - generic [ref=e540]: ללא תשואה היית צריך
+          - generic [ref=e541]: ₪4,105
+          - generic [ref=e542]: בחודש
+        - generic [ref=e543]:
+          - generic [ref=e544]: חסכת בזכות השקעה מוקדמת
+          - generic [ref=e545]: ₪1,282
+          - generic [ref=e546]: בחודש
+      - generic [ref=e547]:
+        - generic [ref=e548]: גרפים
+        - generic [ref=e550]:
+          - heading "גרף מצטבר — כל המשפחה" [level=3] [ref=e552]
+          - generic [ref=e554]:
+            - heading "גרף חיסכון — ילד 1" [level=3] [ref=e556]
+            - heading "גרף חיסכון — ילד 2" [level=3] [ref=e559]
+            - heading "גרף חיסכון — ילד 3" [level=3] [ref=e562]
+            - heading "גרף חיסכון — ילד 4" [level=3] [ref=e565]
+      - generic [ref=e567]:
+        - generic [ref=e568]: לוח תשלומים
+        - generic [ref=e569]:
+          - paragraph [ref=e570]: הטבלה מציגה את החיסכון החודשי לכל שנה — הסכום יורד ככל שאירועים מסתיימים ותשואת ריבית דריבית מצטברת.
+          - table [ref=e573]:
+            - rowgroup [ref=e574]:
+              - row "שנה חיסכון חודשי סה\"כ הפקדות ריבית שנרווחה אירועים יתרה בסוף שנה" [ref=e575]:
+                - columnheader "שנה" [ref=e576]
+                - columnheader "חיסכון חודשי" [ref=e577]
+                - columnheader "סה\"כ הפקדות" [ref=e578]
+                - columnheader "ריבית שנרווחה" [ref=e579]
+                - columnheader "אירועים" [ref=e580]
+                - columnheader "יתרה בסוף שנה" [ref=e581]
+            - rowgroup [ref=e582]:
+              - row "1 ₪2,025 ₪24,300 ₪5,681 — ₪129,981" [ref=e583]:
+                - cell "1" [ref=e584]
+                - cell "₪2,025" [ref=e585]:
+                  - strong [ref=e586]: ₪2,025
+                - cell "₪24,300" [ref=e587]
+                - cell "₪5,681" [ref=e588]
+                - cell "—" [ref=e589]
+                - cell "₪129,981" [ref=e590]:
+                  - strong [ref=e591]: ₪129,981
+              - 'row "2 ₪2,025 → ₪1,693 ₪24,300 ₪7,215 📅 ילד 4 — בר/בת מצווה: -₪15,000 ₪146,495" [ref=e592]':
+                - cell "2" [ref=e593]
+                - cell "₪2,025 → ₪1,693" [ref=e594]:
+                  - strong [ref=e595]: ₪2,025
+                  - text: → ₪1,693
+                - cell "₪24,300" [ref=e596]
+                - cell "₪7,215" [ref=e597]
+                - 'cell "📅 ילד 4 — בר/בת מצווה: -₪15,000" [ref=e598]':
+                  - generic [ref=e599]: "📅 ילד 4 — בר/בת מצווה: -₪15,000"
+                - cell "₪146,495" [ref=e600]:
+                  - strong [ref=e601]: ₪146,495
+              - row "3 ₪1,693 ₪20,320 ₪7,967 — ₪174,783" [ref=e602]:
+                - cell "3" [ref=e603]
+                - cell "₪1,693" [ref=e604]:
+                  - strong [ref=e605]: ₪1,693
+                - cell "₪20,320" [ref=e606]
+                - cell "₪7,967" [ref=e607]
+                - cell "—" [ref=e608]
+                - cell "₪174,783" [ref=e609]:
+                  - strong [ref=e610]: ₪174,783
+              - row "4 ₪1,693 ₪20,320 ₪9,414 — ₪204,517" [ref=e611]:
+                - cell "4" [ref=e612]
+                - cell "₪1,693" [ref=e613]:
+                  - strong [ref=e614]: ₪1,693
+                - cell "₪20,320" [ref=e615]
+                - cell "₪9,414" [ref=e616]
+                - cell "—" [ref=e617]
+                - cell "₪204,517" [ref=e618]:
+                  - strong [ref=e619]: ₪204,517
+              - 'row "5 ₪1,693 → ₪1,884 ₪20,320 ₪10,936 📅 ילד 3 — בר/בת מצווה: -₪15,000 ₪220,773" [ref=e620]':
+                - cell "5" [ref=e621]
+                - cell "₪1,693 → ₪1,884" [ref=e622]:
+                  - strong [ref=e623]: ₪1,693
+                  - text: → ₪1,884
+                - cell "₪20,320" [ref=e624]
+                - cell "₪10,936" [ref=e625]
+                - 'cell "📅 ילד 3 — בר/בת מצווה: -₪15,000" [ref=e626]':
+                  - generic [ref=e627]: "📅 ילד 3 — בר/בת מצווה: -₪15,000"
+                - cell "₪220,773" [ref=e628]:
+                  - strong [ref=e629]: ₪220,773
+              - row "6 ₪1,884 ₪22,611 ₪11,821 — ₪255,205" [ref=e630]:
+                - cell "6" [ref=e631]
+                - cell "₪1,884" [ref=e632]:
+                  - strong [ref=e633]: ₪1,884
+                - cell "₪22,611" [ref=e634]
+                - cell "₪11,821" [ref=e635]
+                - cell "—" [ref=e636]
+                - cell "₪255,205" [ref=e637]:
+                  - strong [ref=e638]: ₪255,205
+              - 'row "7 ₪1,884 → ₪1,844 ₪22,611 ₪13,582 📅 ילד 4 — לימודים: -₪25,000 ₪266,398" [ref=e639]':
+                - cell "7" [ref=e640]
+                - cell "₪1,884 → ₪1,844" [ref=e641]:
+                  - strong [ref=e642]: ₪1,884
+                  - text: → ₪1,844
+                - cell "₪22,611" [ref=e643]
+                - cell "₪13,582" [ref=e644]
+                - 'cell "📅 ילד 4 — לימודים: -₪25,000" [ref=e645]':
+                  - generic [ref=e646]: "📅 ילד 4 — לימודים: -₪25,000"
+                - cell "₪266,398" [ref=e647]:
+                  - strong [ref=e648]: ₪266,398
+              - 'row "8 ₪1,844 → ₪1,334 ₪22,127 ₪14,144 📅 ילד 2 — בר/בת מצווה: -₪15,000 ₪287,668" [ref=e649]':
+                - cell "8" [ref=e650]
+                - cell "₪1,844 → ₪1,334" [ref=e651]:
+                  - strong [ref=e652]: ₪1,844
+                  - text: → ₪1,334
+                - cell "₪22,127" [ref=e653]
+                - cell "₪14,144" [ref=e654]
+                - 'cell "📅 ילד 2 — בר/בת מצווה: -₪15,000" [ref=e655]':
+                  - generic [ref=e656]: "📅 ילד 2 — בר/בת מצווה: -₪15,000"
+                - cell "₪287,668" [ref=e657]:
+                  - strong [ref=e658]: ₪287,668
+              - row "9 ₪1,334 ₪16,004 ₪15,090 — ₪318,761" [ref=e659]:
+                - cell "9" [ref=e660]
+                - cell "₪1,334" [ref=e661]:
+                  - strong [ref=e662]: ₪1,334
+                - cell "₪16,004" [ref=e663]
+                - cell "₪15,090" [ref=e664]
+                - cell "—" [ref=e665]
+                - cell "₪318,761" [ref=e666]:
+                  - strong [ref=e667]: ₪318,761
+              - 'row "10 ₪1,334 → ₪1,306 ₪16,004 ₪16,680 📅 ילד 3 — לימודים: -₪25,000 ₪326,445" [ref=e668]':
+                - cell "10" [ref=e669]
+                - cell "₪1,334 → ₪1,306" [ref=e670]:
+                  - strong [ref=e671]: ₪1,334
+                  - text: → ₪1,306
+                - cell "₪16,004" [ref=e672]
+                - cell "₪16,680" [ref=e673]
+                - 'cell "📅 ילד 3 — לימודים: -₪25,000" [ref=e674]':
+                  - generic [ref=e675]: "📅 ילד 3 — לימודים: -₪25,000"
+                - cell "₪326,445" [ref=e676]:
+                  - strong [ref=e677]: ₪326,445
+              - 'row "11 ₪1,306 → ₪882 ₪15,671 ₪17,066 📅 ילד 1 — בר/בת מצווה: -₪15,000 ₪344,182" [ref=e678]':
+                - cell "11" [ref=e679]
+                - cell "₪1,306 → ₪882" [ref=e680]:
+                  - strong [ref=e681]: ₪1,306
+                  - text: → ₪882
+                - cell "₪15,671" [ref=e682]
+                - cell "₪17,066" [ref=e683]
+                - 'cell "📅 ילד 1 — בר/בת מצווה: -₪15,000" [ref=e684]':
+                  - generic [ref=e685]: "📅 ילד 1 — בר/בת מצווה: -₪15,000"
+                - cell "₪344,182" [ref=e686]:
+                  - strong [ref=e687]: ₪344,182
+              - row "12 ₪882 ₪10,585 ₪17,855 — ₪372,622" [ref=e688]:
+                - cell "12" [ref=e689]
+                - cell "₪882" [ref=e690]:
+                  - strong [ref=e691]: ₪882
+                - cell "₪10,585" [ref=e692]
+                - cell "₪17,855" [ref=e693]
+                - cell "—" [ref=e694]
+                - cell "₪372,622" [ref=e695]:
+                  - strong [ref=e696]: ₪372,622
+              - 'row "13 ₪882 → ₪637 ₪10,585 ₪19,310 📅 ילד 2 — לימודים: -₪25,000 ₪377,517" [ref=e697]':
+                - cell "13" [ref=e698]
+                - cell "₪882 → ₪637" [ref=e699]:
+                  - strong [ref=e700]: ₪882
+                  - text: → ₪637
+                - cell "₪10,585" [ref=e701]
+                - cell "₪19,310" [ref=e702]
+                - 'cell "📅 ילד 2 — לימודים: -₪25,000" [ref=e703]':
+                  - generic [ref=e704]: "📅 ילד 2 — לימודים: -₪25,000"
+                - cell "₪377,517" [ref=e705]:
+                  - strong [ref=e706]: ₪377,517
+              - row "14 ₪637 ₪7,640 ₪19,492 — ₪404,649" [ref=e707]:
+                - cell "14" [ref=e708]
+                - cell "₪637" [ref=e709]:
+                  - strong [ref=e710]: ₪637
+                - cell "₪7,640" [ref=e711]
+                - cell "₪19,492" [ref=e712]
+                - cell "—" [ref=e713]
+                - cell "₪404,649" [ref=e714]:
+                  - strong [ref=e715]: ₪404,649
+              - row "15 ₪637 ₪7,640 ₪20,880 — ₪433,169" [ref=e716]:
+                - cell "15" [ref=e717]
+                - cell "₪637" [ref=e718]:
+                  - strong [ref=e719]: ₪637
+                - cell "₪7,640" [ref=e720]
+                - cell "₪20,880" [ref=e721]
+                - cell "—" [ref=e722]
+                - cell "₪433,169" [ref=e723]:
+                  - strong [ref=e724]: ₪433,169
+              - 'row "16 ₪637 → ₪1,137 ₪7,640 ₪22,339 📅 ילד 1 — לימודים: -₪25,000 ₪438,148" [ref=e725]':
+                - cell "16" [ref=e726]
+                - cell "₪637 → ₪1,137" [ref=e727]:
+                  - strong [ref=e728]: ₪637
+                  - text: → ₪1,137
+                - cell "₪7,640" [ref=e729]
+                - cell "₪22,339" [ref=e730]
+                - 'cell "📅 ילד 1 — לימודים: -₪25,000" [ref=e731]':
+                  - generic [ref=e732]: "📅 ילד 1 — לימודים: -₪25,000"
+                - cell "₪438,148" [ref=e733]:
+                  - strong [ref=e734]: ₪438,148
+              - 'row "17 ₪1,137 → ₪527 ₪13,644 ₪22,734 📅 ילד 4 — חתונה: -₪45,000 ₪429,525" [ref=e735]':
+                - cell "17" [ref=e736]
+                - cell "₪1,137 → ₪527" [ref=e737]:
+                  - strong [ref=e738]: ₪1,137
+                  - text: → ₪527
+                - cell "₪13,644" [ref=e739]
+                - cell "₪22,734" [ref=e740]
+                - 'cell "📅 ילד 4 — חתונה: -₪45,000" [ref=e741]':
+                  - generic [ref=e742]: "📅 ילד 4 — חתונה: -₪45,000"
+                - cell "₪429,525" [ref=e743]:
+                  - strong [ref=e744]: ₪429,525
+              - row "18 ₪527 ₪6,320 ₪22,122 — ₪457,967" [ref=e745]:
+                - cell "18" [ref=e746]
+                - cell "₪527" [ref=e747]:
+                  - strong [ref=e748]: ₪527
+                - cell "₪6,320" [ref=e749]
+                - cell "₪22,122" [ref=e750]
+                - cell "—" [ref=e751]
+                - cell "₪457,967" [ref=e752]:
+                  - strong [ref=e753]: ₪457,967
+              - 'row "19 ₪527 → ₪230 ₪6,320 ₪23,577 📅 ילד 4 — רכישת דירה: -₪100,000 ₪387,864" [ref=e754]':
+                - cell "19" [ref=e755]
+                - cell "₪527 → ₪230" [ref=e756]:
+                  - strong [ref=e757]: ₪527
+                  - text: → ₪230
+                - cell "₪6,320" [ref=e758]
+                - cell "₪23,577" [ref=e759]
+                - 'cell "📅 ילד 4 — רכישת דירה: -₪100,000" [ref=e760]':
+                  - generic [ref=e761]: "📅 ילד 4 — רכישת דירה: -₪100,000"
+                - cell "₪387,864" [ref=e762]:
+                  - strong [ref=e763]: ₪387,864
+              - 'row "20 ₪230 → ₪0 ₪2,759 ₪19,908 📅 ילד 3 — חתונה: -₪45,000 ₪365,531" [ref=e764]':
+                - cell "20" [ref=e765]
+                - cell "₪230 → ₪0" [ref=e766]:
+                  - strong [ref=e767]: ₪230
+                  - text: → ₪0
+                - cell "₪2,759" [ref=e768]
+                - cell "₪19,908" [ref=e769]
+                - 'cell "📅 ילד 3 — חתונה: -₪45,000" [ref=e770]':
+                  - generic [ref=e771]: "📅 ילד 3 — חתונה: -₪45,000"
+                - cell "₪365,531" [ref=e772]:
+                  - strong [ref=e773]: ₪365,531
+              - row "21 ₪0 ₪0 ₪18,701 — ₪384,233" [ref=e774]:
+                - cell "21" [ref=e775]
+                - cell "₪0" [ref=e776]:
+                  - strong [ref=e777]: ₪0
+                - cell "₪0" [ref=e778]
+                - cell "₪18,701" [ref=e779]
+                - cell "—" [ref=e780]
+                - cell "₪384,233" [ref=e781]:
+                  - strong [ref=e782]: ₪384,233
+              - 'row "22 ₪0 ₪0 ₪19,658 📅 ילד 3 — רכישת דירה: -₪100,000 ₪303,891" [ref=e783]':
+                - cell "22" [ref=e784]
+                - cell "₪0" [ref=e785]:
+                  - strong [ref=e786]: ₪0
+                - cell "₪0" [ref=e787]
+                - cell "₪19,658" [ref=e788]
+                - 'cell "📅 ילד 3 — רכישת דירה: -₪100,000" [ref=e789]':
+                  - generic [ref=e790]: "📅 ילד 3 — רכישת דירה: -₪100,000"
+                - cell "₪303,891" [ref=e791]:
+                  - strong [ref=e792]: ₪303,891
+              - 'row "23 ₪0 ₪0 ₪15,548 📅 ילד 2 — חתונה: -₪45,000 ₪274,438" [ref=e793]':
+                - cell "23" [ref=e794]
+                - cell "₪0" [ref=e795]:
+                  - strong [ref=e796]: ₪0
+                - cell "₪0" [ref=e797]
+                - cell "₪15,548" [ref=e798]
+                - 'cell "📅 ילד 2 — חתונה: -₪45,000" [ref=e799]':
+                  - generic [ref=e800]: "📅 ילד 2 — חתונה: -₪45,000"
+                - cell "₪274,438" [ref=e801]:
+                  - strong [ref=e802]: ₪274,438
+              - row "24 ₪0 ₪0 ₪14,041 — ₪288,479" [ref=e803]:
+                - cell "24" [ref=e804]
+                - cell "₪0" [ref=e805]:
+                  - strong [ref=e806]: ₪0
+                - cell "₪0" [ref=e807]
+                - cell "₪14,041" [ref=e808]
+                - cell "—" [ref=e809]
+                - cell "₪288,479" [ref=e810]:
+                  - strong [ref=e811]: ₪288,479
+              - 'row "25 ₪0 ₪0 ₪14,759 📅 ילד 2 — רכישת דירה: -₪100,000 ₪203,238" [ref=e812]':
+                - cell "25" [ref=e813]
+                - cell "₪0" [ref=e814]:
+                  - strong [ref=e815]: ₪0
+                - cell "₪0" [ref=e816]
+                - cell "₪14,759" [ref=e817]
+                - 'cell "📅 ילד 2 — רכישת דירה: -₪100,000" [ref=e818]':
+                  - generic [ref=e819]: "📅 ילד 2 — רכישת דירה: -₪100,000"
+                - cell "₪203,238" [ref=e820]:
+                  - strong [ref=e821]: ₪203,238
+              - 'row "26 ₪0 ₪0 ₪10,398 📅 ילד 1 — חתונה: -₪45,000 ₪168,636" [ref=e822]':
+                - cell "26" [ref=e823]
+                - cell "₪0" [ref=e824]:
+                  - strong [ref=e825]: ₪0
+                - cell "₪0" [ref=e826]
+                - cell "₪10,398" [ref=e827]
+                - 'cell "📅 ילד 1 — חתונה: -₪45,000" [ref=e828]':
+                  - generic [ref=e829]: "📅 ילד 1 — חתונה: -₪45,000"
+                - cell "₪168,636" [ref=e830]:
+                  - strong [ref=e831]: ₪168,636
+              - row "27 ₪0 ₪0 ₪8,628 — ₪177,264" [ref=e832]:
+                - cell "27" [ref=e833]
+                - cell "₪0" [ref=e834]:
+                  - strong [ref=e835]: ₪0
+                - cell "₪0" [ref=e836]
+                - cell "₪8,628" [ref=e837]
+                - cell "—" [ref=e838]
+                - cell "₪177,264" [ref=e839]:
+                  - strong [ref=e840]: ₪177,264
+              - 'row "28 ₪0 ₪0 ₪9,069 📅 ילד 1 — רכישת דירה: -₪100,000 ₪86,333" [ref=e841]':
+                - cell "28" [ref=e842]
+                - cell "₪0" [ref=e843]:
+                  - strong [ref=e844]: ₪0
+                - cell "₪0" [ref=e845]
+                - cell "₪9,069" [ref=e846]
+                - 'cell "📅 ילד 1 — רכישת דירה: -₪100,000" [ref=e847]':
+                  - generic [ref=e848]: "📅 ילד 1 — רכישת דירה: -₪100,000"
+                - cell "₪86,333" [ref=e849]:
+                  - strong [ref=e850]: ₪86,333
+  - contentinfo [ref=e433]:
+    - text: © 2026 יחיאל ממן — יועץ משכנתאות | כל הזכויות שמורות | האתר אינו מהווה ייעוץ פיננסי מחייב |
+    - link "ניהול" [ref=e434] [cursor=pointer]:
+      - /url: ../admin.html

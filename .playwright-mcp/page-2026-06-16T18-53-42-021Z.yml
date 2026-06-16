@@ -1,0 +1,174 @@
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - link "יחיאל ממן יחיאל ממן | אסטרטגיה פיננסית" [ref=e4] [cursor=pointer]:
+      - /url: ../index.html
+      - img "יחיאל ממן" [ref=e5]
+      - generic [ref=e6]: יחיאל ממן | אסטרטגיה פיננסית
+    - list [ref=e7]:
+      - listitem [ref=e8]:
+        - link "שירותים" [ref=e9] [cursor=pointer]:
+          - /url: ../index.html#services
+      - listitem [ref=e10]:
+        - link "תהליך" [ref=e11] [cursor=pointer]:
+          - /url: ../index.html#process
+      - listitem [ref=e12]:
+        - link "המלצות" [ref=e13] [cursor=pointer]:
+          - /url: ../testimonials.html
+      - listitem [ref=e14]:
+        - link "ההתמחויות שלנו" [ref=e15] [cursor=pointer]:
+          - /url: ../areas.html
+      - listitem [ref=e16]:
+        - link "מחשבונים ▾" [ref=e17] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e18]:
+        - link "מרכז הידע ▾" [ref=e19] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e20]:
+        - link "צור קשר" [ref=e21] [cursor=pointer]:
+          - /url: ../index.html#contact
+  - generic [ref=e22]:
+    - heading "סימולטור חיסכון לילדים" [level=1] [ref=e23]
+    - paragraph [ref=e24]: תכנן את העתיד הפיננסי של ילדיך — בר מצווה, לימודים, חתונה, דירה ועוד
+  - generic [ref=e25]:
+    - generic [ref=e26]:
+      - button "💾 שמור לקובץ" [ref=e27] [cursor=pointer]
+      - button "📂 טען מקובץ" [ref=e28] [cursor=pointer]
+      - button "🖨️ ייצוא PDF" [ref=e29] [cursor=pointer]
+    - generic [ref=e30]:
+      - generic [ref=e31]: שלב 1 — בחר מצב קופה
+      - generic [ref=e33]:
+        - button "👨‍👩‍👧‍👦 קופה משפחתית אחת כל הילדים וכל האירועים מקופה משותפת אחת" [ref=e34] [cursor=pointer]:
+          - generic [ref=e35]: 👨‍👩‍👧‍👦
+          - generic [ref=e36]: קופה משפחתית אחת
+          - generic [ref=e37]: כל הילדים וכל האירועים מקופה משותפת אחת
+        - button "👦 קופה לכל ילד כל ילד מקבל חלק מהקרן — חיסכון עצמאי לכל אחד" [ref=e38] [cursor=pointer]:
+          - generic [ref=e39]: 👦
+          - generic [ref=e40]: קופה לכל ילד
+          - generic [ref=e41]: כל ילד מקבל חלק מהקרן — חיסכון עצמאי לכל אחד
+        - button "🎯 קופה לכל אירוע כל אירוע מקבל הקצאה נפרדת — הכי פרטני" [ref=e42] [cursor=pointer]:
+          - generic [ref=e43]: 🎯
+          - generic [ref=e44]: קופה לכל אירוע
+          - generic [ref=e45]: כל אירוע מקבל הקצאה נפרדת — הכי פרטני
+    - generic [ref=e46]:
+      - generic [ref=e47]: שלב 2 — הגדרות כלליות
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - generic [ref=e51]: סכום התחלתי (₪)
+          - spinbutton "סכום התחלתי (₪)" [ref=e52]: "100000"
+        - generic [ref=e53]:
+          - generic [ref=e54]: תשואה שנתית (%)
+          - spinbutton "תשואה שנתית (%)" [ref=e55]: "5"
+        - button "⚡ חשב" [ref=e57] [cursor=pointer]
+    - generic [ref=e58]:
+      - generic [ref=e59]: שלב 3 — ילדים ואירועים
+      - generic [ref=e60]:
+        - generic [ref=e61]:
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - textbox "שם הילד" [ref=e135]: ילד 1
+              - generic [ref=e136]:
+                - generic [ref=e137]: גיל נוכחי
+                - spinbutton [ref=e138]: "5"
+              - button "✕ הסר ילד" [ref=e139] [cursor=pointer]
+            - generic [ref=e140]:
+              - table [ref=e142]:
+                - rowgroup [ref=e143]:
+                  - row "אירוע שם מותאם גיל יעד שנים חסכתי כבר (₪) יעד (₪) חיסכון/חודש" [ref=e144]:
+                    - columnheader "אירוע" [ref=e145]
+                    - columnheader "שם מותאם" [ref=e146]
+                    - columnheader "גיל יעד" [ref=e147]
+                    - columnheader "שנים" [ref=e148]
+                    - columnheader "חסכתי כבר (₪)" [ref=e149]
+                    - columnheader "יעד (₪)" [ref=e150]
+                    - columnheader "חיסכון/חודש" [ref=e151]
+                    - columnheader [ref=e152]
+                - rowgroup [ref=e153]:
+                  - row "בר/בת מצווה 8 שנ' — ✕" [ref=e154]:
+                    - cell "בר/בת מצווה" [ref=e155]:
+                      - combobox [ref=e156]:
+                        - option "בר/בת מצווה" [selected]
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e157]
+                    - cell [ref=e158]:
+                      - spinbutton [ref=e159]: "13"
+                    - cell "8 שנ'" [ref=e160]
+                    - cell [ref=e161]:
+                      - spinbutton [ref=e162]: "0"
+                    - cell [ref=e163]:
+                      - spinbutton [ref=e164]: "30000"
+                    - cell "—" [ref=e165]:
+                      - generic [ref=e166]: —
+                    - cell "✕" [ref=e167]:
+                      - button "✕" [ref=e168] [cursor=pointer]
+              - button "+ הוסף אירוע" [ref=e169] [cursor=pointer]
+          - generic [ref=e170]:
+            - generic [ref=e171]:
+              - textbox "שם הילד" [ref=e172]: ילד 2
+              - generic [ref=e173]:
+                - generic [ref=e174]: גיל נוכחי
+                - spinbutton [ref=e175]: "5"
+              - button "✕ הסר ילד" [ref=e176] [cursor=pointer]
+            - generic [ref=e177]:
+              - table [ref=e179]:
+                - rowgroup [ref=e180]:
+                  - row "אירוע שם מותאם גיל יעד שנים חסכתי כבר (₪) יעד (₪) חיסכון/חודש" [ref=e181]:
+                    - columnheader "אירוע" [ref=e182]
+                    - columnheader "שם מותאם" [ref=e183]
+                    - columnheader "גיל יעד" [ref=e184]
+                    - columnheader "שנים" [ref=e185]
+                    - columnheader "חסכתי כבר (₪)" [ref=e186]
+                    - columnheader "יעד (₪)" [ref=e187]
+                    - columnheader "חיסכון/חודש" [ref=e188]
+                    - columnheader [ref=e189]
+                - rowgroup [ref=e190]:
+                  - row "בר/בת מצווה 8 שנ' — ✕" [ref=e191]:
+                    - cell "בר/בת מצווה" [ref=e192]:
+                      - combobox [ref=e193]:
+                        - option "בר/בת מצווה" [selected]
+                        - option "חתונה"
+                        - option "לימודים"
+                        - option "רכישת דירה"
+                        - option "אחר"
+                    - cell [ref=e194]
+                    - cell [ref=e195]:
+                      - spinbutton [ref=e196]: "13"
+                    - cell "8 שנ'" [ref=e197]
+                    - cell [ref=e198]:
+                      - spinbutton [ref=e199]: "0"
+                    - cell [ref=e200]:
+                      - spinbutton [ref=e201]: "30000"
+                    - cell "—" [ref=e202]:
+                      - generic [ref=e203]: —
+                    - cell "✕" [ref=e204]:
+                      - button "✕" [ref=e205] [cursor=pointer]
+              - button "+ הוסף אירוע" [ref=e206] [cursor=pointer]
+        - button "+ הוסף ילד" [active] [ref=e99] [cursor=pointer]
+    - generic [ref=e104]:
+      - generic [ref=e105]:
+        - generic [ref=e106]: תוצאות
+        - generic [ref=e107]:
+          - generic [ref=e108]:
+            - generic [ref=e109]: "מצב חישוב:"
+            - generic [ref=e110]:
+              - button "חיסכון רגיל" [ref=e111] [cursor=pointer]
+              - button "חיסכון מאוזן" [ref=e112] [cursor=pointer]
+            - generic [ref=e113]: סכום משתנה — חישוב נפרד לכל אירוע
+          - generic [ref=e115]:
+            - generic [ref=e116]: ילד 1
+            - generic [ref=e117]: ₪255 / חודש
+      - generic [ref=e119]:
+        - generic [ref=e120]: חיסכון חודשי כולל
+        - generic [ref=e121]: ₪255
+        - generic [ref=e122]: סה"כ לכל הילדים
+      - generic [ref=e123]:
+        - generic [ref=e124]: גרפים
+        - generic [ref=e126]:
+          - heading "גרף חיסכון — ילד 1" [level=3] [ref=e128]
+          - heading "גרף מצטבר — כל המשפחה" [level=3] [ref=e131]
+  - contentinfo [ref=e100]:
+    - text: © 2026 יחיאל ממן — יועץ משכנתאות | כל הזכויות שמורות | האתר אינו מהווה ייעוץ פיננסי מחייב |
+    - link "ניהול" [ref=e101] [cursor=pointer]:
+      - /url: ../admin.html
