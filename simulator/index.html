@@ -3340,8 +3340,12 @@ function renderPlanCharts() {
     if (items.length > 1) {
       html += `<div style="border-top:1px solid #eee;margin:6px 0;"></div><div style="display:flex;justify-content:space-between;gap:18px;margin-bottom:6px;"><span style="font-weight:700;">סה"כ החזר</span><span style="font-weight:700;">${fmtT(total)}</span></div>`;
     }
-    if (available > 0) {
-      html += `<div style="display:flex;justify-content:space-between;gap:18px;margin-bottom:6px;align-items:center;"><div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:2px;background:#FF0000;display:inline-block;flex-shrink:0;border-radius:1px;"></span><span>סכום פנוי להחזר</span></div><span style="font-weight:600;">${fmtT(available)}</span></div>`;
+    if (lineDs) {
+      const isDeficit = available < 0;
+      const lineLabel = isDeficit ? 'גירעון חודשי' : 'סכום פנוי להחזר';
+      const availAbsStr = Math.abs(Math.round(available)).toLocaleString('he-IL');
+      const availDisp = isDeficit ? `<span dir="ltr" style="color:#c0392b;">₪ -${availAbsStr}</span>` : fmtT(available);
+      html += `<div style="display:flex;justify-content:space-between;gap:18px;margin-bottom:6px;align-items:center;"><div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:2px;background:#FF0000;display:inline-block;flex-shrink:0;border-radius:1px;"></span><span>${lineLabel}</span></div><span style="font-weight:600;">${availDisp}</span></div>`;
       const remColor = remaining >= 0 ? '#1a6e3c' : '#c0392b';
       const remSign  = remaining >= 0 ? '+' : '-';
       const remAbs   = Math.abs(Math.round(remaining)).toLocaleString('he-IL');
@@ -3897,19 +3901,18 @@ function runCalc() {
   const balDataFull  = debtBalanceByMonth.slice(0, balZeroIdx + 1);
   const loanDataFull = loanBalanceByMonth.slice(0, balZeroIdx + 1);
   const injSliceFull = fundsInjectedByMonth.slice(0, balZeroIdx + 1);
-  // Lift the "planned payoff" marker above the balance line by a margin proportional to the
-  // chart's value range, so the triangle never overlaps the line regardless of scale
-  const balMarkerMax = Math.max(1, ...balDataFull, ...injSliceFull.map((v,i) => v>0 ? balDataFull[i]+v : 0));
+  // Combined balance (debt + new loans) — top line in the stacked area chart
+  const combinedDataFull = balDataFull.map((v, i) => v + (loanDataFull[i] || 0));
+  // Lift the "planned payoff" marker above the combined top line
+  const balMarkerMax = Math.max(1, ...combinedDataFull, ...injSliceFull.map((v,i) => v>0 ? combinedDataFull[i]+v : 0));
   const balMarkerOffset = balMarkerMax * 0.05;
 
-  // Shared y-axis ceiling — must fit every series in both charts (original-debt balances,
-  // new-loan balances, and the lifted marker), so large new-loan amounts never get clipped
+  // Shared y-axis ceiling — must fit every series in both charts
   const yMax = Math.round(Math.max(
     1,
     ...befDataFull,
-    ...balDataFull,
-    ...loanDataFull,
-    ...injSliceFull.map((v,i) => v>0 ? balDataFull[i]+v+balMarkerOffset : 0)
+    ...combinedDataFull,
+    ...injSliceFull.map((v,i) => v>0 ? combinedDataFull[i]+v+balMarkerOffset : 0)
   ) * 1.04);
 
   if (balanceBeforeChartInst) balanceBeforeChartInst.destroy();
@@ -3931,9 +3934,9 @@ function runCalc() {
       labels: balSliceFull.map(m => m.m),
       datasets:[
         { label:'יתרת חובות', data: balDataFull, borderColor:'#1a7a40', backgroundColor:'rgba(26,122,64,0.1)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true },
-        ...(loanDataFull.some(v => v > 0) ? [{ label:'יתרת הלוואות חדשות', data: loanDataFull, borderColor:'#2a6496', backgroundColor:'rgba(42,100,150,0.07)', borderWidth:2, tension:0.3, pointRadius:0, fill:true }] : []),
+        ...(loanDataFull.some(v => v > 0) ? [{ label:'יתרת הלוואות חדשות', data: combinedDataFull, borderColor:'#2a6496', backgroundColor:'rgba(42,100,150,0.07)', borderWidth:2, tension:0.3, pointRadius:0, fill:'-1' }] : []),
         { label:'פירעון מתוכנן', type:'scatter', clip:false,
-          data: injSliceFull.map((v,i) => v>0 ? {x: balSliceFull[i].m, y: balDataFull[i]+v+balMarkerOffset} : null).filter(Boolean),
+          data: injSliceFull.map((v,i) => v>0 ? {x: balSliceFull[i].m, y: combinedDataFull[i]+v+balMarkerOffset} : null).filter(Boolean),
           pointStyle:'triangle', rotation:180, pointRadius:12, backgroundColor:'#1a6e3c', borderColor:'#0f4a25', borderWidth:2, showLine:false }
       ]
     },
