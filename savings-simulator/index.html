@@ -100,11 +100,6 @@
     .s-value{font-size:1.9rem;font-weight:800;color:#e8a020;line-height:1.1;}
     .s-sub{font-size:0.78rem;opacity:0.65;}
 
-    /* CHILD SUMMARY ROW */
-    .child-sum{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;padding:0.4rem 0.6rem;background:#f7f9fc;border-radius:6px;}
-    .child-sum-name{font-weight:700;color:#1a3a5c;font-size:0.93rem;}
-    .child-sum-val{font-weight:700;color:#e8a020;font-size:0.95rem;}
-
     /* ALLOCATION */
     .alloc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.8rem;margin-top:0.8rem;}
     .alloc-item label{font-size:0.83rem;color:#555;font-weight:600;display:block;margin-bottom:0.25rem;}
@@ -258,14 +253,11 @@
       <div class="form-row">
         <div class="form-group">
           <label for="initial-amount">סכום התחלתי (₪)</label>
-          <input type="number" id="initial-amount" value="100000" min="0" step="1000">
+          <input type="number" id="initial-amount" value="100000" min="0" step="1000" onchange="calculate()">
         </div>
         <div class="form-group">
           <label for="annual-rate">תשואה שנתית (%)</label>
-          <input type="number" id="annual-rate" value="5" min="0" max="30" step="0.1">
-        </div>
-        <div style="align-self:flex-end;">
-          <button class="btn-accent" onclick="calculate()">⚡ חשב</button>
+          <input type="number" id="annual-rate" value="5" min="0" max="30" step="0.1" onchange="calculate()">
         </div>
       </div>
     </div>
@@ -425,6 +417,15 @@ document.addEventListener('DOMContentLoaded', function() {
   [2, 5, 8, 11].forEach(function(age) { pushChild(age); });
   renderChildren();
   updateModeUI();
+  calculate();
+});
+
+// Enter commits the value (like leaving the field) instead of waiting for a manual blur
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  if (!e.target.matches('input:not([type="file"]):not([type="checkbox"]), select')) return;
+  e.preventDefault();
+  e.target.blur();
 });
 
 function readDefaults() {
@@ -448,6 +449,7 @@ function applyDefaultsToAll() {
     });
   });
   renderChildren();
+  calculate();
 }
 
 function pushChild(age) {
@@ -481,18 +483,20 @@ function addChild() {
   readChildrenFromUI();
   pushChild();
   renderChildren();
+  calculate();
 }
 
 function deleteChild(id) {
   readChildrenFromUI();
   state.children = state.children.filter(function(c){ return c.id !== id; });
   renderChildren();
+  calculate();
 }
 
 function addEvent(cid) {
   readChildrenFromUI();
   var child = state.children.find(function(c){ return c.id === cid; });
-  if (child) { pushEvent(child); renderChildren(); }
+  if (child) { pushEvent(child); renderChildren(); calculate(); }
 }
 
 function removeEvent(cid, eid) {
@@ -501,6 +505,7 @@ function removeEvent(cid, eid) {
   if (child) {
     child.events = child.events.filter(function(e){ return e.id !== eid; });
     renderChildren();
+    calculate();
   }
 }
 
@@ -531,10 +536,10 @@ function childHTML(child) {
   var rows = child.events.map(function(ev) { return eventRowHTML(child, ev); }).join('');
   return '<div class="child-card" id="cc-' + child.id + '">' +
     '<div class="child-header">' +
-      '<input class="child-name-input" id="cn-' + child.id + '" type="text" placeholder="שם הילד">' +
+      '<input class="child-name-input" id="cn-' + child.id + '" type="text" placeholder="שם הילד" onchange="calculate()">' +
       '<div class="form-group" style="flex:0 0 120px;">' +
         '<label style="font-size:0.8rem;margin-bottom:0.15rem;">גיל נוכחי</label>' +
-        '<input type="number" id="ca-' + child.id + '" min="0" max="30" style="padding:0.28rem 0.5rem;font-size:0.85rem;" oninput="syncAllYears()">' +
+        '<input type="number" id="ca-' + child.id + '" min="0" max="30" style="padding:0.28rem 0.5rem;font-size:0.85rem;" onchange="syncAllYears();calculate()">' +
       '</div>' +
       '<button class="btn-danger no-print" onclick="deleteChild(\'' + child.id + '\')">✕ הסר ילד</button>' +
     '</div>' +
@@ -559,12 +564,12 @@ function eventRowHTML(child, ev) {
     return '<option value="' + k + '">' + EVT[k] + '</option>';
   }).join('');
   return '<tr id="er-' + ev.id + '">' +
-    '<td><select id="et-' + ev.id + '" onchange="syncCustomLabel(\'' + ev.id + '\')">' + opts + '</select></td>' +
-    '<td><input type="text" id="ecl-' + ev.id + '" placeholder="שם" style="display:none;"></td>' +
-    '<td><input type="number" id="eta-' + ev.id + '" min="0" max="60" style="width:58px;" oninput="syncAllYears()"></td>' +
+    '<td><select id="et-' + ev.id + '" onchange="syncCustomLabel(\'' + ev.id + '\');calculate()">' + opts + '</select></td>' +
+    '<td><input type="text" id="ecl-' + ev.id + '" placeholder="שם" style="display:none;" onchange="calculate()"></td>' +
+    '<td><input type="number" id="eta-' + ev.id + '" min="0" max="60" style="width:58px;" onchange="syncAllYears();calculate()"></td>' +
     '<td class="years-cell" id="ey-' + ev.id + '">—</td>' +
-    '<td><input type="number" id="eex-' + ev.id + '" min="0" step="500"></td>' +
-    '<td><input type="number" id="etg-' + ev.id + '" min="0" step="1000"></td>' +
+    '<td><input type="number" id="eex-' + ev.id + '" min="0" step="500" onchange="calculate()"></td>' +
+    '<td><input type="number" id="etg-' + ev.id + '" min="0" step="1000" onchange="calculate()"></td>' +
     '<td><div class="res-cell zero" id="ep-' + ev.id + '">—</div></td>' +
     '<td class="no-print"><button class="btn-danger" onclick="removeEvent(\'' + child.id + '\',\'' + ev.id + '\')">✕</button></td>' +
   '</tr>';
@@ -635,7 +640,7 @@ function readAllocsFromUI() {
 function setMode(m) {
   state.mode = m;
   updateModeUI();
-  document.getElementById('results-section').style.display = 'none';
+  calculate();
 }
 
 function updateModeUI() {
@@ -658,9 +663,7 @@ function setCalcMode(m) {
 }
 
 function onAutoAllocChange() {
-  state.autoAllocate = document.getElementById('auto-alloc').checked;
-  if (state.autoAllocate) computeAutoAllocs();
-  renderAllocUI();
+  calculate();
 }
 
 // ── MATH ───────────────────────────────────────────────────
@@ -761,7 +764,7 @@ function renderAllocUI() {
     grid.insertAdjacentHTML('beforeend',
       '<div class="alloc-item"><label>' + item.label + '</label>' +
       '<input type="number" id="' + item.id + '" value="' + item.value + '" min="0" step="100"' +
-      (isAuto ? ' disabled' : ' onchange="updateAllocTotal()"') + '></div>');
+      (isAuto ? ' disabled' : ' onchange="calculate()"') + '></div>');
   });
   updateAllocTotal();
 }
@@ -823,20 +826,34 @@ function eventCellHTML(years, pmt, pmtNI) {
   };
 }
 
-function childSumHTML(name, withInt, noInt) {
+function resultsTableStart() {
+  return '<div class="sch-wrap"><table class="sch-tbl">' +
+    '<thead><tr><th>ילד</th><th>ללא תשואה / חודש</th><th>עם תשואה / חודש</th><th>חסכת בזכות תשואה</th></tr></thead><tbody>';
+}
+
+function resultsRowHTML(name, withInt, noInt) {
   var saved = Math.max(0, noInt - withInt);
-  return '<div class="child-sum">' +
-    '<span class="child-sum-name">' + esc(name) + '</span>' +
-    '<div style="text-align:start;line-height:1.6;">' +
-      '<div style="font-size:0.76rem;color:#aaa;">ללא תשואה: ' + fmtCur(noInt) + ' / חודש</div>' +
-      '<div class="child-sum-val">עם תשואה: ' + fmtCur(withInt) + ' / חודש</div>' +
-      (saved > 0 ? '<div style="font-size:0.76rem;color:#7defa0;">חסכת: ' + fmtCur(saved) + ' / חודש</div>' : '') +
-    '</div>' +
-  '</div>';
+  return '<tr>' +
+    '<td><strong>' + esc(name) + '</strong></td>' +
+    '<td style="color:#999;">' + fmtCur(noInt) + '</td>' +
+    '<td><strong>' + fmtCur(withInt) + '</strong></td>' +
+    '<td style="color:#27ae60;">' + (saved > 0 ? fmtCur(saved) : '—') + '</td>' +
+  '</tr>';
+}
+
+function resultsTotalRowHTML(withInt, noInt) {
+  var saved = Math.max(0, noInt - withInt);
+  return '<tr style="background:#f0f4f8;">' +
+    '<td><strong>סה"כ</strong></td>' +
+    '<td style="color:#999;"><strong>' + fmtCur(noInt) + '</strong></td>' +
+    '<td><strong>' + fmtCur(withInt) + '</strong></td>' +
+    '<td style="color:#27ae60;"><strong>' + (saved > 0 ? fmtCur(saved) : '—') + '</strong></td>' +
+  '</tr>';
 }
 
 function renderRegular(container) {
   var grand = 0, grandNI = 0;
+  var rows = '';
   state.children.forEach(function(child) {
     var childTotal = 0, childNI = 0;
     child.events.forEach(function(ev) {
@@ -856,8 +873,10 @@ function renderRegular(container) {
     });
     grand   += childTotal;
     grandNI += childNI;
-    container.insertAdjacentHTML('beforeend', childSumHTML(child.name, childTotal, childNI));
+    rows += resultsRowHTML(child.name, childTotal, childNI);
   });
+  rows += resultsTotalRowHTML(grand, grandNI);
+  container.insertAdjacentHTML('beforeend', resultsTableStart() + rows + '</tbody></table></div>');
   return { withInt: grand, noInt: grandNI };
 }
 
@@ -900,6 +919,7 @@ function renderBalanced(container) {
     });
 
   } else { // per-child
+    var rows = '';
     state.children.forEach(function(child) {
       var evs = child.events
         .filter(function(ev){ return ev.targetAge > child.age; })
@@ -911,13 +931,15 @@ function renderBalanced(container) {
       var cNoInt   = CNI === Infinity ? 0 : CNI;
       grand   += cWithInt;
       grandNI += cNoInt;
-      container.insertAdjacentHTML('beforeend', childSumHTML(child.name, cWithInt, cNoInt));
+      rows += resultsRowHTML(child.name, cWithInt, cNoInt);
       child.events.forEach(function(ev) {
         var cell = document.getElementById('ep-' + ev.id);
         if (cell) { cell.innerHTML = '↑ מאוזן'; cell.className = 'res-cell'; }
         syncYears(child.id, ev.id);
       });
     });
+    rows += resultsTotalRowHTML(grand, grandNI);
+    container.insertAdjacentHTML('beforeend', resultsTableStart() + rows + '</tbody></table></div>');
   }
   return { withInt: grand, noInt: grandNI };
 }
