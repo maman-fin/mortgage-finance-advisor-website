@@ -3568,6 +3568,8 @@ function runCalc() {
   // Debt monthly payments over time
   const debtMonthlyByMonth = [];
   const debtBalanceByMonth = [];
+  const treatedDebtBalanceByMonth = [];
+  const unresolvedDebtBalanceByMonth = [];
   const loanBalanceByMonth = [];
   let currentBalances = expandedDebts.map(d => {
     const planA = d.planAction || 'ללא שינוי';
@@ -3599,6 +3601,7 @@ function runCalc() {
       paymentsLeft: (stepRestr || planRestr)
         ? newPL
         : (d.paymentsLeft > 0 ? d.paymentsLeft : impliedPaymentsLeft(d.balance, d.monthly, d.interest)),
+      isUnresolved: d.arranged !== true && (d.planAction || 'ללא שינוי') === 'ללא שינוי' && (d.action || 'ללא שינוי') === 'ללא שינוי',
     };
   });
 
@@ -3714,6 +3717,7 @@ function runCalc() {
     let debtPmt = 0, debtPmtInPlan = 0, debtPmtNotInPlan = 0;
     currentBalances.forEach((d, idx) => {
       if (d.balance <= 0) return;
+      if (d.isUnresolved) return; // frozen — no payment plan, balance stays constant
       if (d.action === 'הקפאה' && d.freezeLeft > 0) { d.freezeLeft--; return; }
       if (d.isRestructured && d.graceLeft > 0) {
         d.graceLeft--;
@@ -3760,6 +3764,8 @@ function runCalc() {
 
     const totalDebt = debtPmt + newLoanPmt;
     const totalBalance = currentBalances.reduce((s,d)=>s+Math.max(d.balance,0),0);
+    const treatedBalance = currentBalances.reduce((s,d)=>d.isUnresolved?s:s+Math.max(d.balance,0),0);
+    const unresolvedBalance = totalBalance - treatedBalance;
     const phase = getBudget(m+1);
     const phaseIncome = phase.income;
     const phaseExp    = phase.expenses;
@@ -3769,8 +3775,10 @@ function runCalc() {
     const netBefore = curIncome - curExp - state.debts.reduce((s,d)=>s+d.monthly,0);
     const netAfter  = phaseIncome - phaseExp - phaseSaving - totalDebt;
 
-    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, loanBalance: Math.round(newLoanBalance), savingMonthly: phaseSaving, savingCumul: Math.round(cumulativeSavings), savingPrincipal: Math.round(principalCumul), interestCumulAfter: cumulativeInterestAfter, netBefore, fundsInjected: fundsInjectedByMonth[m] || 0, debtPmtInPlan, debtPmtNotInPlan, newLoanPmt });
+    monthlyCF.push({ m: m+1, dateStr, incomeNew: phaseIncome, expNew: phaseExp, totalDebt, netAfter, totalBalance, treatedBalance, loanBalance: Math.round(newLoanBalance), savingMonthly: phaseSaving, savingCumul: Math.round(cumulativeSavings), savingPrincipal: Math.round(principalCumul), interestCumulAfter: cumulativeInterestAfter, netBefore, fundsInjected: fundsInjectedByMonth[m] || 0, debtPmtInPlan, debtPmtNotInPlan, newLoanPmt });
     debtBalanceByMonth.push(totalBalance);
+    treatedDebtBalanceByMonth.push(treatedBalance);
+    unresolvedDebtBalanceByMonth.push(unresolvedBalance);
     loanBalanceByMonth.push(Math.round(newLoanBalance));
     debtMonthlyByMonth.push(totalDebt);
   }
@@ -3787,17 +3795,27 @@ function runCalc() {
   // Last month with any payment or balance (covers new loans too)
   let treatmentEnd = 0;
   for (let i = 0; i < monthlyCF.length; i++) {
-    if (monthlyCF[i].totalDebt > 1 || monthlyCF[i].totalBalance > 1) treatmentEnd = i;
+    if (monthlyCF[i].totalDebt > 1 || monthlyCF[i].treatedBalance > 1) treatmentEnd = i;
   }
-  // Before: if non-arranged debts exist → no forecast; else compute from simulation
-  const beforeSim = simulateDebtBalances(expandedDebts, MONTHS);
+  // Before: plan-independent — uses state.debts directly with its own horizon
+  const BEFORE_MONTHS = Math.min(Math.max(
+    state.debts.reduce((max, d) => {
+      const pl = d.paymentsLeft > 0 ? d.paymentsLeft : impliedPaymentsLeft(d.balance, d.monthly, d.interest);
+      return Math.max(max, pl);
+    }, 0),
+    120
+  ), 600);
+  const beforeSim = simulateDebtBalances(state.debts, BEFORE_MONTHS);
   const beforeFreeIdx = beforeSim.findIndex(v => v <= 0);
   const beforeDebtFreeText = totalNonArrangedDebt > 0
     ? 'אין צפי לסיום'
     : beforeFreeIdx >= 0
       ? `${beforeFreeIdx + 1} חודשים (${Math.ceil((beforeFreeIdx+1)/12)} שנים)`
       : 'מעל 100 חודש';
-  const afterDebtFreeText = `${treatmentEnd + 1} חודשים (${Math.ceil((treatmentEnd+1)/12)} שנים)`;
+  const hasUnresolved = afterCat_noArrangement > 0;
+  const afterDebtFreeText = hasUnresolved
+    ? 'לא ידוע'
+    : `${treatmentEnd + 1} חודשים (${Math.ceil((treatmentEnd+1)/12)} שנים)`;
 
   // Cache data needed for the interest-comparison card (re-evaluated on slider/rate change)
   icCache = {
@@ -3851,7 +3869,7 @@ function runCalc() {
           ${monthlyCF[monthlyCF.length-1]?.savingCumul > 0 ? `<div class="sum-box" style="border-right:4px solid #1a6e3c;"><div class="sb-label">💰 חיסכון צפוי בסיום התכנית</div><div class="sb-value" style="color:#1a6e3c;">${fmtNIS(Math.round(monthlyCF[monthlyCF.length-1].savingCumul))}</div></div>` : ''}
         </div>
         <div class="sum-box positive"><div class="sb-label">החזר חובות ראשוני</div><div class="sb-value">${fmtNIS(Math.round(monthlyCF[0]?.totalDebt || 0))}</div></div>
-        <div class="sum-box positive"><div class="sb-label">זמן לסיום חובות</div><div class="sb-value">${afterDebtFreeText}</div></div>
+        <div class="sum-box ${hasUnresolved ? 'negative' : 'positive'}"><div class="sb-label">זמן לסיום חובות</div><div class="sb-value" style="font-size:${hasUnresolved ? '1rem' : '1.35rem'}">${afterDebtFreeText}${hasUnresolved ? '<div style="font-size:0.78rem;font-weight:400;margin-top:4px;opacity:0.8;">יש חובות שנותרו ללא הסדר</div>' : ''}</div></div>
       </div>
     </div>`;
 
@@ -3868,7 +3886,7 @@ function runCalc() {
     };
   };
 
-  const makeBalTooltip = (tooltipId, sliceArr, dataArr, injArr, loanArr, labels) => (context) => {
+  const makeBalTooltip = (tooltipId, sliceArr, dataArr, injArr, loanArr, labels, unresolvedArr) => (context) => {
     const { chart, tooltip } = context;
     let el = document.getElementById(tooltipId);
     if (!el) {
@@ -3879,6 +3897,7 @@ function runCalc() {
     if (tooltip.opacity === 0) { el.style.opacity = '0'; return; }
     const idx = tooltip.dataPoints?.[0]?.dataIndex ?? 0;
     const m = sliceArr[idx]; const bal = dataArr[idx]; const inj = injArr ? (injArr[idx] || 0) : 0; const loan = loanArr ? (loanArr[idx] || 0) : 0;
+    const unresolved = unresolvedArr ? (unresolvedArr[idx] || 0) : 0;
     const fmtT = n => `<span dir="ltr">₪ ${Math.round(n).toLocaleString('he-IL')}</span>`;
     let html = `<div style="font-weight:700;margin-bottom:7px;color:#1a3a5c;font-size:13px;">חודש ${m.m} — ${m.dateStr}</div>`;
     const L = labels || {};
@@ -3886,7 +3905,8 @@ function runCalc() {
     const primaryColor = L.primaryColor || (injArr ? '#1a7a40' : '#c0392b');
     const secondaryLabel = L.secondary || 'יתרת הלוואות חדשות';
     const secondaryColor = L.secondaryColor || '#2a6496';
-    html += `<div style="display:flex;justify-content:space-between;gap:18px;margin-bottom:4px;align-items:center;"><div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:3px;background:${primaryColor};display:inline-block;flex-shrink:0;border-radius:1px;"></span><span>${primaryLabel}</span></div><span style="font-weight:600;">${fmtT(bal)}</span></div>`;
+    if (unresolved > 0) html += `<div style="display:flex;justify-content:space-between;gap:18px;margin-bottom:4px;align-items:center;"><div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:3px;background:#c0392b;display:inline-block;flex-shrink:0;border-radius:1px;"></span><span>חובות ללא הסדר</span></div><span style="font-weight:600;">${fmtT(unresolved)}</span></div>`;
+    if (bal > 0) html += `<div style="display:flex;justify-content:space-between;gap:18px;margin-bottom:4px;align-items:center;"><div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:3px;background:${primaryColor};display:inline-block;flex-shrink:0;border-radius:1px;"></span><span>${primaryLabel}</span></div><span style="font-weight:600;">${fmtT(bal)}</span></div>`;
     if (loan > 0) html += `<div style="display:flex;justify-content:space-between;gap:18px;margin-bottom:4px;align-items:center;"><div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:3px;background:${secondaryColor};display:inline-block;flex-shrink:0;border-radius:1px;"></span><span>${secondaryLabel}</span></div><span style="font-weight:600;">${fmtT(loan)}</span></div>`;
     if (inj > 0) html += `<div style="display:flex;justify-content:space-between;gap:18px;margin-top:4px;align-items:center;"><div style="display:flex;align-items:center;gap:6px;"><span style="width:11px;height:11px;background:#8e44ad;display:inline-block;border-radius:2px;flex-shrink:0;"></span><span>פירעון מתוכנן</span></div><span style="font-weight:600;">${fmtT(inj)}</span></div>`;
     el.innerHTML = html; el.style.opacity = '1';
@@ -3896,40 +3916,46 @@ function runCalc() {
     el.style.left = left + 'px'; el.style.top = (r.top + tooltip.caretY - el.offsetHeight / 2) + 'px';
   };
 
-  // BEFORE chart data — original debts, no plan actions, split by arrangement status
-  const expandedDebtsArranged   = expandedDebts.filter(d => d.arranged === true);
-  const expandedDebtsUnarranged = expandedDebts.filter(d => d.arranged !== true);
-  const beforeArrangedByMonth   = simulateDebtBalances(expandedDebtsArranged, MONTHS);
-  const beforeUnarrangedByMonth = simulateDebtBalances(expandedDebtsUnarranged, MONTHS);
+  // BEFORE chart data — plan-independent: state.debts with own BEFORE_MONTHS, own labels
+  const origDebtsArranged   = state.debts.filter(d => d.arranged === true);
+  const origDebtsUnarranged = state.debts.filter(d => d.arranged !== true);
+  const beforeArrangedByMonth   = simulateDebtBalances(origDebtsArranged, BEFORE_MONTHS);
+  const beforeUnarrangedByMonth = simulateDebtBalances(origDebtsUnarranged, BEFORE_MONTHS);
   const beforeBalanceByMonth = beforeArrangedByMonth.map((v, i) => v + beforeUnarrangedByMonth[i]);
   let befZeroIdx = beforeBalanceByMonth.findIndex(v => v <= 0);
   if (befZeroIdx === -1) befZeroIdx = beforeBalanceByMonth.length - 1;
-  const befSliceFull = monthlyCF.slice(0, befZeroIdx + 1);
+  const befSliceFull = Array.from({length: befZeroIdx + 1}, (_, i) => {
+    const bm = ((sm - 1 + i) % 12) + 1;
+    const by = sy + Math.floor((sm - 1 + i) / 12);
+    return { m: i + 1, dateStr: `${String(bm).padStart(2,'0')}/${by}` };
+  });
   const befArrangedDataFull   = beforeArrangedByMonth.slice(0, befZeroIdx + 1);
   const befUnarrangedDataFull = beforeUnarrangedByMonth.slice(0, befZeroIdx + 1);
   // Combined (arranged + unarranged) — top line in the stacked area chart
   const befCombinedDataFull = befArrangedDataFull.map((v, i) => v + (befUnarrangedDataFull[i] || 0));
 
-  // AFTER chart data — with plan actions (green), trimmed at treatmentEnd
-  const combinedBal = debtBalanceByMonth.map((v, i) => v + (loanBalanceByMonth[i] || 0));
-  let balZeroIdx = combinedBal.findIndex(v => v <= 0);
+  // AFTER chart data — split by treated vs unresolved, trimmed at treatmentEnd
+  const combinedTreated = treatedDebtBalanceByMonth.map((v, i) => v + (loanBalanceByMonth[i] || 0));
+  let balZeroIdx = combinedTreated.findIndex(v => v <= 0);
   if (balZeroIdx === -1) balZeroIdx = treatmentEnd;
-  const balSliceFull = monthlyCF.slice(0, balZeroIdx + 1);
-  const balDataFull  = debtBalanceByMonth.slice(0, balZeroIdx + 1);
-  const loanDataFull = loanBalanceByMonth.slice(0, balZeroIdx + 1);
-  const injSliceFull = fundsInjectedByMonth.slice(0, balZeroIdx + 1);
-  // Combined balance (debt + new loans) — top line in the stacked area chart
-  const combinedDataFull = balDataFull.map((v, i) => v + (loanDataFull[i] || 0));
-  // Lift the "planned payoff" marker above the combined top line
-  const balMarkerMax = Math.max(1, ...combinedDataFull, ...injSliceFull.map((v,i) => v>0 ? combinedDataFull[i]+v : 0));
+  const balSliceFull       = monthlyCF.slice(0, balZeroIdx + 1);
+  const balDataFull        = treatedDebtBalanceByMonth.slice(0, balZeroIdx + 1);   // treated debts only
+  const unresolvedDataFull = unresolvedDebtBalanceByMonth.slice(0, balZeroIdx + 1); // frozen unresolved
+  const loanDataFull       = loanBalanceByMonth.slice(0, balZeroIdx + 1);
+  const injSliceFull       = fundsInjectedByMonth.slice(0, balZeroIdx + 1);
+  // Stacked layers: unresolved (bottom, red) → treated (middle, green) → loans (top, blue)
+  const greenLayerData = unresolvedDataFull.map((v, i) => v + balDataFull[i]);        // unresolved + treated
+  const topLayerData   = greenLayerData.map((v, i) => v + (loanDataFull[i] || 0));   // + loans
+  // Lift the "planned payoff" marker above the top line
+  const balMarkerMax = Math.max(1, ...topLayerData, ...injSliceFull.map((v,i) => v>0 ? topLayerData[i]+v : 0));
   const balMarkerOffset = balMarkerMax * 0.05;
 
-  // Shared y-axis ceiling — must fit every series in both charts
-  const yMax = Math.round(Math.max(
+  // Each chart gets its own Y-axis so the before chart never changes when plan settings change
+  const befYMax = Math.round(Math.max(1, ...befCombinedDataFull) * 1.04);
+  const aftYMax = Math.round(Math.max(
     1,
-    ...befCombinedDataFull,
-    ...combinedDataFull,
-    ...injSliceFull.map((v,i) => v>0 ? combinedDataFull[i]+v+balMarkerOffset : 0)
+    ...topLayerData,
+    ...injSliceFull.map((v,i) => v>0 ? topLayerData[i]+v+balMarkerOffset : 0)
   ) * 1.04);
 
   if (balanceBeforeChartInst) balanceBeforeChartInst.destroy();
@@ -3944,7 +3970,7 @@ function runCalc() {
     },
     options: { responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
       plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceBeforeTooltip', befSliceFull, befUnarrangedDataFull, null, befArrangedDataFull, { primary:'חובות שלא בהסדר', primaryColor:'#c0392b', secondary:'חובות בהסדר', secondaryColor:'#e67e22' }) } },
-      scales: balScalesFor(befSliceFull.length, yMax) }
+      scales: balScalesFor(befSliceFull.length, befYMax) }
   });
 
   if (balanceChartInst) balanceChartInst.destroy();
@@ -3953,16 +3979,17 @@ function runCalc() {
     data: {
       labels: balSliceFull.map(m => m.m),
       datasets:[
-        { label:'יתרת חובות', data: balDataFull, borderColor:'#1a7a40', backgroundColor:'rgba(26,122,64,0.35)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true },
-        ...(loanDataFull.some(v => v > 0) ? [{ label:'יתרת הלוואות חדשות', data: combinedDataFull, borderColor:'#2a6496', backgroundColor:'rgba(42,100,150,0.35)', borderWidth:2, tension:0.3, pointRadius:0, fill:'-1' }] : []),
+        ...(unresolvedDataFull.some(v => v > 0) ? [{ label:'חובות ללא הסדר', data: unresolvedDataFull, borderColor:'#c0392b', backgroundColor:'rgba(192,57,43,0.35)', borderWidth:2.5, tension:0.3, pointRadius:0, fill:true }] : []),
+        { label:'חובות בהסדר', data: greenLayerData, borderColor:'#1a7a40', backgroundColor:'rgba(26,122,64,0.35)', borderWidth:2.5, tension:0.3, pointRadius:0, fill: unresolvedDataFull.some(v => v > 0) ? '-1' : true },
+        ...(loanDataFull.some(v => v > 0) ? [{ label:'יתרת הלוואות חדשות', data: topLayerData, borderColor:'#2a6496', backgroundColor:'rgba(42,100,150,0.35)', borderWidth:2, tension:0.3, pointRadius:0, fill:'-1' }] : []),
         { label:'פירעון מתוכנן', type:'scatter', clip:false,
-          data: injSliceFull.map((v,i) => v>0 ? {x: balSliceFull[i].m, y: combinedDataFull[i]+v+balMarkerOffset} : null).filter(Boolean),
+          data: injSliceFull.map((v,i) => v>0 ? {x: balSliceFull[i].m, y: topLayerData[i]+v+balMarkerOffset} : null).filter(Boolean),
           pointStyle:'triangle', rotation:180, pointRadius:12, backgroundColor:'#8e44ad', borderColor:'#5b2c6f', borderWidth:2, showLine:false }
       ]
     },
     options:{ responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
-      plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceAfterTooltip', balSliceFull, balDataFull, injSliceFull, loanDataFull) } },
-      scales: balScalesFor(balSliceFull.length, yMax) }
+      plugins:{ legend:{ position:'bottom' }, tooltip:{ enabled:false, external: makeBalTooltip('balanceAfterTooltip', balSliceFull, balDataFull, injSliceFull, loanDataFull, { primary:'חובות בהסדר', primaryColor:'#1a7a40' }, unresolvedDataFull) } },
+      scales: balScalesFor(balSliceFull.length, aftYMax) }
   });
 
   // Savings chart
