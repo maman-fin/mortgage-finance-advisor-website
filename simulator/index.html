@@ -853,7 +853,7 @@
                 oninput="state.unarrangedDebtRate=parseFloat(this.value)||0;updateInterestCompare()">
               <span style="font-size:0.95rem;color:#666;font-weight:700;">%</span>
             </div>
-            <div style="font-size:0.72rem;color:#999;">ברירת מחדל: <a href="javascript:void(0)" onclick="document.getElementById('unarrangedRateInput').value=12;state.unarrangedDebtRate=12;updateInterestCompare()" style="color:#2a6496;font-weight:700;text-decoration:none;">12%</a></div>
+            <div style="font-size:0.72rem;color:#999;">דוגמה: <a href="javascript:void(0)" onclick="document.getElementById('unarrangedRateInput').value=12;state.unarrangedDebtRate=12;updateInterestCompare()" style="color:#2a6496;font-weight:700;text-decoration:none;">12%</a></div>
           </div>
           <div class="sum-box" style="flex:1;min-width:240px;">
             <div class="sb-label">תקופת השוואה: <span id="interestCompareMonthsLabel" style="color:#1a3a5c;font-weight:800;"></span> חודשים</div>
@@ -968,7 +968,7 @@ const state = {
   debts: [],  // {name, category, balance, interest, paymentsLeft, monthly, notes, action, actionParam}
   savingsRateEnabled: false,
   savingsRate: 0,
-  unarrangedDebtRate: 12,
+  unarrangedDebtRate: 0,
   interestCompareMonths: null,
   planValues: { p2_income:0, p2_exp:0, p3_income:0, p3_exp:0 }, // ערכי תקציב מוצע 2/3
   planTouched: { p2_income:false, p2_exp:false, p3_income:false, p3_exp:false }, // האם המשתמש שינה ידנית
@@ -2947,6 +2947,29 @@ function simulateDebtBalances(debtList, months) {
   });
 }
 
+function simulateDebtMonthlyPayments(debtList, months) {
+  const debts = debtList.map(d => {
+    const bal = d.balance||0, mon = d.monthly||0, int = d.interest||0;
+    const pl = d.paymentsLeft > 0 ? d.paymentsLeft : impliedPaymentsLeft(bal, mon, int);
+    return { balance: bal, monthly: mon, interest: int, paymentsLeft: pl };
+  });
+  return Array.from({length: months}, () => {
+    let total = 0;
+    debts.forEach(d => {
+      if (d.balance <= 0 || d.paymentsLeft <= 0) return;
+      const r = d.interest / 100 / 12;
+      const intr = d.balance * r;
+      if (d.monthly <= intr) return;
+      const payment = Math.min(d.monthly, d.balance + intr);
+      d.balance = Math.max(d.balance - (payment - intr), 0);
+      d.paymentsLeft--;
+      if (d.balance < 0.5 || d.paymentsLeft === 0) { d.balance = 0; d.paymentsLeft = 0; }
+      total += payment;
+    });
+    return Math.round(total);
+  });
+}
+
 // Cumulative interest accrued "before" — arranged debts amortize at their current terms;
 // not-arranged debts have no payment plan, so interest simply accrues on the static balance
 // at the assumed rate the advisor sets.
@@ -2999,7 +3022,7 @@ function renderInterestCompare() {
   state.interestCompareMonths = parseInt(slider.value);
 
   const rateInput = document.getElementById('unarrangedRateInput');
-  rateInput.value = state.unarrangedDebtRate || '';
+  rateInput.value = state.unarrangedDebtRate != null ? state.unarrangedDebtRate : 0;
 
   updateInterestCompare();
 }
@@ -3806,6 +3829,8 @@ function runCalc() {
     120
   ), 600);
   const beforeSim = simulateDebtBalances(state.debts, BEFORE_MONTHS);
+  // Monthly payments in the "before" scenario — dynamic as debts amortize over time
+  const beforeMonthlyPaymentsByMonth = simulateDebtMonthlyPayments(state.debts, Math.max(BEFORE_MONTHS, treatmentEnd + 1));
   const beforeFreeIdx = beforeSim.findIndex(v => v <= 0);
   const beforeDebtFreeText = totalNonArrangedDebt > 0
     ? 'אין צפי לסיום'
@@ -4053,8 +4078,6 @@ function runCalc() {
   const D = n => Math.round(n) === 0 ? '—' : fmtNIS(Math.round(n));
   const row = (label, vals, cls='') =>
     `<tr${cls?' class="'+cls+'"':''}><td class="cf-row-label">${label}</td>${vals.map(v=>`<td>${v}</td>`).join('')}</tr>`;
-  const netBeforeVal = curIncome - curExp - currentMonthlyDebt;
-
   let cfHtml = `<thead>
     <tr class="cf-num-row"><th></th>${cfMonths.map(m=>`<th>${m.m}</th>`).join('')}</tr>
     <tr class="cf-date-row"><th></th>${cfMonths.map(m=>`<th>${m.dateStr}</th>`).join('')}</tr>
@@ -4064,9 +4087,9 @@ function runCalc() {
   cfHtml += row('הכנסות',             cfMonths.map(()=>fmtNIS(curIncome)));
   cfHtml += row('הוצאות',             cfMonths.map(()=>fmtNIS(curExp)));
   cfHtml += row('סכום פנוי להחזר חובות', cfMonths.map(()=>fmtNIS(curIncome - curExp)));
-  cfHtml += row('החזר',               cfMonths.map(()=>fmtNIS(currentMonthlyDebt)));
+  cfHtml += row('החזר',               cfMonths.map((_,i)=>fmtNIS(beforeMonthlyPaymentsByMonth[i]||0)));
   cfHtml += row('הכנסות פחות הוצאות והחזר חובות לפני התכנית',
-    cfMonths.map(()=>`<span class="${netBeforeVal<0?'neg':'pos'}">${fmtNIS(netBeforeVal)}</span>`), 'cf-total-row');
+    cfMonths.map((_,i)=>{ const net = curIncome - curExp - (beforeMonthlyPaymentsByMonth[i]||0); return `<span class="${net<0?'neg':'pos'}">${fmtNIS(net)}</span>`; }), 'cf-total-row');
 
   cfHtml += `<tr class="cf-section-hdr"><td colspan="${cols+1}">מצב חדש</td></tr>`;
   cfHtml += row('הכנסות',             cfMonths.map(m=>fmtNIS(m.incomeNew)));
